@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="http://ns.adobe.com/air/application/2.5">
+  <id>flump</id>
+  <versionNumber>0.1</versionNumber>
+  <filename>Flump</filename>
+  <initialWindow>
+    <content>flump.swf</content>
+    <visible>true</visible>
+    <width>1024</width>
+    <height>560</height>
+  </initialWindow>
+</application>
