@@ -56,16 +56,31 @@ var offsets = {
     device: [-8.6, -4.65]
 }
 
+fl.outputPanel.clear();
 log("Processsing");
 log("====================");
 processAnimation(document.getTimeline());
 log();
 
+function createAnim() {
+    return {
+        keyframes: {
+            ROTATION: [],
+            X_LOCATION: [],
+            Y_LOCATION: [],
+            X_ORIGIN: [],
+            Y_ORIGIN: [],
+            X_SCALE: [],
+            Y_SCALE: []
+        }
+    };
+}
+
 function processAnimation(timeline) {
     var frameCount = 0;
 
     var children = [];
-    var anims = [];
+    var childrenByLayer = {};
     for (var lidx = 0; lidx < timeline.layerCount; lidx++) {
         var frame = timeline.layers[lidx].frames[0];
         if (!frame || !frame.elements) continue;
@@ -73,39 +88,22 @@ function processAnimation(timeline) {
         var el = frame.elements[0];
         if (el.libraryItem == null) continue;
         var name = timeline.layers[lidx].name;
-        var anim = {
-            keyframes: {
-                ROTATION: [],
-                X_LOCATION: [],
-                Y_LOCATION: [],
-                X_ORIGIN: [],
-                Y_ORIGIN: [],
-                X_SCALE: [],
-                Y_SCALE: []
-            }
-        };
-        anims.push(anim);
 
         var image = [];
         if (offsets.hasOwnProperty(name)) {
+            var anim = createAnim();
+            anim.keyframes.X_ORIGIN.push({frame: 0, interp: "LINEAR", value: -offsets[name][0]});
+            anim.keyframes.Y_ORIGIN.push({frame: 0, interp: "LINEAR", value: -offsets[name][1]});
             image.push({ name: name + ".png",
-            type: "Image",
-            animations: { "default": {
-                keyframes: {
-                    X_ORIGIN: [{frame: 0, interp: "LINEAR", value: -offsets[name][0]}],
-                    Y_ORIGIN: [{frame: 0, interp: "LINEAR", value: -offsets[name][1]}],
-                    X_LOCATION: [],
-                    Y_LOCATION: [],
-                    ROTATION: []
-                }
-            }}});
-
+                type: "Image",
+                animations: { "default": anim }});
         }
         children.push({
             name: timeline.layers[lidx].name,
             type: "Group",
             children: image,
-            animations: { "default": anim }});
+            animations: { "default": createAnim() }});
+        childrenByLayer[lidx] = children[children.length - 1];
     }
     for (var fidx = 0; fidx < timeline.frameCount; fidx++) {
         for (var lidx = 0; lidx < timeline.layerCount; lidx++) {
@@ -113,21 +111,20 @@ function processAnimation(timeline) {
             if (!frame || frame.startFrame != fidx) continue;
             var el = frame.elements[0];
             if (el.libraryItem == null) continue;
-            var anim = anims[lidx];
             var name = timeline.layers[lidx].name;
             function update(field, value) {
-                var vals = anim.keyframes[field];
+                var container = childrenByLayer[lidx];
                 if (field == "ROTATION") {
-                    vals = children[lidx].children[0];
-                    if (vals === undefined) return;
-                    vals = vals.animations["default"].keyframes.ROTATION;
+                    if (container.children.length == 0) return;
+                    container = container.children[0];
                 }
+                var vals = container.animations['default'].keyframes[field];
                 if (vals.length > 0 && vals[vals.length - 1].value == value) return;
                 vals.push({frame: fidx, interp: "LINEAR", value: value});
             }
             update("ROTATION", el.skewX * 0.0174532925);
-            //update("X_LOCATION", -el.transformX - el.x);
-            //update("Y_LOCATION", -el.transformY - el.y);
+            //update("X_LOCATION", -el.x);
+            //update("Y_LOCATION", -el.y);
             update("X_ORIGIN", -el.x);
             update("Y_ORIGIN", -el.y);
             update("X_SCALE", el.scaleX);
