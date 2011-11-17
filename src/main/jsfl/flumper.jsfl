@@ -112,23 +112,33 @@ function processAnimation(timeline) {
             var el = frame.elements[0];
             if (el.libraryItem == null) continue;
             var name = timeline.layers[lidx].name;
-            function update(field, value) {
-                var container = childrenByLayer[lidx];
-                if (field == "ROTATION") {
-                    if (container.children.length == 0) return;
-                    container = container.children[0];
-                }
+            function update(container, field, value) {
                 var vals = container.animations['default'].keyframes[field];
                 if (vals.length > 0 && vals[vals.length - 1].value == value) return;
                 vals.push({frame: fidx, interp: "LINEAR", value: value});
             }
-            update("ROTATION", el.skewX * 0.0174532925);
-            //update("X_LOCATION", -el.x);
-            //update("Y_LOCATION", -el.y);
-            update("X_ORIGIN", -el.x);
-            update("Y_ORIGIN", -el.y);
-            update("X_SCALE", el.scaleX);
-            update("Y_SCALE", el.scaleY);
+            var container = childrenByLayer[lidx];
+            var child = container.children[0];
+            if (child !== undefined) {
+                update(child, "ROTATION", el.skewX * 0.0174532925);
+                function shiftOrigin (axis, shift, baseOrigin) {
+                    // Shift base origin by the difference between thelocation and the transform
+                    // location
+                    update(child, axis + "_ORIGIN", -baseOrigin + shift);
+                    update(child, axis + "_LOCATION", shift);
+                }
+                // x is the location of the registration point in the element's parent's coordinate
+                // space, and transformX is the location of the transformation point. The parent
+                // location is set below, and this shift moves the childs origin by the difference
+                // between the registration point and the frame's transformation point. Then it
+                // translates by that difference to keep the registration point in the right spot.
+                shiftOrigin("X", el.x - el.transformX, offsets[name][0]);
+                shiftOrigin("Y", el.y - el.transformY, offsets[name][1]);
+            }
+            update(container, "X_LOCATION", el.x);
+            update(container, "Y_LOCATION", el.y);
+            update(container, "X_SCALE", el.scaleX);
+            update(container, "Y_SCALE", el.scaleY);
         }
     }
     writeFile('/Users/charlie/dev/papercut/src/main/resources/streetwalker/streetwalker.json', '{"children":' + pp(children) + "}");
