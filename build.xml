@@ -14,7 +14,7 @@
   <target name="dist" depends="-init-ooo" description="Builds the library (.swc file)">
     <mkdir dir="${deploy.dir}"/>
     <mavendep pom="pom.xml" pathProp="aslib.path"/>
-    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.0"/>
+    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.4"/>
     <amxmlc srcdir="${asrc.dir}" libpath="${aslib.path}"
       dest="${deploy.dir}/${ant.project.name}.swf" static-lrsl="true"
       main="flump/Flump.as"/>
