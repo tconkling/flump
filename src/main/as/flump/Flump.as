@@ -5,7 +5,9 @@ package flump {
 
 import flash.desktop.NativeApplication;
 import flash.display.Sprite;
+import flash.events.ErrorEvent;
 import flash.events.Event;
+import flash.events.FileListEvent;
 import flash.events.IOErrorEvent;
 import flash.events.InvokeEvent;
 import flash.filesystem.File;
@@ -28,39 +30,80 @@ public class Flump extends Sprite
     }
 
     protected function onInvoke (invoke :InvokeEvent) :void {
-        const file :File = new File(invoke.arguments[0])
-        log.info("Loading", "file", file, "fn", invoke.arguments[0]);
+        const file :File = new File(invoke.arguments[0]);
+        if (!file.exists) {
+            log.error("Given file doesn't exist", "path", file.nativePath);
+            NA.exit(1);
+            return;
+        }
+        loadFlashDocument(file);
+    }
+
+    protected function loadFlashDocument (file :File) :void {
+        if (StringUtil.endsWith(file.nativePath, ".xfl")) file = file.parent;
+        if (file.isDirectory) loadXfl(file);
+        else loadFla(file);
+    }
+
+    protected function loadXfl (file :File) :void {
+        log.info("Loading xfl", "path", file.nativePath);
+        const animDir :File = file.resolvePath("LIBRARY/Animations");
+        list(animDir, function (animFiles :Array) :void {
+            for each (var anim :File in animFiles) {
+                loadFile(anim,  function (anim :File) :void {
+                    new Animation(new XML(anim.data.readUTFBytes(anim.data.length)));
+                    NA.exit(0);
+                });
+            }
+        });
+    }
+
+    protected function loadFla (file :File) :void {
+        log.info("Loading fla", "path", file.nativePath);
+        loadFile(file, function (file :File) :void {
+            const zip :FZip = new FZip();
+            zip.loadBytes(file.data);
+            const files :Array = [];
+            for (var ii :int = 0; ii < zip.getFileCount(); ii++) {
+            files.push(zip.getFileAt(ii));
+            }
+            const xmls :Array = F.filter(files, function (fz :FZipFile) :Boolean {
+                return StringUtil.endsWith(fz.filename, ".xml");
+                });
+            const anims :Array = F.filter(xmls, function (fz :FZipFile) :Boolean {
+                return StringUtil.startsWith(fz.filename, "LIBRARY/Animations/");
+                });
+            const textures :Array = F.filter(xmls, function (fz :FZipFile) :Boolean {
+                return StringUtil.startsWith(fz.filename, "LIBRARY/Textures/");
+                });
+            function toFn (fz :FZipFile) :String { return fz.filename };
+            log.info("Loaded", "bytes", file.data.length, "anims", F.map(anims, toFn),
+                "textures", F.map(textures, toFn));
+            for each (var fz :FZipFile in anims) {
+            new Animation(new XML(fz.content.readUTFBytes(fz.content.length)));
+            }
+            NA.exit(0);
+        });
+    }
+
+    protected static function loadFile (file :File, onLoaded :Function) :void {
         file.addEventListener(Event.COMPLETE, F.callback(onLoaded, file));
         file.addEventListener(IOErrorEvent.IO_ERROR, function (err :IOErrorEvent) :void {
-            log.warning("Error loading", "fla", invoke.arguments[0], "error", err);
+            log.warning("Error loading", "file", file.nativePath, "error", err);
             NA.exit(1);
         });
         file.load();
     }
 
-    protected function onLoaded (file :File) :void {
-        const zip :FZip = new FZip();
-        zip.loadBytes(file.data);
-        const files :Array = [];
-        for (var ii :int = 0; ii < zip.getFileCount(); ii++) {
-            files.push(zip.getFileAt(ii));
-        }
-        const xmls :Array = F.filter(files, function (fz :FZipFile) :Boolean {
-            return StringUtil.endsWith(fz.filename, ".xml");
+    protected static function list (dir :File, onListed :Function) :void {
+        dir.addEventListener(FileListEvent.DIRECTORY_LISTING, function (ev :FileListEvent) :void {
+            onListed(ev.files);
         });
-        const anims :Array = F.filter(xmls, function (fz :FZipFile) :Boolean {
-            return StringUtil.startsWith(fz.filename, "LIBRARY/Animations/");
+        dir.addEventListener(ErrorEvent.ERROR, function (err :ErrorEvent) :void {
+            log.warning("Error listing", "dir", dir.nativePath, "error", err);
+            NA.exit(1);
         });
-        const textures :Array = F.filter(xmls, function (fz :FZipFile) :Boolean {
-            return StringUtil.startsWith(fz.filename, "LIBRARY/Textures/");
-        });
-        function toFn (fz :FZipFile) :String { return fz.filename };
-        log.info("Loaded", "bytes", file.data.length, "anims", F.map(anims, toFn),
-            "textures", F.map(textures, toFn));
-        for each (var fz :FZipFile in anims) {
-            new Animation(new XML(fz.content.readUTFBytes(fz.content.length)));
-        }
-        NA.exit(0);
+        dir.getDirectoryListingAsync();
     }
 
     private static const log :Log = Log.getLog(Flump);

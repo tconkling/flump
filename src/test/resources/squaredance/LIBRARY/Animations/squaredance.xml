@@ -1,0 +1,64 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Animations/squaredance" itemID="4f063d3c-00000258" lastModified="1325900109" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="squaredance" currentFrame="30">
+      <layers>
+        <DOMLayer name="blue" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Textures/bluesquare">
+                  <matrix>
+                    <Matrix tx="-151.5" ty="-98.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="151.5" y="98.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Textures/bluesquare" centerPoint3DX="56.95" centerPoint3DY="356">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-0.532196044921875" d="0" tx="109.35" ty="204.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="151.5" y="98.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="red" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Textures/redsquare" centerPoint3DY="0.5">
+                  <matrix>
+                    <Matrix tx="-5.5" ty="-28.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.5" y="28.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Textures/redsquare" centerPoint3DX="27.5" centerPoint3DY="211">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-1" d="0" tx="56.5" ty="205.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.5" y="28.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
