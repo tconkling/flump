@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Animations/squaredance" itemID="4f063d3c-00000258" lastModified="1325900109" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Animations/squaredance" itemID="4f063d3c-00000258" linkageExportForAS="true" linkageClassName="squaredance" lastModified="1326149153" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="squaredance" currentFrame="30">
       <layers>

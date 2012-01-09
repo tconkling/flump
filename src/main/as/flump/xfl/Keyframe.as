@@ -13,7 +13,7 @@ public class Keyframe
     use namespace xflns;
 
     public var index :int;
-    public var symbol :String;
+    public var libraryName :String;
     public var matrix :Matrix;
     public var transformationPoint :Point;
 
@@ -21,7 +21,7 @@ public class Keyframe
         index = XmlUtil.getIntAttr(xml, "index");
 
         const symbolXml :XML = xml.elements.DOMSymbolInstance[0];
-        symbol = XmlUtil.getStringAttr(symbolXml, "libraryItemName");
+        libraryName = XmlUtil.getStringAttr(symbolXml, "libraryItemName");
 
         const matrixXml :XML = symbolXml.matrix.Matrix[0];
         function m (name :String, def :Number) :Number {

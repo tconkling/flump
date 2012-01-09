@@ -12,10 +12,12 @@ public class Animation
     use namespace xflns;
 
     public var name :String;
+    public var symbol :String;
     public var layers :Array;
 
     public function Animation (xml :XML) {
         name = XmlUtil.getStringAttr(xml, "name");
+        symbol = XmlUtil.getStringAttr(xml, "linkageClassName");
 
         layers = XmlUtil.map(xml.timeline.DOMTimeline[0].layers.DOMLayer, F.constructor(Layer));
         log.info("Got animation", "name", name, "layers", layers);

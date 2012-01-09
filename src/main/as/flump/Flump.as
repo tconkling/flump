@@ -11,11 +11,13 @@ import flash.events.FileListEvent;
 import flash.events.IOErrorEvent;
 import flash.events.InvokeEvent;
 import flash.filesystem.File;
+import flash.utils.ByteArray;
 
 import deng.fzip.FZip;
 import deng.fzip.FZipFile;
 
 import flump.xfl.Animation;
+import flump.xfl.Texture;
 
 import com.threerings.util.F;
 import com.threerings.util.Log;
@@ -47,13 +49,14 @@ public class Flump extends Sprite
 
     protected function loadXfl (file :File) :void {
         log.info("Loading xfl", "path", file.nativePath);
-        const animDir :File = file.resolvePath("LIBRARY/Animations");
-        list(animDir, function (animFiles :Array) :void {
+        list(file.resolvePath("LIBRARY/Animations"), function (animFiles :Array) :void {
             for each (var anim :File in animFiles) {
-                loadFile(anim,  function (anim :File) :void {
-                    new Animation(new XML(anim.data.readUTFBytes(anim.data.length)));
-                    NA.exit(0);
-                });
+                loadFile(anim,  function (f :File) :void { new Animation(bytesToXML(f.data)); });
+            }
+        });
+        list(file.resolvePath("LIBRARY/Textures"), function (texFiles :Array) :void {
+            for each (var tex: File in texFiles) {
+                loadFile(tex, function (f :File) :void { new Texture(bytesToXML(f.data)); });
             }
         });
     }
@@ -64,26 +67,28 @@ public class Flump extends Sprite
             const zip :FZip = new FZip();
             zip.loadBytes(file.data);
             const files :Array = [];
-            for (var ii :int = 0; ii < zip.getFileCount(); ii++) {
-            files.push(zip.getFileAt(ii));
-            }
+            for (var ii :int = 0; ii < zip.getFileCount(); ii++) files.push(zip.getFileAt(ii));
             const xmls :Array = F.filter(files, function (fz :FZipFile) :Boolean {
                 return StringUtil.endsWith(fz.filename, ".xml");
-                });
+            });
             const anims :Array = F.filter(xmls, function (fz :FZipFile) :Boolean {
                 return StringUtil.startsWith(fz.filename, "LIBRARY/Animations/");
-                });
+            });
             const textures :Array = F.filter(xmls, function (fz :FZipFile) :Boolean {
                 return StringUtil.startsWith(fz.filename, "LIBRARY/Textures/");
-                });
+            });
             function toFn (fz :FZipFile) :String { return fz.filename };
             log.info("Loaded", "bytes", file.data.length, "anims", F.map(anims, toFn),
                 "textures", F.map(textures, toFn));
             for each (var fz :FZipFile in anims) {
-            new Animation(new XML(fz.content.readUTFBytes(fz.content.length)));
+                new Animation(bytesToXML(fz.content));
             }
             NA.exit(0);
         });
+    }
+
+    protected static function bytesToXML (bytes :ByteArray) :XML {
+       return new XML(bytes.readUTFBytes(bytes.length));
     }
 
     protected static function loadFile (file :File, onLoaded :Function) :void {

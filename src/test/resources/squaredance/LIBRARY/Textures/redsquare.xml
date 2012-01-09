@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Textures/redsquare" itemID="4f063cff-0000024d" lastModified="1325900070">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Textures/redsquare" itemID="4f063cff-0000024d" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="redsquare" lastModified="1326149183" isSpriteSubclass="true">
   <timeline>
     <DOMTimeline name="redsquare">
       <layers>
@@ -13,7 +13,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!1330 -909S2|1330 910!1330 910|-1330 910!-1330 910|-1330 -909!-1330 -909|1330 -909"/>
+                    <Edge fillStyle1="1" edges="!1330 910|-1330 910!-1330 910|-1330 -909!-1330 -909|1330 -909!1330 -909|1330 910"/>
                   </edges>
                 </DOMShape>
               </elements>

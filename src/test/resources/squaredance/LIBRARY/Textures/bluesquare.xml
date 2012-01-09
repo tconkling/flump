@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Textures/bluesquare" itemID="4f063dfb-00000264" linkageExportForAS="true" linkageClassName="bluesquare" lastModified="1325900121">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Textures/bluesquare" itemID="4f063dfb-00000264" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="bluesquare" lastModified="1326149173" isSpriteSubclass="true">
   <timeline>
     <DOMTimeline name="bluesquare">
       <layers>
