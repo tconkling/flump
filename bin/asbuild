@@ -16,8 +16,8 @@ import localrepobuild
 
 def makebuilders(b, assemblage, target):
     return [b(base, 'aspirin', result="dist/aspirin.swc", pom='pom.xml'),
-        b(base, 'flump', ngscript='dist/%s.ng.sh' % target, result='dist/%s.swf' % target,
+        b(base, 'flump', ngscript='dist/flump.ng.sh', result='dist/flump.swf',
         nailguntarget=target, deploy=False, pom='pom.xml')]
 
-localrepobuild.buildasprojects(base, makebuilders, target="flump", assemblage=base)
+localrepobuild.buildasprojects(base, makebuilders, target="dist", assemblage=base)
 
