@@ -5,7 +5,7 @@
     <flash>1</flash>
     <projectorWin>0</projectorWin>
     <projectorMac>0</projectorMac>
-    <html>1</html>
+    <html>0</html>
     <gif>0</gif>
     <jpeg>0</jpeg>
     <png>0</png>
@@ -56,7 +56,7 @@
     <WindowMode>0</WindowMode>
     <DisplayMenu>1</DisplayMenu>
     <DeviceFont>0</DeviceFont>
-    <TemplateFileName></TemplateFileName>
+    <TemplateFileName>/Users/charlie/Library/Application Support/Adobe/Flash CS5.5/en_US/Configuration/HTML/Default.html</TemplateFileName>
     <showTagWarnMsg>1</showTagWarnMsg>
   </PublishHtmlProperties>
   <PublishFlashProperties enabled="true">
@@ -157,7 +157,7 @@
     <Animated>0</Animated>
     <MatchMovieDim>1</MatchMovieDim>
     <Loop>1</Loop>
-    <LoopCount></LoopCount>
+    <LoopCount>0</LoopCount>
     <OptimizeColors>1</OptimizeColors>
     <Interlace>0</Interlace>
     <Smooth>1</Smooth>
