@@ -70,10 +70,13 @@ public class Flump extends Sprite
                 });
             }
         });
+        // TODO - construct the swf path for realz
+        new SwfLoader().loadFromFile(new File(file.nativePath + ".swf"), loader).succeeded.add(
+            function (swf :Swf) :void { library.swf = swf; });
         lister.terminated.add(F.callback(loader.shutdown));
         loader.terminated.add(function (..._) :void {
-            trace("Loaded " + library.animations + " " + library.textures);
-            NA.exit(1);
+            trace("Loaded " + library.animations + " " + library.textures + " " + library.swf);
+            NA.exit(0);
         });
         lister.shutdown();
     }
