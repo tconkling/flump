@@ -13,6 +13,12 @@
       <type>swc</type>
     </dependency>
     <dependency>
+      <groupId>com.threerings</groupId>
+      <artifactId>executor</artifactId>
+      <version>0.1-SNAPSHOT</version>
+      <type>swc</type>
+    </dependency>
+    <dependency>
       <groupId>deng</groupId>
       <artifactId>fzip</artifactId>
       <version>a5430bd</version>
