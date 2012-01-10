@@ -16,7 +16,11 @@ import flash.utils.ByteArray;
 import deng.fzip.FZip;
 import deng.fzip.FZipFile;
 
+import executor.Executor;
+import executor.Future;
+
 import flump.xfl.Animation;
+import flump.xfl.Library;
 import flump.xfl.Texture;
 
 import com.threerings.util.F;
@@ -49,21 +53,34 @@ public class Flump extends Sprite
 
     protected function loadXfl (file :File) :void {
         log.info("Loading xfl", "path", file.nativePath);
-        list(file.resolvePath("LIBRARY/Animations"), function (animFiles :Array) :void {
+        const lister :Executor = new Executor();
+        const loader :Executor = new Executor();
+        const library :Library = new Library();
+        list(file.resolvePath("LIBRARY/Animations"), lister).succeeded.add(function (animFiles :Array) :void {
             for each (var anim :File in animFiles) {
-                loadFile(anim,  function (f :File) :void { new Animation(bytesToXML(f.data)); });
+                loadFile(anim,  loader).succeeded.add(function (f :File) :void {
+                    library.animations.push(new Animation(bytesToXML(f.data)));
+                });
             }
         });
-        list(file.resolvePath("LIBRARY/Textures"), function (texFiles :Array) :void {
+        list(file.resolvePath("LIBRARY/Textures"), lister).succeeded.add(function (texFiles :Array) :void {
             for each (var tex: File in texFiles) {
-                loadFile(tex, function (f :File) :void { new Texture(bytesToXML(f.data)); });
+                loadFile(tex, loader).succeeded.add(function (f :File) :void {
+                    library.textures.push(new Texture(bytesToXML(f.data)));
+                });
             }
         });
+        lister.terminated.add(F.callback(loader.shutdown));
+        loader.terminated.add(function (..._) :void {
+            trace("Loaded " + library.animations + " " + library.textures);
+            NA.exit(1);
+        });
+        lister.shutdown();
     }
 
     protected function loadFla (file :File) :void {
         log.info("Loading fla", "path", file.nativePath);
-        loadFile(file, function (file :File) :void {
+        loadFile(file).succeeded.add(function (file :File) :void {
             const zip :FZip = new FZip();
             zip.loadBytes(file.data);
             const files :Array = [];
@@ -91,24 +108,22 @@ public class Flump extends Sprite
        return new XML(bytes.readUTFBytes(bytes.length));
     }
 
-    protected static function loadFile (file :File, onLoaded :Function) :void {
-        file.addEventListener(Event.COMPLETE, F.callback(onLoaded, file));
-        file.addEventListener(IOErrorEvent.IO_ERROR, function (err :IOErrorEvent) :void {
-            log.warning("Error loading", "file", file.nativePath, "error", err);
-            NA.exit(1);
+    protected static function loadFile (file :File, exec :Executor=null) :Future {
+        if (!exec) exec = new Executor();
+        return exec.submit(function (onSuccess :Function, onError :Function) :void {
+            file.addEventListener(Event.COMPLETE, F.callback(onSuccess, file));
+            file.addEventListener(IOErrorEvent.IO_ERROR, onError);
+            file.load();
         });
-        file.load();
     }
 
-    protected static function list (dir :File, onListed :Function) :void {
-        dir.addEventListener(FileListEvent.DIRECTORY_LISTING, function (ev :FileListEvent) :void {
-            onListed(ev.files);
+    protected static function list (dir :File, exec :Executor) :Future {
+        return exec.submit(function (onSuccess :Function, onError :Function) :void {
+            dir.addEventListener(FileListEvent.DIRECTORY_LISTING,
+                function (ev :FileListEvent) :void { onSuccess(ev.files) });
+            dir.addEventListener(ErrorEvent.ERROR, onError);
+            dir.getDirectoryListingAsync();
         });
-        dir.addEventListener(ErrorEvent.ERROR, function (err :ErrorEvent) :void {
-            log.warning("Error listing", "dir", dir.nativePath, "error", err);
-            NA.exit(1);
-        });
-        dir.getDirectoryListingAsync();
     }
 
     private static const log :Log = Log.getLog(Flump);
