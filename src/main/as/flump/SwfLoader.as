@@ -36,18 +36,7 @@ public class SwfLoader
     }
 
     public function loadFromFile (file :File, exec :Executor = null) :Future {
-        if (exec == null) exec = new Executor();
-        const context :LoaderContext = createContext();
-        return exec.submit(function (onSuccess :Function, onError :Function) :void {
-            file.addEventListener(Event.COMPLETE, function (..._) :void {
-                load(onSuccess, onError, context,
-                    function (loader :Loader, context :LoaderContext) :void {
-                        loader.loadBytes(file.data, context);
-                });
-            });
-            file.addEventListener(IOErrorEvent.IO_ERROR, onError);
-            file.load();
-        });
+        return loadFromUrl(file.url, exec);
     }
 
     public function loadFromUrl (url :String, exec :Executor = null) :Future {
@@ -58,15 +47,6 @@ public class SwfLoader
 
     protected function submitLoader (exec :Executor, loadExecer :Function) :Future {
         if (exec == null) exec = new Executor();
-        const context :LoaderContext = createContext();
-        return exec.submit(function (onSuccess :Function, onFail :Function) :void {
-            load(onSuccess, onFail, context, loadExecer);
-        });
-    }
-
-
-
-    protected function createContext() :LoaderContext {
         const context :LoaderContext = new LoaderContext();
         // allowLoadBytesCodeExecution is an AIR-only LoaderContext property that must be true
         // to avoid 'SecurityError: Error #3015' when loading swfs with executable code
@@ -79,17 +59,14 @@ public class SwfLoader
         } else {
             context.applicationDomain = ApplicationDomain.currentDomain;
         }
-        return context;
-    }
-
-    protected function load (onSuccess :Function, onFail :Function, context :LoaderContext,
-        loadExecer :Function) :void {
-        const loader :Loader = new Loader();
-        loader.contentLoaderInfo.addEventListener(Event.INIT, function (..._) :void {
-            onSuccess(new Swf(loader));
+        return exec.submit(function (onSuccess :Function, onFail :Function) :void {
+            const loader :Loader = new Loader();
+            loader.contentLoaderInfo.addEventListener(Event.INIT, function (..._) :void {
+                onSuccess(new Swf(loader));
+            });
+            loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onFail);
+            loadExecer(loader, context);
         });
-        loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onFail);
-        loadExecer(loader, context);
     }
 
     protected var _useSubDomain :Boolean = true;
