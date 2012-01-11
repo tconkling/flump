@@ -13,6 +13,7 @@ import deng.fzip.FZip;
 import deng.fzip.FZipFile;
 
 import flump.xfl.Animation;
+import flump.xfl.Library;
 import flump.xfl.Texture;
 
 import com.threerings.util.F;
@@ -39,7 +40,9 @@ public class Flump extends Sprite
 
     protected function loadFlashDocument (file :File) :void {
         if (StringUtil.endsWith(file.nativePath, ".xfl")) file = file.parent;
-        if (file.isDirectory) new XflLoader().load(file);
+        if (file.isDirectory) new XflLoader().load(file).succeeded.add(function (lib :Library) :void {
+            PngExporter.dumpTextures(file, lib);
+        });
         else loadFla(file);
     }
 

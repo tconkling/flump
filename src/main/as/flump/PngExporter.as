@@ -11,11 +11,21 @@ import flash.filesystem.FileStream;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
-import mx.graphics.codec.PNGEncoder;
+import com.adobe.images.PNGEncoder;
+
+import flump.xfl.Library;
+import flump.xfl.Texture;
 
 public class PngExporter
 {
-    public static function export (dest :String, toExport :Sprite) :Point {
+    public static function dumpTextures (base :File, library :Library) :void {
+        for each (var tex :Texture in library.textures) {
+            var klass :Class = library.swf.getSymbol(tex.symbol) as Class;
+            var sprite :Sprite = (new klass()) as Sprite;
+            export(base.resolvePath(tex.symbol + '.png'), sprite);
+        }
+    }
+    public static function export (dest :File, toExport :Sprite) :Point {
         const holder :Sprite = new Sprite();
         holder.addChild(toExport);
         const bounds :Rectangle = toExport.getBounds(holder);
@@ -27,7 +37,7 @@ public class PngExporter
         bd.fillRect(new Rectangle(0, 0, bounds.width, bounds.height), 0);
         bd.draw(holder);
         var fs :FileStream = new FileStream();
-        fs.open(new File(dest), FileMode.WRITE);
+        fs.open(dest, FileMode.WRITE);
         fs.writeBytes(PNGEncoder.encode(bd));
         fs.close();
         return new Point(bounds.x, bounds.y);
