@@ -30,5 +30,11 @@
       <version>0.93</version>
       <type>swc</type>
     </dependency>
+    <dependency>
+      <groupId>org.starling-framework</groupId>
+      <artifactId>starling</artifactId>
+      <version>46f31516</version>
+      <type>swc</type>
+    </dependency>
   </dependencies>
 </project>

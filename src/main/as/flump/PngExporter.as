@@ -25,6 +25,7 @@ public class PngExporter
             export(base.resolvePath(tex.symbol + '.png'), sprite);
         }
     }
+
     public static function export (dest :File, toExport :Sprite) :Point {
         const holder :Sprite = new Sprite();
         holder.addChild(toExport);

@@ -16,6 +16,8 @@ import flump.xfl.Animation;
 import flump.xfl.Library;
 import flump.xfl.Texture;
 
+import starling.core.Starling;
+
 import com.threerings.util.F;
 import com.threerings.util.Log;
 import com.threerings.util.StringUtil;
@@ -42,6 +44,7 @@ public class Flump extends Sprite
         if (StringUtil.endsWith(file.nativePath, ".xfl")) file = file.parent;
         if (file.isDirectory) new XflLoader().load(file).succeeded.add(function (lib :Library) :void {
             PngExporter.dumpTextures(file, lib);
+            new Starling(Preview, stage);
         });
         else loadFla(file);
     }

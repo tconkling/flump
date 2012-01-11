@@ -17,7 +17,9 @@
     <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.4"/>
     <amxmlc srcdir="${asrc.dir}" libpath="${aslib.path}"
       dest="${deploy.dir}/${ant.project.name}.swf" static-lrsl="true"
-      main="flump/Flump.as"/>
+      main="flump/Flump.as">
+      <arg value="-swf-version=13"/>
+    </amxmlc>
   </target>
 
   <target name="maven-deploy" depends="dist"
