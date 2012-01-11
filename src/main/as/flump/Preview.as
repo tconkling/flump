@@ -6,8 +6,9 @@ package flump {
 import flash.filesystem.File;
 
 import executor.Executor;
+import executor.load.ImageLoader;
+import executor.load.LoadedImage;
 
-import flump.Image;
 import flump.xfl.Library;
 
 import starling.display.Sprite;
@@ -19,7 +20,7 @@ public class Preview extends Sprite
         var loader :Executor = new Executor();
         var x :int = 0;
         for each (var tex :flump.xfl.Texture in lib.textures) {
-            new ImageLoader().loadFromFile(tex.exportPath(base), loader).succeeded.add(function (img :Image) :void {
+            new ImageLoader().loadFromUrl(tex.exportPath(base).url, loader).succeeded.add(function (img :LoadedImage) :void {
                 const starTex :Texture = Texture.fromBitmap(img.bitmap);
                 const starImg :starling.display.Image = new starling.display.Image(starTex);
                 starImg.x = x;

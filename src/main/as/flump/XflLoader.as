@@ -8,6 +8,8 @@ import flash.filesystem.File;
 import executor.Executor;
 import executor.Future;
 import executor.VisibleFuture;
+import executor.load.LoadedSwf;
+import executor.load.SwfLoader;
 
 import flump.xfl.Animation;
 import flump.xfl.Library;
@@ -40,8 +42,8 @@ public class XflLoader
                 }
         });
         // TODO - construct the swf path for realz
-        new SwfLoader().loadFromFile(new File(file.nativePath + ".swf"), loader).succeeded.add(
-                function (swf :Swf) :void { library.swf = swf; });
+        new SwfLoader().loadFromUrl(new File(file.nativePath + ".swf").url, loader).succeeded.add(
+                function (swf :LoadedSwf) :void { library.swf = swf; });
         lister.terminated.add(F.callback(loader.shutdown));
         const future :VisibleFuture = new VisibleFuture();
         loader.terminated.add(function (..._) :void {
