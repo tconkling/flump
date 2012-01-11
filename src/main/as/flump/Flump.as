@@ -28,6 +28,8 @@ public class Flump extends Sprite
 
     public function Flump () {
         NA.addEventListener(InvokeEvent.INVOKE, onInvoke);
+        _starling = new Starling(Preview, stage)
+        _starling.start();
     }
 
     protected function onInvoke (invoke :InvokeEvent) :void {
@@ -44,7 +46,7 @@ public class Flump extends Sprite
         if (StringUtil.endsWith(file.nativePath, ".xfl")) file = file.parent;
         if (file.isDirectory) new XflLoader().load(file).succeeded.add(function (lib :Library) :void {
             PngExporter.dumpTextures(file, lib);
-            new Starling(Preview, stage);
+            Preview(_starling.stage.getChildAt(0)).displayTextures(file, lib);
         });
         else loadFla(file);
     }
@@ -75,5 +77,6 @@ public class Flump extends Sprite
         });
     }
 
+    protected var _starling :Starling;
     private static const log :Log = Log.getLog(Flump);
 }}
