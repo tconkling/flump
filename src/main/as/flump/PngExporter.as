@@ -22,7 +22,7 @@ public class PngExporter
         for each (var tex :Texture in library.textures) {
             var klass :Class = library.swf.getSymbol(tex.symbol) as Class;
             var sprite :Sprite = (new klass()) as Sprite;
-            export(base.resolvePath(tex.symbol + '.png'), sprite);
+            export(tex.exportPath(base), sprite);
         }
     }
 
