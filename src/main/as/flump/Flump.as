@@ -12,9 +12,8 @@ import flash.filesystem.File;
 import deng.fzip.FZip;
 import deng.fzip.FZipFile;
 
-import flump.xfl.Animation;
-import flump.xfl.Library;
-import flump.xfl.Texture;
+import flump.xfl.XflAnimation;
+import flump.xfl.XflLibrary;
 
 import starling.core.Starling;
 
@@ -44,7 +43,7 @@ public class Flump extends Sprite
 
     protected function loadFlashDocument (file :File) :void {
         if (StringUtil.endsWith(file.nativePath, ".xfl")) file = file.parent;
-        if (file.isDirectory) new XflLoader().load(file).succeeded.add(function (lib :Library) :void {
+        if (file.isDirectory) new XflLoader().load(file).succeeded.add(function (lib :XflLibrary) :void {
             PngExporter.dumpTextures(file, lib);
             Preview(_starling.stage.getChildAt(0)).displayTextures(file, lib);
         });
@@ -71,7 +70,7 @@ public class Flump extends Sprite
             log.info("Loaded", "bytes", file.data.length, "anims", F.map(anims, toFn),
                 "textures", F.map(textures, toFn));
             for each (var fz :FZipFile in anims) {
-                new Animation(bytesToXML(fz.content));
+                new XflAnimation(bytesToXML(fz.content));
             }
             NA.exit(0);
         });

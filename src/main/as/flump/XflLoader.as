@@ -11,9 +11,9 @@ import executor.VisibleFuture;
 import executor.load.LoadedSwf;
 import executor.load.SwfLoader;
 
-import flump.xfl.Animation;
-import flump.xfl.Library;
-import flump.xfl.Texture;
+import flump.xfl.XflAnimation;
+import flump.xfl.XflLibrary;
+import flump.xfl.XflTexture;
 
 import com.threerings.util.F;
 import com.threerings.util.Log;
@@ -24,12 +24,12 @@ public class XflLoader
         log.info("Loading xfl", "path", file.nativePath);
         const lister :Executor = new Executor();
         const loader :Executor = new Executor();
-        const library :Library = new Library();
+        const library :XflLibrary = new XflLibrary();
         Files.list(file.resolvePath("LIBRARY/Animations"), lister).
             succeeded.add(function (files :Array) :void {
                 for each (var file :File in files) {
                     Files.load(file,  loader).succeeded.add(function (file :File) :void {
-                        library.animations.push(new Animation(bytesToXML(file.data)));
+                        library.animations.push(new XflAnimation(bytesToXML(file.data)));
                     });
                 }
         });
@@ -37,7 +37,7 @@ public class XflLoader
             succeeded.add(function (files :Array) :void {
                 for each (var file: File in files) {
                     Files.load(file, loader).succeeded.add(function (file :File) :void {
-                        library.textures.push(new Texture(bytesToXML(file.data)));
+                        library.textures.push(new XflTexture(bytesToXML(file.data)));
                     });
                 }
         });

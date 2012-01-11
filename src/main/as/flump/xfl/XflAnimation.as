@@ -7,7 +7,7 @@ import com.threerings.util.F;
 import com.threerings.util.Log;
 import com.threerings.util.XmlUtil;
 
-public class Animation
+public class XflAnimation
 {
     use namespace xflns;
 
@@ -15,14 +15,14 @@ public class Animation
     public var symbol :String;
     public var layers :Array;
 
-    public function Animation (xml :XML) {
+    public function XflAnimation (xml :XML) {
         name = XmlUtil.getStringAttr(xml, "name");
         symbol = XmlUtil.getStringAttr(xml, "linkageClassName");
 
-        layers = XmlUtil.map(xml.timeline.DOMTimeline[0].layers.DOMLayer, F.constructor(Layer));
+        layers = XmlUtil.map(xml.timeline.DOMTimeline[0].layers.DOMXflLayer, F.constructor(XflLayer));
         log.info("Got animation", "name", name, "layers", layers);
     }
 
-    private static const log :Log = Log.getLog(Animation);
+    private static const log :Log = Log.getLog(XflAnimation);
 }
 }

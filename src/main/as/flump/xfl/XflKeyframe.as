@@ -8,7 +8,7 @@ import flash.geom.Point;
 
 import com.threerings.util.XmlUtil;
 
-public class Keyframe
+public class XflKeyframe
 {
     use namespace xflns;
 
@@ -17,7 +17,7 @@ public class Keyframe
     public var matrix :Matrix;
     public var transformationPoint :Point;
 
-    public function Keyframe (xml :XML) {
+    public function XflKeyframe (xml :XML) {
         index = XmlUtil.getIntAttr(xml, "index");
 
         const symbolXml :XML = xml.elements.DOMSymbolInstance[0];

@@ -13,13 +13,13 @@ import flash.geom.Rectangle;
 
 import com.adobe.images.PNGEncoder;
 
-import flump.xfl.Library;
-import flump.xfl.Texture;
+import flump.xfl.XflLibrary;
+import flump.xfl.XflTexture;
 
 public class PngExporter
 {
-    public static function dumpTextures (base :File, library :Library) :void {
-        for each (var tex :Texture in library.textures) {
+    public static function dumpTextures (base :File, library :XflLibrary) :void {
+        for each (var tex :XflTexture in library.textures) {
             var klass :Class = library.swf.getSymbol(tex.symbol) as Class;
             var sprite :Sprite = (new klass()) as Sprite;
             export(tex.exportPath(base), sprite);
