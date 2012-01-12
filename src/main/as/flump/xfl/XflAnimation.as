@@ -19,7 +19,7 @@ public class XflAnimation
         name = XmlUtil.getStringAttr(xml, "name");
         symbol = XmlUtil.getStringAttr(xml, "linkageClassName");
 
-        layers = XmlUtil.map(xml.timeline.DOMTimeline[0].layers.DOMXflLayer, F.constructor(XflLayer));
+        layers = XmlUtil.map(xml.timeline.DOMTimeline[0].layers.DOMLayer, F.constructor(XflLayer));
         log.info("Got animation", "name", name, "layers", layers);
     }
 

@@ -45,7 +45,7 @@ public class Flump extends Sprite
         if (StringUtil.endsWith(file.nativePath, ".xfl")) file = file.parent;
         if (file.isDirectory) new XflLoader().load(file).succeeded.add(function (lib :XflLibrary) :void {
             PngExporter.dumpTextures(file, lib);
-            Preview(_starling.stage.getChildAt(0)).displayTextures(file, lib);
+            Preview(_starling.stage.getChildAt(0)).displayAnimation(file, lib, lib.animations[0]);
         });
         else loadFla(file);
     }
