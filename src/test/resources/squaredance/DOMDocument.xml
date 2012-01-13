@@ -4,9 +4,9 @@
           <DOMFolderItem name="Textures" itemID="4f063d23-00000252" isExpanded="true"/>
      </folders>
      <symbols>
-          <Include href="Animations/squaredance.xml" itemID="4f063d3c-00000258" lastModified="1326149153"/>
-          <Include href="Textures/bluesquare.xml" itemID="4f063dfb-00000264" lastModified="1326149173"/>
-          <Include href="Textures/redsquare.xml" itemID="4f063cff-0000024d" lastModified="1326149183"/>
+          <Include href="Animations/squaredance.xml" itemID="4f063d3c-00000258" lastModified="1326497416"/>
+          <Include href="Textures/bluesquare.xml" itemID="4f063dfb-00000264" lastModified="1326497216"/>
+          <Include href="Textures/redsquare.xml" itemID="4f063cff-0000024d" lastModified="1326495183"/>
      </symbols>
      <timelines>
           <DOMTimeline name="Scene 1">
@@ -23,6 +23,9 @@
      </timelines>
      <PrinterSettings platform="macintosh"/>
      <publishHistory>
+          <PublishItem publishSize="1978" publishTime="1326416917"/>
+          <PublishItem publishSize="1980" publishTime="1326394396"/>
+          <PublishItem publishSize="1960" publishTime="1326393272"/>
           <PublishItem publishSize="1948" publishTime="1326149857"/>
      </publishHistory>
 </DOMDocument>

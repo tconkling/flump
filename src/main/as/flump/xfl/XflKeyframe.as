@@ -25,13 +25,13 @@ public class XflKeyframe
 
         const matrixXml :XML = symbolXml.matrix.Matrix[0];
         function m (name :String, def :Number) :Number {
-            return XmlUtil.getNumberAttr(matrixXml, name, def);
+            return matrixXml ? XmlUtil.getNumberAttr(matrixXml, name, def) : def;
         }
         matrix = new Matrix(m("a", 1), m("b", 0), m("c", 0), m("d", 1), m("tx", 0), m("ty", 0));
 
         const tPointXML :XML = symbolXml.transformationPoint.Point[0];
         transformationPoint =
-            new Point(XmlUtil.getNumberAttr(tPointXML, "x"), XmlUtil.getNumberAttr(tPointXML, "y"));
+            new Point(XmlUtil.getNumberAttr(tPointXML, "x", 0), XmlUtil.getNumberAttr(tPointXML, "y", 0));
     }
 }
 }

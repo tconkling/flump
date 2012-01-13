@@ -1,8 +1,15 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Textures/redsquare" itemID="4f063cff-0000024d" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="redsquare" lastModified="1326149183" isSpriteSubclass="true">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Textures/redsquare" itemID="4f063cff-0000024d" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="redsquare" lastModified="1326495183" isSpriteSubclass="true">
   <timeline>
     <DOMTimeline name="redsquare">
       <layers>
-        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="Layer 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -13,7 +20,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!1330 -909|1330 910!1330 910|-1330 910!-1330 910|-1330 -909!-1330 -909|1330 -909"/>
+                    <Edge fillStyle1="1" edges="!5160 3819S2|2500 3819!2500 3819|2500 2000!2500 2000|5160 2000!5160 2000|5160 3819"/>
                   </edges>
                 </DOMShape>
               </elements>

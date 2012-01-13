@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Textures/bluesquare" itemID="4f063dfb-00000264" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="bluesquare" lastModified="1326149173" isSpriteSubclass="true">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Textures/bluesquare" itemID="4f063dfb-00000264" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="bluesquare" lastModified="1326497216" isSpriteSubclass="true">
   <timeline>
     <DOMTimeline name="bluesquare">
       <layers>
@@ -6,14 +6,17 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMShape>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="85.5" ty="85.5"/>
+                  </matrix>
                   <fills>
                     <FillStyle index="1">
                       <SolidColor color="#0000FF"/>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!4740 3680|1320 3680!1320 3680|1320 260!1320 260|4740 260!4740 260|4740 3680"/>
+                    <Edge fillStyle1="1" edges="!1710 -1710S2|1710 1710!1710 1710|-1710 1710!-1710 1710|-1710 -1710!-1710 -1710|1710 -1710"/>
                   </edges>
                 </DOMShape>
               </elements>

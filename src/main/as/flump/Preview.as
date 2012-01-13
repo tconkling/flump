@@ -5,6 +5,7 @@ package flump {
 
 import flash.filesystem.File;
 import flash.geom.Matrix;
+import flash.geom.Point;
 
 import executor.Executor;
 import executor.load.ImageLoader;
@@ -31,20 +32,24 @@ public class Preview extends Sprite
         loadTextures(base, lib, function (..._) :void {
             for each (var layer :XflLayer in anim.layers) {
                 var initial :XflKeyframe = layer.keyframes[0];
-                var image :Image = new Image(_textures.get(initial.libraryName));
-                image.pivotX = initial.transformationPoint.x;
-                image.pivotY = initial.transformationPoint.y;
-                image.x = initial.matrix.tx;
-                image.y = initial.matrix.ty;
-                var tween :Tween = new Tween(image, 1);
-                var complete :XflKeyframe = layer.keyframes[1];
-                var mat :Matrix = complete.matrix;
+                var xflTex :XflTexture = _textures.get(initial.libraryName);
+                var holder :Sprite = new Sprite();
+                holder.x = initial.matrix.tx;
+                holder.y = initial.matrix.ty;
+                addChild(holder);
+                var image :Image = new Image(Texture.fromBitmap(xflTex.image.bitmap));
+                image.x = xflTex.offset.x;
+                image.y = xflTex.offset.y;
+                holder.addChild(image);
+
+                var tween :Tween = new Tween(holder, 1);
+                var mat :Matrix = layer.keyframes[1].matrix;
                 tween.moveTo(mat.tx, mat.ty);
-                tween.animate("rotation", Math.atan( -mat.c / mat.a));
-                tween.animate("scaleX", Math.sqrt((mat.a * mat.a) + (mat.c * mat.c)));
-                tween.animate("scaleY", Math.sqrt((mat.b * mat.b) + (mat.d * mat.d)));
+                var py :Point = mat.deltaTransformPoint(new Point(1, 0));
+                tween.animate("rotation", Math.atan2(py.y, py.x));
+                tween.animate("scaleX", Math.sqrt((mat.a * mat.a) + (mat.b * mat.b)));
+                tween.animate("scaleY", Math.sqrt((mat.c * mat.c) + (mat.d * mat.d)));
                 Starling.juggler.add(tween);
-                addChild(image);
             }
         });
     }
@@ -54,15 +59,16 @@ public class Preview extends Sprite
         for each (var tex :XflTexture in lib.textures) {
             if (_textures.containsKey(tex.name)) continue;
             new ImageLoader().loadFromUrl(tex.exportPath(base).url, loader).succeeded.add(
-                textureAdder(tex.name));
+                textureAdder(tex));
         }
         loader.terminated.add(function (..._) :void { onLoaded(); });
         loader.shutdown();
     }
 
-    public function textureAdder (name :String) :Function {
+    public function textureAdder (tex :XflTexture) :Function {
         return function (img :LoadedImage) :void {
-            _textures.put(name, Texture.fromBitmap(img.bitmap));
+            tex.image = img;
+            _textures.put(tex.name, tex);
         };
     }
 
