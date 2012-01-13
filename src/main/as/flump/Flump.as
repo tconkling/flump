@@ -5,6 +5,8 @@ package flump {
 
 import flash.desktop.NativeApplication;
 import flash.display.Sprite;
+import flash.display.StageAlign;
+import flash.display.StageScaleMode;
 import flash.events.Event;
 import flash.events.InvokeEvent;
 import flash.filesystem.File;
@@ -27,6 +29,8 @@ public class Flump extends Sprite
 
     public function Flump () {
         NA.addEventListener(InvokeEvent.INVOKE, onInvoke);
+        stage.align = StageAlign.TOP_LEFT;
+        stage.scaleMode = StageScaleMode.NO_SCALE;
         _starling = new Starling(Preview, stage)
         _starling.start();
     }
