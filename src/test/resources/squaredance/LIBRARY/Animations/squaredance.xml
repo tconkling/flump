@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Animations/squaredance" itemID="4f063d3c-00000258" linkageExportForAS="true" linkageClassName="squaredance" lastModified="1326497416" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Animations/squaredance" itemID="4f063d3c-00000258" linkageExportForAS="true" linkageClassName="squaredance" lastModified="1326499300" lastUniqueIdentifier="11">
   <timeline>
-    <DOMTimeline name="squaredance" currentFrame="14">
+    <DOMTimeline name="squaredance" currentFrame="29">
       <layers>
-        <DOMLayer name="blue" color="#9933CC" autoNamed="false">
+        <DOMLayer name="blue" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -16,11 +16,23 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="14" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="Textures/bluesquare" centerPoint3DX="274.85" centerPoint3DY="289.5">
+                <DOMSymbolInstance libraryItemName="Textures/bluesquare" selected="true" centerPoint3DX="210.55" centerPoint3DY="289.4">
                   <matrix>
-                    <Matrix a="0" b="-1" c="0.619888305664062" d="0" tx="189.3" ty="375"/>
+                    <Matrix a="0" b="1" c="-0.623687744140625" d="0" tx="295.95" ty="204"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Textures/bluesquare" centerPoint3DX="12.55" centerPoint3DY="289.4">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-0.623687744140625" d="0" tx="97.95" ty="204"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -30,7 +42,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="red" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="red" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -44,11 +56,23 @@
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="14" duration="15" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="Textures/redsquare" selected="true">
                   <matrix>
                     <Matrix a="0" b="-0.4320068359375" c="1.17282104492188" d="0" tx="72" ty="258"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Textures/redsquare">
+                  <matrix>
+                    <Matrix a="0" b="-0.4320068359375" c="1.17282104492188" d="0" tx="-126" ty="258"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

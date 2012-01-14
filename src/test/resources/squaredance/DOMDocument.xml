@@ -4,7 +4,7 @@
           <DOMFolderItem name="Textures" itemID="4f063d23-00000252" isExpanded="true"/>
      </folders>
      <symbols>
-          <Include href="Animations/squaredance.xml" itemID="4f063d3c-00000258" lastModified="1326497416"/>
+          <Include href="Animations/squaredance.xml" itemID="4f063d3c-00000258" lastModified="1326499300"/>
           <Include href="Textures/bluesquare.xml" itemID="4f063dfb-00000264" lastModified="1326497216"/>
           <Include href="Textures/redsquare.xml" itemID="4f063cff-0000024d" lastModified="1326495183"/>
      </symbols>

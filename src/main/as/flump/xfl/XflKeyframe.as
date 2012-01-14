@@ -16,9 +16,11 @@ public class XflKeyframe
     public var libraryName :String;
     public var matrix :Matrix;
     public var transformationPoint :Point;
+    public var duration :Number;
 
     public function XflKeyframe (xml :XML) {
         index = XmlUtil.getIntAttr(xml, "index");
+        duration = XmlUtil.getNumberAttr(xml, "duration", 1);
 
         const symbolXml :XML = xml.elements.DOMSymbolInstance[0];
         libraryName = XmlUtil.getStringAttr(symbolXml, "libraryItemName");

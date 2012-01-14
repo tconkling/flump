@@ -4,21 +4,15 @@
 package flump {
 
 import flash.filesystem.File;
-import flash.geom.Matrix;
-import flash.geom.Point;
 
 import executor.Executor;
 import executor.load.ImageLoader;
 import executor.load.LoadedImage;
 
 import flump.xfl.XflAnimation;
-import flump.xfl.XflKeyframe;
-import flump.xfl.XflLayer;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;
 
-import starling.animation.Tween;
-import starling.core.Starling;
 import starling.display.Image;
 import starling.display.Sprite;
 import starling.textures.Texture;
@@ -26,31 +20,15 @@ import starling.textures.Texture;
 import com.threerings.util.Map;
 import com.threerings.util.Maps;
 
+import com.threerings.display.Animation;
+
 public class Preview extends Sprite
 {
     public function displayAnimation (base :File, lib :XflLibrary, anim :XflAnimation) :void {
-        loadTextures(base, lib, function (..._) :void {
-            for each (var layer :XflLayer in anim.layers) {
-                var initial :XflKeyframe = layer.keyframes[0];
-                var xflTex :XflTexture = _textures.get(initial.libraryName);
-                var holder :Sprite = new Sprite();
-                holder.x = initial.matrix.tx;
-                holder.y = initial.matrix.ty;
-                addChild(holder);
-                var image :Image = new Image(Texture.fromBitmap(xflTex.image.bitmap));
-                image.x = xflTex.offset.x;
-                image.y = xflTex.offset.y;
-                holder.addChild(image);
-
-                var tween :Tween = new Tween(holder, 1);
-                var mat :Matrix = layer.keyframes[1].matrix;
-                tween.moveTo(mat.tx, mat.ty);
-                var py :Point = mat.deltaTransformPoint(new Point(1, 0));
-                tween.animate("rotation", Math.atan2(py.y, py.x));
-                tween.animate("scaleX", Math.sqrt((mat.a * mat.a) + (mat.b * mat.b)));
-                tween.animate("scaleY", Math.sqrt((mat.c * mat.c) + (mat.d * mat.d)));
-                Starling.juggler.add(tween);
-            }
+        loadTextures(base, lib, function (..._) :void { 
+            var movie :Movie = new Movie(anim, _textures);
+            addChild(movie); 
+            movie.play();
         });
     }
 

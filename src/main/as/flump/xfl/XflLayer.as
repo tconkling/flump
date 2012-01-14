@@ -12,10 +12,12 @@ public class XflLayer
 
     public var name :String;
     public var keyframes :Array;
+    public var libraryName :String;
 
     public function XflLayer (xml :XML) {
         name = XmlUtil.getStringAttr(xml, "name");
         keyframes = XmlUtil.map(xml.frames.DOMFrame, F.constructor(XflKeyframe));
+        libraryName = keyframes[0].libraryName;
     }
 }
 }
