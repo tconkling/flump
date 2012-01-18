@@ -47,10 +47,22 @@ public class Flump extends Sprite
 
     protected function loadFlashDocument (file :File) :void {
         if (StringUtil.endsWith(file.nativePath, ".xfl")) file = file.parent;
-        if (file.isDirectory) new XflLoader().load(file).succeeded.add(function (lib :XflLibrary) :void {
-            PngExporter.dumpTextures(file, lib);
-            Preview(_starling.stage.getChildAt(0)).displayAnimation(file, lib, lib.animations[0]);
+        if (file.isDirectory) {
+            const overseer :Overseer = new Overseer();
+            new XflLoader().load(file, overseer).succeeded.add(function (lib :XflLibrary) :void {
+                for each (var item :Array in overseer.failures.items()) {
+                    trace("Failures in " + item[0]);
+                    for each (var failure :Array in item[1]) {
+                        trace("  " + failure);
+                    }
+                }
+                for each (item in overseer.successes.items()) {
+                    trace(item[0] + ": " + item[1]);
+                }
+                PngExporter.dumpTextures(file, lib);
+                Preview(_starling.stage.getChildAt(0)).displayAnimation(file, lib, lib.animations[0]);
         });
+        }
         else loadFla(file);
     }
 
