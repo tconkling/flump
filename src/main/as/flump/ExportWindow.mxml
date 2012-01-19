@@ -21,5 +21,10 @@
   <s:List id="libraries">
     <mx:ArrayCollection/>
   </s:List>
+  <s:HGroup>
+    <s:Label>Import Root</s:Label>
+    <mx:FileSystemComboBox id="rootDir"/>
+    <s:Button id="browse" label="..."/>
+  </s:HGroup>
   <s:Button id="export" enabled="false" label="Export"/>
 </s:Window>

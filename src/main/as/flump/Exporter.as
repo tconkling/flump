@@ -4,9 +4,10 @@
 package flump {
 
 import flash.desktop.NativeApplication;
-import flash.events.InvokeEvent;
+import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.filesystem.File;
+import flash.net.SharedObject;
 
 import deng.fzip.FZip;
 import deng.fzip.FZipFile;
@@ -30,32 +31,41 @@ public class Exporter
 {
     public static const NA :NativeApplication = NativeApplication.nativeApplication;
 
+    protected static const ROOT :String = "ROOT";
+
     public function Exporter (win :ExportWindow) {
-        NA.addEventListener(InvokeEvent.INVOKE, onInvoke);
         _win = win;
         _libraries = _win.libraries;
         _libraries.addEventListener(IndexChangeEvent.CHANGE, function (..._) :void {
             _win.export.enabled = _libraries.selectedIndices.length > 0;
         });
         _win.export.addEventListener(MouseEvent.CLICK, function (..._) :void {
-            for each (var file :File in _libraries.selectedItems) {
-                loadFlashDocument(file);
-            }
+            for each (var file :File in _libraries.selectedItems) loadFlashDocument(file);
+        });
+        setRoot(new File(_settings.data[ROOT] || File.documentsDirectory.nativePath));
+        _win.browse.addEventListener(MouseEvent.CLICK, function (..._) :void {
+            // Use a new File object to browse on as browseForDirectory modifies the object it uses
+            const browser :File = new File(_root);
+            browser.addEventListener(Event.SELECT, F.callback(setRoot, browser));
+            browser.browseForDirectory("Export Root")
+        });
+        _win.rootDir.addEventListener(IndexChangeEvent.CHANGE, function (..._) :void {
+            setRoot(_win.rootDir.directory);
         });
     }
 
-    protected function onInvoke (invoke :InvokeEvent) :void {
-        const base :File = new File(invoke.arguments[0]);
-        if (!base.exists) {
-            log.error("Given file doesn't exist", "path", base.nativePath);
-            NA.exit(1);
-            return;
-        }
-        const baseLen :int = base.nativePath.length + 1;
+    protected function setRoot (root :File) :void {
+        if (_root == root.nativePath) return;
+        _libraries.dataProvider.removeAll();
+        _root = root.nativePath;
+        _settings.data[ROOT] = _root;
+        _settings.flush();
+        _win.rootDir.directory = root;
+        const rootLen :int = root.nativePath.length + 1;
         _libraries.labelFunction = function (file :File) :String {
-            return file.nativePath.substring(baseLen);
+            return file.nativePath.substring(rootLen);
         };
-        findFlashDocuments(base);
+        findFlashDocuments(root);
     }
 
     protected function findFlashDocuments (base :File, executor :Executor=null) :void {
@@ -126,6 +136,8 @@ public class Exporter
 
     protected var _win :ExportWindow;
     protected var _libraries :List;
+    protected var _root :String;
+    protected const _settings :SharedObject = SharedObject.getLocal("flump/Exporter");
 
     private static const log :Log = Log.getLog(Exporter);
 }

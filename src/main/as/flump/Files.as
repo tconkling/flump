@@ -27,9 +27,22 @@ public class Files
 
     public static function list (dir :File, exec :Executor) :Future {
         return exec.submit(function (onSuccess :Function, onError :Function) :void {
-            dir.addEventListener(FileListEvent.DIRECTORY_LISTING,
-                function (ev :FileListEvent) :void { onSuccess(ev.files) });
-            dir.addEventListener(ErrorEvent.ERROR, onError);
+            // Be anal about clearing out the listeners on both callbacks in case this directory is
+            // listed again.
+            function clearListeners () :void {
+                dir.removeEventListener(FileListEvent.DIRECTORY_LISTING, wrangleFiles);
+                dir.removeEventListener(ErrorEvent.ERROR, handleError);
+            }
+            function wrangleFiles (ev :FileListEvent) :void {
+                clearListeners();
+                onSuccess(ev.files);
+            }
+            function handleError (ev :ErrorEvent) :void {
+                clearListeners();
+                onError(ev);
+            }
+            dir.addEventListener(FileListEvent.DIRECTORY_LISTING, wrangleFiles);
+            dir.addEventListener(ErrorEvent.ERROR, handleError);
             dir.getDirectoryListingAsync();
         });
     }
