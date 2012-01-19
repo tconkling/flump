@@ -4,10 +4,6 @@
 package flump {
 
 import flash.desktop.NativeApplication;
-import flash.display.Sprite;
-import flash.display.StageAlign;
-import flash.display.StageScaleMode;
-import flash.events.Event;
 import flash.events.InvokeEvent;
 import flash.filesystem.File;
 
@@ -17,22 +13,20 @@ import deng.fzip.FZipFile;
 import flump.xfl.XflAnimation;
 import flump.xfl.XflLibrary;
 
+import spark.components.Window;
+
 import starling.core.Starling;
 
 import com.threerings.util.F;
 import com.threerings.util.Log;
 import com.threerings.util.StringUtil;
 
-public class Flump extends Sprite
+public class Exporter
 {
     public static const NA :NativeApplication = NativeApplication.nativeApplication;
 
-    public function Flump () {
+    public function Exporter (win :Window) {
         NA.addEventListener(InvokeEvent.INVOKE, onInvoke);
-        stage.align = StageAlign.TOP_LEFT;
-        stage.scaleMode = StageScaleMode.NO_SCALE;
-        _starling = new Starling(Preview, stage)
-        _starling.start();
     }
 
     protected function onInvoke (invoke :InvokeEvent) :void {
@@ -60,10 +54,9 @@ public class Flump extends Sprite
                     trace(item[0] + ": " + item[1]);
                 }
                 PngExporter.dumpTextures(file, lib);
-                Preview(_starling.stage.getChildAt(0)).displayAnimation(file, lib, lib.animations[0]);
-        });
-        }
-        else loadFla(file);
+                Preview(Starling.current.stage.getChildAt(0)).displayAnimation(file, lib, lib.animations[0]);
+            });
+        } else loadFla(file);
     }
 
     protected function loadFla (file :File) :void {
@@ -92,6 +85,6 @@ public class Flump extends Sprite
         });
     }
 
-    protected var _starling :Starling;
-    private static const log :Log = Log.getLog(Flump);
-}}
+    private static const log :Log = Log.getLog(Exporter);
+}
+}
