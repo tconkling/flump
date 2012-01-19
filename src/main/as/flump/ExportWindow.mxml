@@ -2,6 +2,9 @@
   xmlns:s="library://ns.adobe.com/flex/spark"
   xmlns:mx="library://ns.adobe.com/flex/mx"
   width="550" height="450" creationComplete="init();">
+  <s:layout>
+    <s:VerticalLayout/>
+  </s:layout>
 
   <fx:Script>
     <![CDATA[
@@ -15,4 +18,8 @@
     protected var _exporter :Exporter;
     ]]>
   </fx:Script>
+  <s:List id="libraries">
+    <mx:ArrayCollection/>
+  </s:List>
+  <s:Button id="export" enabled="false" label="Export"/>
 </s:Window>

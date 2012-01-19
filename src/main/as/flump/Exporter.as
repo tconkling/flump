@@ -5,15 +5,20 @@ package flump {
 
 import flash.desktop.NativeApplication;
 import flash.events.InvokeEvent;
+import flash.events.MouseEvent;
 import flash.filesystem.File;
 
 import deng.fzip.FZip;
 import deng.fzip.FZipFile;
 
+import executor.Executor;
+
 import flump.xfl.XflAnimation;
 import flump.xfl.XflLibrary;
 
+import spark.components.List;
 import spark.components.Window;
+import spark.events.IndexChangeEvent;
 
 import starling.core.Starling;
 
@@ -25,18 +30,52 @@ public class Exporter
 {
     public static const NA :NativeApplication = NativeApplication.nativeApplication;
 
-    public function Exporter (win :Window) {
+    public function Exporter (win :ExportWindow) {
         NA.addEventListener(InvokeEvent.INVOKE, onInvoke);
+        _win = win;
+        _libraries = _win.libraries;
+        _libraries.addEventListener(IndexChangeEvent.CHANGE, function (..._) :void {
+            _win.export.enabled = _libraries.selectedIndices.length > 0;
+        });
+        _win.export.addEventListener(MouseEvent.CLICK, function (..._) :void {
+            for each (var file :File in _libraries.selectedItems) {
+                loadFlashDocument(file);
+            }
+        });
     }
 
     protected function onInvoke (invoke :InvokeEvent) :void {
-        const file :File = new File(invoke.arguments[0]);
-        if (!file.exists) {
-            log.error("Given file doesn't exist", "path", file.nativePath);
+        const base :File = new File(invoke.arguments[0]);
+        if (!base.exists) {
+            log.error("Given file doesn't exist", "path", base.nativePath);
             NA.exit(1);
             return;
         }
-        loadFlashDocument(file);
+        const baseLen :int = base.nativePath.length + 1;
+        _libraries.labelFunction = function (file :File) :String {
+            return file.nativePath.substring(baseLen);
+        };
+        findFlashDocuments(base);
+    }
+
+    protected function findFlashDocuments (base :File, executor :Executor=null) :void {
+        if (!executor) executor = new Executor();
+        Files.list(base, executor).succeeded.add(function (files :Array) :void {
+            for each (var file :File in files) {
+                if (StringUtil.endsWith(file.nativePath, ".xfl")) {
+                    addFlashDocument(file.parent);
+                    return;
+                }
+            }
+            for each (file in files) {
+                if (file.isDirectory) findFlashDocuments(file, executor);
+                else if (StringUtil.endsWith(file.nativePath, ".fla")) addFlashDocument(file);
+            }
+        });
+    }
+
+    protected function addFlashDocument (file :File) :void {
+        _libraries.dataProvider.addItem(file);
     }
 
     protected function loadFlashDocument (file :File) :void {
@@ -84,6 +123,9 @@ public class Exporter
             NA.exit(0);
         });
     }
+
+    protected var _win :ExportWindow;
+    protected var _libraries :List;
 
     private static const log :Log = Log.getLog(Exporter);
 }
