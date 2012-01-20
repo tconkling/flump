@@ -22,9 +22,14 @@
     <mx:ArrayCollection/>
   </s:List>
   <s:HGroup>
-    <s:Label>Import Root</s:Label>
-    <mx:FileSystemComboBox id="rootDir"/>
-    <s:Button id="browse" label="..."/>
+    <s:Label>Import</s:Label>
+    <mx:FileSystemComboBox id="importRoot"/>
+    <s:Button id="browseImport" label="..."/>
+  </s:HGroup>
+  <s:HGroup>
+    <s:Label>Export</s:Label>
+    <mx:FileSystemComboBox id="exportRoot"/>
+    <s:Button id="browseExport" label="..."/>
   </s:HGroup>
   <s:Button id="export" enabled="false" label="Export"/>
 </s:Window>

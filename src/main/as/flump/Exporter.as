@@ -31,7 +31,7 @@ public class Exporter
 {
     public static const NA :NativeApplication = NativeApplication.nativeApplication;
 
-    protected static const ROOT :String = "ROOT";
+    protected static const IMPORT_ROOT :String = "IMPORT_ROOT";
 
     public function Exporter (win :ExportWindow) {
         _win = win;
@@ -42,25 +42,16 @@ public class Exporter
         _win.export.addEventListener(MouseEvent.CLICK, function (..._) :void {
             for each (var file :File in _libraries.selectedItems) loadFlashDocument(file);
         });
-        setRoot(new File(_settings.data[ROOT] || File.documentsDirectory.nativePath));
-        _win.browse.addEventListener(MouseEvent.CLICK, function (..._) :void {
-            // Use a new File object to browse on as browseForDirectory modifies the object it uses
-            const browser :File = new File(_root);
-            browser.addEventListener(Event.SELECT, F.callback(setRoot, browser));
-            browser.browseForDirectory("Export Root")
-        });
-        _win.rootDir.addEventListener(IndexChangeEvent.CHANGE, function (..._) :void {
-            setRoot(_win.rootDir.directory);
-        });
+        var importChooser :DirChooser =
+            new DirChooser(_settings, "IMPORT_ROOT", _win.importRoot, _win.browseImport);
+        importChooser.changed.add(setImport);
+        setImport(new File(importChooser.dir));
+        _exportChooser =
+            new DirChooser(_settings, "EXPORT_ROOT", _win.exportRoot, _win.browseExport);
     }
 
-    protected function setRoot (root :File) :void {
-        if (_root == root.nativePath) return;
+    protected function setImport (root :File) :void {
         _libraries.dataProvider.removeAll();
-        _root = root.nativePath;
-        _settings.data[ROOT] = _root;
-        _settings.flush();
-        _win.rootDir.directory = root;
         const rootLen :int = root.nativePath.length + 1;
         _libraries.labelFunction = function (file :File) :String {
             return file.nativePath.substring(rootLen);
@@ -102,7 +93,7 @@ public class Exporter
                 for each (item in overseer.successes.items()) {
                     trace(item[0] + ": " + item[1]);
                 }
-                PngExporter.dumpTextures(file, lib);
+                PngExporter.dumpTextures(new File(_exportChooser.dir), lib);
                 Preview(Starling.current.stage.getChildAt(0)).displayAnimation(file, lib, lib.animations[0]);
             });
         } else loadFla(file);
@@ -136,7 +127,7 @@ public class Exporter
 
     protected var _win :ExportWindow;
     protected var _libraries :List;
-    protected var _root :String;
+    protected var _exportChooser :DirChooser;
     protected const _settings :SharedObject = SharedObject.getLocal("flump/Exporter");
 
     private static const log :Log = Log.getLog(Exporter);
