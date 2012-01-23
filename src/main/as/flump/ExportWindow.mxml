@@ -18,18 +18,22 @@
     protected var _exporter :Exporter;
     ]]>
   </fx:Script>
-  <s:List id="libraries">
+  <s:List id="libraries" width="300">
     <mx:ArrayCollection/>
   </s:List>
-  <s:HGroup>
-    <s:Label>Import</s:Label>
-    <mx:FileSystemComboBox id="importRoot"/>
-    <s:Button id="browseImport" label="..."/>
-  </s:HGroup>
-  <s:HGroup>
-    <s:Label>Export</s:Label>
-    <mx:FileSystemComboBox id="exportRoot"/>
-    <s:Button id="browseExport" label="..."/>
-  </s:HGroup>
+  <s:Form>
+    <s:FormItem label="Import Directory">
+      <s:HGroup>
+        <s:Label id="importRoot" width="300"/>
+        <s:Button id="browseImport" label="..."/>
+      </s:HGroup>
+    </s:FormItem>
+    <s:FormItem label="Export Directory">
+      <s:HGroup>
+        <s:Label id="exportRoot" width="300"/>
+        <s:Button id="browseExport" label="..."/>
+      </s:HGroup>
+    </s:FormItem>
+  </s:Form>
   <s:Button id="export" enabled="false" label="Export"/>
 </s:Window>
