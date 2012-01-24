@@ -25,9 +25,9 @@ import com.threerings.display.Animation;
 public class Preview extends Sprite
 {
     public function displayAnimation (base :File, lib :XflLibrary, anim :XflAnimation) :void {
-        loadTextures(base, lib, function (..._) :void { 
-            var movie :Movie = new Movie(anim, _textures);
-            addChild(movie); 
+        loadTextures(base, lib, function (..._) :void {
+            var movie :Movie = new Movie(anim, _xflTextures, _textures);
+            addChild(movie);
             movie.play();
         });
     }
@@ -45,8 +45,8 @@ public class Preview extends Sprite
 
     public function textureAdder (tex :XflTexture) :Function {
         return function (img :LoadedImage) :void {
-            tex.image = img;
-            _textures.put(tex.name, tex);
+            _xflTextures.put(tex.name, tex);
+            _textures.put(tex.name, Texture.fromBitmap(img.bitmap));
         };
     }
 
@@ -62,6 +62,7 @@ public class Preview extends Sprite
         });
     }
 
+    protected const _xflTextures :Map = Maps.newMapOf(String);
     protected const _textures :Map = Maps.newMapOf(String);
 }
 }

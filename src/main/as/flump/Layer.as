@@ -18,17 +18,17 @@ import starling.textures.Texture;
 
 public class Layer extends Sprite
 {
-    public function Layer (layer :XflLayer, xflTex :XflTexture)
+    public function Layer (layer :XflLayer, xflTex :XflTexture, texture :Texture)
     {
         var initial :XflKeyframe = layer.keyframes[0];
         x = initial.matrix.tx;
         y = initial.matrix.ty;
-        var image :Image = new Image(Texture.fromBitmap(xflTex.image.bitmap));
+        var image :Image = new Image(texture);
         image.x = xflTex.offset.x;
         image.y = xflTex.offset.y;
         addChild(image);
 
-        for (var ii :int = 1; ii < layer.keyframes.length; ii++) {    
+        for (var ii :int = 1; ii < layer.keyframes.length; ii++) {
             var mat :Matrix = layer.keyframes[ii].matrix;
             var tween :Tween = new Tween(this, layer.keyframes[ii - 1].duration/30.0);
             tween.moveTo(mat.tx, mat.ty);
@@ -37,10 +37,12 @@ public class Layer extends Sprite
             tween.animate("scaleX", Math.sqrt((mat.a * mat.a) + (mat.b * mat.b)));
             tween.animate("scaleY", Math.sqrt((mat.c * mat.c) + (mat.d * mat.d)));
             if (ii == 1) _start = tween;
-            else _current.onComplete = function (..._) :void {
-                Starling.juggler.add(tween);
-                _current = tween;
-            };
+            else {
+                _current.onComplete = function (..._) :void {
+                    Starling.juggler.add(tween);
+                    _current = tween;
+                };
+            }
             _current = tween;
         }
     }

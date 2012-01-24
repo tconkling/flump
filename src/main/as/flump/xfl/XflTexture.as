@@ -6,8 +6,6 @@ package flump.xfl {
 import flash.filesystem.File;
 import flash.geom.Point;
 
-import executor.load.LoadedImage;
-
 import com.threerings.util.XmlUtil;
 
 public class XflTexture
@@ -15,7 +13,6 @@ public class XflTexture
     public var name :String;
     public var symbol :String;
     public var offset :Point;
-    public var image :LoadedImage;
 
     public function XflTexture (xml :XML) {
         name = XmlUtil.getStringAttr(xml, "name");

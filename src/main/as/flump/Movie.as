@@ -12,10 +12,11 @@ import com.threerings.util.Map;
 
 public class Movie extends Sprite
 {
-    public function Movie (anim :XflAnimation, textures :Map)
+    public function Movie (anim :XflAnimation, xflTextures :Map, textures :Map)
     {
         for each (var layer :XflLayer in anim.layers) {
-            _layers.push(new Layer(layer, textures.get(layer.libraryName)));
+            _layers.push(new Layer(layer, xflTextures.get(layer.libraryName),
+                textures.get(layer.libraryName)));
             addChild(_layers[_layers.length - 1]);
         }
     }
@@ -24,11 +25,11 @@ public class Movie extends Sprite
         for each (var layer :Layer in _layers) {
             layer.play();
         }
-        
+
     }
 
     public function stop () :void {
-        
+
     }
 
     protected const _layers :Vector.<Layer> = new Vector.<Layer>();
