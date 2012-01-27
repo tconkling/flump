@@ -20,15 +20,16 @@ import com.threerings.util.Log;
 
 public class XflLoader
 {
-    public function load (file :File, overseer :Overseer) :Future {
+    public function load (name :String, file :File, overseer :Overseer) :Future {
         log.info("Loading xfl", "path", file.nativePath);
         const lister :Executor = new Executor();
         const loader :Executor = new Executor();
         const library :XflLibrary = new XflLibrary();
+        library.name = name;
         const listAnims :Future = Files.list(file.resolvePath("LIBRARY/Animations"), lister);
         listAnims.succeeded.add(function (files :Array) :void {
             for each (var file :File in files) {
-                var loadAnim :Future = Files.load(file,  loader);
+                var loadAnim :Future = Files.load(file, loader);
                 loadAnim.succeeded.add(overseer.insulate(function (file :File) :void {
                     library.animations.push(new XflAnimation(bytesToXML(file.data)));
                 }, "Parse Animation"));

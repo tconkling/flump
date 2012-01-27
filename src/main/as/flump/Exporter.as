@@ -13,6 +13,7 @@ import deng.fzip.FZip;
 import deng.fzip.FZipFile;
 
 import executor.Executor;
+import executor.Future;
 
 import flump.xfl.XflAnimation;
 import flump.xfl.XflLibrary;
@@ -42,10 +43,10 @@ public class Exporter
         _win.export.addEventListener(MouseEvent.CLICK, function (..._) :void {
             for each (var file :File in _libraries.selectedItems) loadFlashDocument(file);
         });
-        var importChooser :DirChooser =
+        _importChooser =
             new DirChooser(_settings, "IMPORT_ROOT", _win.importRoot, _win.browseImport);
-        importChooser.changed.add(setImport);
-        setImport(new File(importChooser.dir));
+        _importChooser.changed.add(setImport);
+        setImport(new File(_importChooser.dir));
         _exportChooser =
             new DirChooser(_settings, "EXPORT_ROOT", _win.exportRoot, _win.browseExport);
     }
@@ -83,7 +84,9 @@ public class Exporter
         if (StringUtil.endsWith(file.nativePath, ".xfl")) file = file.parent;
         if (file.isDirectory) {
             const overseer :Overseer = new Overseer();
-            new XflLoader().load(file, overseer).succeeded.add(function (lib :XflLibrary) :void {
+            const name :String = file.nativePath.substring(_importChooser.dir.length + 1);
+            const load :Future = new XflLoader().load(name, file, overseer);
+            load.succeeded.add(function (lib :XflLibrary) :void {
                 for each (var item :Array in overseer.failures.items()) {
                     trace("Failures in " + item[0]);
                     for each (var failure :Array in item[1]) {
@@ -94,6 +97,7 @@ public class Exporter
                     trace(item[0] + ": " + item[1]);
                 }
                 PngExporter.dumpTextures(new File(_exportChooser.dir), lib);
+                new BetwixtExporter().export(lib, file, new File(_exportChooser.dir));
                 Preview(Starling.current.stage.getChildAt(0)).displayAnimation(file, lib, lib.animations[0]);
             });
         } else loadFla(file);
@@ -128,6 +132,7 @@ public class Exporter
     protected var _win :ExportWindow;
     protected var _libraries :List;
     protected var _exportChooser :DirChooser;
+    protected var _importChooser :DirChooser;
     protected const _settings :SharedObject = SharedObject.getLocal("flump/Exporter");
 
     private static const log :Log = Log.getLog(Exporter);
