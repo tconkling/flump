@@ -1,12 +1,8 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" currentTimeline="1" xflVersion="2.1" creatorInfo="Adobe Flash Professional CS5.5" platform="Macintosh" versionInfo="Saved by Adobe Flash Macintosh 11.5 build 349" majorVersion="11" minorVersion="5" buildNumber="349" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
-     <folders>
-          <DOMFolderItem name="Animations" itemID="4f063d2e-00000256" isExpanded="true"/>
-          <DOMFolderItem name="Textures" itemID="4f063d23-00000252" isExpanded="true"/>
-     </folders>
      <symbols>
-          <Include href="Animations/squaredance.xml" itemID="4f063d3c-00000258" lastModified="1326499300"/>
-          <Include href="Textures/bluesquare.xml" itemID="4f063dfb-00000264" lastModified="1326497216"/>
-          <Include href="Textures/redsquare.xml" itemID="4f063cff-0000024d" lastModified="1326495183"/>
+          <Include href="bluesquare.xml" itemID="4f063dfb-00000264" lastModified="1328121377"/>
+          <Include href="redsquare.xml" itemID="4f063cff-0000024d" lastModified="1326495183"/>
+          <Include href="squaredance.xml" itemID="4f063d3c-00000258" lastModified="1326499300"/>
      </symbols>
      <timelines>
           <DOMTimeline name="Scene 1">

@@ -1,10 +1,10 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Textures/bluesquare" itemID="4f063dfb-00000264" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="bluesquare" lastModified="1326497216" isSpriteSubclass="true">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="bluesquare" itemID="4f063dfb-00000264" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="bluesquare" lastModified="1328121377" isSpriteSubclass="true">
   <timeline>
-    <DOMTimeline name="bluesquare">
+    <DOMTimeline name="bluesquare" currentFrame="45">
       <layers>
         <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="46" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>

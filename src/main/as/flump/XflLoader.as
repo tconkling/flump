@@ -17,48 +17,68 @@ import flump.xfl.XflTexture;
 
 import com.threerings.util.F;
 import com.threerings.util.Log;
+import com.threerings.util.Set;
+import com.threerings.util.Sets;
+import com.threerings.util.StringUtil;
+import com.threerings.util.XmlUtil;
 
 public class XflLoader
 {
     public function load (name :String, file :File, overseer :Overseer) :Future {
         log.info("Loading xfl", "path", file.nativePath);
-        const lister :Executor = new Executor();
-        const loader :Executor = new Executor();
-        const library :XflLibrary = new XflLibrary();
-        library.name = name;
-        const listAnims :Future = Files.list(file.resolvePath("LIBRARY/Animations"), lister);
-        listAnims.succeeded.add(function (files :Array) :void {
-            for each (var file :File in files) {
-                var loadAnim :Future = Files.load(file, loader);
-                loadAnim.succeeded.add(overseer.insulate(function (file :File) :void {
-                    library.animations.push(new XflAnimation(bytesToXML(file.data)));
-                }, "Parse Animation"));
-                overseer.monitor(loadAnim, "Load Animation");
-            }
-        });
-        const listTextures :Future = Files.list(file.resolvePath("LIBRARY/Textures"), lister);
-        listTextures.succeeded.add(function (files :Array) :void {
-            for each (var file: File in files) {
-                var loadTexture :Future = Files.load(file, loader);
-                loadTexture.succeeded.add(overseer.insulate(function (file :File) :void {
-                    library.textures.push(new XflTexture(bytesToXML(file.data)));
-                }, "Parse Texture"));
-                overseer.monitor(loadTexture, "Load Texture");
-            }
-        });
-        overseer.monitor(listTextures, "List Files");
-        overseer.monitor(listAnims, "List Files");
+        _overseer = overseer;
+        _library.name = name;
+        listLibrary(file.resolvePath("LIBRARY"));
         // TODO - construct the swf path for realz
         const loadSwf :Future =
-            new SwfLoader().loadFromUrl(new File(file.nativePath + ".swf").url, loader);
-        loadSwf.succeeded.add(function (swf :LoadedSwf) :void { library.swf = swf; });
-        overseer.monitor(loadSwf, "Load SWF");
-        lister.terminated.add(F.callback(loader.shutdown));
+            new SwfLoader().loadFromUrl(new File(file.nativePath + ".swf").url, _loader);
+        loadSwf.succeeded.add(function (swf :LoadedSwf) :void { _library.swf = swf; });
+        _overseer.monitor(loadSwf, "Load SWF");
         const future :VisibleFuture = new VisibleFuture();
-        loader.terminated.add(F.callback(future.succeed, library));
-        lister.shutdown();
+        _lister.terminated.add(F.callback(_loader.shutdown));
+        _loader.terminated.add(F.callback(future.succeed, _library));
         return future;
     }
+
+    protected function listLibrary (dirInLibrary :File) :void {
+        log.debug("Listing in library", "file", dirInLibrary);
+        const list :Future = Files.list(dirInLibrary, _lister);
+        _listing.add(list);
+        list.completed.add(function (..._) :void {
+            if (list.isSuccessful) {
+                for each (var file :File in list.result) { // It's an array of files
+                    if (StringUtil.endsWith(file.nativePath, ".xml")) parseLibraryFile(file);
+                    else if (file.isDirectory) listLibrary(file);
+                }
+            }
+            _listing.remove(list);
+            if (_listing.isEmpty()) _lister.shutdown();
+        });
+        _overseer.monitor(list, "List Files");
+    }
+
+    protected function parseLibraryFile (file :File) :void {
+        log.debug("Parsing from library", "file", file);
+        var loadLibraryFile :Future = Files.load(file, _loader);
+        loadLibraryFile.succeeded.add(_overseer.insulate(function (file :File) :void {
+            const xml :XML = bytesToXML(file.data);
+            log.debug("Parsing from library", "file", file);
+            if (XmlUtil.getBooleanAttr(xml, "isSpriteSubclass", false)) {
+                _library.textures.push(new XflTexture(xml));
+            } else {
+                _library.animations.push(new XflAnimation(xml));
+            }
+        }, "Parse Library File"));
+        _overseer.monitor(loadLibraryFile, "Load Library File");
+
+    }
+
+    protected const _listing :Set = Sets.newSetOf(Future);
+    protected const _library :XflLibrary = new XflLibrary();
+    protected const _lister :Executor = new Executor();
+    protected const _loader :Executor = new Executor();
+
+    protected var _overseer :Overseer;
 
     private static const log :Log = Log.getLog(XflLoader);
 }
