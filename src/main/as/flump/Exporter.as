@@ -57,12 +57,14 @@ public class Exporter
         _libraries.labelFunction = function (file :File) :String {
             return file.nativePath.substring(rootLen);
         };
-        findFlashDocuments(root);
+        if (_docFinder != null) _docFinder.shutdownNow();
+        _docFinder = new Executor(2);
+        findFlashDocuments(root, _docFinder);
     }
 
-    protected function findFlashDocuments (base :File, executor :Executor=null) :void {
-        if (!executor) executor = new Executor();
-        Files.list(base, executor).succeeded.add(function (files :Array) :void {
+    protected function findFlashDocuments (base :File, exec :Executor) :void {
+        Files.list(base, exec).succeeded.add(function (files :Array) :void {
+            if (exec.isShutdown) return;
             for each (var file :File in files) {
                 if (StringUtil.endsWith(file.nativePath, ".xfl")) {
                     addFlashDocument(file.parent);
@@ -70,7 +72,7 @@ public class Exporter
                 }
             }
             for each (file in files) {
-                if (file.isDirectory) findFlashDocuments(file, executor);
+                if (file.isDirectory) findFlashDocuments(file, exec);
                 else if (StringUtil.endsWith(file.nativePath, ".fla")) addFlashDocument(file);
             }
         });
@@ -78,6 +80,7 @@ public class Exporter
 
     protected function addFlashDocument (file :File) :void {
         _libraries.dataProvider.addItem(file);
+        //loadFlashDocument(file);
     }
 
     protected function loadFlashDocument (file :File) :void {
@@ -129,6 +132,7 @@ public class Exporter
         });
     }
 
+    protected var _docFinder :Executor;
     protected var _win :ExportWindow;
     protected var _libraries :List;
     protected var _exportChooser :DirChooser;
