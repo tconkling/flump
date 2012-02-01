@@ -5,6 +5,9 @@ package flump {
 
 import flash.filesystem.File;
 
+import com.adobe.crypto.MD5;
+import com.adobe.crypto.MD5Stream;
+
 import executor.Executor;
 import executor.Future;
 import executor.VisibleFuture;
@@ -41,7 +44,7 @@ public class XflLoader
     }
 
     protected function listLibrary (dirInLibrary :File) :void {
-        log.debug("Listing in library", "file", dirInLibrary);
+        log.debug("Listing in library", "file", dirInLibrary.nativePath);
         const list :Future = Files.list(dirInLibrary, _lister);
         _listing.add(list);
         list.completed.add(function (..._) :void {
@@ -58,15 +61,22 @@ public class XflLoader
     }
 
     protected function parseLibraryFile (file :File) :void {
-        log.debug("Parsing from library", "file", file);
         var loadLibraryFile :Future = Files.load(file, _loader);
         loadLibraryFile.succeeded.add(_overseer.insulate(function (file :File) :void {
             const xml :XML = bytesToXML(file.data);
-            log.debug("Parsing from library", "file", file);
-            if (XmlUtil.getBooleanAttr(xml, "isSpriteSubclass", false)) {
-                _library.textures.push(new XflTexture(xml));
+            if (xml.name().localName != "DOMSymbolItem") {
+                log.debug("Skipping file since its root element isn't DOMSymbolItem",
+                    "file", file.nativePath, "rootEl", xml.name().localName)
+                return;
+            }
+            const isSprite :Boolean = XmlUtil.getBooleanAttr(xml, "isSpriteSubclass", false);
+            const md5 :String = MD5.hashBytes(file.data);
+            log.debug("Parsing for library", "file", file.nativePath, "isSprite", isSprite,
+                "md5", md5);
+            if (isSprite) {
+                _library.textures.push(new XflTexture(xml, md5));
             } else {
-                _library.animations.push(new XflAnimation(xml));
+                _library.animations.push(new XflAnimation(xml, md5));
             }
         }, "Parse Library File"));
         _overseer.monitor(loadLibraryFile, "Load Library File");
@@ -77,6 +87,7 @@ public class XflLoader
     protected const _library :XflLibrary = new XflLibrary();
     protected const _lister :Executor = new Executor();
     protected const _loader :Executor = new Executor();
+    protected const _hash :MD5Stream = new MD5Stream();
 
     protected var _overseer :Overseer;
 
