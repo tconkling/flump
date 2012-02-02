@@ -20,11 +20,10 @@ import executor.Future;
 import flump.xfl.XflAnimation;
 import flump.xfl.XflLibrary;
 
+import spark.components.DataGrid;
 import spark.components.List;
 import spark.components.Window;
-import spark.events.IndexChangeEvent;
-
-import starling.core.Starling;
+import spark.events.GridSelectionEvent;
 
 import com.threerings.util.F;
 import com.threerings.util.Log;
@@ -39,11 +38,14 @@ public class Exporter
     public function Exporter (win :ExportWindow) {
         _win = win;
         _libraries = _win.libraries;
-        _libraries.addEventListener(IndexChangeEvent.CHANGE, function (..._) :void {
+        _libraries.addEventListener(GridSelectionEvent.SELECTION_CHANGE, function (..._) :void {
+            log.info("Changed", "selected", _libraries.selectedIndices);
             _win.export.enabled = _libraries.selectedIndices.length > 0;
         });
         _win.export.addEventListener(MouseEvent.CLICK, function (..._) :void {
-            for each (var file :File in _libraries.selectedItems) loadFlashDocument(file);
+            for each (var docData :Object in _libraries.selectedItems) {
+                exportFlashDocument(docData.lib, docData.file);
+            }
         });
         _importChooser =
             new DirChooser(_settings, "IMPORT_ROOT", _win.importRoot, _win.browseImport);
@@ -55,10 +57,7 @@ public class Exporter
 
     protected function setImport (root :File) :void {
         _libraries.dataProvider.removeAll();
-        const rootLen :int = root.nativePath.length + 1;
-        _libraries.labelFunction = function (file :File) :String {
-            return file.nativePath.substring(rootLen);
-        };
+        _rootLen = root.nativePath.length + 1;
         if (_docFinder != null) _docFinder.shutdownNow();
         _docFinder = new Executor(2);
         findFlashDocuments(root, _docFinder);
@@ -80,12 +79,25 @@ public class Exporter
         });
     }
 
-    protected function addFlashDocument (file :File) :void {
-        _libraries.dataProvider.addItem(file);
-        loadFlashDocument(file);
+    protected function makeDocData (file :File, modified :Boolean, exportDisabled :Boolean,
+        lib :XflLibrary) :Object {
+        return {path: file.nativePath.substring(_rootLen),
+          needsExport: modified ? CHECK : "", canExport: exportDisabled ? FROWN : "",
+          file :file, lib: lib}
     }
 
-    protected function loadFlashDocument (file :File) :void {
+    protected function addFlashDocument (file :File) :void {
+        _libraries.dataProvider.addItem(makeDocData(file, false, false, null));
+        loadFlashDocument(file, _libraries.dataProvider.length - 1);
+    }
+
+    protected function exportFlashDocument (lib :XflLibrary, file :File) :void {
+        const exportDir :File = new File(_exportChooser.dir);
+        PngExporter.dumpTextures(exportDir, lib);
+        BetwixtExporter.export(lib, file, exportDir);
+    }
+
+    protected function loadFlashDocument (file :File, idx :int) :void {
         if (StringUtil.endsWith(file.nativePath, ".xfl")) file = file.parent;
         if (file.isDirectory) {
             const overseer :Overseer = new Overseer();
@@ -102,11 +114,9 @@ public class Exporter
                     trace(item[0] + ": " + item[1]);
                 }
                 const exportDir :File = new File(_exportChooser.dir);
-                PngExporter.dumpTextures(exportDir, lib);
-                if (BetwixtExporter.shouldExport(lib, exportDir)) {
-                    BetwixtExporter.export(lib, file, exportDir);
-                } else log.info("Export md5s match XFL md5s. Not exporting.");
-                Preview(Starling.current.stage.getChildAt(0)).displayAnimation(file, lib, lib.animations[0]);
+                const shouldExport :Boolean = BetwixtExporter.shouldExport(lib, exportDir);
+                _libraries.dataProvider.setItemAt(makeDocData(file, shouldExport,
+                    !overseer.failures.isEmpty(), lib), idx);
             });
         } else loadFla(file);
     }
@@ -137,9 +147,13 @@ public class Exporter
         });
     }
 
+
+    protected static const FROWN :String = "☹";
+    protected static const CHECK :String = "✓";
+    protected var _rootLen :int;
     protected var _docFinder :Executor;
     protected var _win :ExportWindow;
-    protected var _libraries :List;
+    protected var _libraries :DataGrid;
     protected var _exportChooser :DirChooser;
     protected var _importChooser :DirChooser;
     protected const _settings :SharedObject = SharedObject.getLocal("flump/Exporter");

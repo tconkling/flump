@@ -18,9 +18,16 @@
     protected var _exporter :Exporter;
     ]]>
   </fx:Script>
-  <s:List id="libraries" width="300">
+  <s:DataGrid id="libraries" width="300">
+    <s:columns>
+      <s:ArrayList>
+        <s:GridColumn dataField="path" headerText="Name"/>
+        <s:GridColumn dataField="needsExport" headerText="Modified"/>
+        <s:GridColumn dataField="canExport" headerText="Valid"/>
+      </s:ArrayList>
+    </s:columns>
     <mx:ArrayCollection/>
-  </s:List>
+  </s:DataGrid>
   <s:Form>
     <s:FormItem label="Import Directory">
       <s:HGroup>
