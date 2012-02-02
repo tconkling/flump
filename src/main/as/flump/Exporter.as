@@ -101,8 +101,11 @@ public class Exporter
                 for each (item in overseer.successes.items()) {
                     trace(item[0] + ": " + item[1]);
                 }
-                PngExporter.dumpTextures(new File(_exportChooser.dir), lib);
-                new BetwixtExporter().export(lib, file, new File(_exportChooser.dir));
+                const exportDir :File = new File(_exportChooser.dir);
+                PngExporter.dumpTextures(exportDir, lib);
+                if (BetwixtExporter.shouldExport(lib, exportDir)) {
+                    BetwixtExporter.export(lib, file, exportDir);
+                } else log.info("Export md5s match XFL md5s. Not exporting.");
                 Preview(Starling.current.stage.getChildAt(0)).displayAnimation(file, lib, lib.animations[0]);
             });
         } else loadFla(file);
