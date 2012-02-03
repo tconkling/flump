@@ -112,6 +112,7 @@ public class Exporter
                 const isMod :Boolean = BetwixtExporter.modified(lib, exportDir);
                 status.lib = lib;
                 status.updateModified(Ternary.of(isMod));
+                status.updateValid(Ternary.of(overseer.failures.isEmpty()));
             });
         } else loadFla(status.file);
     }
@@ -165,7 +166,7 @@ import mx.events.PropertyChangeEvent;
 
 class DocStatus extends EventDispatcher implements IPropertyChangeNotifier {
     public var path :String;
-    public var modified :String = QUESTION;
+    public var modified :String;
     public var valid :String = QUESTION;
     public var file :File;
     public var lib :XflLibrary;
@@ -176,21 +177,32 @@ class DocStatus extends EventDispatcher implements IPropertyChangeNotifier {
         path = file.nativePath.substring(rootLen);
         _uid = path;
 
-        if (modified == Ternary.TRUE) this.modified = CHECK;
-        else if (modified == Ternary.FALSE) this.modified = " ";
+        updateModified(modified);
+        updateValid(valid);
+    }
 
-        if (valid == Ternary.TRUE) this.valid = CHECK;
-        else if (valid == Ternary.FALSE) this.valid = FROWN;
+    public function updateValid (newValid :Ternary) :void {
+        changeField("valid", function (..._) :void {
+            if (newValid == Ternary.TRUE) valid = CHECK;
+            else if (newValid == Ternary.FALSE) valid = FROWN;
+            else valid = QUESTION;
+        });
     }
 
     public function updateModified (newModified :Ternary) :void {
-        const oldValue :String = modified;
-        if (newModified == Ternary.TRUE) this.modified = CHECK;
-        else if (newModified == Ternary.FALSE) this.modified = " ";
-        else this.modified = QUESTION;
-        dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "modified", oldValue, this.modified));
+        changeField("modified", function (..._) :void {
+            if (newModified == Ternary.TRUE) modified = CHECK;
+            else if (newModified == Ternary.FALSE) modified = " ";
+            else modified = QUESTION;
+        });
     }
 
+    protected function changeField(fieldName :String, modifier :Function) :void {
+        const oldValue :Object = this[fieldName];
+        modifier();
+        const newValue :Object = this[fieldName];
+        dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, fieldName, oldValue, newValue));
+    }
 
     public function get uid () :String { return _uid; }
     public function set uid (uid :String) :void { _uid = uid; }
