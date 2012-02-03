@@ -43,8 +43,8 @@ public class Exporter
             _win.export.enabled = _libraries.selectedIndices.length > 0;
         });
         _win.export.addEventListener(MouseEvent.CLICK, function (..._) :void {
-            for each (var docData :Object in _libraries.selectedItems) {
-                exportFlashDocument(docData.lib, docData.file);
+            for each (var status :DocStatus in _libraries.selectedItems) {
+                exportFlashDocument(status);
             }
         });
         _importChooser =
@@ -85,10 +85,11 @@ public class Exporter
         loadFlashDocument(status);
     }
 
-    protected function exportFlashDocument (lib :XflLibrary, file :File) :void {
+    protected function exportFlashDocument (status :DocStatus) :void {
         const exportDir :File = new File(_exportChooser.dir);
-        PngExporter.dumpTextures(exportDir, lib);
-        BetwixtExporter.export(lib, file, exportDir);
+        PngExporter.dumpTextures(exportDir, status.lib);
+        BetwixtExporter.export(status.lib, status.file, exportDir);
+        status.updateModified(Ternary.FALSE);
     }
 
     protected function loadFlashDocument (status :DocStatus) :void {
