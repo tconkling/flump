@@ -80,8 +80,9 @@ public class Exporter
     }
 
     protected function addFlashDocument (file :File) :void {
-        _libraries.dataProvider.addItem(new DocStatus(file, _rootLen, Ternary.UNKOWN, Ternary.UNKOWN, null));
-        loadFlashDocument(file, _libraries.dataProvider.length - 1);
+        const status :DocStatus = new DocStatus(file, _rootLen, Ternary.UNKOWN, Ternary.UNKOWN, null);
+        _libraries.dataProvider.addItem(status);
+        loadFlashDocument(status);
     }
 
     protected function exportFlashDocument (lib :XflLibrary, file :File) :void {
@@ -90,12 +91,12 @@ public class Exporter
         BetwixtExporter.export(lib, file, exportDir);
     }
 
-    protected function loadFlashDocument (file :File, idx :int) :void {
-        if (StringUtil.endsWith(file.nativePath, ".xfl")) file = file.parent;
-        if (file.isDirectory) {
+    protected function loadFlashDocument (status :DocStatus) :void {
+        if (StringUtil.endsWith(status.file.nativePath, ".xfl")) status.file = status.file.parent;
+        if (status.file.isDirectory) {
             const overseer :Overseer = new Overseer();
-            const name :String = file.nativePath.substring(_importChooser.dir.length + 1);
-            const load :Future = new XflLoader().load(name, file, overseer);
+            const name :String = status.file.nativePath.substring(_rootLen);
+            const load :Future = new XflLoader().load(name, status.file, overseer);
             load.succeeded.add(function (lib :XflLibrary) :void {
                 for each (var item :Array in overseer.failures.items()) {
                     trace("Failures in " + item[0]);
@@ -107,11 +108,11 @@ public class Exporter
                     trace(item[0] + ": " + item[1]);
                 }
                 const exportDir :File = new File(_exportChooser.dir);
-                const modified :Boolean = BetwixtExporter.modified(lib, exportDir);
-                _libraries.dataProvider.setItemAt(new DocStatus(file, _rootLen, Ternary.of(modified),
-                    Ternary.of(overseer.failures.isEmpty()), lib), idx);
+                const isMod :Boolean = BetwixtExporter.modified(lib, exportDir);
+                status.lib = lib;
+                status.updateModified(Ternary.of(isMod));
             });
-        } else loadFla(file);
+        } else loadFla(status.file);
     }
 
     protected function loadFla (file :File) :void {
@@ -140,8 +141,8 @@ public class Exporter
         });
     }
 
-
     protected var _rootLen :int;
+
     protected var _docFinder :Executor;
     protected var _win :ExportWindow;
     protected var _libraries :DataGrid;
@@ -152,13 +153,16 @@ public class Exporter
     private static const log :Log = Log.getLog(Exporter);
 }
 }
-
+import flash.events.EventDispatcher;
 import flash.filesystem.File;
 
 import flump.Ternary;
 import flump.xfl.XflLibrary;
 
-class DocStatus {
+import mx.core.IPropertyChangeNotifier;
+import mx.events.PropertyChangeEvent;
+
+class DocStatus extends EventDispatcher implements IPropertyChangeNotifier {
     public var path :String;
     public var modified :String = QUESTION;
     public var valid :String = QUESTION;
@@ -169,6 +173,7 @@ class DocStatus {
         this.file = file;
         this.lib = lib;
         path = file.nativePath.substring(rootLen);
+        _uid = path;
 
         if (modified == Ternary.TRUE) this.modified = CHECK;
         else if (modified == Ternary.FALSE) this.modified = " ";
@@ -176,6 +181,20 @@ class DocStatus {
         if (valid == Ternary.TRUE) this.valid = CHECK;
         else if (valid == Ternary.FALSE) this.valid = FROWN;
     }
+
+    public function updateModified (newModified :Ternary) :void {
+        const oldValue :String = modified;
+        if (newModified == Ternary.TRUE) this.modified = CHECK;
+        else if (newModified == Ternary.FALSE) this.modified = " ";
+        else this.modified = QUESTION;
+        dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "modified", oldValue, this.modified));
+    }
+
+
+    public function get uid () :String { return _uid; }
+    public function set uid (uid :String) :void { _uid = uid; }
+
+    protected var _uid :String;
 
     protected static const QUESTION :String = "?";
     protected static const FROWN :String = "☹";
