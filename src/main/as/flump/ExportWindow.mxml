@@ -22,8 +22,8 @@
     <s:columns>
       <s:ArrayList>
         <s:GridColumn dataField="path" headerText="Name"/>
-        <s:GridColumn dataField="needsExport" headerText="Modified"/>
-        <s:GridColumn dataField="canExport" headerText="Valid"/>
+        <s:GridColumn dataField="modified" headerText="Modified"/>
+        <s:GridColumn dataField="valid" headerText="Valid"/>
       </s:ArrayList>
     </s:columns>
     <mx:ArrayCollection/>

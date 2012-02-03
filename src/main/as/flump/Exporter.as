@@ -79,15 +79,8 @@ public class Exporter
         });
     }
 
-    protected function makeDocData (file :File, modified :Boolean, exportDisabled :Boolean,
-        lib :XflLibrary) :Object {
-        return {path: file.nativePath.substring(_rootLen),
-          needsExport: modified ? CHECK : "", canExport: exportDisabled ? FROWN : "",
-          file :file, lib: lib}
-    }
-
     protected function addFlashDocument (file :File) :void {
-        _libraries.dataProvider.addItem(makeDocData(file, false, false, null));
+        _libraries.dataProvider.addItem(new DocStatus(file, _rootLen, Ternary.UNKOWN, Ternary.UNKOWN, null));
         loadFlashDocument(file, _libraries.dataProvider.length - 1);
     }
 
@@ -114,9 +107,9 @@ public class Exporter
                     trace(item[0] + ": " + item[1]);
                 }
                 const exportDir :File = new File(_exportChooser.dir);
-                const shouldExport :Boolean = BetwixtExporter.shouldExport(lib, exportDir);
-                _libraries.dataProvider.setItemAt(makeDocData(file, shouldExport,
-                    !overseer.failures.isEmpty(), lib), idx);
+                const modified :Boolean = BetwixtExporter.modified(lib, exportDir);
+                _libraries.dataProvider.setItemAt(new DocStatus(file, _rootLen, Ternary.of(modified),
+                    Ternary.of(overseer.failures.isEmpty()), lib), idx);
             });
         } else loadFla(file);
     }
@@ -148,8 +141,6 @@ public class Exporter
     }
 
 
-    protected static const FROWN :String = "☹";
-    protected static const CHECK :String = "✓";
     protected var _rootLen :int;
     protected var _docFinder :Executor;
     protected var _win :ExportWindow;
@@ -160,4 +151,33 @@ public class Exporter
 
     private static const log :Log = Log.getLog(Exporter);
 }
+}
+
+import flash.filesystem.File;
+
+import flump.Ternary;
+import flump.xfl.XflLibrary;
+
+class DocStatus {
+    public var path :String;
+    public var modified :String = QUESTION;
+    public var valid :String = QUESTION;
+    public var file :File;
+    public var lib :XflLibrary;
+
+    public function DocStatus (file :File, rootLen :int, modified :Ternary, valid :Ternary, lib :XflLibrary) {
+        this.file = file;
+        this.lib = lib;
+        path = file.nativePath.substring(rootLen);
+
+        if (modified == Ternary.TRUE) this.modified = CHECK;
+        else if (modified == Ternary.FALSE) this.modified = " ";
+
+        if (valid == Ternary.TRUE) this.valid = CHECK;
+        else if (valid == Ternary.FALSE) this.valid = FROWN;
+    }
+
+    protected static const QUESTION :String = "?";
+    protected static const FROWN :String = "☹";
+    protected static const CHECK :String = "✓";
 }

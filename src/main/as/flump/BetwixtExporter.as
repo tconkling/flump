@@ -23,7 +23,7 @@ public class BetwixtExporter
         return exportDir.resolvePath(lib.name + ".xml");
     }
 
-    public static function shouldExport(lib :XflLibrary, exportDir :File) :Boolean {
+    public static function modified(lib :XflLibrary, exportDir :File) :Boolean {
         const exportLoc :File = makeExportLocation(lib, exportDir);
         if (!exportLoc.exists) return true;
 
@@ -40,7 +40,7 @@ public class BetwixtExporter
             exportMd5s.put(XmlUtil.getStringAttr(resource, "name"),
                 XmlUtil.getStringAttr(resource, "md5"));
         }
-        return !Maps.equals(exportMd5s, libMd5s);
+        return !exportMd5s.equals(libMd5s);
     }
 
     public static function export (lib :XflLibrary, source :File, exportDir :File) :void {
