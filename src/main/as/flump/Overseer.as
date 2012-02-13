@@ -22,7 +22,8 @@ public class Overseer
             try {
                 f.apply(this, args);
             } catch (e :Error) {
-                failures.get(group).push(e);
+                log.warning("Got insulated failure", "f", f, "g", group, e);
+                _failures.get(group).push(e);
             }
         }
     }
@@ -36,6 +37,7 @@ public class Overseer
             if (group === undefined) log.warning("Unknown future succeeded", "future", future);
             else _successes.put(group, _successes.get(group) + 1)
         } else {
+            log.warning("Got future failure", "f", future, "res", future.result);
             if (group === undefined) log.warning("Unknown future failed", "future", future);
             else _failures.get(group).push(future.result);
         }

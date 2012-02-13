@@ -100,10 +100,7 @@ public class Exporter
             const load :Future = new XflLoader().load(name, status.file, overseer);
             load.succeeded.add(function (lib :XflLibrary) :void {
                 for each (var item :Array in overseer.failures.items()) {
-                    trace("Failures in " + item[0]);
-                    for each (var failure :Array in item[1]) {
-                        trace("  " + failure);
-                    }
+                    trace("Failures in " + item[0] + " " + item[1]);
                 }
                 for each (item in overseer.successes.items()) {
                     trace(item[0] + ": " + item[1]);

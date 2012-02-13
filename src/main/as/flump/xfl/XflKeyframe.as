@@ -6,6 +6,7 @@ package flump.xfl {
 import flash.geom.Matrix;
 import flash.geom.Point;
 
+import com.threerings.util.XmlReadError;
 import com.threerings.util.XmlUtil;
 
 public class XflKeyframe
@@ -13,17 +14,45 @@ public class XflKeyframe
     use namespace xflns;
 
     public var index :int;
-    public var libraryName :String;
-    public var matrix :Matrix;
-    public var transformationPoint :Point;
+
+    /** The length of this keyframe in frames. */
     public var duration :Number;
+
+    /** The name of the symbol in this keyframe, or null if there is no symbol. */
+    public var libraryName :String;
+
+    /** The transform of the symbol in this keyframe, or null if libraryName is null. */
+    public var matrix :Matrix;
+
+    /** The tranformation point of the symbol in this keyframe, or null if libraryName is null. */
+    public var transformationPoint :Point;
+
+    /** The label on this keyframe, or null if there isn't one */
+    public var label :String;
 
     public function XflKeyframe (xml :XML) {
         index = XmlUtil.getIntAttr(xml, "index");
         duration = XmlUtil.getNumberAttr(xml, "duration", 1);
+        label = XmlUtil.getStringAttr(xml, "name", null);
 
-        const symbolXml :XML = xml.elements.DOMSymbolInstance[0];
+        var symbolXml :XML;
+        for each (var frameEl :XML in xml.elements.elements()) {
+            if (frameEl.name().localName == "DOMSymbolInstance") {
+                if (symbolXml != null)  {
+                    throw new XmlReadError("There can be only one symbol instance at a time in a " +
+                        "keyframe", xml);
+                }
+                symbolXml = frameEl;
+            } else {
+                throw new XmlReadError("Non-symbols may not be in exported movie layers eg " +
+                    frameEl.name, xml);
+            }
+        }
+
+        if (symbolXml == null) return; // Purely labelled frame
+
         libraryName = XmlUtil.getStringAttr(symbolXml, "libraryItemName");
+
 
         const matrixXml :XML = symbolXml.matrix.Matrix[0];
         function m (name :String, def :Number) :Number {
@@ -31,9 +60,9 @@ public class XflKeyframe
         }
         matrix = new Matrix(m("a", 1), m("b", 0), m("c", 0), m("d", 1), m("tx", 0), m("ty", 0));
 
-        const tPointXML :XML = symbolXml.transformationPoint.Point[0];
+        const tPoint :XML = symbolXml.transformationPoint.Point[0];
         transformationPoint =
-            new Point(XmlUtil.getNumberAttr(tPointXML, "x", 0), XmlUtil.getNumberAttr(tPointXML, "y", 0));
+            new Point(XmlUtil.getNumberAttr(tPoint, "x", 0), XmlUtil.getNumberAttr(tPoint, "y", 0));
     }
 }
 }

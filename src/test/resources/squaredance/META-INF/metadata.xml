@@ -5,8 +5,8 @@
             xmlns:xmp="http://ns.adobe.com/xap/1.0/">
          <xmp:CreatorTool>Adobe Flash Professional CS5.5 - build 325</xmp:CreatorTool>
          <xmp:CreateDate>2012-01-05T16:10:42-08:00</xmp:CreateDate>
-         <xmp:MetadataDate>2012-02-01T10:45:16-08:00</xmp:MetadataDate>
-         <xmp:ModifyDate>2012-02-01T10:45:16-08:00</xmp:ModifyDate>
+         <xmp:MetadataDate>2012-02-13T10:35:59-08:00</xmp:MetadataDate>
+         <xmp:ModifyDate>2012-02-13T10:35:59-08:00</xmp:ModifyDate>
       </rdf:Description>
       <rdf:Description rdf:about=""
             xmlns:dc="http://purl.org/dc/elements/1.1/">
@@ -16,7 +16,7 @@
             xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/"
             xmlns:stEvt="http://ns.adobe.com/xap/1.0/sType/ResourceEvent#"
             xmlns:stRef="http://ns.adobe.com/xap/1.0/sType/ResourceRef#">
-         <xmpMM:InstanceID>xmp.iid:0180117407206811822AF17E1630BE74</xmpMM:InstanceID>
+         <xmpMM:InstanceID>xmp.iid:F77F1174072068118A6DA9DF0125EA28</xmpMM:InstanceID>
          <xmpMM:DocumentID>xmp.did:01801174072068118083C3C30C4864E9</xmpMM:DocumentID>
          <xmpMM:OriginalDocumentID>xmp.did:F77F1174072068118DBBAEA5EA7AFD9F</xmpMM:OriginalDocumentID>
          <xmpMM:History>
@@ -112,6 +112,24 @@
                <rdf:li rdf:parseType="Resource">
                   <stEvt:action>created</stEvt:action>
                   <stEvt:instanceID>xmp.iid:0180117407206811822AF17E1630BE74</stEvt:instanceID>
+                  <stEvt:when>2012-01-05T16:10:42-08:00</stEvt:when>
+                  <stEvt:softwareAgent>Adobe Flash Professional CS5.5 - build 349</stEvt:softwareAgent>
+               </rdf:li>
+               <rdf:li rdf:parseType="Resource">
+                  <stEvt:action>created</stEvt:action>
+                  <stEvt:instanceID>xmp.iid:F77F1174072068118A6DD60009D8B95A</stEvt:instanceID>
+                  <stEvt:when>2012-01-05T16:10:42-08:00</stEvt:when>
+                  <stEvt:softwareAgent>Adobe Flash Professional CS5.5 - build 349</stEvt:softwareAgent>
+               </rdf:li>
+               <rdf:li rdf:parseType="Resource">
+                  <stEvt:action>created</stEvt:action>
+                  <stEvt:instanceID>xmp.iid:F77F117407206811822AD726FA118C16</stEvt:instanceID>
+                  <stEvt:when>2012-01-05T16:10:42-08:00</stEvt:when>
+                  <stEvt:softwareAgent>Adobe Flash Professional CS5.5 - build 349</stEvt:softwareAgent>
+               </rdf:li>
+               <rdf:li rdf:parseType="Resource">
+                  <stEvt:action>created</stEvt:action>
+                  <stEvt:instanceID>xmp.iid:F77F1174072068118A6DA9DF0125EA28</stEvt:instanceID>
                   <stEvt:when>2012-01-05T16:10:42-08:00</stEvt:when>
                   <stEvt:softwareAgent>Adobe Flash Professional CS5.5 - build 349</stEvt:softwareAgent>
                </rdf:li>
