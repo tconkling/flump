@@ -38,7 +38,7 @@ public class Exporter
 
     protected static const IMPORT_ROOT :String = "IMPORT_ROOT";
 
-    public function Exporter (win :ExportWindow) {
+    public function Exporter (win :ExporterWindow) {
         _win = win;
         _errors = _win.errors;
         _libraries = _win.libraries;
@@ -155,7 +155,7 @@ public class Exporter
     protected var _rootLen :int;
 
     protected var _docFinder :Executor;
-    protected var _win :ExportWindow;
+    protected var _win :ExporterWindow;
     protected var _libraries :DataGrid;
     protected var _errors :DataGrid;
     protected var _exportChooser :DirChooser;
