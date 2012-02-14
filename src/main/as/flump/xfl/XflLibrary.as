@@ -11,7 +11,6 @@ import flump.ParseErrorSeverity;
 public class XflLibrary extends XflTopLevelComponent
 {
     public var swf :LoadedSwf;
-    public var name :String;
     public const animations :Vector.<XflAnimation> = new Vector.<XflAnimation>();
     public const textures :Vector.<XflTexture> = new Vector.<XflTexture>();
 

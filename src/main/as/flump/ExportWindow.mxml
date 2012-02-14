@@ -43,4 +43,14 @@
     </s:FormItem>
   </s:Form>
   <s:Button id="export" enabled="false" label="Export"/>
+  <s:DataGrid id="errors" width="600">
+    <s:columns>
+      <s:ArrayList>
+        <s:GridColumn dataField="severity" headerText="Severity"/>
+        <s:GridColumn dataField="location" headerText="Location"/>
+        <s:GridColumn dataField="message" headerText="Reason"/>
+      </s:ArrayList>
+    </s:columns>
+    <mx:ArrayCollection/>
+  </s:DataGrid>
 </s:Window>

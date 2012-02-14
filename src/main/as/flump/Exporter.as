@@ -37,6 +37,7 @@ public class Exporter
 
     public function Exporter (win :ExportWindow) {
         _win = win;
+        _errors = _win.errors;
         _libraries = _win.libraries;
         _libraries.addEventListener(GridSelectionEvent.SELECTION_CHANGE, function (..._) :void {
             log.info("Changed", "selected", _libraries.selectedIndices);
@@ -103,6 +104,7 @@ public class Exporter
                 status.lib = lib;
                 status.updateModified(Ternary.of(isMod));
                 for each (var err :ParseError in lib.getErrors()) {
+                    _errors.dataProvider.addItem(err);
                     trace(err);
                 }
                 status.updateValid(Ternary.of(lib.valid));
@@ -141,6 +143,7 @@ public class Exporter
     protected var _docFinder :Executor;
     protected var _win :ExportWindow;
     protected var _libraries :DataGrid;
+    protected var _errors :DataGrid;
     protected var _exportChooser :DirChooser;
     protected var _importChooser :DirChooser;
     protected const _settings :SharedObject = SharedObject.getLocal("flump/Exporter");

@@ -20,7 +20,7 @@ import com.threerings.util.XmlUtil;
 public class BetwixtExporter
 {
     public static function makeExportLocation(lib :XflLibrary, exportDir :File) :File {
-        return exportDir.resolvePath(lib.name + ".xml");
+        return exportDir.resolvePath(lib.location + ".xml");
     }
 
     public static function modified(lib :XflLibrary, exportDir :File) :Boolean {
@@ -44,7 +44,7 @@ public class BetwixtExporter
     }
 
     public static function export (lib :XflLibrary, source :File, exportDir :File) :void {
-        const dest :File = exportDir.resolvePath(lib.name + ".xml");
+        const dest :File = exportDir.resolvePath(lib.location + ".xml");
         const out :FileStream = new FileStream();
         out.open(dest, FileMode.WRITE);
         out.writeUTFBytes("<resources>\n");

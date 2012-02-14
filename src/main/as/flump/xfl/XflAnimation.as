@@ -15,9 +15,9 @@ public class XflAnimation extends XflTopLevelComponent
     public var symbol :String;
     public var layers :Array;
 
-    public function XflAnimation (location :String, xml :XML, md5 :String) {
+    public function XflAnimation (baseLocation :String, xml :XML, md5 :String) {
         name = XmlUtil.getStringAttr(xml, "name");
-        super(location + ":" + name);
+        super(baseLocation + ":" + name);
         this.md5 = md5;
         symbol = XmlUtil.getStringAttr(xml, "linkageClassName");
 

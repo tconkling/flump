@@ -29,7 +29,7 @@ import com.threerings.util.XmlUtil;
 public class XflLoader
 {
     public function load (name :String, file :File) :Future {
-        log.info("Loading xfl", "path", file.nativePath);
+        log.info("Loading xfl", "path", file.nativePath, "name", name);
         _library = new XflLibrary(name);
         listLibrary(file.resolvePath("LIBRARY"));
         // TODO - construct the swf path for realz
@@ -78,8 +78,8 @@ public class XflLoader
             log.debug("Parsing for library", "file", file.nativePath, "isSprite", isSprite,
                 "md5", md5);
             try {
-                if (isSprite) _library.textures.push(new XflTexture(_library.name, xml, md5));
-                else _library.animations.push(new XflAnimation(_library.name, xml, md5));
+                if (isSprite) _library.textures.push(new XflTexture(_library.location, xml, md5));
+                else _library.animations.push(new XflAnimation(_library.location, xml, md5));
             } catch (e :Error) {
                 var type :String = isSprite ? "sprite" : "animation";
                 _library.addError(ParseErrorSeverity.CRIT,
