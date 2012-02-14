@@ -1,7 +1,7 @@
 //
 // Flump - Copyright 2012 Three Rings Design
 
-package flump {
+package flump.export {
 
 import flash.display.BitmapData;
 import flash.display.Sprite;
@@ -16,7 +16,7 @@ import com.adobe.images.PNGEncoder;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;
 
-public class PngExporter
+public class PngPublisher
 {
 
     public static function dumpTextures (base :File, library :XflLibrary) :void {

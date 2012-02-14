@@ -1,7 +1,7 @@
 //
 // Flump - Copyright 2012 Three Rings Design
 
-package flump {
+package flump.export {
 
 import flash.desktop.NativeApplication;
 import flash.events.Event;
@@ -17,6 +17,9 @@ import deng.fzip.FZipFile;
 import executor.Executor;
 import executor.Future;
 
+import flump.bytesToXML;
+import flump.export.Ternary;
+import flump.xfl.ParseError;
 import flump.xfl.XflAnimation;
 import flump.xfl.XflLibrary;
 
@@ -102,8 +105,8 @@ public class Exporter
 
     protected function exportFlashDocument (status :DocStatus) :void {
         const exportDir :File = new File(_exportChooser.dir);
-        PngExporter.dumpTextures(exportDir, status.lib);
-        BetwixtExporter.export(status.lib, status.file, exportDir);
+        PngPublisher.dumpTextures(exportDir, status.lib);
+        BetwixtPublisher.export(status.lib, status.file, exportDir);
         status.updateModified(Ternary.FALSE);
     }
 
@@ -114,7 +117,7 @@ public class Exporter
             const load :Future = new XflLoader().load(name, status.file);
             load.succeeded.add(function (lib :XflLibrary) :void {
                 const exportDir :File = new File(_exportChooser.dir);
-                const isMod :Boolean = BetwixtExporter.modified(lib, exportDir);
+                const isMod :Boolean = BetwixtPublisher.modified(lib, exportDir);
                 status.lib = lib;
                 status.updateModified(Ternary.of(isMod));
                 for each (var err :ParseError in lib.getErrors()) {
@@ -168,7 +171,7 @@ public class Exporter
 import flash.events.EventDispatcher;
 import flash.filesystem.File;
 
-import flump.Ternary;
+import flump.export.Ternary;
 import flump.xfl.XflLibrary;
 
 import mx.core.IPropertyChangeNotifier;

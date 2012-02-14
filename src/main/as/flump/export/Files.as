@@ -1,7 +1,7 @@
 //
 // Flump - Copyright 2012 Three Rings Design
 
-package flump {
+package flump.export {
 
 import flash.events.ErrorEvent;
 import flash.events.Event;

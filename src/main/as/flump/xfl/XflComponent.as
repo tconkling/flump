@@ -3,9 +3,6 @@
 
 package flump.xfl {
 
-import flump.ParseError;
-import flump.ParseErrorSeverity;
-
 public class XflComponent
 {
     public var location :String;

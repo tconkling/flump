@@ -1,13 +1,14 @@
 //
 // Flump - Copyright 2012 Three Rings Design
 
-package flump {
+package flump.export {
 
 import flash.filesystem.File;
 import flash.filesystem.FileMode;
 import flash.filesystem.FileStream;
 import flash.utils.ByteArray;
 
+import flump.bytesToXML;
 import flump.xfl.XflAnimation;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;
@@ -17,7 +18,7 @@ import com.threerings.util.Map;
 import com.threerings.util.Maps;
 import com.threerings.util.XmlUtil;
 
-public class BetwixtExporter
+public class BetwixtPublisher
 {
     public static function makeExportLocation(lib :XflLibrary, exportDir :File) :File {
         return exportDir.resolvePath(lib.location + ".xml");
@@ -67,6 +68,6 @@ public class BetwixtExporter
 
         out.writeUTFBytes("</resources>");
     }
-    private static const log :Log = Log.getLog(BetwixtExporter);
+    private static const log :Log = Log.getLog(BetwixtPublisher);
 }
 }

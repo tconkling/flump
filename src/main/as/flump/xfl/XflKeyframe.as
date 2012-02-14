@@ -6,9 +6,6 @@ package flump.xfl {
 import flash.geom.Matrix;
 import flash.geom.Point;
 
-import flump.ParseError;
-import flump.ParseErrorSeverity;
-
 import com.threerings.util.XmlUtil;
 
 public class XflKeyframe extends XflComponent

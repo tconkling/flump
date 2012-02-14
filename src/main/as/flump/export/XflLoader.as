@@ -1,7 +1,7 @@
 //
 // Flump - Copyright 2012 Three Rings Design
 
-package flump {
+package flump.export {
 
 import flash.filesystem.File;
 
@@ -14,7 +14,8 @@ import executor.VisibleFuture;
 import executor.load.LoadedSwf;
 import executor.load.SwfLoader;
 
-import flump.ParseError;
+import flump.bytesToXML;
+import flump.xfl.ParseErrorSeverity;
 import flump.xfl.XflAnimation;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;

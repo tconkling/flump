@@ -3,9 +3,6 @@
 
 package flump.xfl {
 
-import flump.ParseError;
-import flump.ParseErrorSeverity;
-
 import com.threerings.util.F;
 import com.threerings.util.Set;
 import com.threerings.util.XmlUtil;

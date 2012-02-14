@@ -1,7 +1,7 @@
 //
 // Flump - Copyright 2012 Three Rings Design
 
-package flump {
+package flump.display {
 
 import flump.xfl.XflAnimation;
 import flump.xfl.XflLayer;

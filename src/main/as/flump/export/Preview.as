@@ -1,7 +1,7 @@
 //
 // Flump - Copyright 2012 Three Rings Design
 
-package flump {
+package flump.export {
 
 import flash.filesystem.File;
 
@@ -9,6 +9,7 @@ import executor.Executor;
 import executor.load.ImageLoader;
 import executor.load.LoadedImage;
 
+import flump.display.Movie;
 import flump.xfl.XflAnimation;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;

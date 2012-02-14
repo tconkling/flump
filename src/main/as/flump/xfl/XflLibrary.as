@@ -5,9 +5,6 @@ package flump.xfl {
 
 import executor.load.LoadedSwf;
 
-import flump.ParseError;
-import flump.ParseErrorSeverity;
-
 import com.threerings.util.Set;
 import com.threerings.util.Sets;
 
