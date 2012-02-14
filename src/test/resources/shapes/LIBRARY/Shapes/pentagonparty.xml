@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Shapes/pentagonparty" itemID="4f3aacb8-000002ce" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="pentagonparty" lastModified="1329245477" lastUniqueIdentifier="3" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="pentagonparty">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Shapes/pentagon" centerPoint3DX="166.75" centerPoint3DY="39.95">
+                  <matrix>
+                    <Matrix tx="165.75" ty="56.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1" y="-16.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Shapes/pentagon" centerPoint3DX="-166.8" centerPoint3DY="39.95">
+                  <matrix>
+                    <Matrix tx="-167.8" ty="56.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1" y="-16.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Shapes/pentagon" centerPoint3DX="0.8" centerPoint3DY="-155.85">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="2" ty="-171.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1" y="-16.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
