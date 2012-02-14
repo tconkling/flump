@@ -7,6 +7,7 @@ import flump.ParseError;
 import flump.ParseErrorSeverity;
 
 import com.threerings.util.F;
+import com.threerings.util.Set;
 import com.threerings.util.XmlUtil;
 
 public class XflLayer extends XflComponent
@@ -25,6 +26,12 @@ public class XflLayer extends XflComponent
         });
         if (keyframes.length == 0) addError(ParseErrorSeverity.INFO, "No keyframes on layer");
         else libraryName = keyframes[0].libraryName;
+    }
+
+    public function checkSymbols (symbols :Set) :void {
+        if (libraryName != null && !symbols.contains(libraryName)) {
+            addError(ParseErrorSeverity.CRIT, "Symbol '" + libraryName + "' not exported");
+        }
     }
 }
 }

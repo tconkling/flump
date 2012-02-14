@@ -41,7 +41,10 @@ public class XflLoader
         });
         const future :VisibleFuture = new VisibleFuture();
         _lister.terminated.add(F.callback(_loader.shutdown));
-        _loader.terminated.add(F.callback(future.succeed, _library));
+        _loader.terminated.add(function (..._) :void {
+            _library.finishLoading();
+            future.succeed(_library);
+        });
         return future;
     }
 
