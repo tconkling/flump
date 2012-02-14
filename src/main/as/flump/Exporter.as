@@ -95,21 +95,17 @@ public class Exporter
     protected function loadFlashDocument (status :DocStatus) :void {
         if (StringUtil.endsWith(status.file.nativePath, ".xfl")) status.file = status.file.parent;
         if (status.file.isDirectory) {
-            const overseer :Overseer = new Overseer();
             const name :String = status.file.nativePath.substring(_rootLen);
-            const load :Future = new XflLoader().load(name, status.file, overseer);
+            const load :Future = new XflLoader().load(name, status.file);
             load.succeeded.add(function (lib :XflLibrary) :void {
-                for each (var item :Array in overseer.failures.items()) {
-                    trace("Failures in " + item[0] + " " + item[1]);
-                }
-                for each (item in overseer.successes.items()) {
-                    trace(item[0] + ": " + item[1]);
-                }
                 const exportDir :File = new File(_exportChooser.dir);
                 const isMod :Boolean = BetwixtExporter.modified(lib, exportDir);
                 status.lib = lib;
                 status.updateModified(Ternary.of(isMod));
-                status.updateValid(Ternary.of(overseer.failures.isEmpty()));
+                for each (var err :ParseError in lib.getErrors()) {
+                    trace(err);
+                }
+                status.updateValid(Ternary.of(lib.valid));
             });
         } else loadFla(status.file);
     }
@@ -134,7 +130,7 @@ public class Exporter
             log.info("Loaded", "bytes", file.data.length, "anims", F.map(anims, toFn),
                 "textures", F.map(textures, toFn));
             for each (var fz :FZipFile in anims) {
-                new XflAnimation(bytesToXML(fz.content), MD5.hashBytes(fz.content));
+                new XflAnimation(fz.filename, bytesToXML(fz.content), MD5.hashBytes(fz.content));
             }
             NA.exit(0);
         });

@@ -3,11 +3,10 @@
 
 package flump.xfl {
 
-import com.threerings.util.F;
 import com.threerings.util.Log;
 import com.threerings.util.XmlUtil;
 
-public class XflAnimation
+public class XflAnimation extends XflTopLevelComponent
 {
     use namespace xflns;
 
@@ -16,12 +15,16 @@ public class XflAnimation
     public var symbol :String;
     public var layers :Array;
 
-    public function XflAnimation (xml :XML, md5 :String) {
-        this.md5 = md5;
+    public function XflAnimation (location :String, xml :XML, md5 :String) {
         name = XmlUtil.getStringAttr(xml, "name");
+        super(location + ":" + name);
+        this.md5 = md5;
         symbol = XmlUtil.getStringAttr(xml, "linkageClassName");
 
-        layers = XmlUtil.map(xml.timeline.DOMTimeline[0].layers.DOMLayer, F.constructor(XflLayer));
+        layers = XmlUtil.map(xml.timeline.DOMTimeline[0].layers.DOMLayer,
+            function (layerEl :XML) :XflLayer {
+                return new XflLayer(location, layerEl, _errors);
+            });
         log.info("Got animation", "name", name, "layers", layers);
     }
 

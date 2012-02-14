@@ -14,6 +14,7 @@ import executor.VisibleFuture;
 import executor.load.LoadedSwf;
 import executor.load.SwfLoader;
 
+import flump.ParseError;
 import flump.xfl.XflAnimation;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;
@@ -27,16 +28,17 @@ import com.threerings.util.XmlUtil;
 
 public class XflLoader
 {
-    public function load (name :String, file :File, overseer :Overseer) :Future {
+    public function load (name :String, file :File) :Future {
         log.info("Loading xfl", "path", file.nativePath);
-        _overseer = overseer;
-        _library.name = name;
+        _library = new XflLibrary(name);
         listLibrary(file.resolvePath("LIBRARY"));
         // TODO - construct the swf path for realz
-        const loadSwf :Future =
-            new SwfLoader().loadFromUrl(new File(file.nativePath + ".swf").url, _loader);
+        const swfPath :String = new File(file.nativePath + ".swf").url;
+        const loadSwf :Future = new SwfLoader().loadFromUrl(swfPath, _loader);
         loadSwf.succeeded.add(function (swf :LoadedSwf) :void { _library.swf = swf; });
-        _overseer.monitor(loadSwf, "Load SWF");
+        loadSwf.failed.add(function (error :Object) :void {
+            _library.addError(ParseErrorSeverity.CRIT, "Unable to load swf " + swfPath, error);
+        });
         const future :VisibleFuture = new VisibleFuture();
         _lister.terminated.add(F.callback(_loader.shutdown));
         _loader.terminated.add(F.callback(future.succeed, _library));
@@ -53,43 +55,49 @@ public class XflLoader
                     if (StringUtil.endsWith(file.nativePath, ".xml")) parseLibraryFile(file);
                     else if (file.isDirectory) listLibrary(file);
                 }
+            } else {
+                _library.addError(ParseErrorSeverity.CRIT,
+                    "Unable to list directory " + dirInLibrary.nativePath, list.result);
             }
             _listing.remove(list);
             if (_listing.isEmpty()) _lister.shutdown();
         });
-        _overseer.monitor(list, "List Files");
     }
 
     protected function parseLibraryFile (file :File) :void {
         var loadLibraryFile :Future = Files.load(file, _loader);
-        loadLibraryFile.succeeded.add(_overseer.insulate(function (file :File) :void {
+        loadLibraryFile.succeeded.add(function (file :File) :void {
             const xml :XML = bytesToXML(file.data);
             if (xml.name().localName != "DOMSymbolItem") {
-                log.debug("Skipping file since its root element isn't DOMSymbolItem",
-                    "file", file.nativePath, "rootEl", xml.name().localName)
+                _library.addError(ParseErrorSeverity.DEBUG,
+                    "Skipping file since its root element isn't DOMSymbolItem");
                 return;
             }
             const isSprite :Boolean = XmlUtil.getBooleanAttr(xml, "isSpriteSubclass", false);
             const md5 :String = MD5.hashBytes(file.data);
             log.debug("Parsing for library", "file", file.nativePath, "isSprite", isSprite,
                 "md5", md5);
-            if (isSprite) {
-                _library.textures.push(new XflTexture(xml, md5));
-            } else {
-                _library.animations.push(new XflAnimation(xml, md5));
+            try {
+                if (isSprite) _library.textures.push(new XflTexture(_library.name, xml, md5));
+                else _library.animations.push(new XflAnimation(_library.name, xml, md5));
+            } catch (e :Error) {
+                var type :String = isSprite ? "sprite" : "animation";
+                _library.addError(ParseErrorSeverity.CRIT,
+                    "Unable to parse " + type + " in " + file.nativePath, e);
             }
-        }, "Parse Library File"));
-        _overseer.monitor(loadLibraryFile, "Load Library File");
-
+        });
+        loadLibraryFile.failed.add(function (error :Object) :void {
+            _library.addError(ParseErrorSeverity.CRIT,
+                "Unable to load file " + file.nativePath, error);
+        });
     }
 
     protected const _listing :Set = Sets.newSetOf(Future);
-    protected const _library :XflLibrary = new XflLibrary();
     protected const _lister :Executor = new Executor();
     protected const _loader :Executor = new Executor();
     protected const _hash :MD5Stream = new MD5Stream();
 
-    protected var _overseer :Overseer;
+    protected var _library :XflLibrary;
 
     private static const log :Log = Log.getLog(XflLoader);
 }

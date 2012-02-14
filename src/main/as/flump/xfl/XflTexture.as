@@ -8,16 +8,17 @@ import flash.geom.Point;
 
 import com.threerings.util.XmlUtil;
 
-public class XflTexture
+public class XflTexture extends XflTopLevelComponent
 {
     public var md5 :String;
     public var name :String;
     public var symbol :String;
     public var offset :Point;
 
-    public function XflTexture (xml :XML, md5 :String) {
-        this.md5 = md5;
+    public function XflTexture (location :String, xml :XML, md5 :String) {
         name = XmlUtil.getStringAttr(xml, "name");
+        super(location + ":" + name);
+        this.md5 = md5;
         symbol = XmlUtil.getStringAttr(xml, "linkageClassName");
     }
 

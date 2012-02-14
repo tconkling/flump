@@ -3,10 +3,13 @@
 
 package flump.xfl {
 
+import flump.ParseError;
+import flump.ParseErrorSeverity;
+
 import com.threerings.util.F;
 import com.threerings.util.XmlUtil;
 
-public class XflLayer
+public class XflLayer extends XflComponent
 {
     use namespace xflns;
 
@@ -14,10 +17,14 @@ public class XflLayer
     public var keyframes :Array;
     public var libraryName :String;
 
-    public function XflLayer (xml :XML) {
+    public function XflLayer (baseLocation :String, xml :XML, errors :Vector.<ParseError>) {
         name = XmlUtil.getStringAttr(xml, "name");
-        keyframes = XmlUtil.map(xml.frames.DOMFrame, F.constructor(XflKeyframe));
-        libraryName = keyframes[0].libraryName;
+        super(baseLocation + ":" + name, errors);
+        keyframes = XmlUtil.map(xml.frames.DOMFrame, function (frameEl :XML) :XflKeyframe {
+            return new XflKeyframe(location, frameEl, _errors);
+        });
+        if (keyframes.length == 0) addError(ParseErrorSeverity.INFO, "No keyframes on layer");
+        else libraryName = keyframes[0].libraryName;
     }
 }
 }

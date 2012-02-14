@@ -6,10 +6,12 @@ package flump.xfl {
 import flash.geom.Matrix;
 import flash.geom.Point;
 
-import com.threerings.util.XmlReadError;
+import flump.ParseError;
+import flump.ParseErrorSeverity;
+
 import com.threerings.util.XmlUtil;
 
-public class XflKeyframe
+public class XflKeyframe extends XflComponent
 {
     use namespace xflns;
 
@@ -30,8 +32,9 @@ public class XflKeyframe
     /** The label on this keyframe, or null if there isn't one */
     public var label :String;
 
-    public function XflKeyframe (xml :XML) {
+    public function XflKeyframe (baseLocation :String, xml :XML, errors :Vector.<ParseError>) {
         index = XmlUtil.getIntAttr(xml, "index");
+        super(baseLocation + ":" + index, errors);
         duration = XmlUtil.getNumberAttr(xml, "duration", 1);
         label = XmlUtil.getStringAttr(xml, "name", null);
 
@@ -39,13 +42,12 @@ public class XflKeyframe
         for each (var frameEl :XML in xml.elements.elements()) {
             if (frameEl.name().localName == "DOMSymbolInstance") {
                 if (symbolXml != null)  {
-                    throw new XmlReadError("There can be only one symbol instance at a time in a " +
-                        "keyframe", xml);
-                }
-                symbolXml = frameEl;
+                    addError(ParseErrorSeverity.CRIT, "There can be only one symbol instance at " +
+                        "a time in a keyframe.");
+                } else symbolXml = frameEl;
             } else {
-                throw new XmlReadError("Non-symbols may not be in exported movie layers eg " +
-                    frameEl.name, xml);
+                addError(ParseErrorSeverity.CRIT, "Non-symbols may not be in exported movie " +
+                    "layers");
             }
         }
 
