@@ -1,7 +1,7 @@
-<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009"
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
   xmlns:s="library://ns.adobe.com/flex/spark"
   xmlns:mx="library://ns.adobe.com/flex/mx"
-  width="800" height="600" creationComplete="init();">
+  width="1024" height="768" creationComplete="init();">
   <s:layout>
     <s:VerticalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10"/>
   </s:layout>
@@ -9,48 +9,55 @@
   <fx:Script>
     <![CDATA[
     private function init () :void {
-      const screenBounds :Rectangle = Screen.mainScreen.bounds;
-      nativeWindow.x = screenBounds.width - width;
-      nativeWindow.y = 0;
       _exporter = new Exporter(this);
     }
 
     protected var _exporter :Exporter;
     ]]>
   </fx:Script>
-  <s:DataGrid id="libraries" width="65%">
-    <s:typicalItem>
-      <s:DataItem path="multiple/segment/nested/path" modified="s" valid="s"/>
-    </s:typicalItem>
-    <s:columns>
-      <s:ArrayList>
-        <s:GridColumn dataField="path" headerText="Name"/>
-        <s:GridColumn dataField="modified" headerText="Modified"/>
-        <s:GridColumn dataField="valid" headerText="Valid"/>
-      </s:ArrayList>
-    </s:columns>
-    <mx:ArrayCollection/>
-  </s:DataGrid>
-  <s:Form>
-    <s:FormItem label="Import Directory">
-      <s:HGroup>
-        <s:Label id="importRoot" width="300"/>
-        <s:Button id="browseImport" label="..."/>
+  <s:HGroup>
+    <s:DataGrid id="libraries" width="50%" height="300">
+      <s:typicalItem>
+        <s:DataItem path="multiple/segment/nested/path/of/some/depth" modified="" valid=""/>
+      </s:typicalItem>
+      <s:columns>
+        <s:ArrayList>
+          <s:GridColumn dataField="path" headerText="Name"/>
+          <s:GridColumn dataField="modified" headerText="Modified"/>
+          <s:GridColumn dataField="valid" headerText="Valid"/>
+        </s:ArrayList>
+      </s:columns>
+      <mx:ArrayCollection/>
+    </s:DataGrid>
+    <!-- Both the Form and the FormItems need widths on them to make the percentage work -->
+    <s:VGroup width="50%">
+      <s:Form width="50%">
+        <s:FormItem label="Import Directory" width="50%">
+          <s:HGroup>
+            <!-- Explicitly set the width to make it line up with the export form -->
+            <s:Label id="importRoot" width="300"/>
+            <s:Button id="browseImport" width="40" label="..."/>
+          </s:HGroup>
+        </s:FormItem>
+        <s:FormItem label="Export Directory" width="50%">
+          <s:HGroup>
+            <s:Label id="exportRoot" width="300"/>
+            <s:Button id="browseExport" width="40" label="..."/>
+          </s:HGroup>
+        </s:FormItem>
+      </s:Form>
+      <!-- Grumble, don't know how to make this horizontally align in the center -->
+      <s:HGroup paddingTop="10" paddingLeft="160">
+        <s:Button id="export" enabled="false" label="Export"/>
+        <s:Button id="preview" enabled="false" label="Preview"/>
       </s:HGroup>
-    </s:FormItem>
-    <s:FormItem label="Export Directory">
-      <s:HGroup>
-        <s:Label id="exportRoot" width="300"/>
-        <s:Button id="browseExport" label="..."/>
-      </s:HGroup>
-    </s:FormItem>
-  </s:Form>
-  <s:Button id="export" enabled="false" label="Export"/>
-  <s:DataGrid id="errors" width="100%">
+    </s:VGroup>
+  </s:HGroup>
+  <s:DataGrid id="errors" width="100%" height="375">
     <s:typicalItem>
       <s:DataItem severity="Critical"
-        location="multiple/segment/nested/path:symbolName:layerName:12"
-        message="An error message that's hopefully a normal length give or take"/>
+        location="multiple/segment/nested/path/of/some/depth:symbolName:layerName:12"
+        message="An error message that's hopefully a normal length give or take a couple words"/>
     </s:typicalItem>
     <s:columns>
       <s:ArrayList>
@@ -61,4 +68,4 @@
     </s:columns>
     <mx:ArrayCollection/>
   </s:DataGrid>
-</s:Window>
+</s:WindowedApplication>

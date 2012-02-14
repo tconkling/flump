@@ -18,6 +18,7 @@ import flump.xfl.XflTexture;
 
 public class PngExporter
 {
+
     public static function dumpTextures (base :File, library :XflLibrary) :void {
         for each (var tex :XflTexture in library.textures) {
             var klass :Class = library.swf.getSymbol(tex.symbol) as Class;

@@ -23,7 +23,7 @@
     <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.5"/>
     <amxmlc srcdir="${asrc.dir}" libpath="${aslib.path}"
       dest="${deploy.dir}/${ant.project.name}.swf" static-lrsl="true"
-      main="flump/Main.mxml">
+      main="flump/ExportWindow.mxml">
       <arg value="-swf-version=13"/>
     </amxmlc>
   </target>

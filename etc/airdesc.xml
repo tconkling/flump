@@ -6,8 +6,5 @@
   <initialWindow>
     <renderMode>direct</renderMode>
     <content>flump.swf</content>
-    <visible>true</visible>
-    <width>1024</width>
-    <height>560</height>
   </initialWindow>
 </application>

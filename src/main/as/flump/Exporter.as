@@ -25,6 +25,9 @@ import spark.components.List;
 import spark.components.Window;
 import spark.events.GridSelectionEvent;
 
+import starling.core.Starling;
+
+import com.threerings.util.DelayUtil;
 import com.threerings.util.F;
 import com.threerings.util.Log;
 import com.threerings.util.StringUtil;
@@ -42,11 +45,22 @@ public class Exporter
         _libraries.addEventListener(GridSelectionEvent.SELECTION_CHANGE, function (..._) :void {
             log.info("Changed", "selected", _libraries.selectedIndices);
             _win.export.enabled = _libraries.selectedIndices.length > 0;
+            _win.preview.enabled = _libraries.selectedIndices.length == 1;
         });
         _win.export.addEventListener(MouseEvent.CLICK, function (..._) :void {
             for each (var status :DocStatus in _libraries.selectedItems) {
                 exportFlashDocument(status);
             }
+        });
+        _win.preview.addEventListener(MouseEvent.CLICK, function (..._) :void {
+            var previewWindow :PreviewWindow = new PreviewWindow();
+            previewWindow.started = F.callback(DelayUtil.delayFrame, function (..._) :void {
+
+                var preview :Preview = Preview(Starling.current.stage.getChildAt(0));
+                var lib :XflLibrary = _libraries.selectedItem.lib;
+                // TODO - animation selector in Preview
+            });
+            previewWindow.open();
         });
         _importChooser =
             new DirChooser(_settings, "IMPORT_ROOT", _win.importRoot, _win.browseImport);
