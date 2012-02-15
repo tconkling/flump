@@ -14,12 +14,15 @@ public class XflLayer extends XflComponent
     public var name :String;
     public var keyframes :Array;
     public var libraryName :String;
+    public var flipbook :Boolean;
 
-    public function XflLayer (baseLocation :String, xml :XML, errors :Vector.<ParseError>) {
+    public function XflLayer (baseLocation :String, xml :XML, errors :Vector.<ParseError>,
+        flipbook :Boolean) {
         name = XmlUtil.getStringAttr(xml, "name");
+        this.flipbook = flipbook;
         super(baseLocation + ":" + name, errors);
         keyframes = XmlUtil.map(xml.frames.DOMFrame, function (frameEl :XML) :XflKeyframe {
-            return new XflKeyframe(location, frameEl, _errors);
+            return new XflKeyframe(location, frameEl, _errors, flipbook);
         });
         if (keyframes.length == 0) addError(ParseErrorSeverity.INFO, "No keyframes on layer");
         else libraryName = keyframes[0].libraryName;

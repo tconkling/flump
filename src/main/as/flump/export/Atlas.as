@@ -68,8 +68,8 @@ public class Atlas
     public function toXml () :String {
         var xml :String = "<atlas name='" + name + "' filename='" + name + ".png'>\n";
         for each (var tex :PackedTexture in textures) {
-            xml += "  <texture name='" + tex.tex.name + "' xOffset='" + tex.offset.x +
-                "' yOffset='" + tex.offset.y + "' md5='" + tex.tex.md5 +
+            xml += "  <texture name='" + tex.name + "' xOffset='" + tex.offset.x +
+                "' yOffset='" + tex.offset.y + "' md5='" + tex.md5 +
                 "' xAtlas='" + tex.atlasX + "' yAtlas='" + tex.atlasY +
                 "' wAtlas='" + tex.w + "' hAtlas='" + tex.h + "'/>\n";
         }

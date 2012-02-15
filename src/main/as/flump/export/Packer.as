@@ -5,6 +5,8 @@ package flump.export {
 
 import flash.geom.Rectangle;
 
+import flump.xfl.XflAnimation;
+import flump.xfl.XflKeyframe;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;
 
@@ -17,7 +19,13 @@ public class Packer
     public function Packer (lib :XflLibrary) {
         _lib = lib;
         for each (var tex :XflTexture in _lib.textures) {
-            _unpacked.push(new PackedTexture(tex, _lib));
+            _unpacked.push(PackedTexture.fromTexture(tex, _lib));
+        }
+        for each (var anim :XflAnimation in _lib.animations) {
+            if (!anim.flipbook) continue;
+            for each (var kf :XflKeyframe in anim.layers[0].keyframes) {
+                _unpacked.push(PackedTexture.fromFlipbook(anim, kf, lib));
+            }
         }
         _unpacked.sort(Comparators.createReverse(Comparators.createFields(["a", "w", "h"])));
         while (_unpacked.length > 0) pack();

@@ -1,0 +1,40 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" frameRate="30" currentTimeline="1" xflVersion="2.1" creatorInfo="Adobe Flash Professional CS5.5" platform="Macintosh" versionInfo="Saved by Adobe Flash Macintosh 11.5 build 349" majorVersion="11" minorVersion="5" buildNumber="349" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
+     <media>
+          <DOMBitmapItem name="gb_walk_0.png" itemID="4f3c2be4-0000027f" sourceExternalFilepath="./LIBRARY/gb_walk_0.png" sourceLastImported="1329343419" sourcePlatform="macintosh" externalFileCRC32="2439233019" externalFileSize="13445" originalCompressionType="lossless" quality="50" href="gb_walk_0.png" bitmapDataHRef="M 9 1329343460.dat" frameRight="2080" frameBottom="3000"/>
+          <DOMBitmapItem name="gb_walk_1.png" itemID="4f3c2be4-00000284" sourceExternalFilepath="./LIBRARY/gb_walk_1.png" sourceLastImported="1329343419" sourcePlatform="macintosh" externalFileSize="16832" originalCompressionType="lossless" quality="50" href="gb_walk_1.png" bitmapDataHRef="M 10 1329343460.dat" frameRight="2080" frameBottom="3000"/>
+          <DOMBitmapItem name="gb_walk_2.png" itemID="4f3c2be4-00000289" sourceExternalFilepath="./LIBRARY/gb_walk_2.png" sourceLastImported="1329343419" sourcePlatform="macintosh" externalFileSize="18212" originalCompressionType="lossless" quality="50" href="gb_walk_2.png" bitmapDataHRef="M 11 1329343460.dat" frameRight="2080" frameBottom="3000"/>
+          <DOMBitmapItem name="gb_walk_3.png" itemID="4f3c2be4-0000028e" sourceExternalFilepath="./LIBRARY/gb_walk_3.png" sourceLastImported="1329343419" sourcePlatform="macintosh" externalFileSize="14642" originalCompressionType="lossless" quality="50" href="gb_walk_3.png" bitmapDataHRef="M 12 1329343460.dat" frameRight="2080" frameBottom="3000"/>
+          <DOMBitmapItem name="gb_walk_4.png" itemID="4f3c2be5-00000293" sourceExternalFilepath="./LIBRARY/gb_walk_4.png" sourceLastImported="1329343419" sourcePlatform="macintosh" externalFileSize="16525" originalCompressionType="lossless" quality="50" href="gb_walk_4.png" bitmapDataHRef="M 13 1329343461.dat" frameRight="2080" frameBottom="3000"/>
+          <DOMBitmapItem name="gb_walk_5.png" itemID="4f3c2be5-00000298" sourceExternalFilepath="./LIBRARY/gb_walk_5.png" sourceLastImported="1329343419" sourcePlatform="macintosh" externalFileSize="16558" originalCompressionType="lossless" quality="50" href="gb_walk_5.png" bitmapDataHRef="M 14 1329343461.dat" frameRight="2080" frameBottom="3000"/>
+     </media>
+     <symbols>
+          <Include href="guybrush.xml" itemID="4f3c29eb-00000259" lastModified="1329344003"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="Scene 1">
+               <layers>
+                    <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="guybrush" centerPoint3DX="260" centerPoint3DY="151">
+                                             <matrix>
+                                                  <Matrix tx="260" ty="151"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <PrinterSettings platform="macintosh"/>
+     <publishHistory>
+          <PublishItem publishSize="24564" publishTime="1329345470" publishDebug="true"/>
+          <PublishItem publishSize="24550" publishTime="1329345458" publishDebug="true"/>
+     </publishHistory>
+</DOMDocument>

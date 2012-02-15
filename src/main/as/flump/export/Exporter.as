@@ -124,7 +124,7 @@ public class Exporter
                     trace(err);
                 }
                 status.updateValid(Ternary.of(lib.valid));
-                if (status.path == "shapes") {
+                if (status.path == "guybrush") {
                     try {
                         exportFlashDocument(status);
                     } catch (e :Error) {

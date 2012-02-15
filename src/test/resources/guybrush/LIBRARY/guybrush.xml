@@ -1,0 +1,66 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="guybrush" itemID="4f3c29eb-00000259" linkageExportForAS="true" linkageClassName="guybrush" lastModified="1329344003">
+  <timeline>
+    <DOMTimeline name="guybrush" currentFrame="23">
+      <layers>
+        <DOMLayer name="snapshots" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="gb_walk_0.png">
+                  <matrix>
+                    <Matrix tx="-52" ty="-75"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="4" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="gb_walk_1.png">
+                  <matrix>
+                    <Matrix tx="-52" ty="-75"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="4" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="gb_walk_2.png">
+                  <matrix>
+                    <Matrix tx="-50" ty="-75"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="4" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="gb_walk_3.png">
+                  <matrix>
+                    <Matrix tx="-52" ty="-75"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="4" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="gb_walk_4.png">
+                  <matrix>
+                    <Matrix tx="-52" ty="-75"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="4" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="gb_walk_5.png">
+                  <matrix>
+                    <Matrix tx="-52" ty="-75"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

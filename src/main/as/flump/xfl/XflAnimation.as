@@ -22,16 +22,24 @@ public class XflAnimation extends XflTopLevelComponent
         this.md5 = md5;
         symbol = XmlUtil.getStringAttr(xml, "linkageClassName");
 
-        layers = XmlUtil.map(xml.timeline.DOMTimeline[0].layers.DOMLayer,
-            function (layerEl :XML) :XflLayer {
-                return new XflLayer(location, layerEl, _errors);
+        const layerEls :XMLList = xml.timeline.DOMTimeline[0].layers.DOMLayer;
+        if (XmlUtil.getStringAttr(layerEls[0], "name") == "snapshots") {
+            layers = [new XflLayer(location, layerEls[0], _errors, true)];
+        } else {
+            layers = XmlUtil.map(layerEls, function (layerEl :XML) :XflLayer {
+                return new XflLayer(location, layerEl, _errors, false);
             });
+        }
         log.info("Got animation", "name", name, "layers", layers);
     }
 
     public function checkSymbols (lookup :Set) :void {
-        for each (var layer :XflLayer in layers) layer.checkSymbols(lookup);
+        if (flipbook && !lookup.contains(symbol)) {
+            addError(ParseErrorSeverity.CRIT, "Flipbook movie '" + symbol + "' not exported");
+        } else for each (var layer :XflLayer in layers) layer.checkSymbols(lookup);
     }
+
+    public function get flipbook () :Boolean { return layers[0].flipbook; }
 
     private static const log :Log = Log.getLog(XflAnimation);
 }

@@ -29,12 +29,14 @@ public class XflKeyframe extends XflComponent
     /** The label on this keyframe, or null if there isn't one */
     public var label :String;
 
-    public function XflKeyframe (baseLocation :String, xml :XML, errors :Vector.<ParseError>) {
+    public function XflKeyframe (baseLocation :String, xml :XML, errors :Vector.<ParseError>,
+        flipbook :Boolean) {
         index = XmlUtil.getIntAttr(xml, "index");
         super(baseLocation + ":" + index, errors);
         duration = XmlUtil.getNumberAttr(xml, "duration", 1);
         label = XmlUtil.getStringAttr(xml, "name", null);
 
+        if (flipbook) return;
         var symbolXml :XML;
         for each (var frameEl :XML in xml.elements.elements()) {
             if (frameEl.name().localName == "DOMSymbolInstance") {

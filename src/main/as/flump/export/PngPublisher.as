@@ -19,7 +19,7 @@ public class PngPublisher
 {
     public static function dumpTextures (base :File, library :XflLibrary) :void {
         for each (var tex :XflTexture in library.textures) {
-            const packed :PackedTexture = new PackedTexture(tex, library);
+            const packed :PackedTexture = PackedTexture.fromTexture(tex, library);
             packed.publish(tex.exportPath(base));
             tex.offset = packed.offset;
         }
