@@ -12,6 +12,11 @@
     <delete dir="${deploy.dir}"/>
   </target>
 
+  <target name="flexserver" depends="-init-ooo">
+    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.5"/>
+    <flexserver/>
+  </target>
+
   <target name="genairkeystore" depends="-init-ooo">
     <fail unless="PASSWORD" message="Define the cert password with -DPASSWORD=pass to generate a cert"/>
     <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.5"/>
