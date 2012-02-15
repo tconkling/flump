@@ -125,6 +125,15 @@ public class Exporter
                     trace(err);
                 }
                 status.updateValid(Ternary.of(lib.valid));
+                if (status.path == "shapes") {
+                    try {
+                        exportFlashDocument(status);
+                    } catch (e :Error) {
+                        log.warning("Blew up", e);
+                    } finally {
+                        NA.exit(0);
+                    }
+                }
             });
         } else loadFla(status.file);
     }

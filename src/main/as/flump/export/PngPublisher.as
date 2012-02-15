@@ -4,6 +4,7 @@
 package flump.export {
 
 import flash.display.BitmapData;
+import flash.display.DisplayObject;
 import flash.display.Sprite;
 import flash.filesystem.File;
 import flash.filesystem.FileMode;
@@ -18,13 +19,15 @@ import flump.xfl.XflTexture;
 
 public class PngPublisher
 {
-
     public static function dumpTextures (base :File, library :XflLibrary) :void {
+        const images :Vector.<DisplayObject> = new Vector.<DisplayObject>();
         for each (var tex :XflTexture in library.textures) {
             var klass :Class = library.swf.getSymbol(tex.symbol) as Class;
             var sprite :Sprite = (new klass()) as Sprite;
+            images.push(sprite);
             tex.offset = export(tex.exportPath(base), sprite);
         }
+        new Packer(images);
     }
 
     public static function export (dest :File, toExport :Sprite) :Point {
