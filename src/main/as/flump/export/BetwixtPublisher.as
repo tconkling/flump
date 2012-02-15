@@ -20,12 +20,8 @@ import com.threerings.util.XmlUtil;
 
 public class BetwixtPublisher
 {
-    public static function makeExportLocation(lib :XflLibrary, exportDir :File) :File {
-        return exportDir.resolvePath(lib.location + ".xml");
-    }
-
     public static function modified(lib :XflLibrary, exportDir :File) :Boolean {
-        const exportLoc :File = makeExportLocation(lib, exportDir);
+        const exportLoc :File = exportDir.resolvePath(lib.location + "/resources.xml");
         if (!exportLoc.exists) return true;
 
         const libMd5s :Map = Maps.newMapOf(String);
@@ -37,14 +33,17 @@ public class BetwixtPublisher
         export.open(exportLoc, FileMode.READ);
         var exportBytes :ByteArray = new ByteArray();
         export.readBytes(exportBytes);
-        for each (var resource :XML in bytesToXML(exportBytes).elements()) {
-            exportMd5s.put(XmlUtil.getStringAttr(resource, "name"),
-                XmlUtil.getStringAttr(resource, "md5"));
-        }
+        var xml :XML = bytesToXML(exportBytes);
+        function addMd5(el :XML) :void {
+            exportMd5s.put(XmlUtil.getStringAttr(el, "name"), XmlUtil.getStringAttr(el, "md5"));
+        };
+        // Add md5s one and two levels deep in the resource xml
+        for each (var res :XML in xml.*.(hasOwnProperty('@md5'))) addMd5(res);
+        for each (res in xml.*.*.(hasOwnProperty('@md5'))) addMd5(res);
         return !exportMd5s.equals(libMd5s);
     }
 
-    public static function export (lib :XflLibrary, source :File, exportDir :File) :void {
+    public static function publish (lib :XflLibrary, source :File, exportDir :File) :void {
         const packer :Packer = new Packer(lib);
         const destDir :File = exportDir.resolvePath(lib.location);
         destDir.createDirectory();
