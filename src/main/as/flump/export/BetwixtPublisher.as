@@ -3,6 +3,7 @@
 
 package flump.export {
 
+import flash.display.DisplayObject;
 import flash.filesystem.File;
 import flash.filesystem.FileMode;
 import flash.filesystem.FileStream;
@@ -47,6 +48,11 @@ public class BetwixtPublisher
     public static function export (lib :XflLibrary, source :File, exportDir :File) :void {
         const dest :File = exportDir.resolvePath(lib.location + ".xml");
         const out :FileStream = new FileStream();
+        const images :Vector.<PackedTexture> = new Vector.<PackedTexture>();
+        for each (var tex :XflTexture in lib.textures) {
+            images.push(new PackedTexture(tex, PngPublisher.createSprite(lib, tex)));
+        }
+        const packer :Packer = new Packer(images);
         out.open(dest, FileMode.WRITE);
         out.writeUTFBytes("<resources>\n");
         for each (var anim :XflAnimation in lib.animations) {
@@ -60,12 +66,9 @@ public class BetwixtPublisher
             out.writeBytes(bytes);
             out.writeUTFBytes('\n  </movie>\n');
         }
-        for each (var tex :XflTexture in lib.textures) {
-            out.writeUTFBytes("  <texture name='" + tex.name + "' filename='" + tex.symbol +
-                ".png' xOffset='" + tex.offset.x + "' yOffset='" + tex.offset.y +
-                "' md5='" + tex.md5 + "'/>\n");
+        for (var ii :int = 0; ii < packer.atlases.length; ii++) {
+            out.writeUTFBytes(packer.atlases[ii].toXml(lib.location + "/atlas" + ii));
         }
-
         out.writeUTFBytes("</resources>");
     }
     private static const log :Log = Log.getLog(BetwixtPublisher);

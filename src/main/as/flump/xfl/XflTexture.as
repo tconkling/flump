@@ -23,5 +23,6 @@ public class XflTexture extends XflTopLevelComponent
     }
 
     public function exportPath (base :File) :File { return base.resolvePath(symbol + '.png') }
+
 }
 }

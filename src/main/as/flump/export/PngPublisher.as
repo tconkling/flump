@@ -19,15 +19,15 @@ import flump.xfl.XflTexture;
 
 public class PngPublisher
 {
+    public static function createSprite (lib :XflLibrary, tex :XflTexture) :Sprite {
+        var klass :Class = Class(lib.swf.getSymbol(tex.symbol));
+        return Sprite(new klass());
+    }
+
     public static function dumpTextures (base :File, library :XflLibrary) :void {
-        const images :Vector.<DisplayObject> = new Vector.<DisplayObject>();
         for each (var tex :XflTexture in library.textures) {
-            var klass :Class = library.swf.getSymbol(tex.symbol) as Class;
-            var sprite :Sprite = (new klass()) as Sprite;
-            images.push(sprite);
-            tex.offset = export(tex.exportPath(base), sprite);
+            tex.offset = export(tex.exportPath(base), createSprite(library, tex));
         }
-        new Packer(images).publish(base);
     }
 
     public static function export (dest :File, toExport :Sprite) :Point {
