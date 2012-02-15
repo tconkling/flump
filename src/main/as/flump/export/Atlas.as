@@ -70,7 +70,8 @@ public class Atlas
         for each (var tex :PackedTexture in textures) {
             xml += "  <texture name='" + tex.tex.name + "' xOffset='" + tex.offset.x +
                 "' yOffset='" + tex.offset.y + "' md5='" + tex.tex.md5 +
-                "' xAtlas='" + tex.atlasX + "' yAtlas='" + tex.atlasY + "'/>\n";
+                "' xAtlas='" + tex.atlasX + "' yAtlas='" + tex.atlasY +
+                "' wAtlas='" + tex.w + "' hAtlas='" + tex.h + "'/>\n";
         }
         return xml + "</atlas>\n";
     }
