@@ -23,6 +23,8 @@ public class PackedTexture
         this.tex = tex;
         holder.addChild(image);
         const bounds :Rectangle = image.getBounds(holder);
+        image.x = -bounds.x;
+        image.y = -bounds.y;
         offset = new Point(bounds.x, bounds.y);
         w = Math.ceil(bounds.width);
         h = Math.ceil(bounds.height);
