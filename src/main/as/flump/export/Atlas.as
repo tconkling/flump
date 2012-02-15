@@ -3,15 +3,24 @@
 
 package flump.export {
 
+import flash.display.BitmapData;
+import flash.display.Sprite;
+import flash.filesystem.File;
+import flash.filesystem.FileMode;
+import flash.filesystem.FileStream;
 import flash.geom.Rectangle;
+
+import com.adobe.images.PNGEncoder;
 
 public class Atlas
 {
-    public var w :int, h :int;
+    public var name :String;
+    public var w :int, h :int, id :int;
     public var bins :Vector.<Rectangle> = new Vector.<Rectangle>();
     public const textures :Vector.<PackedTexture> = new Vector.<PackedTexture>();
 
-    public function Atlas(w :int, h :int) {
+    public function Atlas(name :String, w :int, h :int) {
+        this.name = name;
         this.w = w;
         this.h = h;
         bins.push(new Rectangle(0, 0, w, h));
@@ -51,7 +60,24 @@ public class Atlas
         return left;
     }
 
-    public function toXml (name :String) :String {
+    public function publish (dir :File) :void {
+        var constructed :Sprite = new Sprite();
+        for each (var tex :PackedTexture in textures) {
+            constructed.addChild(tex.holder);
+            tex.holder.x = tex.atlasX;
+            tex.holder.y = tex.atlasY;
+        }
+        const bd :BitmapData = new BitmapData(w, h, true);
+        // Clear bitmapdata's default white background with a transparent one
+        bd.fillRect(new Rectangle(0, 0, w, h), 0);
+        bd.draw(constructed);
+        var fs :FileStream = new FileStream();
+        fs.open(dir.resolvePath(name + ".png"), FileMode.WRITE);
+        fs.writeBytes(PNGEncoder.encode(bd));
+        fs.close();
+    }
+
+    public function toXml () :String {
         var xml :String = "<atlas name='" + name + "' filename='" + name + ".png'>\n";
         for each (var tex :PackedTexture in textures) {
             xml += "  <texture name='" + tex.tex.name + "' xOffset='" + tex.offset.x +

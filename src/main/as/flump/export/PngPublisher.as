@@ -4,7 +4,6 @@
 package flump.export {
 
 import flash.display.BitmapData;
-import flash.display.DisplayObject;
 import flash.display.Sprite;
 import flash.filesystem.File;
 import flash.filesystem.FileMode;

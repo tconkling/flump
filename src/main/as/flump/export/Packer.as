@@ -3,15 +3,10 @@
 
 package flump.export {
 
-import flash.display.BitmapData;
-import flash.display.DisplayObject;
-import flash.display.Sprite;
-import flash.filesystem.File;
-import flash.filesystem.FileMode;
-import flash.filesystem.FileStream;
 import flash.geom.Rectangle;
 
-import com.adobe.images.PNGEncoder;
+import flump.xfl.XflLibrary;
+import flump.xfl.XflTexture;
 
 import com.threerings.util.Comparators;
 
@@ -21,32 +16,14 @@ public class Packer
 
     public const atlases :Vector.<Atlas> = new Vector.<Atlas>();
 
-    public function Packer (toPack :Vector.<PackedTexture>) {
-        _unpacked = toPack;
+    public function Packer (lib :XflLibrary) {
+        for each (var tex :XflTexture in lib.textures) {
+            _unpacked.push(new PackedTexture(tex, PngPublisher.createSprite(lib, tex)));
+        }
         _unpacked.sort(Comparators.createReverse(Comparators.createFields(["a", "w", "h"])));
         var minBin :int = findOptimalMinBin();
-        atlases.push(new Atlas(minBin, minBin));
+        atlases.push(new Atlas(lib.location + "/atlas0", minBin, minBin));
         while (_unpacked.length > 0) pack(_unpacked.shift());
-    }
-
-    public function publish (dir :File) :void {
-        for (var ii :int = 0; ii < atlases.length; ii++) {
-            var atlas :Atlas = atlases[ii];
-            var constructed :Sprite = new Sprite();
-            for each (var tex :PackedTexture in atlas.textures) {
-                constructed.addChild(tex.holder);
-                tex.holder.x = tex.atlasX;
-                tex.holder.y = tex.atlasY;
-            }
-            const bd :BitmapData = new BitmapData(atlas.w, atlas.h, true);
-            // Clear bitmapdata's default white background with a transparent one
-            bd.fillRect(new Rectangle(0, 0, atlas.w, atlas.h), 0);
-            bd.draw(constructed);
-            var fs :FileStream = new FileStream();
-            fs.open(dir.resolvePath(ii + ".png"), FileMode.WRITE);
-            fs.writeBytes(PNGEncoder.encode(bd));
-            fs.close();
-        }
     }
 
     protected function pack (tex :PackedTexture) :void {
@@ -78,6 +55,6 @@ public class Packer
         return BIN_SIZES[BIN_SIZES.length -1];
     }
 
-    protected var _unpacked :Vector.<PackedTexture>;
+    protected var _unpacked :Vector.<PackedTexture> = new Vector.<PackedTexture>();
 }
 }
