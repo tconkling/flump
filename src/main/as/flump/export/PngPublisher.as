@@ -4,11 +4,10 @@
 package flump.export {
 
 import flash.display.BitmapData;
-import flash.display.Sprite;
+import flash.display.DisplayObject;
 import flash.filesystem.File;
 import flash.filesystem.FileMode;
 import flash.filesystem.FileStream;
-import flash.geom.Point;
 import flash.geom.Rectangle;
 
 import com.adobe.images.PNGEncoder;
@@ -18,33 +17,23 @@ import flump.xfl.XflTexture;
 
 public class PngPublisher
 {
-    public static function createSprite (lib :XflLibrary, tex :XflTexture) :Sprite {
-        var klass :Class = Class(lib.swf.getSymbol(tex.symbol));
-        return Sprite(new klass());
-    }
-
     public static function dumpTextures (base :File, library :XflLibrary) :void {
         for each (var tex :XflTexture in library.textures) {
-            tex.offset = export(tex.exportPath(base), createSprite(library, tex));
+            const packed :PackedTexture = new PackedTexture(tex, library);
+            packed.publish(tex.exportPath(base));
+            tex.offset = packed.offset;
         }
     }
-
-    public static function export (dest :File, toExport :Sprite) :Point {
-        const holder :Sprite = new Sprite();
-        holder.addChild(toExport);
-        const bounds :Rectangle = toExport.getBounds(holder);
-        toExport.x = -bounds.x;
-        toExport.y = -bounds.y;
-
-        const bd :BitmapData = new BitmapData(bounds.width, bounds.height, true);
+    public static function publish (dest :File, width :int, height :int,
+            target :DisplayObject) :void {
+        const bd :BitmapData = new BitmapData(width, height, true);
         // Clear bitmapdata's default white background with a transparent one
-        bd.fillRect(new Rectangle(0, 0, bounds.width, bounds.height), 0);
-        bd.draw(holder);
+        bd.fillRect(new Rectangle(0, 0, width, height), 0);
+        bd.draw(target);
         var fs :FileStream = new FileStream();
         fs.open(dest, FileMode.WRITE);
         fs.writeBytes(PNGEncoder.encode(bd));
         fs.close();
-        return new Point(bounds.x, bounds.y);
     }
 }
 }

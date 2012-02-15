@@ -3,14 +3,9 @@
 
 package flump.export {
 
-import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.filesystem.File;
-import flash.filesystem.FileMode;
-import flash.filesystem.FileStream;
 import flash.geom.Rectangle;
-
-import com.adobe.images.PNGEncoder;
 
 public class Atlas
 {
@@ -67,14 +62,7 @@ public class Atlas
             tex.holder.x = tex.atlasX;
             tex.holder.y = tex.atlasY;
         }
-        const bd :BitmapData = new BitmapData(w, h, true);
-        // Clear bitmapdata's default white background with a transparent one
-        bd.fillRect(new Rectangle(0, 0, w, h), 0);
-        bd.draw(constructed);
-        var fs :FileStream = new FileStream();
-        fs.open(dir.resolvePath(name + ".png"), FileMode.WRITE);
-        fs.writeBytes(PNGEncoder.encode(bd));
-        fs.close();
+        PngPublisher.publish(dir.resolvePath(name + ".png"), w, h, constructed);
     }
 
     public function toXml () :String {

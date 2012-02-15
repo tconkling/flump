@@ -18,7 +18,7 @@ public class Packer
 
     public function Packer (lib :XflLibrary) {
         for each (var tex :XflTexture in lib.textures) {
-            _unpacked.push(new PackedTexture(tex, PngPublisher.createSprite(lib, tex)));
+            _unpacked.push(new PackedTexture(tex, lib));
         }
         _unpacked.sort(Comparators.createReverse(Comparators.createFields(["a", "w", "h"])));
         var minBin :int = findOptimalMinBin();
