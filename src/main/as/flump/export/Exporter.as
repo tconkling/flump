@@ -105,8 +105,7 @@ public class Exporter
 
     protected function exportFlashDocument (status :DocStatus) :void {
         const exportDir :File = new File(_exportChooser.dir);
-        PngPublisher.dumpTextures(exportDir, status.lib);
-        BetwixtPublisher.export(status.lib, status.file, exportDir);
+        BetwixtPublisher.publish(status.lib, status.file, exportDir);
         status.updateModified(Ternary.FALSE);
     }
 
