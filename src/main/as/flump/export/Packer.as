@@ -12,34 +12,34 @@ import com.threerings.util.Comparators;
 
 public class Packer
 {
-    public static const BIN_SIZES :Vector.<int> = new <int>[8, 16, 32, 64, 128, 256, 512, 1024];
-
     public const atlases :Vector.<Atlas> = new Vector.<Atlas>();
 
     public function Packer (lib :XflLibrary) {
-        for each (var tex :XflTexture in lib.textures) {
-            _unpacked.push(new PackedTexture(tex, lib));
+        _lib = lib;
+        for each (var tex :XflTexture in _lib.textures) {
+            _unpacked.push(new PackedTexture(tex, _lib));
         }
         _unpacked.sort(Comparators.createReverse(Comparators.createFields(["a", "w", "h"])));
-        var minBin :int = findOptimalMinBin();
-        atlases.push(new Atlas(lib.location + "/atlas0", minBin, minBin));
-        while (_unpacked.length > 0) pack(_unpacked.shift());
+        while (_unpacked.length > 0) pack();
     }
 
-    protected function pack (tex :PackedTexture) :void {
+    protected function pack () :void {
+        const tex :PackedTexture = _unpacked[0];
+        if (tex.w > LARGEST_BIN || tex.h > LARGEST_BIN) throw new Error("Too large to fit in bin");
         for each (var atlas :Atlas in atlases) {
             for each (var bin :Rectangle in atlas.bins) {
                 if (tex.w <= bin.width && tex.h <= bin.height) {
-                    atlas.place(tex, bin, false);
+                    atlas.place(_unpacked.shift(), bin, false);
                     return;
                 } else if (tex.h <= bin.width && tex.w <= bin.height) {
-                    atlas.place(tex, bin, true);
+                    atlas.place(_unpacked.shift(), bin, true);
                     return;
                 }
             }
         }
-        // TODO - allocate another atlas
-        throw new Error("Doesn't fit " + tex);
+        var minBin :int = findOptimalMinBin();
+        atlases.push(new Atlas(_lib.location + "/atlas" + atlases.length, minBin, minBin));
+        pack();
     }
 
     protected function findOptimalMinBin () :int {
@@ -52,9 +52,14 @@ public class Packer
         for each (var size :int in BIN_SIZES) {
             if (size >= maxExtent && size * size >= area) return size;
         }
-        return BIN_SIZES[BIN_SIZES.length -1];
+        return LARGEST_BIN;
     }
 
     protected var _unpacked :Vector.<PackedTexture> = new Vector.<PackedTexture>();
+
+    protected var _lib :XflLibrary;
+
+    private static const BIN_SIZES :Vector.<int> = new <int>[8, 16, 32, 64, 128, 256, 512, 1024];
+    private static const LARGEST_BIN :int = BIN_SIZES[BIN_SIZES.length - 1];
 }
 }
