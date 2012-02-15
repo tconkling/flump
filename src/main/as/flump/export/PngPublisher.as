@@ -27,7 +27,7 @@ public class PngPublisher
             images.push(sprite);
             tex.offset = export(tex.exportPath(base), sprite);
         }
-        new Packer(images);
+        new Packer(images).publish(base);
     }
 
     public static function export (dest :File, toExport :Sprite) :Point {

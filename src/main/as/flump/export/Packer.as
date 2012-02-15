@@ -3,8 +3,15 @@
 
 package flump.export {
 
+import flash.display.BitmapData;
 import flash.display.DisplayObject;
+import flash.display.Sprite;
+import flash.filesystem.File;
+import flash.filesystem.FileMode;
+import flash.filesystem.FileStream;
 import flash.geom.Rectangle;
+
+import com.adobe.images.PNGEncoder;
 
 import com.threerings.util.Comparators;
 
@@ -18,7 +25,27 @@ public class Packer
         _unpacked.sort(Comparators.createReverse(Comparators.createFields(["a", "w", "h"])));
         var minBin :int = findOptimalMinBin();
         _atlases.push(new Atlas(minBin, minBin));
-         while (_unpacked.length > 0) pack(_unpacked.shift());
+        while (_unpacked.length > 0) pack(_unpacked.shift());
+    }
+
+    public function publish (dir :File) :void {
+        for (var ii :int = 0; ii < _atlases.length; ii++) {
+            var atlas :Atlas = _atlases[ii];
+            var constructed :Sprite = new Sprite();
+            for each (var tex :Texture in atlas.textures) {
+                constructed.addChild(tex.holder);
+                tex.holder.x = tex.atlasX;
+                tex.holder.y = tex.atlasY;
+            }
+            const bd :BitmapData = new BitmapData(atlas.w, atlas.h, true);
+            // Clear bitmapdata's default white background with a transparent one
+            bd.fillRect(new Rectangle(0, 0, atlas.w, atlas.h), 0);
+            bd.draw(constructed);
+            var fs :FileStream = new FileStream();
+            fs.open(dir.resolvePath(ii + ".png"), FileMode.WRITE);
+            fs.writeBytes(PNGEncoder.encode(bd));
+            fs.close();
+        }
     }
 
     protected function pack (tex :Texture) :void {
@@ -33,6 +60,7 @@ public class Packer
                 }
             }
         }
+        // TODO - allocate another atlas
         throw new Error("Doesn't fit " + tex);
     }
 
@@ -46,7 +74,7 @@ public class Packer
         for each (var size :int in BIN_SIZES) {
             if (size >= maxExtent && size * size >= area) return size;
         }
-        throw new Error("Need more than one atlas!");
+        return BIN_SIZES[BIN_SIZES.length -1];
     }
 
     protected const _unpacked :Vector.<Texture> = new Vector.<Texture>();
@@ -70,8 +98,6 @@ class Texture {
     public function Texture (image :DisplayObject) {
         holder.addChild(image);
         const bounds :Rectangle = image.getBounds(holder);
-        image.x = -bounds.x;
-        image.y = -bounds.y;
         offset = new Point(bounds.x, bounds.y);
         w = Math.ceil(bounds.width);
         h = Math.ceil(bounds.height);
@@ -102,6 +128,7 @@ class Atlas {
         tex.atlasY = target.y;
         tex.atlasRotated = rotated;
         textures.push(tex);
+        trace("Packer " + tex);
         var used :Rectangle =
             new Rectangle(tex.atlasX, tex.atlasY, rotated ? tex.h : tex.w, rotated ? tex.w : tex.h);
         const newBins :Vector.<Rectangle> = new Vector.<Rectangle>();
