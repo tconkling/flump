@@ -23,7 +23,7 @@ public class XflAnimation extends XflTopLevelComponent
         symbol = XmlUtil.getStringAttr(xml, "linkageClassName");
 
         const layerEls :XMLList = xml.timeline.DOMTimeline[0].layers.DOMLayer;
-        if (XmlUtil.getStringAttr(layerEls[0], "name") == "snapshots") {
+        if (XmlUtil.getStringAttr(layerEls[0], "name") == "flipbook") {
             layers = [new XflLayer(location, layerEls[0], _errors, true)];
         } else {
             layers = XmlUtil.map(layerEls, function (layerEl :XML) :XflLayer {

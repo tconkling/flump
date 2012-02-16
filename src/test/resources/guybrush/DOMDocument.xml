@@ -8,7 +8,7 @@
           <DOMBitmapItem name="gb_walk_5.png" itemID="4f3c2be5-00000298" sourceExternalFilepath="./LIBRARY/gb_walk_5.png" sourceLastImported="1329343419" sourcePlatform="macintosh" externalFileSize="16558" originalCompressionType="lossless" quality="50" href="gb_walk_5.png" bitmapDataHRef="M 14 1329343461.dat" frameRight="2080" frameBottom="3000"/>
      </media>
      <symbols>
-          <Include href="guybrush.xml" itemID="4f3c29eb-00000259" lastModified="1329344003"/>
+          <Include href="guybrush.xml" itemID="4f3c29eb-00000259" lastModified="1329415122"/>
      </symbols>
      <timelines>
           <DOMTimeline name="Scene 1">
@@ -34,6 +34,7 @@
      </timelines>
      <PrinterSettings platform="macintosh"/>
      <publishHistory>
+          <PublishItem publishSize="24582" publishTime="1329412068" publishDebug="true"/>
           <PublishItem publishSize="24564" publishTime="1329345470" publishDebug="true"/>
           <PublishItem publishSize="24550" publishTime="1329345458" publishDebug="true"/>
      </publishHistory>

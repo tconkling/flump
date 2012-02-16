@@ -1,14 +1,14 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="guybrush" itemID="4f3c29eb-00000259" linkageExportForAS="true" linkageClassName="guybrush" lastModified="1329344003">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="guybrush" itemID="4f3c29eb-00000259" linkageExportForAS="true" linkageClassName="guybrush" lastModified="1329415122">
   <timeline>
-    <DOMTimeline name="guybrush" currentFrame="23">
+    <DOMTimeline name="guybrush" currentFrame="20">
       <layers>
-        <DOMLayer name="snapshots" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="flipbook" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="4" keyMode="9728">
               <elements>
                 <DOMBitmapInstance libraryItemName="gb_walk_0.png">
                   <matrix>
-                    <Matrix tx="-52" ty="-75"/>
+                    <Matrix tx="-53" ty="-75"/>
                   </matrix>
                 </DOMBitmapInstance>
               </elements>
