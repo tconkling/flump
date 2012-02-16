@@ -5,9 +5,9 @@ package flump.export {
 
 import flash.geom.Rectangle;
 
-import flump.xfl.XflAnimation;
 import flump.xfl.XflKeyframe;
 import flump.xfl.XflLibrary;
+import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
 
 import com.threerings.util.Comparators;
@@ -21,10 +21,10 @@ public class Packer
         for each (var tex :XflTexture in _lib.textures) {
             _unpacked.push(PackedTexture.fromTexture(tex, _lib));
         }
-        for each (var anim :XflAnimation in _lib.animations) {
-            if (!anim.flipbook) continue;
-            for each (var kf :XflKeyframe in anim.layers[0].keyframes) {
-                _unpacked.push(PackedTexture.fromFlipbook(anim, kf, lib));
+        for each (var movie :XflMovie in _lib.movies) {
+            if (!movie.flipbook) continue;
+            for each (var kf :XflKeyframe in movie.layers[0].keyframes) {
+                _unpacked.push(PackedTexture.fromFlipbook(movie, kf, lib));
             }
         }
         _unpacked.sort(Comparators.createReverse(Comparators.createFields(["a", "w", "h"])));

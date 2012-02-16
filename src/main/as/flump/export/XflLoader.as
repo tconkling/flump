@@ -16,8 +16,8 @@ import executor.load.SwfLoader;
 
 import flump.bytesToXML;
 import flump.xfl.ParseErrorSeverity;
-import flump.xfl.XflAnimation;
 import flump.xfl.XflLibrary;
+import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
 
 import com.threerings.util.F;
@@ -83,9 +83,9 @@ public class XflLoader
                 "md5", md5);
             try {
                 if (isSprite) _library.textures.push(new XflTexture(_library.location, xml, md5));
-                else _library.animations.push(new XflAnimation(_library.location, xml, md5));
+                else _library.movies.push(new XflMovie(_library.location, xml, md5));
             } catch (e :Error) {
-                var type :String = isSprite ? "sprite" : "animation";
+                var type :String = isSprite ? "sprite" : "movie";
                 _library.addError(ParseErrorSeverity.CRIT,
                     "Unable to parse " + type + " in " + file.nativePath, e);
             }

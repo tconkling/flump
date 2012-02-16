@@ -9,8 +9,8 @@ import flash.filesystem.FileStream;
 import flash.utils.ByteArray;
 
 import flump.bytesToXML;
-import flump.xfl.XflAnimation;
 import flump.xfl.XflLibrary;
+import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
 
 import com.threerings.util.Log;
@@ -25,7 +25,7 @@ public class BetwixtPublisher
         if (!exportLoc.exists) return true;
 
         const libMd5s :Map = Maps.newMapOf(String);
-        for each (var anim :XflAnimation in lib.animations) libMd5s.put(anim.name, anim.md5);
+        for each (var movie :XflMovie in lib.movies) libMd5s.put(movie.name, movie.md5);
         for each (var tex :XflTexture in lib.textures) libMd5s.put(tex.name, tex.md5);
 
         const exportMd5s :Map = Maps.newMapOf(String);
@@ -52,12 +52,12 @@ public class BetwixtPublisher
         const out :FileStream = new FileStream();
         out.open(dest, FileMode.WRITE);
         out.writeUTFBytes("<resources>\n");
-        for each (var anim :XflAnimation in lib.animations) {
-            out.writeUTFBytes('  <movie name="' + anim.name + '" md5="' + anim.md5 + '">\n');
+        for each (var movie :XflMovie in lib.movies) {
+            out.writeUTFBytes('  <movie name="' + movie.name + '" md5="' + movie.md5 + '">\n');
 
-            var animFile :File = source.resolvePath("LIBRARY/" + anim.name + ".xml");
+            var movieFile :File = source.resolvePath("LIBRARY/" + movie.name + ".xml");
             var copy :FileStream = new FileStream();
-            copy.open(animFile, FileMode.READ);
+            copy.open(movieFile, FileMode.READ);
             var bytes :ByteArray = new ByteArray();
             copy.readBytes(bytes);
             out.writeBytes(bytes);

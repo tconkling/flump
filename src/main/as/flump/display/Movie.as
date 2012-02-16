@@ -3,8 +3,8 @@
 
 package flump.display {
 
-import flump.xfl.XflAnimation;
 import flump.xfl.XflLayer;
+import flump.xfl.XflMovie;
 
 import starling.display.Sprite;
 
@@ -12,9 +12,9 @@ import com.threerings.util.Map;
 
 public class Movie extends Sprite
 {
-    public function Movie (anim :XflAnimation, xflTextures :Map, textures :Map)
+    public function Movie (movie :XflMovie, xflTextures :Map, textures :Map)
     {
-        for each (var layer :XflLayer in anim.layers) {
+        for each (var layer :XflLayer in movie.layers) {
             _layers.push(new Layer(layer, xflTextures.get(layer.keyframes[0].libraryName),
                 textures.get(layer.keyframes[0].libraryName)));
             addChild(_layers[_layers.length - 1]);

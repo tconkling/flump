@@ -20,8 +20,8 @@ import executor.Future;
 import flump.bytesToXML;
 import flump.export.Ternary;
 import flump.xfl.ParseError;
-import flump.xfl.XflAnimation;
 import flump.xfl.XflLibrary;
+import flump.xfl.XflMovie;
 
 import spark.components.DataGrid;
 import spark.components.List;
@@ -61,7 +61,7 @@ public class Exporter
 
                 var preview :Preview = Preview(Starling.current.stage.getChildAt(0));
                 var lib :XflLibrary = _libraries.selectedItem.lib;
-                // TODO - animation selector in Preview
+                // TODO - movie selector in Preview
             });
             previewWindow.open();
         });
@@ -147,17 +147,17 @@ public class Exporter
             const xmls :Array = F.filter(files, function (fz :FZipFile) :Boolean {
                 return StringUtil.endsWith(fz.filename, ".xml");
             });
-            const anims :Array = F.filter(xmls, function (fz :FZipFile) :Boolean {
+            const movies :Array = F.filter(xmls, function (fz :FZipFile) :Boolean {
                 return StringUtil.startsWith(fz.filename, "LIBRARY/Animations/");
             });
             const textures :Array = F.filter(xmls, function (fz :FZipFile) :Boolean {
                 return StringUtil.startsWith(fz.filename, "LIBRARY/Textures/");
             });
             function toFn (fz :FZipFile) :String { return fz.filename };
-            log.info("Loaded", "bytes", file.data.length, "anims", F.map(anims, toFn),
+            log.info("Loaded", "bytes", file.data.length, "movies", F.map(movies, toFn),
                 "textures", F.map(textures, toFn));
-            for each (var fz :FZipFile in anims) {
-                new XflAnimation(fz.filename, bytesToXML(fz.content), MD5.hashBytes(fz.content));
+            for each (var fz :FZipFile in movies) {
+                new XflMovie(fz.filename, bytesToXML(fz.content), MD5.hashBytes(fz.content));
             }
             NA.exit(0);
         });

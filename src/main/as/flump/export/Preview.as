@@ -10,8 +10,8 @@ import executor.load.ImageLoader;
 import executor.load.LoadedImage;
 
 import flump.display.Movie;
-import flump.xfl.XflAnimation;
 import flump.xfl.XflLibrary;
+import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
 
 import starling.display.Image;
@@ -25,9 +25,9 @@ import com.threerings.display.Animation;
 
 public class Preview extends Sprite
 {
-    public function displayAnimation (base :File, lib :XflLibrary, anim :XflAnimation) :void {
+    public function displayAnimation (base :File, lib :XflLibrary, xflMovie :XflMovie) :void {
         loadTextures(base, lib, function (..._) :void {
-            var movie :Movie = new Movie(anim, _xflTextures, _textures);
+            var movie :Movie = new Movie(xflMovie, _xflTextures, _textures);
             addChild(movie);
             movie.play();
         });

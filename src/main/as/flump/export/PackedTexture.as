@@ -10,9 +10,9 @@ import flash.filesystem.File;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
-import flump.xfl.XflAnimation;
 import flump.xfl.XflKeyframe;
 import flump.xfl.XflLibrary;
+import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
 
 public class PackedTexture
@@ -25,12 +25,12 @@ public class PackedTexture
     public var atlasX :int, atlasY :int;
     public var atlasRotated :Boolean;
 
-    public static function fromFlipbook (anim :XflAnimation, frame :XflKeyframe, lib :XflLibrary)
+    public static function fromFlipbook (movie :XflMovie, frame :XflKeyframe, lib :XflLibrary)
             :PackedTexture {
-        const klass :Class = Class(lib.swf.getSymbol(anim.symbol));
-        const movie :MovieClip = MovieClip(new klass());
-        movie.gotoAndStop(frame.index + 1);
-        return new PackedTexture(anim.md5, anim.name + "_snapshot_" + frame.index, movie);
+        const klass :Class = Class(lib.swf.getSymbol(movie.symbol));
+        const clip :MovieClip = MovieClip(new klass());
+        clip.gotoAndStop(frame.index + 1);
+        return new PackedTexture(movie.md5, movie.name + "_snapshot_" + frame.index, clip);
     }
 
     public static function fromTexture (tex :XflTexture, lib :XflLibrary) :PackedTexture {

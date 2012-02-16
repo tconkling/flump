@@ -7,7 +7,7 @@ import com.threerings.util.Log;
 import com.threerings.util.Set;
 import com.threerings.util.XmlUtil;
 
-public class XflAnimation extends XflTopLevelComponent
+public class XflMovie extends XflTopLevelComponent
 {
     use namespace xflns;
 
@@ -16,7 +16,7 @@ public class XflAnimation extends XflTopLevelComponent
     public var symbol :String;
     public var layers :Array;
 
-    public function XflAnimation (baseLocation :String, xml :XML, md5 :String) {
+    public function XflMovie (baseLocation :String, xml :XML, md5 :String) {
         name = XmlUtil.getStringAttr(xml, "name");
         super(baseLocation + ":" + name);
         this.md5 = md5;
@@ -30,7 +30,7 @@ public class XflAnimation extends XflTopLevelComponent
                 return new XflLayer(location, layerEl, _errors, false);
             });
         }
-        log.info("Got animation", "name", name, "layers", layers);
+        log.info("Got movie", "name", name, "layers", layers);
     }
 
     public function checkSymbols (lookup :Set) :void {
@@ -41,6 +41,6 @@ public class XflAnimation extends XflTopLevelComponent
 
     public function get flipbook () :Boolean { return layers[0].flipbook; }
 
-    private static const log :Log = Log.getLog(XflAnimation);
+    private static const log :Log = Log.getLog(XflMovie);
 }
 }
