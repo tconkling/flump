@@ -29,7 +29,7 @@ public class PackedTexture
             :PackedTexture {
         const klass :Class = Class(lib.swf.getSymbol(anim.symbol));
         const movie :MovieClip = MovieClip(new klass());
-        movie.gotoAndStop(frame.index);
+        movie.gotoAndStop(frame.index + 1);
         return new PackedTexture(anim.md5, anim.name + "_snapshot_" + frame.index, movie);
     }
 
