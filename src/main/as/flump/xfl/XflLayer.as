@@ -13,7 +13,6 @@ public class XflLayer extends XflComponent
 
     public var name :String;
     public var keyframes :Array;
-    public var libraryName :String;
     public var flipbook :Boolean;
 
     public function XflLayer (baseLocation :String, xml :XML, errors :Vector.<ParseError>,
@@ -25,13 +24,10 @@ public class XflLayer extends XflComponent
             return new XflKeyframe(location, frameEl, _errors, flipbook);
         });
         if (keyframes.length == 0) addError(ParseErrorSeverity.INFO, "No keyframes on layer");
-        else libraryName = keyframes[0].libraryName;
     }
 
     public function checkSymbols (symbols :Set) :void {
-        if (libraryName != null && !symbols.contains(libraryName)) {
-            addError(ParseErrorSeverity.CRIT, "Symbol '" + libraryName + "' not exported");
-        }
+        for each (var kf :XflKeyframe in keyframes) kf.checkSymbols(symbols);
     }
 }
 }

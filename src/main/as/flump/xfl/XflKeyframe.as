@@ -6,6 +6,7 @@ package flump.xfl {
 import flash.geom.Matrix;
 import flash.geom.Point;
 
+import com.threerings.util.Set;
 import com.threerings.util.XmlUtil;
 
 public class XflKeyframe extends XflComponent
@@ -64,6 +65,12 @@ public class XflKeyframe extends XflComponent
         const tPoint :XML = symbolXml.transformationPoint.Point[0];
         transformationPoint =
             new Point(XmlUtil.getNumberAttr(tPoint, "x", 0), XmlUtil.getNumberAttr(tPoint, "y", 0));
+    }
+
+    public function checkSymbols (symbols :Set) :void {
+        if (libraryName != null && !symbols.contains(libraryName)) {
+            addError(ParseErrorSeverity.CRIT, "Symbol '" + libraryName + "' not exported");
+        }
     }
 }
 }

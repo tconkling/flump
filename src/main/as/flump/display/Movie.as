@@ -15,8 +15,8 @@ public class Movie extends Sprite
     public function Movie (anim :XflAnimation, xflTextures :Map, textures :Map)
     {
         for each (var layer :XflLayer in anim.layers) {
-            _layers.push(new Layer(layer, xflTextures.get(layer.libraryName),
-                textures.get(layer.libraryName)));
+            _layers.push(new Layer(layer, xflTextures.get(layer.keyframes[0].libraryName),
+                textures.get(layer.keyframes[0].libraryName)));
             addChild(_layers[_layers.length - 1]);
         }
     }
