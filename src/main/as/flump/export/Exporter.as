@@ -130,7 +130,8 @@ public class Exporter
                         previewWindow.started = F.callback(DelayUtil.delayFrame,
                             function (..._) :void {
                             var preview :Preview = Preview(Starling.current.stage.getChildAt(0));
-                            preview.displayAnimation(exportDir, lib, lib.movies[0]);
+                            preview.init(lib);
+                            preview.addChild(preview.loadMovie(lib.movies[1].symbol));
                         });
                         previewWindow.open();
                         //exportFlashDocument(status);

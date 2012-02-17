@@ -17,7 +17,12 @@ public class XflLibrary extends XflTopLevelComponent
         super(location);
     }
 
-    public function lookup (symbol :String) :* { return _symbols[symbol]; }
+    public function lookup (symbol :String, requiredType :Class=null) :* {
+        const result :* = _symbols[symbol];
+        if (result === undefined) throw new Error("Unknown symbol '" + symbol + "'");
+        else if (requiredType != null) return requiredType(result);
+        else return result;
+    }
 
     public function finishLoading () :void {
         for each (var tex :XflTexture in textures) _symbols[tex.name] = tex;
