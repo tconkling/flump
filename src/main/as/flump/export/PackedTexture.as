@@ -31,7 +31,7 @@ public class PackedTexture
         const klass :Class = Class(lib.swf.getSymbol(movie.symbol));
         const clip :MovieClip = MovieClip(new klass());
         clip.gotoAndStop(frame.index + 1);
-        return new PackedTexture(movie.md5, movie.name + "_snapshot_" + frame.index, clip);
+        return new PackedTexture(movie.md5, movie.name + "_flipbook_" + frame.index, clip);
     }
 
     public static function fromTexture (tex :XflTexture, lib :XflLibrary) :PackedTexture {
