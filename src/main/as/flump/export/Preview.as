@@ -26,11 +26,11 @@ public class Preview extends Sprite
     }
 
     public function loadMovie (symbol :String) :Movie {
-        return new Movie(_lib.lookup(symbol, XflMovie), loadSymbol);
+        return new Movie(_lib.get(symbol, XflMovie), loadSymbol);
     }
 
     public function loadTexture (symbol :String) :DisplayObject {
-        const xflTex :XflTexture = _lib.lookup(symbol, XflTexture);
+        const xflTex :XflTexture = _lib.get(symbol, XflTexture);
         if (!_textures.hasOwnProperty(symbol)) {
             const packed :PackedTexture = PackedTexture.fromTexture(xflTex, _lib);
             _textures[symbol] = Texture.fromBitmapData(packed.toBitmapData());
@@ -45,7 +45,7 @@ public class Preview extends Sprite
     }
 
     public function loadSymbol (symbol :String) :DisplayObject {
-        const symbolItem :* = _lib.lookup(symbol);
+        const symbolItem :* = _lib.get(symbol);
         if (symbolItem is XflTexture) return loadTexture(XflTexture(symbolItem).symbol);
         else return loadMovie(XflMovie(symbolItem).symbol);
     }

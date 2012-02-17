@@ -17,7 +17,7 @@ public class XflLibrary extends XflTopLevelComponent
         super(location);
     }
 
-    public function lookup (symbol :String, requiredType :Class=null) :* {
+    public function get (symbol :String, requiredType :Class=null) :* {
         const result :* = _symbols[symbol];
         if (result === undefined) throw new Error("Unknown symbol '" + symbol + "'");
         else if (requiredType != null) return requiredType(result);
