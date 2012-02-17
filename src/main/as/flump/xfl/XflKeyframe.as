@@ -30,6 +30,9 @@ public class XflKeyframe extends XflComponent
     /** The label on this keyframe, or null if there isn't one */
     public var label :String;
 
+    /** Exploded values from matrix */
+    public var x :Number, y :Number, scaleX :Number, scaleY :Number, rotation :Number;
+
     public function XflKeyframe (baseLocation :String, xml :XML, errors :Vector.<ParseError>,
         flipbook :Boolean) {
         index = XmlUtil.getIntAttr(xml, "index");
@@ -65,6 +68,14 @@ public class XflKeyframe extends XflComponent
         const tPoint :XML = symbolXml.transformationPoint.Point[0];
         transformationPoint =
             new Point(XmlUtil.getNumberAttr(tPoint, "x", 0), XmlUtil.getNumberAttr(tPoint, "y", 0));
+
+        x = matrix.tx;
+        y = matrix.ty;
+        var py :Point = matrix.deltaTransformPoint(new Point(1, 0));
+        rotation = Math.atan2(py.y, py.x);
+        scaleX = Math.sqrt((matrix.a * matrix.a) + (matrix.b * matrix.b));
+        scaleY = Math.sqrt((matrix.c * matrix.c) + (matrix.d * matrix.d));
+
     }
 
     public function checkSymbols (symbols :Set) :void {

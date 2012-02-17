@@ -14,6 +14,7 @@ import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
 
+import starling.display.DisplayObject;
 import starling.display.Image;
 import starling.display.Sprite;
 import starling.textures.Texture;
@@ -27,9 +28,14 @@ public class Preview extends Sprite
 {
     public function displayAnimation (base :File, lib :XflLibrary, xflMovie :XflMovie) :void {
         loadTextures(base, lib, function (..._) :void {
-            var movie :Movie = new Movie(xflMovie, _xflTextures, _textures);
+            var movie :Movie = new Movie(xflMovie, function (symbol :String) :DisplayObject {
+                var xflTex :XflTexture = _xflTextures.get(symbol);
+                var image :Image = new Image(_textures.get(symbol));
+                image.x = xflTex.offset.x;
+                image.y = xflTex.offset.y;
+                return image;
+            });
             addChild(movie);
-            movie.play();
         });
     }
 

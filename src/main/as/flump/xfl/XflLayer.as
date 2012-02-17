@@ -12,7 +12,7 @@ public class XflLayer extends XflComponent
     use namespace xflns;
 
     public var name :String;
-    public var keyframes :Array;
+    public const keyframes :Vector.<XflKeyframe> = new Vector.<XflKeyframe>();
     public var flipbook :Boolean;
 
     public function XflLayer (baseLocation :String, xml :XML, errors :Vector.<ParseError>,
@@ -20,9 +20,9 @@ public class XflLayer extends XflComponent
         name = XmlUtil.getStringAttr(xml, "name");
         this.flipbook = flipbook;
         super(baseLocation + ":" + name, errors);
-        keyframes = XmlUtil.map(xml.frames.DOMFrame, function (frameEl :XML) :XflKeyframe {
-            return new XflKeyframe(location, frameEl, _errors, flipbook);
-        });
+        for each (var frameEl :XML in xml.frames.DOMFrame) {
+            keyframes.push(new XflKeyframe(location, frameEl, _errors, flipbook));
+        }
         if (keyframes.length == 0) addError(ParseErrorSeverity.INFO, "No keyframes on layer");
     }
 
