@@ -12,6 +12,7 @@ import flash.geom.Rectangle;
 
 import com.adobe.images.PNGEncoder;
 
+import flump.SwfTexture;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;
 
@@ -19,7 +20,7 @@ public class PngPublisher
 {
     public static function dumpTextures (base :File, library :XflLibrary) :void {
         for each (var tex :XflTexture in library.textures) {
-            const packed :PackedTexture = PackedTexture.fromTexture(tex, library);
+            const packed :SwfTexture = SwfTexture.fromTexture(library.swf, tex);
             packed.publish(tex.exportPath(base));
         }
     }

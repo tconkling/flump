@@ -18,6 +18,7 @@ import executor.Executor;
 import executor.Future;
 
 import flump.bytesToXML;
+import flump.display.Movie;
 import flump.export.Ternary;
 import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;
@@ -124,14 +125,17 @@ public class Exporter
                     trace(err);
                 }
                 status.updateValid(Ternary.of(lib.valid));
-                if (status.path == "squaredance") {
+                if (status.path == "guybrush") {
                     try {
                         var previewWindow :PreviewWindow = new PreviewWindow();
                         previewWindow.started = F.callback(DelayUtil.delayFrame,
                             function (..._) :void {
                             var preview :Preview = Preview(Starling.current.stage.getChildAt(0));
                             preview.init(lib);
-                            preview.addChild(preview.loadMovie(lib.movies[1].symbol));
+                            const movie :Movie = preview.loadMovie(lib.movies[0].symbol);
+                            movie.x = 200;
+                            movie.y = 200;
+                            preview.addChild(movie);
                         });
                         previewWindow.open();
                         //exportFlashDocument(status);

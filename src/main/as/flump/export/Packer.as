@@ -5,6 +5,7 @@ package flump.export {
 
 import flash.geom.Rectangle;
 
+import flump.SwfTexture;
 import flump.xfl.XflKeyframe;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
@@ -19,12 +20,12 @@ public class Packer
     public function Packer (lib :XflLibrary) {
         _lib = lib;
         for each (var tex :XflTexture in _lib.textures) {
-            _unpacked.push(PackedTexture.fromTexture(tex, _lib));
+            _unpacked.push(SwfTexture.fromTexture(_lib.swf, tex));
         }
         for each (var movie :XflMovie in _lib.movies) {
             if (!movie.flipbook) continue;
             for each (var kf :XflKeyframe in movie.layers[0].keyframes) {
-                _unpacked.push(PackedTexture.fromFlipbook(movie, kf, lib));
+                _unpacked.push(SwfTexture.fromFlipbook(lib.swf, movie, kf.index));
             }
         }
         _unpacked.sort(Comparators.createReverse(Comparators.createFields(["a", "w", "h"])));
@@ -32,7 +33,7 @@ public class Packer
     }
 
     protected function pack () :void {
-        const tex :PackedTexture = _unpacked[0];
+        const tex :SwfTexture = _unpacked[0];
         if (tex.w > LARGEST_BIN || tex.h > LARGEST_BIN) throw new Error("Too large to fit in bin");
         for each (var atlas :Atlas in atlases) {
             for each (var bin :Rectangle in atlas.bins) {
@@ -53,7 +54,7 @@ public class Packer
     protected function findOptimalMinBin () :int {
         var area :int = 0;
         var maxExtent :int = 0;
-        for each (var tex :PackedTexture in _unpacked) {
+        for each (var tex :SwfTexture in _unpacked) {
             area += tex.a;
             maxExtent = Math.max(maxExtent, tex.w, tex.h);
         }
@@ -63,7 +64,7 @@ public class Packer
         return LARGEST_BIN;
     }
 
-    protected var _unpacked :Vector.<PackedTexture> = new Vector.<PackedTexture>();
+    protected var _unpacked :Vector.<SwfTexture> = new Vector.<SwfTexture>();
 
     protected var _lib :XflLibrary;
 

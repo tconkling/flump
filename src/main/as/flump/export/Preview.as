@@ -6,8 +6,8 @@ package flump.export {
 import flash.display.BitmapData;
 import flash.utils.Dictionary;
 
+import flump.SwfTexture;
 import flump.display.Movie;
-import flump.xfl.XflKeyframe;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
@@ -33,17 +33,16 @@ public class Preview extends Sprite
     public function loadTexture (symbol :String) :DisplayObject {
         if (!_textures.hasOwnProperty(symbol)) {
             const match :Object = FLIPBOOK_TEXTURE.exec(symbol);
-            var packed :PackedTexture;
+            var packed :SwfTexture;
             if (match == null)  {
-                packed = PackedTexture.fromTexture(_lib.get(symbol, XflTexture), _lib);
+                packed = SwfTexture.fromTexture(_lib.swf, _lib.get(symbol, XflTexture));
             } else {
                 const movieSymbol :String = match[1];
                 const frame :int = int(match[2]);
                 const movie :XflMovie = _lib.get(movieSymbol, XflMovie);
                 Preconditions.checkState(movie.flipbook,
                     "Got non-flipbook movie for flipbook texture '" + symbol + "'?");
-                const kf :XflKeyframe = movie.layers[0].keyframeForFrame(frame)
-                packed = PackedTexture.fromFlipbook(movie, kf, _lib);
+                packed = SwfTexture.fromFlipbook(_lib.swf, movie, frame);
             }
             _textures[symbol] = Texture.fromBitmapData(packed.toBitmapData());
             _textureOffsets[symbol] = packed.offset;

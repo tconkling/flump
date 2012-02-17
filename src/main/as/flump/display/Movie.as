@@ -111,6 +111,7 @@ public class Movie extends Sprite
     private static const NO_FRAME :int = -1;
 }
 }
+
 import flump.display.Movie;
 import flump.xfl.XflKeyframe;
 import flump.xfl.XflLayer;
