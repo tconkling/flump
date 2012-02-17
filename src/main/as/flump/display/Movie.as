@@ -13,10 +13,16 @@ import starling.events.Event;
 public class Movie extends Sprite
 {
     public function Movie (src :XflMovie, symbolToDisplayObject :Function) {
+        name = src.symbol;
         _ticker = new Ticker(advanceTime);
-        _layers = new Vector.<Layer>(src.layers.length, true);
-        for (var ii :int = 0; ii < _layers.length; ii++) {
-            _layers[ii] = new Layer(this, src.layers[ii], symbolToDisplayObject);
+        if (src.flipbook) {
+            _layers = new Vector.<Layer>(1, true);
+            _layers[0] = new Layer(this, src.layers[0], symbolToDisplayObject, true)
+        } else {
+            _layers = new Vector.<Layer>(src.layers.length, true);
+            for (var ii :int = 0; ii < _layers.length; ii++) {
+                _layers[ii] = new Layer(this, src.layers[ii], symbolToDisplayObject, false);
+            }
         }
         _duration = 1; // TODO - get from labels
         goto(0, true, false);
@@ -119,27 +125,28 @@ class Layer {
     // If the keyframe has changed since the last drawFrame
     public var changedKeyframe :Boolean;
 
-    public function Layer (movie :Movie, src :XflLayer, createDisplayObject :Function) :void {
+    public function Layer (movie :Movie, src :XflLayer, createDisplayObject :Function,
+            flipbook :Boolean) {
         keyframes = src.keyframes;
         this.movie = movie;
         var lastSymbol :String;
         for (var ii :int = 0; ii < keyframes.length && lastSymbol == null; ii++) {
             lastSymbol = keyframes[ii].symbol;
         }
-        if (lastSymbol == null) movie.addChild(new Sprite());// Label only layer
+        if (!flipbook && lastSymbol == null) movie.addChild(new Sprite());// Label only layer
         else {
-            var multipleSymbols :Boolean;
-            for each (var kf :XflKeyframe in keyframes) {
-                if (kf.symbol != lastSymbol) {
-                    multipleSymbols = true;
-                    break;
-                }
+            var multipleSymbols :Boolean = flipbook;
+            for (ii = 0; ii < keyframes.length && !multipleSymbols; ii++) {
+                multipleSymbols = keyframes[ii].symbol != lastSymbol;
             }
             if (!multipleSymbols) movie.addChild(createDisplayObject(lastSymbol));
             else {
-                displays = new Vector.<DisplayObject>(keyframes.length);
-                for each (kf in keyframes) {
-                    var display :DisplayObject = createDisplayObject(kf.symbol);
+                displays = new Vector.<DisplayObject>();
+                for each (var kf :XflKeyframe in keyframes) {
+                    var kfSymbol :String;
+                    if (flipbook) kfSymbol = movie.name + "_flipbook_" + kf.index;
+                    else kfSymbol = kf.symbol;
+                    var display :DisplayObject = createDisplayObject(kfSymbol);
                     displays.push(display);
                     display.name = src.name;
                 }

@@ -31,7 +31,8 @@ public class XflKeyframe extends XflComponent
     public var label :String;
 
     /** Exploded values from matrix */
-    public var x :Number, y :Number, scaleX :Number, scaleY :Number, rotation :Number;
+    public var x :Number = 0.0, y :Number = 0.0, scaleX :Number = 1.0, scaleY :Number = 1.0,
+        rotation :Number = 0.0;
 
     public function XflKeyframe (baseLocation :String, xml :XML, errors :Vector.<ParseError>,
         flipbook :Boolean) {

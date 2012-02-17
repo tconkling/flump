@@ -27,6 +27,14 @@ public class XflLayer extends XflComponent
         if (keyframes.length == 0) addError(ParseErrorSeverity.INFO, "No keyframes on layer");
     }
 
+    public function keyframeForFrame (frame :int) :XflKeyframe {
+        for (var ii :int = 1; ii < keyframes.length; ii++) {
+            if (keyframes[ii].index > frame) return keyframes[ii - 1];
+        }
+        return keyframes[keyframes.length - 1];
+    }
+
+
     public function checkSymbols (symbols :Dictionary) :void {
         for each (var kf :XflKeyframe in keyframes) kf.checkSymbols(symbols);
     }
