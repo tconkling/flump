@@ -124,13 +124,20 @@ public class Exporter
                     trace(err);
                 }
                 status.updateValid(Ternary.of(lib.valid));
-                if (status.path == "guybrush") {
+                if (status.path == "squaredance") {
                     try {
-                        exportFlashDocument(status);
+                        var previewWindow :PreviewWindow = new PreviewWindow();
+                        previewWindow.started = F.callback(DelayUtil.delayFrame,
+                            function (..._) :void {
+                            var preview :Preview = Preview(Starling.current.stage.getChildAt(0));
+                            preview.displayAnimation(exportDir, lib, lib.movies[0]);
+                        });
+                        previewWindow.open();
+                        //exportFlashDocument(status);
                     } catch (e :Error) {
                         log.warning("Blew up", e);
                     } finally {
-                        NA.exit(0);
+                        //NA.exit(0);
                     }
                 }
             });

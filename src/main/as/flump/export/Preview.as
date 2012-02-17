@@ -31,8 +31,13 @@ public class Preview extends Sprite
         loadTextures(base, lib, function (..._) :void {
             var movie :Movie = new Movie(xflMovie, function (symbol :String) :DisplayObject {
                 const xflTex :XflTexture = _xflTextures.get(symbol);
-                const bd :BitmapData = PackedTexture.fromTexture(xflTex, lib).toBitmapData();
-                return new Image(Texture.fromBitmapData(bd));
+                const packed :PackedTexture = PackedTexture.fromTexture(xflTex, lib);
+                const image :Image = new Image(Texture.fromBitmapData(packed.toBitmapData()));
+                image.x = packed.offset.x;
+                image.y = packed.offset.y;
+                const holder :Sprite = new Sprite();
+                holder.addChild(image);
+                return holder;
             });
             addChild(movie);
         });
