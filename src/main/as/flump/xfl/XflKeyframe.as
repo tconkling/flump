@@ -5,8 +5,8 @@ package flump.xfl {
 
 import flash.geom.Matrix;
 import flash.geom.Point;
+import flash.utils.Dictionary;
 
-import com.threerings.util.Set;
 import com.threerings.util.XmlUtil;
 
 public class XflKeyframe extends XflComponent
@@ -19,7 +19,7 @@ public class XflKeyframe extends XflComponent
     public var duration :Number;
 
     /** The name of the symbol in this keyframe, or null if there is no symbol. */
-    public var libraryName :String;
+    public var symbol :String;
 
     /** The transform of the symbol in this keyframe, or null if libraryName is null. */
     public var matrix :Matrix;
@@ -56,7 +56,7 @@ public class XflKeyframe extends XflComponent
 
         if (symbolXml == null) return; // Purely labelled frame
 
-        libraryName = XmlUtil.getStringAttr(symbolXml, "libraryItemName");
+        symbol = XmlUtil.getStringAttr(symbolXml, "libraryItemName");
 
 
         const matrixXml :XML = symbolXml.matrix.Matrix[0];
@@ -78,9 +78,9 @@ public class XflKeyframe extends XflComponent
 
     }
 
-    public function checkSymbols (symbols :Set) :void {
-        if (libraryName != null && !symbols.contains(libraryName)) {
-            addError(ParseErrorSeverity.CRIT, "Symbol '" + libraryName + "' not exported");
+    public function checkSymbols (symbols :Dictionary) :void {
+        if (symbol != null && !symbols.hasOwnProperty(symbol)) {
+            addError(ParseErrorSeverity.CRIT, "Symbol '" + symbol + "' not exported");
         }
     }
 }

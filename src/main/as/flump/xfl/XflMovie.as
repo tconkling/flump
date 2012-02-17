@@ -3,8 +3,9 @@
 
 package flump.xfl {
 
+import flash.utils.Dictionary;
+
 import com.threerings.util.Log;
-import com.threerings.util.Set;
 import com.threerings.util.XmlUtil;
 
 public class XflMovie extends XflTopLevelComponent
@@ -33,8 +34,8 @@ public class XflMovie extends XflTopLevelComponent
         log.info("Got movie", "name", name, "layers", layers);
     }
 
-    public function checkSymbols (lookup :Set) :void {
-        if (flipbook && !lookup.contains(symbol)) {
+    public function checkSymbols (lookup :Dictionary) :void {
+        if (flipbook && !lookup.hasOwnProperty(symbol)) {
             addError(ParseErrorSeverity.CRIT, "Flipbook movie '" + symbol + "' not exported");
         } else for each (var layer :XflLayer in layers) layer.checkSymbols(lookup);
     }

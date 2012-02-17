@@ -124,13 +124,13 @@ class Layer {
         this.movie = movie;
         var lastSymbol :String;
         for (var ii :int = 0; ii < keyframes.length && lastSymbol == null; ii++) {
-            lastSymbol = keyframes[ii].libraryName;
+            lastSymbol = keyframes[ii].symbol;
         }
         if (lastSymbol == null) movie.addChild(new Sprite());// Label only layer
         else {
             var multipleSymbols :Boolean;
             for each (var kf :XflKeyframe in keyframes) {
-                if (kf.libraryName != lastSymbol) {
+                if (kf.symbol != lastSymbol) {
                     multipleSymbols = true;
                     break;
                 }
@@ -139,7 +139,7 @@ class Layer {
             else {
                 displays = new Vector.<DisplayObject>(keyframes.length);
                 for each (kf in keyframes) {
-                    var display :DisplayObject = createDisplayObject(kf.libraryName);
+                    var display :DisplayObject = createDisplayObject(kf.symbol);
                     displays.push(display);
                     display.name = src.name;
                 }

@@ -3,10 +3,9 @@
 
 package flump.xfl {
 
-import executor.load.LoadedSwf;
+import flash.utils.Dictionary;
 
-import com.threerings.util.Set;
-import com.threerings.util.Sets;
+import executor.load.LoadedSwf;
 
 public class XflLibrary extends XflTopLevelComponent
 {
@@ -18,11 +17,12 @@ public class XflLibrary extends XflTopLevelComponent
         super(location);
     }
 
+    public function lookup (symbol :String) :* { return _symbols[symbol]; }
+
     public function finishLoading () :void {
-        const symbols :Set = Sets.newSetOf(String);
-        for each (var tex :XflTexture in textures) symbols.add(tex.name);
-        for each (var movie :XflMovie in movies) symbols.add(movie.name);
-        for each (movie in movies) movie.checkSymbols(symbols);
+        for each (var tex :XflTexture in textures) _symbols[tex.name] = tex;
+        for each (var movie :XflMovie in movies) _symbols[movie.name] = movie;
+        for each (movie in movies) movie.checkSymbols(_symbols);
     }
 
     override public function getErrors (sev :ParseErrorSeverity=null) :Vector.<ParseError>{
@@ -31,5 +31,7 @@ public class XflLibrary extends XflTopLevelComponent
         for each (var tex :XflTexture in textures) base = base.concat(tex.getErrors(sev));
         return base;
     }
+
+    protected const _symbols :Dictionary = new Dictionary();
 }
 }

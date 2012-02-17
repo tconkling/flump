@@ -3,8 +3,9 @@
 
 package flump.xfl {
 
+import flash.utils.Dictionary;
+
 import com.threerings.util.F;
-import com.threerings.util.Set;
 import com.threerings.util.XmlUtil;
 
 public class XflLayer extends XflComponent
@@ -26,7 +27,7 @@ public class XflLayer extends XflComponent
         if (keyframes.length == 0) addError(ParseErrorSeverity.INFO, "No keyframes on layer");
     }
 
-    public function checkSymbols (symbols :Set) :void {
+    public function checkSymbols (symbols :Dictionary) :void {
         for each (var kf :XflKeyframe in keyframes) kf.checkSymbols(symbols);
     }
 }
