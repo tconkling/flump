@@ -1,0 +1,40 @@
+<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:mx="library://ns.adobe.com/flex/mx"
+  xmlns:s="library://ns.adobe.com/flex/spark" creationComplete="init();" width="400" height="600">
+  <s:layout>
+    <s:VerticalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10"/>
+  </s:layout>
+  <fx:Script>
+    <![CDATA[
+    private function init () :void {
+      nativeWindow.x = 960;
+      nativeWindow.y = 0;
+    }
+    ]]>
+  </fx:Script>
+  <s:DataGrid id="movies" height="50%" width="100%">
+    <s:typicalItem>
+      <s:DataItem movie="multiple/segment/movie/name" memory="12345678" drawn="1234532"/>
+    </s:typicalItem>
+    <s:columns>
+      <s:ArrayList>
+        <s:GridColumn dataField="movie" headerText="Movie"/>
+        <s:GridColumn dataField="memory" headerText="Memory"/>
+        <s:GridColumn dataField="drawn" headerText="Pixels"/>
+      </s:ArrayList>
+    </s:columns>
+    <mx:ArrayCollection/>
+  </s:DataGrid>
+  <s:DataGrid id="textures" height="50%" width="100%">
+    <s:typicalItem>
+      <s:DataItem texture="multiple/segment/movie/name" memory="123456" drawn="123455"/>
+    </s:typicalItem>
+    <s:columns>
+      <s:ArrayList>
+        <s:GridColumn dataField="texture" headerText="Texture"/>
+        <s:GridColumn dataField="memory" headerText="Memory"/>
+        <s:GridColumn dataField="drawn" headerText="Pixels"/>
+      </s:ArrayList>
+    </s:columns>
+    <mx:ArrayCollection/>
+  </s:DataGrid>
+</s:Window>

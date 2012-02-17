@@ -18,7 +18,6 @@ import executor.Executor;
 import executor.Future;
 
 import flump.bytesToXML;
-import flump.display.DisplayCreator;
 import flump.display.Movie;
 import flump.export.Ternary;
 import flump.xfl.ParseError;
@@ -76,11 +75,13 @@ public class Exporter
     }
 
     protected function showPreviewWindow (lib :XflLibrary) :void {
-        var previewWindow :PreviewWindow = new PreviewWindow();
+        const previewWindow :PreviewWindow = new PreviewWindow();
+        const previewControls :PreviewControlsWindow = new PreviewControlsWindow();
         previewWindow.started = function (container :Sprite) :void {
-            container.addChild(new DisplayCreator(lib).loadMovie(lib.movies[0].symbol));
+            new PreviewController(lib, container, previewControls);
         }
         previewWindow.open();
+        previewControls.open();
     }
 
     protected function findFlashDocuments (base :File, exec :Executor) :void {
@@ -126,7 +127,7 @@ public class Exporter
                     trace(err);
                 }
                 status.updateValid(Ternary.of(lib.valid));
-                if (status.path == "guybrush") {
+                if (false && status.path == "guybrush") {
                     try {
                         showPreviewWindow(lib);
                         //exportFlashDocument(status);
