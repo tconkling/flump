@@ -3,6 +3,7 @@
 
 package flump.export {
 
+import flash.display.BitmapData;
 import flash.display.DisplayObject;
 import flash.display.MovieClip;
 import flash.display.Sprite;
@@ -50,6 +51,10 @@ public class PackedTexture
         w = Math.ceil(bounds.width);
         h = Math.ceil(bounds.height);
         a = w * h;
+    }
+
+    public function toBitmapData () :BitmapData {
+        return PngPublisher.renderToBitmapData(holder, w, h);
     }
 
     public function publish (dest :File) :void { PngPublisher.publish(dest, w, h, holder); }

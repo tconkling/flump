@@ -3,7 +3,6 @@
 
 package flump.display {
 
-import flump.xfl.XflLayer;
 import flump.xfl.XflMovie;
 
 import starling.core.Starling;
@@ -15,9 +14,9 @@ public class Movie extends Sprite
 {
     public function Movie (src :XflMovie, symbolToDisplayObject :Function) {
         _ticker = new Ticker(advanceTime);
-        _layers = new Vector.<Layer>(src.layers.length);
-        for each (var layer :XflLayer in src.layers) {
-            _layers.push(new Layer(this, layer, symbolToDisplayObject));
+        _layers = new Vector.<Layer>(src.layers.length, true);
+        for (var ii :int = 0; ii < _layers.length; ii++) {
+            _layers[ii] = new Layer(this, src.layers[ii], symbolToDisplayObject);
         }
         _duration = 1; // TODO - get from labels
         goto(0, true, false);

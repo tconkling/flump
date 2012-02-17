@@ -3,6 +3,7 @@
 
 package flump.export {
 
+import flash.display.BitmapData;
 import flash.filesystem.File;
 
 import executor.Executor;
@@ -29,11 +30,9 @@ public class Preview extends Sprite
     public function displayAnimation (base :File, lib :XflLibrary, xflMovie :XflMovie) :void {
         loadTextures(base, lib, function (..._) :void {
             var movie :Movie = new Movie(xflMovie, function (symbol :String) :DisplayObject {
-                var xflTex :XflTexture = _xflTextures.get(symbol);
-                var image :Image = new Image(_textures.get(symbol));
-                image.x = xflTex.offset.x;
-                image.y = xflTex.offset.y;
-                return image;
+                const xflTex :XflTexture = _xflTextures.get(symbol);
+                const bd :BitmapData = PackedTexture.fromTexture(xflTex, lib).toBitmapData();
+                return new Image(Texture.fromBitmapData(bd));
             });
             addChild(movie);
         });
