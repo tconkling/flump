@@ -27,6 +27,11 @@ public class XflLayer extends XflComponent
         if (keyframes.length == 0) addError(ParseErrorSeverity.INFO, "No keyframes on layer");
     }
 
+    public function get frames () :int {
+        const lastKf :XflKeyframe = keyframes[keyframes.length - 1];
+        return lastKf.index + lastKf.duration;
+    }
+
     public function keyframeForFrame (frame :int) :XflKeyframe {
         for (var ii :int = 1; ii < keyframes.length; ii++) {
             if (keyframes[ii].index > frame) return keyframes[ii - 1];

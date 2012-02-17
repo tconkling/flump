@@ -15,16 +15,19 @@ public class Movie extends Sprite
     public function Movie (src :XflMovie, symbolToDisplayObject :Function) {
         name = src.symbol;
         _ticker = new Ticker(advanceTime);
+        var frames :int = 0;
         if (src.flipbook) {
             _layers = new Vector.<Layer>(1, true);
             _layers[0] = new Layer(this, src.layers[0], symbolToDisplayObject, true)
+            frames = src.layers[0].frames;
         } else {
             _layers = new Vector.<Layer>(src.layers.length, true);
             for (var ii :int = 0; ii < _layers.length; ii++) {
                 _layers[ii] = new Layer(this, src.layers[ii], symbolToDisplayObject, false);
+                frames = Math.max(src.layers[ii].frames, frames);
             }
         }
-        _duration = 1; // TODO - get from labels
+        _duration = frames / 30.0;
         goto(0, true, false);
         addEventListener(Event.ADDED_TO_STAGE, addedToStage);
         addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
