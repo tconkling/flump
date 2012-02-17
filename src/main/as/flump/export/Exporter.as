@@ -75,14 +75,18 @@ public class Exporter
     }
 
     protected function showPreviewWindow (lib :XflLibrary) :void {
-        const previewWindow :PreviewWindow = new PreviewWindow();
-        const previewControls :PreviewControlsWindow = new PreviewControlsWindow();
-        previewWindow.started = function (container :Sprite) :void {
-            new PreviewController(lib, container, previewControls);
-        }
-        previewWindow.open();
-        previewControls.open();
+        if (_previewController == null) {
+            const previewWindow :PreviewWindow = new PreviewWindow();
+            const previewControls :PreviewControlsWindow = new PreviewControlsWindow();
+            previewWindow.started = function (container :Sprite) :void {
+                _previewController = new PreviewController(lib, container, previewControls);
+            }
+            previewWindow.open();
+            previewControls.open();
+        } else _previewController.lib = lib
     }
+
+    protected var _previewController :PreviewController;
 
     protected function findFlashDocuments (base :File, exec :Executor) :void {
         Files.list(base, exec).succeeded.add(function (files :Array) :void {

@@ -19,24 +19,30 @@ public class PreviewController
             controls :PreviewControlsWindow) {
         _container = container;
         _controls = controls;
+        this.lib = lib;
+    }
+
+    public function set lib (lib :XflLibrary) :void {
         _creator = new DisplayCreator(lib);
 
+        _controls.movies.dataProvider.removeAll();
         for each (var movie :XflMovie in lib.movies) {
             _controls.movies.dataProvider.addItem({movie: movie.symbol, memory: 0, drawn: 0});
         }
+        _controls.textures.dataProvider.removeAll();
         for each (var tex :XflTexture in lib.textures) {
             _controls.textures.dataProvider.addItem({texture: tex.symbol, memory: 0, drawn: 0});
         }
         _controls.movies.addEventListener(GridSelectionEvent.SELECTION_CHANGE,
-            function (..._) :void {
+                function (..._) :void {
                 _controls.textures.selectedIndex = -1;
                 displaySymbol(_controls.movies.selectedItem.movie);
-            });
+                });
         _controls.textures.addEventListener(GridSelectionEvent.SELECTION_CHANGE,
             function (..._) :void {
                 _controls.movies.selectedIndex = -1;
                 displaySymbol(_controls.textures.selectedItem.texture);
-            });
+        });
 
         // Play the first movie
         _controls.movies.selectedIndex = 0;
