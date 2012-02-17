@@ -14,8 +14,9 @@
           nativeWindow.y = 0;
 
           _starling = new Starling(Preview, nativeWindow.stage)
+          _starling.juggler.delayCall(function() :void { started(_starling.stage.getChildAt(0)) },
+            0);
           _starling.start();
-          started();
         }
 
         protected var _starling :Starling;

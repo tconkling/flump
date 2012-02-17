@@ -128,15 +128,13 @@ public class Exporter
                 if (status.path == "guybrush") {
                     try {
                         var previewWindow :PreviewWindow = new PreviewWindow();
-                        previewWindow.started = F.callback(DelayUtil.delayFrame,
-                            function (..._) :void {
-                            var preview :Preview = Preview(Starling.current.stage.getChildAt(0));
+                        previewWindow.started = function (preview :Preview) :void {
                             preview.init(lib);
                             const movie :Movie = preview.loadMovie(lib.movies[0].symbol);
                             movie.x = 200;
                             movie.y = 200;
                             preview.addChild(movie);
-                        });
+                        }
                         previewWindow.open();
                         //exportFlashDocument(status);
                     } catch (e :Error) {
