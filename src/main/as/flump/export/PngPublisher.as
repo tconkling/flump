@@ -21,7 +21,6 @@ public class PngPublisher
         for each (var tex :XflTexture in library.textures) {
             const packed :PackedTexture = PackedTexture.fromTexture(tex, library);
             packed.publish(tex.exportPath(base));
-            tex.offset = packed.offset;
         }
     }
 
