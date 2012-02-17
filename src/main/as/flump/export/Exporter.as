@@ -18,6 +18,7 @@ import executor.Executor;
 import executor.Future;
 
 import flump.bytesToXML;
+import flump.display.DisplayCreator;
 import flump.display.Movie;
 import flump.export.Ternary;
 import flump.xfl.ParseError;
@@ -29,9 +30,8 @@ import spark.components.List;
 import spark.components.Window;
 import spark.events.GridSelectionEvent;
 
-import starling.core.Starling;
+import starling.display.Sprite;
 
-import com.threerings.util.DelayUtil;
 import com.threerings.util.F;
 import com.threerings.util.Log;
 import com.threerings.util.StringUtil;
@@ -57,14 +57,7 @@ public class Exporter
             }
         });
         _win.preview.addEventListener(MouseEvent.CLICK, function (..._) :void {
-            var previewWindow :PreviewWindow = new PreviewWindow();
-            previewWindow.started = F.callback(DelayUtil.delayFrame, function (..._) :void {
-
-                var preview :Preview = Preview(Starling.current.stage.getChildAt(0));
-                var lib :XflLibrary = _libraries.selectedItem.lib;
-                // TODO - movie selector in Preview
-            });
-            previewWindow.open();
+            showPreviewWindow(_libraries.selectedItem.lib);
         });
         _importChooser =
             new DirChooser(_settings, "IMPORT_ROOT", _win.importRoot, _win.browseImport);
@@ -80,6 +73,14 @@ public class Exporter
         if (_docFinder != null) _docFinder.shutdownNow();
         _docFinder = new Executor(2);
         findFlashDocuments(root, _docFinder);
+    }
+
+    protected function showPreviewWindow (lib :XflLibrary) :void {
+        var previewWindow :PreviewWindow = new PreviewWindow();
+        previewWindow.started = function (container :Sprite) :void {
+            container.addChild(new DisplayCreator(lib).loadMovie(lib.movies[0].symbol));
+        }
+        previewWindow.open();
     }
 
     protected function findFlashDocuments (base :File, exec :Executor) :void {
@@ -127,15 +128,7 @@ public class Exporter
                 status.updateValid(Ternary.of(lib.valid));
                 if (status.path == "guybrush") {
                     try {
-                        var previewWindow :PreviewWindow = new PreviewWindow();
-                        previewWindow.started = function (preview :Preview) :void {
-                            preview.init(lib);
-                            const movie :Movie = preview.loadMovie(lib.movies[0].symbol);
-                            movie.x = 200;
-                            movie.y = 200;
-                            preview.addChild(movie);
-                        }
-                        previewWindow.open();
+                        showPreviewWindow(lib);
                         //exportFlashDocument(status);
                     } catch (e :Error) {
                         log.warning("Blew up", e);
