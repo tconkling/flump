@@ -8,13 +8,12 @@ import flash.filesystem.File;
 import com.adobe.crypto.MD5;
 import com.adobe.crypto.MD5Stream;
 
-import executor.Executor;
-import executor.Future;
-import executor.VisibleFuture;
-import executor.load.LoadedSwf;
-import executor.load.SwfLoader;
-
 import flump.bytesToXML;
+import flump.executor.Executor;
+import flump.executor.Future;
+import flump.executor.VisibleFuture;
+import flump.executor.load.LoadedSwf;
+import flump.executor.load.SwfLoader;
 import flump.xfl.ParseErrorSeverity;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;

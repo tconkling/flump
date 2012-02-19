@@ -14,11 +14,10 @@ import com.adobe.crypto.MD5;
 import deng.fzip.FZip;
 import deng.fzip.FZipFile;
 
-import executor.Executor;
-import executor.Future;
-
 import flump.bytesToXML;
 import flump.display.Movie;
+import flump.executor.Executor;
+import flump.executor.Future;
 import flump.export.Ternary;
 import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;

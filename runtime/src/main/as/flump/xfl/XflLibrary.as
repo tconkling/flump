@@ -5,7 +5,7 @@ package flump.xfl {
 
 import flash.utils.Dictionary;
 
-import executor.load.LoadedSwf;
+import flump.executor.load.LoadedSwf;
 
 public class XflLibrary extends XflTopLevelComponent
 {

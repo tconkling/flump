@@ -8,7 +8,6 @@ import flash.display.DisplayObject;
 import flash.filesystem.File;
 import flash.filesystem.FileMode;
 import flash.filesystem.FileStream;
-import flash.geom.Rectangle;
 
 import com.adobe.images.PNGEncoder;
 

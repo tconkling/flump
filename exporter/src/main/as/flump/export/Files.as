@@ -9,8 +9,8 @@ import flash.events.FileListEvent;
 import flash.events.IOErrorEvent;
 import flash.filesystem.File;
 
-import executor.Executor;
-import executor.Future;
+import flump.executor.Executor;
+import flump.executor.Future;
 
 import com.threerings.util.F;
 
