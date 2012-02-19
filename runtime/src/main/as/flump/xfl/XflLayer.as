@@ -5,9 +5,6 @@ package flump.xfl {
 
 import flash.utils.Dictionary;
 
-import com.threerings.util.F;
-import com.threerings.util.XmlUtil;
-
 public class XflLayer extends XflComponent
 {
     use namespace xflns;
@@ -18,13 +15,13 @@ public class XflLayer extends XflComponent
 
     public function XflLayer (baseLocation :String, xml :XML, errors :Vector.<ParseError>,
         flipbook :Boolean) {
-        name = XmlUtil.getStringAttr(xml, "name");
+        name = new XmlConverter(xml).getStringAttr("name");
         this.flipbook = flipbook;
         super(baseLocation + ":" + name, errors);
         for each (var frameEl :XML in xml.frames.DOMFrame) {
             keyframes.push(new XflKeyframe(location, frameEl, _errors, flipbook));
         }
-        if (keyframes.length == 0) addError(ParseErrorSeverity.INFO, "No keyframes on layer");
+        if (keyframes.length == 0) addError(ParseError.INFO, "No keyframes on layer");
     }
 
     public function get frames () :int {

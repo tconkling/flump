@@ -7,12 +7,6 @@
   <version>0.1-SNAPSHOT</version>
   <dependencies>
     <dependency>
-      <groupId>com.threerings</groupId>
-      <artifactId>aspirin</artifactId>
-      <version>1.13-SNAPSHOT</version>
-      <type>swc</type>
-    </dependency>
-    <dependency>
       <groupId>org.osflash</groupId>
       <artifactId>signals</artifactId>
       <version>fd03bf873</version>

@@ -30,7 +30,7 @@ public class XflLibrary extends XflTopLevelComponent
         for each (movie in movies) movie.checkSymbols(_symbols);
     }
 
-    override public function getErrors (sev :ParseErrorSeverity=null) :Vector.<ParseError>{
+    override public function getErrors (sev :String=null) :Vector.<ParseError>{
         var base :Vector.<ParseError> = super.getErrors(sev).concat();
         for each (var movie :XflMovie in movies) base = base.concat(movie.getErrors(sev));
         for each (var tex :XflTexture in textures) base = base.concat(tex.getErrors(sev));

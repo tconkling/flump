@@ -3,8 +3,6 @@
 
 package flump.xfl {
 
-import com.threerings.util.XmlUtil;
-
 public class XflTexture extends XflTopLevelComponent
 {
     public var md5 :String;
@@ -12,10 +10,11 @@ public class XflTexture extends XflTopLevelComponent
     public var symbol :String;
 
     public function XflTexture (location :String, xml :XML, md5 :String) {
-        name = XmlUtil.getStringAttr(xml, "name");
+        const converter :XmlConverter = new XmlConverter(xml);
+        name = converter.getStringAttr("name");
         super(location + ":" + name);
         this.md5 = md5;
-        symbol = XmlUtil.getStringAttr(xml, "linkageClassName");
+        symbol = converter.getStringAttr("linkageClassName");
     }
 }
 }

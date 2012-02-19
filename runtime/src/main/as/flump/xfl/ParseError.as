@@ -3,11 +3,21 @@
 
 package flump.xfl {
 
-import com.threerings.util.sprintf;
-
 public class ParseError
 {
-    public function ParseError (location :String, severity :ParseErrorSeverity, message :String,
+    public static const DEBUG :String = "Debug";
+    public static const INFO :String = "Info";
+    public static const WARN :String = "Warning";
+    public static const CRIT :String = "Critical";
+
+    public static function severityToOrdinal(sev :String) :int {
+        if (sev === DEBUG) return 0;
+        else if (sev === INFO) return 1;
+        else if (sev=== WARN) return 2;
+        else return 3;
+    }
+
+    public function ParseError (location :String, severity :String, message :String,
         error :Object=null) {
         _severity = severity;
         _message = message;
@@ -15,7 +25,9 @@ public class ParseError
         _error = error;
     }
 
-    public function get severity () :ParseErrorSeverity { return _severity; }
+    public function get severity () :String { return _severity; }
+    public function get sevOrdinal() :int { return severityToOrdinal(_severity); }
+
     public function get message () :String { return _message; }
     public function get location () :String { return _location; }
 
@@ -23,11 +35,11 @@ public class ParseError
     public function get error () :Object { return _error; }
 
     public function toString () :String {
-        return sprintf("ParseError [location=%s, severity=%s, message=%s, error=%s]",
-            _location, _severity, _message, _error);
+        return "ParseError [location=" + _location + ", severity=" + _severity + ", message=" +
+          _message + ", error=" + _error + "]";
     }
 
-    protected var _severity :ParseErrorSeverity;
+    protected var _severity :String;
     protected var _message :String;
     protected var _location :String;
     protected var _error :Object;
