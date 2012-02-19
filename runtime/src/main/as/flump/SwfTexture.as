@@ -7,13 +7,11 @@ import flash.display.BitmapData;
 import flash.display.DisplayObject;
 import flash.display.MovieClip;
 import flash.display.Sprite;
-import flash.filesystem.File;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
 import executor.load.LoadedSwf;
 
-import flump.export.PngPublisher;
 import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
 
@@ -24,6 +22,15 @@ public class SwfTexture
     public var md5 :String;
     public var offset :Point;
     public var w :int, h :int, a :int;
+
+    public static function renderToBitmapData (target :DisplayObject, width :int, height :int)
+        :BitmapData {
+            const bd :BitmapData = new BitmapData(width, height, true);
+            // Clear bitmapdata's default white background with a transparent one
+            bd.fillRect(new Rectangle(0, 0, width, height), 0);
+            bd.draw(target);
+            return bd;
+    }
 
     public static function fromFlipbook (swf :LoadedSwf, movie :XflMovie, frame :int)
             :SwfTexture {
@@ -52,11 +59,7 @@ public class SwfTexture
         a = w * h;
     }
 
-    public function toBitmapData () :BitmapData {
-        return PngPublisher.renderToBitmapData(holder, w, h);
-    }
-
-    public function publish (dest :File) :void { PngPublisher.publish(dest, w, h, holder); }
+    public function toBitmapData () :BitmapData { return renderToBitmapData(holder, w, h); }
 
     public function toString () :String {
         return "a " + a + " w " + w + " h " + h;

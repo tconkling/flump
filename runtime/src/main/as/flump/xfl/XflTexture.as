@@ -3,8 +3,6 @@
 
 package flump.xfl {
 
-import flash.filesystem.File;
-
 import com.threerings.util.XmlUtil;
 
 public class XflTexture extends XflTopLevelComponent
@@ -19,8 +17,5 @@ public class XflTexture extends XflTopLevelComponent
         this.md5 = md5;
         symbol = XmlUtil.getStringAttr(xml, "linkageClassName");
     }
-
-    public function exportPath (base :File) :File { return base.resolvePath(symbol + '.png') }
-
 }
 }

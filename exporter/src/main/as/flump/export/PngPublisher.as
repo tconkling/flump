@@ -21,22 +21,13 @@ public class PngPublisher
     public static function dumpTextures (base :File, library :XflLibrary) :void {
         for each (var tex :XflTexture in library.textures) {
             const packed :SwfTexture = SwfTexture.fromTexture(library.swf, tex);
-            packed.publish(tex.exportPath(base));
+            publish(base.resolvePath(tex.symbol + ".png"), packed.w, packed.h, packed.holder);
         }
     }
 
-    public static function renderToBitmapData (target :DisplayObject, width :int, height :int)
-            :BitmapData {
-        const bd :BitmapData = new BitmapData(width, height, true);
-        // Clear bitmapdata's default white background with a transparent one
-        bd.fillRect(new Rectangle(0, 0, width, height), 0);
-        bd.draw(target);
-        return bd;
-      }
-
     public static function publish (dest :File, width :int, height :int,
             target :DisplayObject) :void {
-        var bd :BitmapData = renderToBitmapData(target, width, height);
+        var bd :BitmapData = SwfTexture.renderToBitmapData(target, width, height);
         var fs :FileStream = new FileStream();
         fs.open(dest, FileMode.WRITE);
         fs.writeBytes(PNGEncoder.encode(bd));

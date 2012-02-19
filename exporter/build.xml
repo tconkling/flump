@@ -1,11 +1,11 @@
 <?xml version="1.0" standalone="yes"?>
-<project name="flump" default="dist" basedir=".">
+<project name="flump-exporter" default="dist" basedir=".">
   <property name="asrc.dir" location="src/main/as"/>
   <property name="deploy.dir" location="dist"/>
   <property name="keystore" location="${deploy.dir}/${ant.project.name}.pfx"/>
 
   <property name="ooo-build.vers" value="2.5"/>
-  <ant antfile="etc/bootstrap.xml"/>
+  <ant antfile="../etc/bootstrap.xml"/>
   <import file="${user.home}/.m2/ooo-build/${ooo-build.vers}/ooo-build.xml"/>
 
   <target name="clean" description="Removes all generated files and directories">
