@@ -3,22 +3,18 @@
 # Builds all of Threerings' swcs used by flump and a flump swf using nailgun. To use this,
 # run ant flexserver to start up nailgun, then this script
 #
-import os, sys
+import localrepobuild, os
+
 dirs = os.path.abspath(os.path.dirname(__file__)).split('/')
 base = '/'.join(dirs[:-2])
-if os.path.exists(base + '/tools'):
-    sys.path.append(base + "/tools/bin")
-else:
-    print "tools must be checked out alongside flump"
-    sys.exit(1)
-
-import localrepobuild
+flump = '/'.join(dirs[:-1])
 
 def makebuilders(b, assemblage, target):
     return [b(base, 'aspirin', result="dist/aspirin.swc", pom='pom.xml'),
-        b(base, 'executor', result="dist/executor.swc", pom='pom.xml'),
-        b(base, 'flump', ngscript='dist/flump.ng.sh', result='dist/flump.swf',
-        nailguntarget=target, deploy=False, pom='pom.xml')]
+        b(flump, 'runtime', ngscript='dist/flump-runtime.ng.sh', result='dist/flump-runtime.swc',
+        nailguntarget='swc', pom='pom.xml'),
+        b(flump, 'exporter', ngscript='dist/flump-exporter.ng.sh',
+            result='dist/flump-exporter.swf', deploy=False, nailguntarget='swf', pom='pom.xml')]
 
-localrepobuild.buildasprojects(base, makebuilders, target="dist", assemblage=base)
+localrepobuild.buildasprojects(base, makebuilders, assemblage=base)
 

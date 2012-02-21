@@ -1,5 +1,5 @@
 <?xml version="1.0" standalone="yes"?>
-<project name="flump-exporter" default="dist" basedir=".">
+<project name="flump-exporter" default="swf" basedir=".">
   <property name="asrc.dir" location="src/main/as"/>
   <property name="deploy.dir" location="dist"/>
   <property name="keystore" location="${deploy.dir}/${ant.project.name}.pfx"/>
@@ -22,7 +22,7 @@
     <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.5"/>
     <genairkeystore keystore="${keystore}" password="${PASSWORD}" orgname="Three Rings Design"/>
   </target>
-  <target name="dist" depends="-init-ooo" description="Builds the library (.swc file)">
+  <target name="swf" depends="-init-ooo" description="Builds the library (.swc file)">
     <mkdir dir="${deploy.dir}"/>
     <mavendep pom="pom.xml" pathProp="aslib.path"/>
     <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.5"/>
