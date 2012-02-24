@@ -60,13 +60,14 @@ public class Exporter
         _importChooser =
             new DirChooser(_settings, "IMPORT_ROOT", _win.importRoot, _win.browseImport);
         _importChooser.changed.add(setImport);
-        setImport(new File(_importChooser.dir));
+        setImport(_importChooser.dir);
         _exportChooser =
             new DirChooser(_settings, "EXPORT_ROOT", _win.exportRoot, _win.browseExport);
     }
 
     protected function setImport (root :File) :void {
         _libraries.dataProvider.removeAll();
+        if (root == null) return;
         _rootLen = root.nativePath.length + 1;
         if (_docFinder != null) _docFinder.shutdownNow();
         _docFinder = new Executor(2);
@@ -110,8 +111,7 @@ public class Exporter
     }
 
     protected function exportFlashDocument (status :DocStatus) :void {
-        const exportDir :File = new File(_exportChooser.dir);
-        BetwixtPublisher.publish(status.lib, status.file, exportDir);
+        BetwixtPublisher.publish(status.lib, status.file, _exportChooser.dir);
         status.updateModified(Ternary.FALSE);
     }
 
@@ -121,8 +121,7 @@ public class Exporter
             const name :String = status.file.nativePath.substring(_rootLen);
             const load :Future = new XflLoader().load(name, status.file);
             load.succeeded.add(function (lib :XflLibrary) :void {
-                const exportDir :File = new File(_exportChooser.dir);
-                const isMod :Boolean = BetwixtPublisher.modified(lib, exportDir);
+                const isMod :Boolean = BetwixtPublisher.modified(lib, _exportChooser.dir);
                 status.lib = lib;
                 status.updateModified(Ternary.of(isMod));
                 for each (var err :ParseError in lib.getErrors()) {

@@ -29,16 +29,19 @@ public class DirChooser
             selector.text = _dir;
             changed.dispatch(root);
         }
-        setDir(new File(settings.data[settingKey] || File.documentsDirectory.nativePath));
+        if (settings.data.hasOwnProperty(settingKey)) setDir(new File(settings.data[settingKey]));
+        else selector.text = "Unset";
         button.addEventListener(MouseEvent.CLICK, function (..._) :void {
             // Use a new File object to browse on as browseForDirectory modifies the object it uses
-            const browser :File = new File(dir);
+            var browser :File = dir;
+            if (dir == null) browser = File.documentsDirectory;
             browser.addEventListener(Event.SELECT, F.callback(setDir, browser));
-            browser.browseForDirectory("Select Directory")
+            browser.browseForDirectory("Select Directory");
         });
     }
 
-    public function get dir () :String { return _dir; }
+    /** The selected directory or null if none has been selected. */
+    public function get dir () :File { return _dir == null ? null : new File(_dir); }
 
     protected var _dir :String;
 }
