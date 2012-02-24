@@ -13,7 +13,7 @@ import starling.events.Event;
 public class Movie extends Sprite
 {
     public function Movie (src :XflMovie, symbolToDisplayObject :Function) {
-        name = src.symbol;
+        name = src.name;
         _ticker = new Ticker(advanceTime);
         var frames :int = 0;
         if (src.flipbook) {

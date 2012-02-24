@@ -19,11 +19,14 @@ public class XflMovie extends XflTopLevelComponent
         name = converter.getStringAttr("name");
         super(baseLocation + ":" + name);
         this.md5 = md5;
-        symbol = converter.getStringAttr("linkageClassName");
+        symbol = converter.getStringAttr("linkageClassName", null);
 
         const layerEls :XMLList = xml.timeline.DOMTimeline[0].layers.DOMLayer;
         if (new XmlConverter(layerEls[0]).getStringAttr("name") == "flipbook") {
             layers = [new XflLayer(location, layerEls[0], _errors, true)];
+            if (symbol == null) {
+                addError(ParseError.CRIT, "Flipbook movie '" + name + "' not exported");
+            }
         } else {
             layers = new Array();
             for each (var layerEl :XML in layerEls) {
