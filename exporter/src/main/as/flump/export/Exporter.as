@@ -67,6 +67,7 @@ public class Exporter
 
     protected function setImport (root :File) :void {
         _libraries.dataProvider.removeAll();
+        _errors.dataProvider.removeAll();
         if (root == null) return;
         _rootLen = root.nativePath.length + 1;
         if (_docFinder != null) _docFinder.shutdownNow();
