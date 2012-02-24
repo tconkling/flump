@@ -70,15 +70,15 @@ public class Atlas
     }
 
     public function toXml () :String {
-        var xml :String = "<atlas name='" + name + "' filename='" + name + ".png'>\n";
+        var xml :String = '<atlas name="' + name + '" filename="' + name + '.png">\n';
         for each (var tex :SwfTexture in textures) {
             var loc :Object = _locs.get(tex);
-            xml += "  <texture name='" + tex.name + "' xOffset='" + tex.offset.x +
-                "' yOffset='" + tex.offset.y + "' md5='" + tex.md5 +
-                "' xAtlas='" + loc.x + "' yAtlas='" + loc.y +
-                "' wAtlas='" + tex.w + "' hAtlas='" + tex.h + "'/>\n";
+            xml += '  <texture name="' + tex.name + '" xOffset="' + tex.offset.x +
+                '" yOffset="' + tex.offset.y + '" md5="' + tex.md5 +
+                '" xAtlas="' + loc.x + '" yAtlas="' + loc.y +
+                '" wAtlas="' + tex.w + '" hAtlas="' + tex.h + '"/>\n';
         }
-        return xml + "</atlas>\n";
+        return xml + '</atlas>\n';
     }
 
     protected const _locs :Map = Maps.newMapOf(SwfTexture);//{x :int, y :int, rotated :Boolean}
