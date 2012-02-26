@@ -8,7 +8,7 @@ and more expressive animations on mobile platforms.
 
 # Creating a movie for Flump
 
-1. [Download and install](https://github.com/downloads/threerings/flump/flump.air) the .air app
+1. [Download and install](https://github.com/downloads/threerings/flump/flump-exporter.air) the .air app
 2. Create a document in Flash Professional saved as `.xfl`
 3. Create a new item in the library and draw a shape in its canvas
 4. Right-click on the item, select its properties, mark it as exported for ActionScript, and change
