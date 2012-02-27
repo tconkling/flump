@@ -3,6 +3,7 @@
   <property name="asrc.dir" location="src/main/as"/>
   <property name="deploy.dir" location="dist"/>
   <property name="keystore" location="${deploy.dir}/${ant.project.name}.pfx"/>
+  <property name="PASSWORD" value="pass"/>
 
   <property name="ooo-build.vers" value="2.5"/>
   <ant antfile="../etc/bootstrap.xml"/>
