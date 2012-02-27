@@ -17,7 +17,7 @@ import flump.xfl.XflTexture;
 public class SwfTexture
 {
     public const holder :Sprite = new Sprite();
-    public var name :String;
+    public var symbol :String;
     public var md5 :String;
     public var offset :Point;
     public var w :int, h :int, a :int;
@@ -36,18 +36,18 @@ public class SwfTexture
         const klass :Class = Class(swf.getSymbol(movie.symbol));
         const clip :MovieClip = MovieClip(new klass());
         clip.gotoAndStop(frame + 1);
-        return new SwfTexture(movie.md5, movie.name + "_flipbook_" + frame, clip);
+        return new SwfTexture(movie.md5, movie.libraryItem + "_flipbook_" + frame, clip);
     }
 
     public static function fromTexture (swf :LoadedSwf, tex :XflTexture) :SwfTexture {
         const klass :Class = Class(swf.getSymbol(tex.symbol));
         const image :Sprite = Sprite(new klass());
-        return new SwfTexture(tex.md5, tex.name, image);
+        return new SwfTexture(tex.md5, tex.symbol, image);
     }
 
     public function SwfTexture(md5 :String, name :String, disp :DisplayObject) {
         this.md5 = md5;
-        this.name = name;
+        this.symbol = symbol;
         holder.addChild(disp);
         const bounds :Rectangle = disp.getBounds(holder);
         disp.x = -bounds.x;

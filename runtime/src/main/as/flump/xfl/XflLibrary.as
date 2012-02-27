@@ -25,8 +25,19 @@ public class XflLibrary extends XflTopLevelComponent
     }
 
     public function finishLoading () :void {
-        for each (var tex :XflTexture in textures) _symbols[tex.name] = tex;
-        for each (var movie :XflMovie in movies) _symbols[movie.name] = movie;
+        const libraryItemToSymbol :Dictionary = new Dictionary();
+        for each (var tex :XflTexture in textures) {
+            _symbols[tex.symbol] = tex;
+            libraryItemToSymbol[tex.libraryItem] = tex.symbol;
+        }
+        for each (var movie :XflMovie in movies) {
+            _symbols[movie.libraryItem] = movie;
+            for each (var layer :XflLayer in movie.layers) {
+                for each (var kf :XflKeyframe in layer.keyframes) {
+                    if (kf.libraryItem != null) kf.symbol = libraryItemToSymbol[kf.libraryItem];
+                }
+            }
+        }
         for each (movie in movies) movie.checkSymbols(_symbols);
     }
 

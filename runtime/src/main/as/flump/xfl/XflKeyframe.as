@@ -16,6 +16,9 @@ public class XflKeyframe extends XflComponent
     /** The length of this keyframe in frames. */
     public var duration :Number;
 
+    /** The name of the libraryItem in this keyframe, or null if there is no libraryItem. */
+    public var libraryItem :String;
+
     /** The name of the symbol in this keyframe, or null if there is no symbol. */
     public var symbol :String;
 
@@ -53,7 +56,7 @@ public class XflKeyframe extends XflComponent
 
         if (symbolXml == null) return; // Purely labelled frame
 
-        symbol = new XmlConverter(symbolXml).getStringAttr("libraryItemName");
+        libraryItem = new XmlConverter(symbolXml).getStringAttr("libraryItemName");
 
 
         const matrixXml :XML = symbolXml.matrix.Matrix[0];

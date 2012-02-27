@@ -73,7 +73,7 @@ public class Atlas
         var xml :String = '<atlas name="' + name + '" filename="' + name + '.png">\n';
         for each (var tex :SwfTexture in textures) {
             var loc :Object = _locs.get(tex);
-            xml += '  <texture name="' + tex.name + '" xOffset="' + tex.offset.x +
+            xml += '  <texture name="' + tex.symbol + '" xOffset="' + tex.offset.x +
                 '" yOffset="' + tex.offset.y + '" md5="' + tex.md5 +
                 '" xAtlas="' + loc.x + '" yAtlas="' + loc.y +
                 '" wAtlas="' + tex.w + '" hAtlas="' + tex.h + '"/>\n';

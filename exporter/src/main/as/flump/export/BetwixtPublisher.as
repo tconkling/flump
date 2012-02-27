@@ -25,8 +25,8 @@ public class BetwixtPublisher
         if (!exportLoc.exists) return true;
 
         const libMd5s :Map = Maps.newMapOf(String);
-        for each (var movie :XflMovie in lib.movies) libMd5s.put(movie.name, movie.md5);
-        for each (var tex :XflTexture in lib.textures) libMd5s.put(tex.name, tex.md5);
+        for each (var movie :XflMovie in lib.movies) libMd5s.put(movie.libraryItem, movie.md5);
+        for each (var tex :XflTexture in lib.textures) libMd5s.put(tex.symbol, tex.md5);
 
         const exportMd5s :Map = Maps.newMapOf(String);
         var export :FileStream = new FileStream();
@@ -53,9 +53,9 @@ public class BetwixtPublisher
         out.open(dest, FileMode.WRITE);
         out.writeUTFBytes("<resources>\n");
         for each (var movie :XflMovie in lib.movies) {
-            out.writeUTFBytes('  <movie name="' + movie.name + '" md5="' + movie.md5 + '">\n');
+            out.writeUTFBytes('  <movie name="' + movie.libraryItem + '" md5="' + movie.md5 + '">\n');
 
-            var movieFile :File = source.resolvePath("LIBRARY/" + movie.name + ".xml");
+            var movieFile :File = source.resolvePath("LIBRARY/" + movie.libraryItem + ".xml");
             var copy :FileStream = new FileStream();
             copy.open(movieFile, FileMode.READ);
             var bytes :ByteArray = new ByteArray();

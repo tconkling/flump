@@ -10,14 +10,14 @@ public class XflMovie extends XflTopLevelComponent
     use namespace xflns;
 
     public var md5 :String;
-    public var name :String;
+    public var libraryItem :String;
     public var symbol :String;
     public var layers :Array;
 
     public function XflMovie (baseLocation :String, xml :XML, md5 :String) {
         const converter :XmlConverter = new XmlConverter(xml);
-        name = converter.getStringAttr("name");
-        super(baseLocation + ":" + name);
+        libraryItem = converter.getStringAttr("name");
+        super(baseLocation + ":" + libraryItem);
         this.md5 = md5;
         symbol = converter.getStringAttr("linkageClassName", null);
 
@@ -25,7 +25,7 @@ public class XflMovie extends XflTopLevelComponent
         if (new XmlConverter(layerEls[0]).getStringAttr("name") == "flipbook") {
             layers = [new XflLayer(location, layerEls[0], _errors, true)];
             if (symbol == null) {
-                addError(ParseError.CRIT, "Flipbook movie '" + name + "' not exported");
+                addError(ParseError.CRIT, "Flipbook movie '" + libraryItem + "' not exported");
             }
         } else {
             layers = new Array();
