@@ -44,10 +44,16 @@ public class Exporter
         _win = win;
         _errors = _win.errors;
         _libraries = _win.libraries;
+        function updateExportEnabled (..._) :void {
+            _win.export.enabled = _exportChooser.dir != null &&
+              _libraries.selectedItems.some(function (status :DocStatus, ..._) :Boolean {
+                return status.isValid;
+            });
+        }
         _libraries.addEventListener(GridSelectionEvent.SELECTION_CHANGE, function (..._) :void {
             log.info("Changed", "selected", _libraries.selectedIndices);
-            _win.export.enabled = _libraries.selectedIndices.length > 0;
-            _win.preview.enabled = _libraries.selectedIndices.length == 1;
+            updateExportEnabled();
+            _win.preview.enabled = _libraries.selectedItem.isValid;
         });
         _win.export.addEventListener(MouseEvent.CLICK, function (..._) :void {
             for each (var status :DocStatus in _libraries.selectedItems) {
@@ -63,6 +69,8 @@ public class Exporter
         setImport(_importChooser.dir);
         _exportChooser =
             new DirChooser(_settings, "EXPORT_ROOT", _win.exportRoot, _win.browseExport);
+        _exportChooser.changed.add(updateExportEnabled);
+
     }
 
     protected function setImport (root :File) :void {
@@ -216,6 +224,8 @@ class DocStatus extends EventDispatcher implements IPropertyChangeNotifier {
             else valid = QUESTION;
         });
     }
+
+    public function get isValid () :Boolean { return valid == CHECK; }
 
     public function updateModified (newModified :Ternary) :void {
         changeField("modified", function (..._) :void {
