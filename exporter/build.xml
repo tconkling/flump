@@ -23,7 +23,7 @@
     <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.5"/>
     <genairkeystore keystore="${keystore}" password="${PASSWORD}" orgname="Three Rings Design"/>
   </target>
-  
+
   <target name="swf" depends="-init-ooo" description="Builds the library (.swc file)">
     <mkdir dir="${deploy.dir}"/>
     <mavendep pom="pom.xml" pathProp="aslib.path"/>

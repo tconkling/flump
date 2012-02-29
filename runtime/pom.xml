@@ -5,6 +5,12 @@
   <artifactId>flump-runtime</artifactId>
   <packaging>swc</packaging>
   <version>0.1-SNAPSHOT</version>
+  <repositories>
+    <repository>
+      <id>ooo-external</id>
+      <url>http://ooo-maven.googlecode.com/hg/repository</url>
+    </repository>
+  </repositories>
   <dependencies>
     <dependency>
       <groupId>org.osflash</groupId>
