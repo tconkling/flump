@@ -45,7 +45,7 @@ public class SwfTexture
         return new SwfTexture(tex.md5, tex.symbol, image);
     }
 
-    public function SwfTexture(md5 :String, name :String, disp :DisplayObject) {
+    public function SwfTexture(md5 :String, symbol :String, disp :DisplayObject) {
         this.md5 = md5;
         this.symbol = symbol;
         holder.addChild(disp);
