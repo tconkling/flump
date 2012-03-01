@@ -30,7 +30,9 @@ public class XflMovie extends XflTopLevelComponent
         } else {
             layers = new Array();
             for each (var layerEl :XML in layerEls) {
-                layers.push(new XflLayer(location, layerEl, _errors, false));
+                if (new XmlConverter(layerEl).getStringAttr("layerType", "") != "guide") {
+                    layers.push(new XflLayer(location, layerEl, _errors, false));
+                }
             }
         }
     }
