@@ -36,16 +36,14 @@ public class Packer
         const tex :SwfTexture = _unpacked[0];
         if (tex.w > LARGEST_BIN || tex.h > LARGEST_BIN) throw new Error("Too large to fit in bin");
         for each (var atlas :Atlas in atlases) {
-            for each (var bin :Rectangle in atlas.bins) {
-                if (tex.w <= bin.width && tex.h <= bin.height) {
-                    atlas.place(_unpacked.shift(), bin, false);
-                    return;
-                } else if (tex.h <= bin.width && tex.w <= bin.height) {
-                    atlas.place(_unpacked.shift(), bin, true);
-                    return;
-                }
+            // TODO(bruno): Support rotated textures?
+            if (atlas.place(tex)) {
+                _unpacked.shift();
+                return;
             }
         }
+
+        // It didn't fit in any existing atlas, add another one
         var minBin :int = findOptimalMinBin();
         atlases.push(new Atlas(_lib.location + "/atlas" + atlases.length, minBin, minBin));
         pack();
