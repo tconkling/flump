@@ -26,7 +26,7 @@ public class BetwixtPublisher
 
         const libMd5s :Map = Maps.newMapOf(String);
         for each (var movie :XflMovie in lib.movies) libMd5s.put(movie.libraryItem, movie.md5);
-        for each (var tex :XflTexture in lib.textures) libMd5s.put(tex.symbol, tex.md5);
+        for each (var tex :XflTexture in lib.textures) libMd5s.put(tex.libraryItem, tex.md5);
 
         const exportMd5s :Map = Maps.newMapOf(String);
         var export :FileStream = new FileStream();

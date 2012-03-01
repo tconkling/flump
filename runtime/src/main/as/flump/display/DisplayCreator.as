@@ -60,8 +60,8 @@ public class DisplayCreator
         else return loadMovie(XflMovie(libraryItem).libraryItem);
     }
 
-    protected const _textures :Dictionary = new Dictionary();// symbol to Texture
-    protected const _textureOffsets :Dictionary = new Dictionary();// symbol to Point
+    protected const _textures :Dictionary = new Dictionary();// library name to Texture
+    protected const _textureOffsets :Dictionary = new Dictionary();// library name to Point
     protected var _lib :XflLibrary;
 
     protected static const FLIPBOOK_TEXTURE :RegExp = /^(.*)_flipbook_(\d+)$/;

@@ -49,7 +49,7 @@ public class Atlas
         var xml :String = '<atlas name="' + name + '" filename="' + name + '.png">\n';
         _root.forEach(function (node :Node) :void {
             var tex :SwfTexture = node.texture;
-            xml += '  <texture name="' + tex.symbol + '" xOffset="' + tex.offset.x +
+            xml += '  <texture name="' + tex.libraryItem + '" xOffset="' + tex.offset.x +
                 '" yOffset="' + tex.offset.y + '" md5="' + tex.md5 +
                 '" xAtlas="' + node.bounds.x + '" yAtlas="' + node.bounds.y +
                 '" wAtlas="' + tex.w + '" hAtlas="' + tex.h + '"/>\n';

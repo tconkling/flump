@@ -18,6 +18,7 @@ public class SwfTexture
 {
     public const holder :Sprite = new Sprite();
     public var symbol :String;
+    public var libraryItem :String;
     public var md5 :String;
     public var offset :Point;
     public var w :int, h :int, a :int;
@@ -36,18 +37,20 @@ public class SwfTexture
         const klass :Class = Class(swf.getSymbol(movie.symbol));
         const clip :MovieClip = MovieClip(new klass());
         clip.gotoAndStop(frame + 1);
-        return new SwfTexture(movie.md5, movie.libraryItem + "_flipbook_" + frame, clip);
+        var name :String = movie.libraryItem + "_flipbook_" + frame;
+        return new SwfTexture(movie.md5, name, name, clip);
     }
 
     public static function fromTexture (swf :LoadedSwf, tex :XflTexture) :SwfTexture {
         const klass :Class = Class(swf.getSymbol(tex.symbol));
         const image :Sprite = Sprite(new klass());
-        return new SwfTexture(tex.md5, tex.symbol, image);
+        return new SwfTexture(tex.md5, tex.symbol, tex.libraryItem, image);
     }
 
-    public function SwfTexture(md5 :String, symbol :String, disp :DisplayObject) {
+    public function SwfTexture(md5 :String, symbol :String, libraryItem :String, disp :DisplayObject) {
         this.md5 = md5;
         this.symbol = symbol;
+        this.libraryItem = libraryItem;
         holder.addChild(disp);
         const bounds :Rectangle = disp.getBounds(holder);
         disp.x = -bounds.x;
