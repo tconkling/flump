@@ -31,7 +31,7 @@ public class XflLibrary extends XflTopLevelComponent
             libraryItemToSymbol[tex.libraryItem] = tex.symbol;
         }
         for each (var movie :XflMovie in movies) {
-            _symbols[movie.libraryItem] = movie;
+            _symbols[movie.symbol] = movie;
             for each (var layer :XflLayer in movie.layers) {
                 for each (var kf :XflKeyframe in layer.keyframes) {
                     if (kf.libraryItem != null) kf.symbol = libraryItemToSymbol[kf.libraryItem];
