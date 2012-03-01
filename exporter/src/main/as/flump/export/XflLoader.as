@@ -55,7 +55,7 @@ public class XflLoader
         list.completed.add(function (..._) :void {
             if (list.isSuccessful) {
                 for each (var file :File in list.result) { // It's an array of files
-                    if (StringUtil.endsWith(file.nativePath, ".xml")) parseLibraryFile(file);
+                    if (Files.hasExtension(file, "xml")) parseLibraryFile(file);
                     else if (file.isDirectory) listLibrary(file);
                 }
             } else {
@@ -71,6 +71,7 @@ public class XflLoader
         var loadLibraryFile :Future = Files.load(file, _loader);
         loadLibraryFile.succeeded.add(function (file :File) :void {
             const xml :XML = bytesToXML(file.data);
+            trace(xml);
             if (xml.name().localName != "DOMSymbolItem") {
                 _library.addError(ParseError.DEBUG,
                     "Skipping file since its root element isn't DOMSymbolItem");

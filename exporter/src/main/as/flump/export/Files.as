@@ -13,6 +13,7 @@ import flump.executor.Executor;
 import flump.executor.Future;
 
 import com.threerings.util.F;
+import com.threerings.util.StringUtil;
 
 public class Files
 {
@@ -45,6 +46,11 @@ public class Files
             dir.addEventListener(ErrorEvent.ERROR, handleError);
             dir.getDirectoryListingAsync();
         });
+    }
+
+    public static function hasExtension (file :File, ext :String) :Boolean
+    {
+        return !file.isHidden && StringUtil.endsWith(file.nativePath, "."+ext);
     }
 }
 }

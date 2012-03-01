@@ -101,14 +101,14 @@ public class Exporter
         Files.list(base, exec).succeeded.add(function (files :Array) :void {
             if (exec.isShutdown) return;
             for each (var file :File in files) {
-                if (StringUtil.endsWith(file.nativePath, ".xfl")) {
+                if (Files.hasExtension(file, "xfl")) {
                     addFlashDocument(file.parent);
                     return;
                 }
             }
             for each (file in files) {
                 if (file.isDirectory) findFlashDocuments(file, exec);
-                else if (StringUtil.endsWith(file.nativePath, ".fla")) addFlashDocument(file);
+                else if (Files.hasExtension(file, "fla")) addFlashDocument(file);
             }
         });
     }
@@ -125,7 +125,7 @@ public class Exporter
     }
 
     protected function loadFlashDocument (status :DocStatus) :void {
-        if (StringUtil.endsWith(status.file.nativePath, ".xfl")) status.file = status.file.parent;
+        if (Files.hasExtension(status.file, "xfl")) status.file = status.file.parent;
         if (status.file.isDirectory) {
             const name :String = status.file.nativePath.substring(_rootLen);
             const load :Future = new XflLoader().load(name, status.file);
