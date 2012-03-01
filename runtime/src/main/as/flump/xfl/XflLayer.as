@@ -30,5 +30,13 @@ public class XflLayer extends XflComponent
     public function checkSymbols (lib :XflLibrary) :void {
         for each (var kf :XflKeyframe in keyframes) kf.checkSymbols(lib);
     }
+
+    public function toJSON (_:*) :Object {
+        return {
+            name: name,
+            flipbook: flipbook,
+            keyframes: keyframes
+        };
+    }
 }
 }

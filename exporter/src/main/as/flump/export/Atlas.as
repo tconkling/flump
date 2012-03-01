@@ -57,6 +57,22 @@ public class Atlas
         return xml + '</atlas>\n';
     }
 
+    public function toJSON (_:*) :Object {
+        var json :Object = {
+            file: name + ".png",
+            textures: []
+        };
+        _root.forEach(function (node :Node) :void {
+            var tex :SwfTexture = node.texture;
+            json.textures.push({
+                name: tex.symbol,
+                offset: [ tex.offset.x, tex.offset.y ],
+                rect: [ node.bounds.x, node.bounds.y, tex.w, tex.h ]
+            });
+        });
+        return json;
+    }
+
     protected var _root :Node;
 }
 }

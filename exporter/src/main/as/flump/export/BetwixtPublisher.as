@@ -33,6 +33,7 @@ public class BetwixtPublisher
         export.open(exportLoc, FileMode.READ);
         var exportBytes :ByteArray = new ByteArray();
         export.readBytes(exportBytes);
+        export.close();
         var xml :XML = bytesToXML(exportBytes);
         function addMd5(el :XML) :void {
             exportMd5s.put(XmlUtil.getStringAttr(el, "name"), XmlUtil.getStringAttr(el, "md5"));
@@ -48,8 +49,8 @@ public class BetwixtPublisher
         const destDir :File = exportDir.resolvePath(lib.location);
         destDir.createDirectory();
         for each (var atlas :Atlas in packer.atlases) atlas.publish(exportDir);
-        const dest :File = destDir.resolvePath("resources.xml");
-        const out :FileStream = new FileStream();
+        var dest :File = destDir.resolvePath("resources.xml");
+        var out :FileStream = new FileStream();
         out.open(dest, FileMode.WRITE);
         out.writeUTFBytes("<resources>\n");
         for each (var movie :XflMovie in lib.movies) {
@@ -65,7 +66,22 @@ public class BetwixtPublisher
         }
         for each (atlas in packer.atlases) out.writeUTFBytes(atlas.toXml());
         out.writeUTFBytes("</resources>");
+        out.close();
+
+        // Experimental JSON encoder
+        dest = destDir.resolvePath("resources.json");
+        out = new FileStream();
+        out.open(dest, FileMode.WRITE);
+
+        var json :Object = {
+            movies: lib.movies,
+            atlases: packer.atlases
+        };
+        var pretty :Boolean = false;
+        out.writeUTFBytes(JSON.stringify(json, null, pretty ? "  " : null));
+        out.close();
     }
+
     private static const log :Log = Log.getLog(BetwixtPublisher);
 }
 }

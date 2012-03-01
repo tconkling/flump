@@ -42,5 +42,12 @@ public class XflMovie extends XflTopLevelComponent
     }
 
     public function get flipbook () :Boolean { return layers[0].flipbook; }
+
+    public function toJSON (_:*) :Object {
+        return {
+            symbol: symbol,
+            layers: layers
+        };
+    }
 }
 }

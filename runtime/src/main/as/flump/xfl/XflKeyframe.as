@@ -79,5 +79,21 @@ public class XflKeyframe extends XflComponent
             addError(ParseError.CRIT, "Symbol '" + symbol + "' not exported");
         }
     }
+
+    public function toJSON (_:*) :Object {
+        var json :Object = {
+            index: index,
+            duration: duration
+        };
+        if (libraryItem != null) {
+            json.ref = symbol;
+            json.t = [ x, y, scaleX, scaleY, rotation ];
+            // json.alpha = 1;
+        }
+        if (label != null) {
+            json.label = label;
+        }
+        return json;
+    }
 }
 }
