@@ -5,7 +5,6 @@ package flump.xfl {
 
 import flash.geom.Matrix;
 import flash.geom.Point;
-import flash.utils.Dictionary;
 
 public class XflKeyframe extends XflComponent
 {
@@ -75,8 +74,8 @@ public class XflKeyframe extends XflComponent
         scaleY = Math.sqrt((matrix.c * matrix.c) + (matrix.d * matrix.d));
     }
 
-    public function checkSymbols (symbols :Dictionary) :void {
-        if (symbol != null && !symbols.hasOwnProperty(symbol)) {
+    public function checkSymbols (lib :XflLibrary) :void {
+        if (symbol != null && !lib.hasSymbol(symbol)) {
             addError(ParseError.CRIT, "Symbol '" + symbol + "' not exported");
         }
     }

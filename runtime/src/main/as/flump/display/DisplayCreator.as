@@ -22,42 +22,42 @@ public class DisplayCreator
         _lib = lib;
     }
 
-    public function loadMovie (symbol :String) :Movie {
-        return new Movie(_lib.get(symbol, XflMovie), loadSymbol);
+    public function loadMovie (name :String) :Movie {
+        return new Movie(_lib.getLibrary(name, XflMovie), loadLibraryItem);
     }
 
-    public function loadTexture (symbol :String) :DisplayObject {
-        if (!_textures.hasOwnProperty(symbol)) {
-            const match :Object = FLIPBOOK_TEXTURE.exec(symbol);
+    public function loadTexture (name :String) :DisplayObject {
+        if (!_textures.hasOwnProperty(name)) {
+            const match :Object = FLIPBOOK_TEXTURE.exec(name);
             var packed :SwfTexture;
             if (match == null)  {
-                packed = SwfTexture.fromTexture(_lib.swf, _lib.get(symbol, XflTexture));
+                packed = SwfTexture.fromTexture(_lib.swf, _lib.getLibrary(name, XflTexture));
             } else {
-                const movieSymbol :String = match[1];
+                const movieName :String = match[1];
                 const frame :int = int(match[2]);
-                const movie :XflMovie = _lib.get(movieSymbol, XflMovie);
+                const movie :XflMovie = _lib.getLibrary(movieName, XflMovie);
                 if (!movie.flipbook) {
-                    throw new Error("Got non-flipbook movie for flipbook texture '" + symbol + "'");
+                    throw new Error("Got non-flipbook movie for flipbook texture '" + name + "'");
                 }
                 packed = SwfTexture.fromFlipbook(_lib.swf, movie, frame);
             }
-            _textures[symbol] = Texture.fromBitmapData(packed.toBitmapData());
-            _textureOffsets[symbol] = packed.offset;
+            _textures[name] = Texture.fromBitmapData(packed.toBitmapData());
+            _textureOffsets[name] = packed.offset;
         }
-        const image :Image = new Image(_textures[symbol]);
-        image.x = _textureOffsets[symbol].x;
-        image.y = _textureOffsets[symbol].y;
+        const image :Image = new Image(_textures[name]);
+        image.x = _textureOffsets[name].x;
+        image.y = _textureOffsets[name].y;
         const holder :Sprite = new Sprite();
         holder.addChild(image);
         return holder;
     }
 
-    public function loadSymbol (symbol :String) :DisplayObject {
-        const match :Object = FLIPBOOK_TEXTURE.exec(symbol);
-        if (match != null) return loadTexture(symbol);
-        const symbolItem :* = _lib.get(symbol);
-        if (symbolItem is XflTexture) return loadTexture(XflTexture(symbolItem).symbol);
-        else return loadMovie(XflMovie(symbolItem).symbol);
+    public function loadLibraryItem (name :String) :DisplayObject {
+        const match :Object = FLIPBOOK_TEXTURE.exec(name);
+        if (match != null) return loadTexture(name);
+        const libraryItem :* = _lib.getLibrary(name);
+        if (libraryItem is XflTexture) return loadTexture(XflTexture(libraryItem).libraryItem);
+        else return loadMovie(XflMovie(libraryItem).libraryItem);
     }
 
     protected const _textures :Dictionary = new Dictionary();// symbol to Texture

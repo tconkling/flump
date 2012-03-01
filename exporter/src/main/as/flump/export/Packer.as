@@ -3,8 +3,6 @@
 
 package flump.export {
 
-import flash.geom.Rectangle;
-
 import flump.SwfTexture;
 import flump.xfl.XflKeyframe;
 import flump.xfl.XflLibrary;

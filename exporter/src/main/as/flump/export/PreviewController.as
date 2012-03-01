@@ -27,32 +27,32 @@ public class PreviewController
 
         _controls.movies.dataProvider.removeAll();
         for each (var movie :XflMovie in lib.movies) {
-            _controls.movies.dataProvider.addItem({movie: movie.symbol, memory: 0, drawn: 0});
+            _controls.movies.dataProvider.addItem({movie: movie.libraryItem, memory: 0, drawn: 0});
         }
         _controls.textures.dataProvider.removeAll();
         for each (var tex :XflTexture in lib.textures) {
-            _controls.textures.dataProvider.addItem({texture: tex.symbol, memory: 0, drawn: 0});
+            _controls.textures.dataProvider.addItem({texture: tex.libraryItem, memory: 0, drawn: 0});
         }
         _controls.movies.addEventListener(GridSelectionEvent.SELECTION_CHANGE,
                 function (..._) :void {
                 _controls.textures.selectedIndex = -1;
-                displaySymbol(_controls.movies.selectedItem.movie);
+                displayLibraryItem(_controls.movies.selectedItem.movie);
                 });
         _controls.textures.addEventListener(GridSelectionEvent.SELECTION_CHANGE,
             function (..._) :void {
                 _controls.movies.selectedIndex = -1;
-                displaySymbol(_controls.textures.selectedItem.texture);
+                displayLibraryItem(_controls.textures.selectedItem.texture);
         });
 
         // Play the first movie
         _controls.movies.selectedIndex = 0;
         // Grumble, wish setting the index above would fire the listener
-        displaySymbol(lib.movies[0].symbol);
+        displayLibraryItem(lib.movies[0].libraryItem);
     }
 
-    protected function displaySymbol (symbol :String) :void {
+    protected function displayLibraryItem (name :String) :void {
         while (_container.numChildren > 0) _container.removeChildAt(0);
-        const display :DisplayObject = _creator.loadSymbol(symbol);
+        const display :DisplayObject = _creator.loadLibraryItem(name);
         // TODO - get the size from the container sprite?
         display.x = 320 - display.width/2;
         display.y = 480 - display.height/2;

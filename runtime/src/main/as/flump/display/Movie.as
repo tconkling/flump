@@ -12,18 +12,18 @@ import starling.events.Event;
 
 public class Movie extends Sprite
 {
-    public function Movie (src :XflMovie, symbolToDisplayObject :Function) {
+    public function Movie (src :XflMovie, libraryItemToDisplayObject :Function) {
         name = src.libraryItem;
         _ticker = new Ticker(advanceTime);
         var frames :int = 0;
         if (src.flipbook) {
             _layers = new Vector.<Layer>(1, true);
-            _layers[0] = new Layer(this, src.layers[0], symbolToDisplayObject, true)
+            _layers[0] = new Layer(this, src.layers[0], libraryItemToDisplayObject, true)
             frames = src.layers[0].frames;
         } else {
             _layers = new Vector.<Layer>(src.layers.length, true);
             for (var ii :int = 0; ii < _layers.length; ii++) {
-                _layers[ii] = new Layer(this, src.layers[ii], symbolToDisplayObject, false);
+                _layers[ii] = new Layer(this, src.layers[ii], libraryItemToDisplayObject, false);
                 frames = Math.max(src.layers[ii].frames, frames);
             }
         }
@@ -123,34 +123,34 @@ class Layer {
     public var keyframeIdx :int ;// The index of the last keyframe drawn in drawFrame
     public var layerIdx :int;// This layer's index in the movie
     public var keyframes :Vector.<XflKeyframe>;
-    // Only created if there are multiple symbols on this layer. If it does exist, the appropriate display is swapped in at keyframe changes. If it doesn't, the display is only added to the parent on layer creation
+    // Only created if there are multiple items on this layer. If it does exist, the appropriate display is swapped in at keyframe changes. If it doesn't, the display is only added to the parent on layer creation
     public var displays :Vector.<DisplayObject>;// <SPDisplayObject*>
     public var movie :Movie; // The movie this layer belongs to
     // If the keyframe has changed since the last drawFrame
     public var changedKeyframe :Boolean;
 
-    public function Layer (movie :Movie, src :XflLayer, createDisplayObject :Function,
+    public function Layer (movie :Movie, src :XflLayer, libraryItemToDisplayObject :Function,
             flipbook :Boolean) {
         keyframes = src.keyframes;
         this.movie = movie;
-        var lastSymbol :String;
-        for (var ii :int = 0; ii < keyframes.length && lastSymbol == null; ii++) {
-            lastSymbol = keyframes[ii].symbol;
+        var lastItem :String;
+        for (var ii :int = 0; ii < keyframes.length && lastItem == null; ii++) {
+            lastItem = keyframes[ii].libraryItem;
         }
-        if (!flipbook && lastSymbol == null) movie.addChild(new Sprite());// Label only layer
+        if (!flipbook && lastItem == null) movie.addChild(new Sprite());// Label only layer
         else {
-            var multipleSymbols :Boolean = flipbook;
-            for (ii = 0; ii < keyframes.length && !multipleSymbols; ii++) {
-                multipleSymbols = keyframes[ii].symbol != lastSymbol;
+            var multipleItems :Boolean = flipbook;
+            for (ii = 0; ii < keyframes.length && !multipleItems; ii++) {
+                multipleItems = keyframes[ii].libraryItem != lastItem;
             }
-            if (!multipleSymbols) movie.addChild(createDisplayObject(lastSymbol));
+            if (!multipleItems) movie.addChild(libraryItemToDisplayObject(lastItem));
             else {
                 displays = new Vector.<DisplayObject>();
                 for each (var kf :XflKeyframe in keyframes) {
-                    var kfSymbol :String;
-                    if (flipbook) kfSymbol = movie.name + "_flipbook_" + kf.index;
-                    else kfSymbol = kf.symbol;
-                    var display :DisplayObject = createDisplayObject(kfSymbol);
+                    var kfItem :String;
+                    if (flipbook) kfItem = movie.name + "_flipbook_" + kf.index;
+                    else kfItem = kf.libraryItem;
+                    var display :DisplayObject = libraryItemToDisplayObject(kfItem);
                     displays.push(display);
                     display.name = src.name;
                 }
@@ -166,7 +166,7 @@ class Layer {
             keyframeIdx++;
             changedKeyframe = true;
         }
-        // We've got multiple symbols. Swap in the one for this kf
+        // We've got multiple items. Swap in the one for this kf
         if (changedKeyframe && displays != null) {
             movie.removeChildAt(layerIdx);
             movie.addChildAt(displays[keyframeIdx], layerIdx);

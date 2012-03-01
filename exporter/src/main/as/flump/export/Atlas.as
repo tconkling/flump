@@ -9,9 +9,6 @@ import flash.geom.Rectangle;
 
 import flump.SwfTexture;
 
-import com.threerings.util.Map;
-import com.threerings.util.Maps;
-
 public class Atlas
 {
     public var name :String;

@@ -3,8 +3,6 @@
 
 package flump.xfl {
 
-import flash.utils.Dictionary;
-
 public class XflLayer extends XflComponent
 {
     use namespace xflns;
@@ -29,8 +27,8 @@ public class XflLayer extends XflComponent
         return lastKf.index + lastKf.duration;
     }
 
-    public function checkSymbols (symbols :Dictionary) :void {
-        for each (var kf :XflKeyframe in keyframes) kf.checkSymbols(symbols);
+    public function checkSymbols (lib :XflLibrary) :void {
+        for each (var kf :XflKeyframe in keyframes) kf.checkSymbols(lib);
     }
 }
 }

@@ -23,7 +23,6 @@ import com.threerings.util.F;
 import com.threerings.util.Log;
 import com.threerings.util.Set;
 import com.threerings.util.Sets;
-import com.threerings.util.StringUtil;
 import com.threerings.util.XmlUtil;
 
 public class XflLoader

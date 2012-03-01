@@ -17,28 +17,39 @@ public class XflLibrary extends XflTopLevelComponent
         super(location);
     }
 
-    public function get (symbol :String, requiredType :Class=null) :* {
+    public function hasSymbol (symbol :String) :Boolean {
+        return _symbols[symbol] !== undefined;
+    }
+
+    public function getSymbol (symbol :String, requiredType :Class=null) :* {
         const result :* = _symbols[symbol];
         if (result === undefined) throw new Error("Unknown symbol '" + symbol + "'");
         else if (requiredType != null) return requiredType(result);
         else return result;
     }
 
+    public function getLibrary (name :String, requiredType :Class=null) :* {
+        const result :* = _libraryItems[name];
+        if (result === undefined) throw new Error("Unknown library item '" + name + "'");
+        else if (requiredType != null) return requiredType(result);
+        else return result;
+    }
+
     public function finishLoading () :void {
-        const libraryItemToSymbol :Dictionary = new Dictionary();
         for each (var tex :XflTexture in textures) {
+            _libraryItems[tex.libraryItem] = tex;
             _symbols[tex.symbol] = tex;
-            libraryItemToSymbol[tex.libraryItem] = tex.symbol;
         }
         for each (var movie :XflMovie in movies) {
-            _symbols[movie.symbol] = movie;
+            if (movie.symbol != null) _symbols[movie.symbol] = movie;
+            _libraryItems[movie.libraryItem] = movie;
             for each (var layer :XflLayer in movie.layers) {
                 for each (var kf :XflKeyframe in layer.keyframes) {
-                    if (kf.libraryItem != null) kf.symbol = libraryItemToSymbol[kf.libraryItem];
+                    if (kf.libraryItem != null) kf.symbol = _libraryItems[kf.libraryItem].symbol;
                 }
             }
         }
-        for each (movie in movies) movie.checkSymbols(_symbols);
+        for each (movie in movies) movie.checkSymbols(this);
     }
 
     override public function getErrors (sev :String=null) :Vector.<ParseError>{
@@ -48,6 +59,7 @@ public class XflLibrary extends XflTopLevelComponent
         return base;
     }
 
+    protected const _libraryItems :Dictionary = new Dictionary();
     protected const _symbols :Dictionary = new Dictionary();
 }
 }
