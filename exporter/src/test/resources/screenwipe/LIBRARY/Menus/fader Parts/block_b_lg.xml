@@ -1,0 +1,45 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Menus/fader Parts/block_b_lg" itemID="47140553-0000006f" linkageExportForAS="true" linkageClassName="block_b_lg" sourceLibraryItemHRef="Symbol 1" lastModified="1330485539" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="block_b_lg">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="-0.0610198974609375" c="0.0610198974609375" d="0"/>
+                        </matrix>
+                        <GradientEntry color="#300D66" ratio="0"/>
+                        <GradientEntry color="#43128A" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#421189"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="2">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!700 700|-700 700!-700 700|-700 -700!-700 -700|700 -700!700 -700|700 700"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!1000 1000|-1000 1000!-1000 1000|-1000 -1000!-1000 -1000|1000 -1000!1000 -1000|1000 1000"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
