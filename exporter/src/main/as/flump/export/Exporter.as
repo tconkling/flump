@@ -130,7 +130,9 @@ public class Exporter
             const name :String = status.file.nativePath.substring(_rootLen);
             const load :Future = new XflLoader().load(name, status.file);
             load.succeeded.add(function (lib :XflLibrary) :void {
-                const isMod :Boolean = BetwixtPublisher.modified(lib, _exportChooser.dir);
+                // Don't blow up if the export directory hasn't been chosen
+                const isMod :Boolean = (_exportChooser.dir != null ?
+                    BetwixtPublisher.modified(lib, _exportChooser.dir) : true);
                 status.lib = lib;
                 status.updateModified(Ternary.of(isMod));
                 for each (var err :ParseError in lib.getErrors()) {
