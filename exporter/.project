@@ -21,6 +21,13 @@
 		<nature>com.adobe.flexbuilder.project.flexnature</nature>
 		<nature>com.adobe.flexbuilder.project.actionscriptnature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>[source path] FLUMP_RUNTIME_SRC_LOC</name>
+			<type>2</type>
+			<locationURI>FLUMP_RUNTIME_SRC_LOC</locationURI>
+		</link>
+	</linkedResources>
 	<variableList>
 		<variable>
 			<name>FLUMP_RUNTIME_SRC_LOC</name>
