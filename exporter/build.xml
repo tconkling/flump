@@ -35,7 +35,7 @@
     </amxmlc>
   </target>
 
-  <target name="package">
+  <target name="package" depends="swf">
     <packageair keystore="${keystore}" password="${PASSWORD}" deploydir="${deploy.dir}"
       descriptor="etc/airdesc.xml"/>
   </target>
