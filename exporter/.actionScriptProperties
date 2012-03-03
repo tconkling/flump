@@ -12,16 +12,13 @@
         </excludedEntries>
       </libraryPathEntry>
       <libraryPathEntry kind="1" linkType="1" path="libs"/>
-      <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/com/threerings/flump/flump-runtime/0.1-SNAPSHOT/flump-runtime-0.1-SNAPSHOT.swc" sourcepath="${FLUMP_RUNTIME_SRC_LOC}" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/deng/fzip/a5430bd/fzip-a5430bd.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/com/adobe/as3corelib/0.93/as3corelib-0.93.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/com/threerings/aspirin/1.13-SNAPSHOT/aspirin-1.13-SNAPSHOT.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/org/osflash/signals/fd03bf873/signals-fd03bf873.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/org/starling-framework/starling/46f31516/starling-46f31516.swc" useDefaultLinkType="false"/>
     </libraryPath>
-    <sourceAttachmentPath>
-      <sourceAttachmentPathEntry kind="3" linkType="1" path="${M2_REPO}/com/threerings/flump/flump-runtime/0.1-SNAPSHOT/flump-runtime-0.1-SNAPSHOT.swc" sourcepath="${FLUMP_RUNTIME_SRC_LOC}" useDefaultLinkType="false"/>
-    </sourceAttachmentPath>
+    <sourceAttachmentPath/>
   </compiler>
   <applications>
     <application path="Main.mxml">
