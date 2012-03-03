@@ -114,7 +114,7 @@ public class Exporter
     }
 
     protected function addFlashDocument (file :File) :void {
-        const status :DocStatus = new DocStatus(file, _rootLen, Ternary.UNKOWN, Ternary.UNKOWN, null);
+        const status :DocStatus = new DocStatus(file, _rootLen, Ternary.UNKNOWN, Ternary.UNKNOWN, null);
         _libraries.dataProvider.addItem(status);
         loadFlashDocument(status);
     }

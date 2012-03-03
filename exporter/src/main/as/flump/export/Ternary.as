@@ -9,7 +9,7 @@ public class Ternary extends Enum
 {
     public static const TRUE :Ternary = new Ternary("TRUE");
     public static const FALSE :Ternary = new Ternary("FALSE");
-    public static const UNKOWN :Ternary = new Ternary("UNKNOWN");
+    public static const UNKNOWN :Ternary = new Ternary("UNKNOWN");
     finishedEnumerating(Ternary);
 
     public function Ternary (name :String) {
