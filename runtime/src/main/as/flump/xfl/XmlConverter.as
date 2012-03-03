@@ -12,6 +12,10 @@ public class XmlConverter
         this.xml = xml;
     }
 
+    public function hasAttr (name :String) :Boolean {
+        return (xml.attribute(name)[0] != null);
+    }
+
     public function getStringAttr (name :String, defaultValue :* = undefined) :String {
         return getAttr(name, defaultValue);
     }

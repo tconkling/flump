@@ -55,6 +55,10 @@ public class XflKeyframe extends XflComponent
 
         if (symbolXml == null) return; // Purely labelled frame
 
+        if (!isClassicTween(xml)) {
+            addError(ParseError.WARN, "Motion and Shape tweens are not supported");
+        }
+
         libraryItem = new XmlConverter(symbolXml).getStringAttr("libraryItemName");
 
 
@@ -94,6 +98,16 @@ public class XflKeyframe extends XflComponent
             json.label = label;
         }
         return json;
+    }
+
+    protected static function isClassicTween (xml :XML) :Boolean {
+        const converter :XmlConverter = new XmlConverter(xml);
+        if (converter.hasAttr("motionTweenRotate") ||
+            converter.hasAttr("motionTweenRotateTimes")) {
+            return false;
+        }
+
+        return true;
     }
 }
 }
