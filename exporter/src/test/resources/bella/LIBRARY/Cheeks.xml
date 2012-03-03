@@ -1,0 +1,55 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Cheeks" itemID="454a68d5-00000046" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="Cheeks" lastModified="1330491169" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="Cheeks">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <matrix>
+                    <Matrix tx="-234.95" ty="-60.5"/>
+                  </matrix>
+                  <members>
+                    <DOMShape selected="true">
+                      <matrix>
+                        <Matrix tx="-234.95" ty="-60.5"/>
+                      </matrix>
+                      <fills>
+                        <FillStyle index="1">
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.008941650390625" d="0.0088653564453125" tx="267.95" ty="67.7"/>
+                            </matrix>
+                            <GradientEntry color="#DDAEAE" alpha="0.462745098039216" ratio="0"/>
+                            <GradientEntry color="#E3C0C0" alpha="0" ratio="1"/>
+                          </RadialGradient>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.0047607421875" d="0.0062408447265625" tx="238.6" ty="65.4"/>
+                            </matrix>
+                            <GradientEntry color="#DEAEAD" alpha="0.462745098039216" ratio="0"/>
+                            <GradientEntry color="#ECE9D8" alpha="0" ratio="1"/>
+                          </RadialGradient>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="1" edges="!5359 1491.5[#14B5.71 #5D3.B4 5260.5 1451.5!5260.5 1451.5[#1463.DA #582.BA 5220 1353.5!5220 1353.5[#1463.DA #510.C4 5260.5 1256.5!5260.5 1256.5[#14B5.71 #4C0.0C 5359 1216!5359 1216[#1528.4F #4C0.0C 5457 1256.5!5457 1256.5[#1579.E5 #510.C4
+ 5498 1353.5!5498 1353.5[#1579.E5 #582.BA 5457 1451.5!5457 1451.5[#1528.4F #5D3.B4 5359 1491.5"/>
+                        <Edge fillStyle1="2" edges="
+!4772.5 1403.5[#1286.11 #57B.F2 4720.5 1376!4720.5 1376[#125A.A3 #543.08 4698.5 1306.5!4698.5 1306.5[#125A.A3 #4F3.37 4720.5 1239.5!4720.5 1239.5[#1286.11 #4BA.8E 4772.5 1210!4772.5 1210[#12C2.EC #4BA.8E 4824.5 1239.5!4824.5 1239.5[#12EE.1B
+ #4F3.37 4846 1306.5!4846 1306.5[#12EE.1B #543.08 4824.5 1376!4824.5 1376[#12C2.EC #57B.F2 4772.5 1403.5"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,57 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Hair Middle" itemID="454a68ee-0000004a" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="HairMiddle" lastModified="1330491309" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="Hair Middle">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <matrix>
+                    <Matrix tx="-229.8" ty="-14.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="261.2" y="19.05"/>
+                  </transformationPoint>
+                  <members>
+                    <DOMShape selected="true">
+                      <matrix>
+                        <Matrix tx="-229.8" ty="-14.45"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="261.2" y="19.05"/>
+                      </transformationPoint>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#FFFFCC"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#FFFFE6"/>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <SolidColor color="#CC9966"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!5064 2507[#1408.88 #98E.38 5170 2310!5170 2310[#1456.88 #85B.4E 5150 1950!5150 1950[5080 1720 5125 1630!5125 1630|5370 610!5370 610|5553 393!5553 393[#148C.1B #ED.1A 5059.5 315.5!5059.5 315.5[#12FA.AE #18A.02 4750 570!4750 570[#11C2.16
+ #349.F 4613 1149.5!4613 1149.5[#1247.A3 #5B0.C7 4826.5 1618!4826.5 1618[#136D.1E #6F3.4F 5013.5 1975.5!5013.5 1975.5[#13BD.EA #87B.A4 5015 2259!5015 2259[4930 #94A.18 4845 2335!4845 2335[#12A2.38 #8F2.B 4810 2170!4810 2170[#1287.49 #8BE.F1
+ 4747 2321"/>
+                        <Edge fillStyle0="1" fillStyle1="3" edges="
+!4747 2321[#12A9.8C #9E7.3A 5064 2507"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="
+!5050 1963[5108 2109 5108 2211!5108 2211[5108 2403 4990 2403!4990 2403[4940 2403 4940 2370!4940 2370[4940 2361 4998 2300!4998 2300[5055 2240 5055 2197!5055 2197[5055 2101 4998 1910!4998 1910[4940 1736 4940 1721!4940 1721[4940 1717 4940
+ 1711!4940 1711|4948 1711!4948 1711[4977 1799 5050 1963"/>
+                        <Edge fillStyle0="3" edges="
+!4747 2321[#128D.5D #940.57 4775 2420!4775 2420[#12ED.B8 #9EE.D6 4960 2555!4960 2555[#1399.CA #9F6.0F 5064 2507"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

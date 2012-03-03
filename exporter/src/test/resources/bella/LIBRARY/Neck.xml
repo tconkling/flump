@@ -1,0 +1,47 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Neck" itemID="454a68fc-0000004c" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="Neck" lastModified="1330491443" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="Neck">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <matrix>
+                    <Matrix tx="-262.7" ty="-65.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="270.65" y="101.85"/>
+                  </transformationPoint>
+                  <members>
+                    <DOMShape selected="true">
+                      <matrix>
+                        <Matrix tx="-262.7" ty="-65.25"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="270.65" y="101.85"/>
+                      </transformationPoint>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#E1B777"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#E7C48F"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="!5507.5 1562[#1532.3B #6A8.DA 5270 1754"/>
+                        <Edge fillStyle0="2" edges="!5270 1754[#1495.AC #76D.C1 5254 2038!5254 2038[#150A.04 #8BD.2 5548 2038!5548 2038[#1571.C3 #6BB.F4 5507.5 1562"/>
+                        <Edge fillStyle1="1" edges="!5270 1754[#1496.5D #63F.C5 5254 1433!5254 1433[5401 #498.8D 5548 1433!5548 1433[#158D.1 #5C4.11 5507.5 1562"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

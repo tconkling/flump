@@ -1,0 +1,58 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Eyes" itemID="454a68af-00000040" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="Eyes" lastModified="1330491277" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="Eyes">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <matrix>
+                    <Matrix tx="-236.6" ty="-52"/>
+                  </matrix>
+                  <members>
+                    <DOMShape selected="true">
+                      <matrix>
+                        <Matrix tx="-236.6" ty="-52"/>
+                      </matrix>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#FAEFDE"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#FDFBF7"/>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <SolidColor color="#F7E3C8"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!5327 1142[5353 1142 5355 1171!5355 1171[5355 1197 5325 1197!5325 1197[5307 1197 5300 1187!5300 1187[5296 1181 5296 1175!5296 1175[5296 1142 5327 1142"/>
+                        <Edge fillStyle1="1" edges="!5175 1088[#1439.ED #43C.0C 5181 1080!5181 1080[#1459.2E #412.F1 5262.5 1039.5!5262.5 1039.5[#14C3.FB #40B.F6 5358 1068!5358 1068[5400 1101 5400 1147!5400 1147[#1517.FD #4A9.05 5362 1217.5!5362 1217.5[#14CC.19 #4D9.DF 5262 1248!5262 1248
+[#1480.D8 #4E1.54 5237 1249.5"/>
+                        <Edge fillStyle1="3" edges="
+!5237 1249.5[#1448.D1 #4E1.95 5167 1232!5167 1232[#140E.61 #4B9.97 5143.5 1163.5!5143.5 1163.5[#141F.A5 #462.58 5175 1088"/>
+                        <Edge fillStyle1="1" edges="
+!4780.5 1052[4799.5 #410.6C 4820 1039.5!4820 1039.5[#12F4.6C #40E.39 4875 1074!4875 1074[#1321.62 #455.9D 4899 1151.5!4899 1151.5[#1324.B9 #4A9.51 4883.5 1211!4883.5 1211[#1302.23 #4CC.E1 4826.5 1226!4826.5 1226[#12B4.36 #4C7.5B 4760.5
+ 1193.5"/>
+                        <Edge fillStyle1="3" edges="
+!4760.5 1193.5[#1297.71 #4A8.8E 4758.5 1191.5!4758.5 1191.5[#127A.18 #487.B7 4731.5 1128!4731.5 1128[#127C.F7 #448.18 4760 1068!4760 1068[#12A2.15 #422.38 4780.5 1052"/>
+                        <Edge fillStyle0="1" fillStyle1="3" edges="
+!5175 1088[#1423.52 #4AB.E6 5237 1249.5"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="
+!4775 1171|4775 1170.5!4775 1170.5[#12A3.B4 #491.38 4769.5 1167!4769.5 1167[4760 #488.F3 4760 1153!4760 1153[4760 1132 4783 1132!4783 1132[#12B9.C1 1132 4798.5 1140.5!4798.5 1140.5[4802 #479.7 4802 1154!4802 1154[4802 1172 4785 1172!4785
+ 1172[#12AC.39 1172 4776.5 1171!4776.5 1171|4775 1171"/>
+                        <Edge fillStyle0="1" fillStyle1="3" edges="
+!4780.5 1052[#1270.07 #45B.0B 4760.5 1193.5"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

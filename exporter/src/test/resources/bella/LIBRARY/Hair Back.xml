@@ -1,0 +1,62 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Hair Back" itemID="454a69bf-0000006a" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="HairBack" lastModified="1330493211" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="Hair Back">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <matrix>
+                    <Matrix tx="-231.9" ty="-18.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="272.35" y="22.05"/>
+                  </transformationPoint>
+                  <members>
+                    <DOMShape selected="true">
+                      <matrix>
+                        <Matrix tx="-231.9" ty="-18.4"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="272.35" y="22.05"/>
+                      </transformationPoint>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#FFFFCC"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#CC9966"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" edges="!5657.5 401.5[#15B3.8C #179.71 5430 370!5430 370[#1409.DE #15C.6B 4878.5 541!4878.5 541[#1213.31 #2DD.BA 4637.5 1058.5!4637.5 1058.5[#1227.D2 #567.47 4808 1630!4808 1630[#1392.88 #79A.FF 5050 2310!5050 2310[#13DD.B8 2530 4891 2759!4891
+ 2759[#1264.3E #B77.7 4670 3070!4670 3070[#1228.1C #C77.FB 4770 3290!4770 3290[#1322.BF #D3D.1 4965 3510!4965 3510[#13A2.6B #E5A.46 4857 3688!4857 3688[#12D6.6D #E68.35 4770 3630!4770 3630[#1294.02 #E7D.24 4894 3784!4894 3784[#13AA.E7
+ #F0B.1E 5127 3661!5127 3661[#1443.2B #DDC.5D 5290 3470!5290 3470[#159A.ED #D1D.6A 5607 3498.5!5607 3498.5[#1633.14 #E37.B2 5645.5 3822!5645.5 3822[#15E7.F3 #FA4.1F 5818 4058!5818 4058[#1764.4B #1002.FE 6169 3894!6169 3894[#177A.B1 #F91.1C
+ 5936.5 3879.5!5936.5 3879.5[#16E6.73 #EBE.0A 5944 3608.5!5944 3608.5[#1789.51 #D72.CF 6210 3490!6210 3490[#18CB.57 #DF4.C 6110 3688!6110 3688[#193E.7 #EB8.B2 6539 3476!6539 3476[#19AD.A7 #CF1.4E 6537 3193.5!6537 3193.5[#197C.82 #C50.9
+ 6499.5 3115.5"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="
+!6499.5 3115.5[#190D.0B #BE6.84 6259 2982!6259 2982[#17D8.F5 #B65.6F 6117 2781!6117 2781[#1806.7C #AE3.F2 6180 2781"/>
+                        <Edge fillStyle0="1" edges="
+!6180 2781[#1864.93 #AC7.B8 6300 2678!6300 2678[#1912.1E #9E7.86 6357 2367!6357 2367[#1895.55 #8C6.83 6198 2243!6198 2243[#1882.4D #930.37 6266 2372"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="
+!6266 2372[#1873.D9 #99E.7 6241 2495.5!6241 2495.5[6222.25 #9E0.9E 6131.5 2528!6131.5 2528[#1798.BE #9DF.62 6000 2477"/>
+                        <Edge fillStyle0="1" edges="
+!6000 2477[#1733.B7 #990.13 5969 2303!5969 2303[#1786.B5 #838.25 5955 1961!5955 1961[#16EE.75 #6A6.8B 5972.5 1440!5972.5 1440[#178C.CD #50F.1D 6065 1175.5!6065 1175.5[#17BA.93 #477.8F 6082.5 1113.5"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="
+!6082.5 1113.5[#17E4.6A #3BF.C4 6063.5 766!6063.5 766[#176F.97 #214.14 5657.5 401.5"/>
+                        <Edge fillStyle0="2" edges="
+!6082.5 1113.5[#17D3.55 #41B.F6 6110 998!6110 998[#17FA.81 783 6027 636!6027 636[#171E.D6 #1CF.CF 5657.5 401.5!6266 2372[#1864.DC #9A7.C9 6170 2489!6170 2489[#17B0.9B #9CC.29 6000 2477!6499.5 3115.5[#1932.F2 #BE4.B2 6355.5 2989!6355.5
+ 2989[#1842.86 #B58.A5 6180 2781"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

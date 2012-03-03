@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="R Leg Upper" itemID="454a6969-0000005e" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="RLegUpper" lastModified="1330491539" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="R Leg Upper">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <matrix>
+                    <Matrix tx="-241.9" ty="-181.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="259.9" y="189.2"/>
+                  </transformationPoint>
+                  <members>
+                    <DOMShape selected="true">
+                      <matrix>
+                        <Matrix tx="-241.9" ty="-181.4"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="259.9" y="189.2"/>
+                      </transformationPoint>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="1" edges="!5421.5 3871.5[#1590.4B #1003.39 5414 4924.5!5414 4924.5|5351 5491.5!5351 5491.5[#14D8.F8 #163D.EB 5283.5 5772.5!5283.5 5772.5[#1467.11 #16E7.7C 5181 5848!5181 5848[#1413.0A #16C8.A2 5071.5 5766!5071.5 5766[#138B.EE #1643.4B 4903 4927
+!4903 4927[#12C1.F7 #103A.CF 4858 3896!4858 3896[#1332.38 #E35.17 5049 3627.5!5049 3627.5[#14CA.16 #E3C.B9 5421.5 3871.5"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,42 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="R Foot" itemID="454a6973-00000060" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="RFoot" lastModified="1330491497" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="R Foot">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <transformationPoint>
+                    <Point x="30.6" y="2.1"/>
+                  </transformationPoint>
+                  <members>
+                    <DOMShape>
+                      <transformationPoint>
+                        <Point x="30.6" y="2.1"/>
+                      </transformationPoint>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#E1B777"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="2" edges="!646 86[#28A.F2 #48.ED 648.5 54.5!648.5 54.5[#285.FE 36 643.5 26.5!643.5 26.5[#280.FF #11.0B 630.5 7.5!630.5 7.5[#26C.51 -1.9921875 545 2!545 2[365 94 266 129!266 129[241 138 220 146"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="!220 146[78 233 189 268!189 268[300 303 646 86"/>
+                        <Edge fillStyle0="1" edges="!220 146[155 171 118 190!118 190[68 216 48 228!48 228[27 239 16 255!16 255[4 271 1 289!1 289[-3 307 8 321!8 321[18 335 31 344!31 344[43 353 54 359!54 359[138 387 224 365!224 365[282 349 337 318!337 318[392 289 447 260!447 260[491 235
+ 517 221!517 221[#21F.2 #D0.1 595 170!595 170[#286.C3 #83.F2 644.5 120!644.5 120[#282.51 #6C.13 646 86"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

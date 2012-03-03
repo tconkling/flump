@@ -1,0 +1,53 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="mouth_symbol" itemID="4f4db3c2-0000052b" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="mouth_symbol" lastModified="1330492787" lastUniqueIdentifier="2" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="mouth_symbol">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#9D4444"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#D7A2A2"/>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <SolidColor color="#EACECE"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="1" edges="!52 43[#2D.FD #28.D3 39.5 38.5!39.5 38.5[#18.63 #21.0A 6 18.5!6 18.5[#FFFFF3.A3 #4.11 20 12.5!20 12.5[#34.7 #14.E7 75 10.5!75 10.5[#61.5E #0.12 118.5 0!118.5 0[#8B.D6 -0.015625 237.5 25.5!237.5 25.5[#F1.09 #1A.5A 244.5 27!244.5 27[#10D.E1
+ #20.61 328 31.5!328 31.5[#182.16 #1E.3F 407 28.5!407 28.5[#1AB.C1 #1B.1F 475 16!475 16[#198.16 #28.6B 341.5 48.5!341.5 48.5[#134.4E #34.98 278 53"/>
+                        <Edge fillStyle1="2" edges="
+!278 53[#E0.B4 #46.DB 199.5 77"/>
+                        <Edge fillStyle1="1" edges="
+!199.5 77[#C4.64 #4D.B9 193.5 78.5!193.5 78.5|203 77!203 77[#D2.08 #56.34 162 91.5!162 91.5[#71.F8 #60.E 107 88.5!107 88.5[#63.DE #4F.E8 104.5 76.5"/>
+                        <Edge fillStyle1="2" edges="
+!104.5 76.5[#60.53 #48.F5 93 67.5!93 67.5[#58.09 #40.EC 82 62!82 62[52 47 52 44!52 44|52 43"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="
+!278 53[#108.B1 #35.6B 252 53!252 53[#EE.BF #34.6D 226 51!226 51[#DE.C3 #32.DE 219.5 50.5!219.5 50.5[#D5.35 #31.C3 207.5 49!207.5 49[#C6.A7 #30.04 191 47!191 47[#BB.87 #2E.A9 184.5 46.5"/>
+                        <Edge fillStyle0="2" fillStyle1="3" edges="
+!184.5 46.5[190 #31.6 190 59!190 59[190 72 176 72!176 72[165 72 163 66!163 66[163 60 163 59!163 59[163 #2F.44 173.5 45.5"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="
+!173.5 45.5[#9D.E4 #2C.05 152 44!152 44[#92.35 #2C.A1 113.5 48!113.5 48[#67.9E #30.F6 95.5 49.5!95.5 49.5|94.5 49.5!94.5 49.5[#4C.74 #32.09 67.5 47.5!67.5 47.5[#3C.24 #2D.73 52 43"/>
+                        <Edge fillStyle0="1" fillStyle1="3" edges="
+!173.5 45.5[#AF.93 45 178 45!178 45[#B5.C 45 184.5 46.5"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="
+!104.5 76.5[#6A.72 #4B.2 109.5 74.5!109.5 74.5[#70.BB #49.7A 117.5 73.5!117.5 73.5[#7A.34 #49.82 128 74!128 74[#91.44 #4B.67 199.5 77"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

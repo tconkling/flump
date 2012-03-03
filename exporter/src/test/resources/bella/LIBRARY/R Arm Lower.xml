@@ -1,0 +1,42 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="R Arm Lower" itemID="454a69a8-00000066" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="RArmLower" lastModified="1330491475" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="R Arm Lower">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <matrix>
+                    <Matrix tx="-237.55" ty="-161.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="257" y="164.75"/>
+                  </transformationPoint>
+                  <members>
+                    <DOMShape selected="true">
+                      <matrix>
+                        <Matrix tx="-237.55" ty="-161.75"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="257" y="164.75"/>
+                      </transformationPoint>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#E1B777"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="1" edges="!5198 3367[#142B.A4 #DD8.FC 5105 3658.5!5105 3658.5[#133D.39 #F8D.CE 4833.5 4253!4833.5 4253[#1289.2 #10FB.EF 4751 4233!4751 4233|5011 3421!5011 3421[#13D7.2C #C92.0F 5141 3236!5141 3236[5211 #CAF.EF 5198 3367"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

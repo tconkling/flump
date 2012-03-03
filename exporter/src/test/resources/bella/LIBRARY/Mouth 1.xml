@@ -1,0 +1,91 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Mouth 1" itemID="45e61204-00000035" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="Mouth1" lastModified="1330491432" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="Mouth 1">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <matrix>
+                    <Matrix tx="-56.9" ty="-87.15"/>
+                  </matrix>
+                  <members>
+                    <DOMShape selected="true">
+                      <matrix>
+                        <Matrix tx="-56.9" ty="-87.15"/>
+                      </matrix>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#9D4444"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#FAEFDE"/>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <SolidColor color="#6D4810"/>
+                        </FillStyle>
+                        <FillStyle index="4">
+                          <SolidColor color="#D7A2A2"/>
+                        </FillStyle>
+                        <FillStyle index="5">
+                          <SolidColor color="#EACECE"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="1" edges="!1219 1803[#516.9D #6E7.CB 1416.5 1778!1416.5 1778[#5FA.5F #6FC.31 1659 1755!1659 1755|1653 1748!1653 1748|1652 1746!1652 1746[1657 1743 1664 1743!1664 1743[1674 1745 1685 1749!1685 1749[1688 1749 1691 1752!1691 1752[1694 1754 1696 1757
+!1696 1757[#642.F5 #70E.F5 1531 1845.5!1531 1845.5[#5B3.14 #75C.31 1405 1903!1405 1903[#547.12 #781.9D 1281.5 1890!1281.5 1890[#4BE.B7 #743.DF 1190.5 1832"/>
+                        <Edge fillStyle1="3" edges="
+!1190.5 1832[#49E.5A #724.8C 1173 1822!1173 1822|1173 1819"/>
+                        <Edge fillStyle1="4" edges="
+!1173 1819[#494.01 #71A.84 1171 1818"/>
+                        <Edge fillStyle1="1" edges="
+!1171 1818|1138 1812!1138 1812|1146 1798!1146 1798|1162 1797!1162 1797[1161 1798 1161 1800!1161 1800[1161 1801 1162 1801!1162 1801[1165 1805 1169 1809!1169 1809|1195.5 1806"/>
+                        <Edge fillStyle1="2" edges="
+!1195.5 1806[#4AF.B8 #70A.83 1208 1803!1208 1803[#4BB.9C 1803 1219 1803"/>
+                        <Edge fillStyle0="4" fillStyle1="1" edges="
+!1173 1818.5|1171 1818"/>
+                        <Edge fillStyle0="3" fillStyle1="1" edges="
+!1220.5 1818.5[#4B6.84 #717.4C 1200 1815!1200 1815|1173 1816!1173 1816|1173 1818.5"/>
+                        <Edge fillStyle0="3" fillStyle1="4" edges="
+!1173 1818.5|1173 1819!1198.5 1835[#4B3.8E 1836 1208 1836!1208 1836[#4BD.7C 1836 1221 1835"/>
+                        <Edge fillStyle0="3" fillStyle1="2" edges="
+!1221 1835[#4D2.B3 #728.B6 1255 1827!1255 1827[#4D2.38 #71D.5F 1220.5 1818.5"/>
+                        <Edge fillStyle0="3" fillStyle1="1" edges="
+!1190.5 1832[#4AA.B8 #729.C6 1198.5 1835"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="
+!1585.5 1778[1449 1802 1309 1808!1309 1808[#4F0.C8 #718.63 1220.5 1818.5"/>
+                        <Edge fillStyle0="4" fillStyle1="1" edges="
+!1381 1885[#56E.75 #75C.5F 1399.5 1883"/>
+                        <Edge fillStyle0="4" fillStyle1="5" edges="
+!1399.5 1883[1393 #755.A4 1393 1877!1393 1877[1393 1860 1419 1860!1419 1860[1432 1860 1434 1872!1434 1872[1434 #751.2A 1434 1874.5"/>
+                        <Edge fillStyle0="4" fillStyle1="1" edges="
+!1434 1874.5[#59C.BC #751.3 1439.5 1872!1439.5 1872[#5FD.B5 #727.8E 1533 1821!1533 1821|1480 1838!1480 1838|1490.5 1834"/>
+                        <Edge fillStyle0="4" fillStyle1="2" edges="
+!1490.5 1834[#5CC.02 #72B.47 1468 1839.5!1468 1839.5[#5AC.2 #733.D2 1399.5 1856!1399.5 1856[#542.D1 #74C.2A 1292.5 1858.5!1292.5 1858.5[#4E3.F9 #73B.5 1221 1835"/>
+                        <Edge fillStyle0="5" fillStyle1="1" edges="
+!1399.5 1883[#57B.3B #75E.5 1409 1891!1409 1891[#598.78 1891 1434 1874.5!1365 1885|1365 1886!1365 1886[1365 1894 1366 1893!1366 1893|1375 1893!1375 1893[1383 1893 1380 1891!1380 1891[1381 1887 1381 1885"/>
+                        <Edge fillStyle0="5" fillStyle1="4" edges="
+!1381 1885[1379 1878 1374 1878!1374 1878[#555.91 1878 1365 1885"/>
+                        <Edge fillStyle0="3" fillStyle1="1" edges="
+!1591.5 1791.5[1600 1791 1609 1792!1609 1792[1639 1789 1660 1769!1660 1769|1585.5 1778"/>
+                        <Edge fillStyle0="3" fillStyle1="2" edges="
+!1585.5 1778[#60D.92 #6FC.C6 1519 1801!1519 1801[#619.CC #704.72 1591.5 1791.5"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="
+!1490.5 1834|1591.5 1791.5"/>
+                        <Edge fillStyle0="4" fillStyle1="1" edges="
+!1198.5 1835[#50D.A9 #75B.34 1365 1885"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="
+!1195.5 1806|1219 1803"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

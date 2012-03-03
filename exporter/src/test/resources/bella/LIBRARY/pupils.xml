@@ -1,0 +1,36 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="pupils" itemID="4f4db5c7-00000563" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="pupils" lastModified="1330493188" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="pupils">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#5B3132"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#FBF4EA"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!426 67S1[426 85 411 85!411 85[398 85 393 76!393 76[391 68 391 67!391 67[391 49 409 49!409 49[426 49 426 67"/>
+                        <Edge fillStyle1="1" edges="!488 80S2[488 109 468 129!468 129[448 149 419 149!419 149[390 149 370 129!370 129[350 109 350 80!350 80[350 51 370 31!370 31[390 11 419 11!419 11[448 11 468 31!468 31[488 51 488 80"/>
+                        <Edge fillStyle1="1" edges="!90 17[106 34 106 58!106 58[106 82 90 99!90 99[75 116 53 116!53 116[31 116 15 99!15 99[0 82 0 58!0 58[0 34 15 17!15 17[31 0 53 0!53 0[75 0 90 17"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!79 28[94 28 94 44!94 44[94 59 79 59!79 59[68 59 64 52!64 52|63 44!63 44[63 28 79 28"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

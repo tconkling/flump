@@ -1,0 +1,47 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="R Hand" itemID="454a6986-00000064" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="RHand" lastModified="1330491515" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="R Hand">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <matrix>
+                    <Matrix tx="-232.95" ty="-209.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="239.45" y="211.45"/>
+                  </transformationPoint>
+                  <members>
+                    <DOMShape selected="true">
+                      <matrix>
+                        <Matrix tx="-232.95" ty="-209.85"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="239.45" y="211.45"/>
+                      </transformationPoint>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#E1B777"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="1" edges="!4879.5 4401|4867 4480.5!4867 4480.5|4866 4480.5!4866 4480.5[#12FA.47 #11BF.8B 4828 4541!4828 4541[#12CC.E1 #11BB.C2 4804 4526!4804 4526[#12C1.2B #11A4.F1 4800.5 4506!4800.5 4506[#12CF.BF #1152.04 4798 4432.5!4798 4432.5[#12B6.EF #114F.C7
+ 4789 4437!4789 4437[#12B1.98 #1157.87 4782 4446.5!4782 4446.5[#12AC.95 #115F.F1 4779.5 4449.5!4779.5 4449.5[#12AB.35 #1163.41 4779 4453!4779 4453[#12A7.45 #116D.17 4771.5 4473!4771.5 4473[#1299.D8 #1198.6A 4761 4514.5!4761 4514.5[#1297.E6
+ #11AE.C5 4771.5 4591!4771.5 4591[#12A5.F #120C.BD 4774.5 4651!4774.5 4651[#12A4.7D #1242.0B 4746.5 4672!4746.5 4672[#127D.7F #123E.BD 4727 4661!4727 4661[#1276.BF #1236.0A 4726.5 4663!4726.5 4663[#1262.32 4646.5 4699 4640.5!4699 4640.5
+[#124B.11 #1207.A 4671.5 4598.5!4671.5 4598.5[#1239.B5 #11D1.AD 4660.5 4509!4660.5 4509[#1232.6F #117D.C9 4659 4451!4659 4451[#1234.5 4443.5 4662.5 4434.5!4662.5 4434.5[#1241.F1 #112F.8B 4706 4332.5!4706 4332.5[#1264.BD #10E6.81 4711.5
+ 4321!4711.5 4321[#1270.57 #10D1.6B 4722 4297.5!4722 4297.5[#1272.4E #10C8.CD 4722.5 4296!4722.5 4296[#1274.D8 #10C4.0D 4727 4287!4727 4287[#128C.1F #108F.5A 4751.5 4224!4751.5 4224[#1298.6A #1075.CF 4775 4197.5!4775 4197.5[#12AD.6B #1064.38
+ 4788.5 4197!4788.5 4197[#12DA.63 #1068.2C 4829 4233.5!4829 4233.5[#12E2.37 #1092.16 4842.5 4257.5!4842.5 4257.5[#12FE.83 #10C7.63 4868 4315!4868 4315[#1312.EC #110A.48 4879.5 4401"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

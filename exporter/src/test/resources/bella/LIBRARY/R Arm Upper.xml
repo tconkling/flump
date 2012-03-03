@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="R Arm Upper" itemID="454a69b7-00000068" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="RArmUpper" lastModified="1330491486" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="R Arm Upper">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <matrix>
+                    <Matrix tx="-250.95" ty="-100.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="257.1" y="104.2"/>
+                  </transformationPoint>
+                  <members>
+                    <DOMShape selected="true">
+                      <matrix>
+                        <Matrix tx="-250.95" ty="-100.8"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="257.1" y="104.2"/>
+                      </transformationPoint>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#2D2D00"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="1" edges="!5256 2218|5242.5 2799!5242.5 2799|5209 3302!5209 3302[#1454.2A #D87.CD 5126 3500!5126 3500[#13B7.9F #DD0.0F 5036.5 3153!5036.5 3153[#13A1.85 #AD1.C2 5019.5 2472.5!5019.5 2472.5[#1395.25 #87F.57 5053 2085.5!5053 2085.5[#13E4.F7 #7CB.A
+ 5175 2020.5!5175 2020.5[#1489.3E #7FD.38 5256 2218"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

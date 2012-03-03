@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="R Leg Lower" itemID="454a697d-00000062" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="RLegLower" lastModified="1330491530" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="R Leg Lower">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <matrix>
+                    <Matrix tx="-255.45" ty="-280.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="259.95" y="286.1"/>
+                  </transformationPoint>
+                  <members>
+                    <DOMShape selected="true">
+                      <matrix>
+                        <Matrix tx="-255.45" ty="-280.55"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="259.95" y="286.1"/>
+                      </transformationPoint>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#DDAE68"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#E1B777"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="1" edges="!5122 5999|5109 5763.5!5109 5763.5[#1438.0D #1585.C1 5343.5 5678!5343.5 5678|5343.5 5678.5"/>
+                        <Edge fillStyle1="2" edges="!5343.5 5678.5[#1563.87 #17F0.D8 5468.5 6271.5!5468.5 6271.5[#1555.39 #190E.6A 5432.5 6612.5!5432.5 6612.5[#1525.24 #1A5B.B6 5394.5 6921.5!5394.5 6921.5[#1513.65 #1B15.27 5396 6946!5396 6946[#1517.F2 #1B68.CB 5397 7088!5397 7088[#1512.9E
+ #1BCC.15 5389 7136!5389 7136[#1505.54 #1BFC.48 5367 7175.5!5367 7175.5[#14EC.02 #1C10.51 5341 7183!5341 7183[#14A8.6C #1C0A.B2 5289 7122.5!5289 7122.5[#14A8.39 #1BD0.46 5287.5 7118!5287.5 7118[#14A6.F4 #1BC0.45 5286.5 7097.5!5286.5 7097.5
+|5286 7096.5!5286 7096.5[#145A.7F #1A09.BE 5135 6235!5135 6235|5122 5999"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="
+!5343.5 5678.5[#1493.97 #1714.6E 5122 5999"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

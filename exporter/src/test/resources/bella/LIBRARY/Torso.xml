@@ -1,0 +1,55 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Torso" itemID="454a692c-00000054" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="Torso" lastModified="1330491912" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="Torso">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <matrix>
+                    <Matrix tx="-242.75" ty="-96.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="266.05" y="190.05"/>
+                  </transformationPoint>
+                  <members>
+                    <DOMShape selected="true">
+                      <matrix>
+                        <Matrix tx="-242.75" ty="-96.95"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="266.05" y="190.05"/>
+                      </transformationPoint>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#333300"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#2D2D00"/>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <SolidColor color="#E7C48F"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle0="2" edges="!5733.5 3701.5[#1664.A8 #E4F.7D 5715 3621.5!5715 3621.5[#1600.35 #D5F.E 5610 3258!5610 3258[#15D3.87 #C14.43 5748 2693!5748 2693[#16D4.15 #995.BB 5885.5 2317"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="!5885.5 2317[#1648.96 #8C3.FF 5690 2470.5!5690 2470.5[#162B.37 #A89.3F 5552 2815!5552 2815[#1556.4C #C1D.78 5568 3336!5568 3336|5733.5 3701.5"/>
+                        <Edge fillStyle0="1" edges="!5885.5 2317[#1719.86 #8B1.94 5917 2180!5917 2180[#1722.DB #82D.0E 5826.5 2039"/>
+                        <Edge fillStyle0="1" fillStyle1="3" edges="!5826.5 2039[#15BF.08 #8B7.95 5346 2248!5346 2248[#1405.14 #8D8.5B 5132 2096"/>
+                        <Edge fillStyle0="1" edges="!5132 2096[#13F6.B3 #8C8.FE 5030.5 2418!5030.5 2418[#1343.D6 #A42.17 5023 2745.5!5023 2745.5[#13FA.07 #B31.22 5083 3056!5083 3056[#13BB.D6 #CAE.D7 5016.5 3314.5!5016.5 3314.5[#1375.4D #D36.2B 4870 3630!4870 3630[#12C8.A1 #E81.DB 4993
+ 3871!4993 3871[#1459.AC #FC5.F 5504 3928.5!5504 3928.5[#1667.8F #F02.4D 5733.5 3701.5"/>
+                        <Edge fillStyle0="3" edges="
+!5826.5 2039[#1655.28 #7BA.1C 5430 1939!5430 1939[#1461.77 #7B9.93 5139 2026!5139 2026[#1411.2D #80C.9C 5132 2096"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

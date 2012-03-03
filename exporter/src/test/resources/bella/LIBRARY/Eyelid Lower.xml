@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Eyelid Lower" itemID="454a6899-0000003c" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="EyelidLower" lastModified="1330491245" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="Eyelid Lower">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#5B3132"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="1" edges="!641 34[540 122 423 63!423 63[420 62 419 60!419 60[518 88 582 59!582 59[646 29 641 34"/>
+                        <Edge fillStyle1="1" edges="!150 33S2|149 42!149 42[59 84 0 0!0 0[61 58 142 26!142 26|150 33"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

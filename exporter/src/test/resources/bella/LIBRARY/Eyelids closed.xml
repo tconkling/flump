@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Eyelids closed" itemID="45e60f03-00000033" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="Eyelidsclosed" lastModified="1330491267" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="Eyelids closed">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <matrix>
+                    <Matrix tx="-48.45" ty="-66.15"/>
+                  </matrix>
+                  <members>
+                    <DOMShape selected="true">
+                      <matrix>
+                        <Matrix tx="-48.45" ty="-66.15"/>
+                      </matrix>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#5B3132"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#E1B777"/>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <SolidColor color="#DCAB63"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="1" edges="!1707.5 1440[1719 #5AB.73 1719 1469!1719 1469[1719 1491 1704 1491!1704 1491[1679 1461 1598 1461!1598 1461[1538 1461 1483 1481!1483 1481[1438 1497 1426 1513!1426 1513|1425 1513!1425 1513[#592.29 #5E5.84 1429 1505.5"/>
+                        <Edge fillStyle1="2" edges="!1429 1505.5[1417 #5DD.18 1417 1475!1417 1475[1417 1444 1449 1395!1449 1395[1495 1323 1573 1323!1573 1323[1691 1323 1713 1415!1713 1415[1713 #597.17 1707.5 1440"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!1707.5 1440[#696.68 1420 1628 1420!1628 1420[1556 1420 1486 1462!1486 1462[#5A1.A4 #5D0.9D 1429 1505.5"/>
+                        <Edge fillStyle1="1" edges="!1178 1524.5[#49B.FD #5F6.32 1182 1528!1182 1528[1179 1530 1177 1534!1177 1534[1155 1519 1129 1508!1129 1508[1080 1485 1026 1485!1026 1485[999 1494 994 1494!994 1494[977 1494 971 1486!971 1486[969 1478 969 1477!969 1477[969 #5B8.9F 979.5
+ 1457.5"/>
+                        <Edge fillStyle1="3" edges="
+!979.5 1457.5[#3D3.3C #5B0.68 979 1455!979 1455[978 1443 978 1442!978 1442[978 1422 996 1401!996 1401[1025 1365 1086 1365!1086 1365[1181 1365 1185 1511!1185 1511[1185 #5F2.2D 1178 1524.5"/>
+                        <Edge fillStyle0="1" fillStyle1="3" edges="
+!1178 1524.5[#494.DA #5EF.F5 1168 1515.5!1168 1515.5|1167.5 1515!1167.5 1515[#43F.FC 1449 1023 1449!1023 1449[#3F6.37 1449 1007 1449.5!1007 1449.5[#3E3.3 #5AA.C3 987 1454!987 1454[#3D6.C4 #5AF.6C 979.5 1457.5"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

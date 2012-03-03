@@ -1,0 +1,49 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="L Arm Upper" itemID="454a691f-00000052" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="LArmUpper" lastModified="1330491353" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="L Arm Upper">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <matrix>
+                    <Matrix tx="-285.25" ty="-104.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="290.05" y="107.4"/>
+                  </transformationPoint>
+                  <members>
+                    <DOMShape selected="true">
+                      <matrix>
+                        <Matrix tx="-285.25" ty="-104.1"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="290.05" y="107.4"/>
+                      </transformationPoint>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#333300"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#2D2D00"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="2" edges="!5888 3538.5[5849.5 #D83.0B 5819 3239.5!5819 3239.5[#1685.72 #B26.B5 5726.5 2556!5726.5 2556[#164C.E8 #975.FD 5705.5 2329"/>
+                        <Edge fillStyle1="1" edges="!5705.5 2329[#1645.83 #8A6.C3 5719 2162.5!5719 2162.5[#165F.BB #858.74 5740.5 2119!5740.5 2119[#1682.77 #829.32 5796.5 2083!5796.5 2083[#16B7.BC #81F.B3 5839 2084!5839 2084[#1727.67 #834.42 5945 2274.5!5945 2274.5|5995 2861!5995 2861
+|6015 3371.5!6015 3371.5[#178B.9E #DCE.DF 5950 3579.5!5950 3579.5[#171C.B5 #E0E.A9 5888 3538.5"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="
+!5705.5 2329[#1682.BF #90E.74 5785 2641.5!5785 2641.5[#16AF.35 #B94.7A 5888 3538.5"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
