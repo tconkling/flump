@@ -5,7 +5,8 @@ package flump.xfl {
 
 import flash.geom.Matrix;
 import flash.geom.Point;
-import com.threerings.util.MatrixUtil;
+
+import flump.MatrixUtil;
 
 public class XflKeyframe extends XflComponent
 {
