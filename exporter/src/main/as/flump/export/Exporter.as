@@ -3,16 +3,20 @@
 
 package flump.export {
 
+import com.adobe.crypto.MD5;
+import com.threerings.util.F;
+import com.threerings.util.Log;
+import com.threerings.util.StringUtil;
+
+import deng.fzip.FZip;
+import deng.fzip.FZipFile;
+
 import flash.desktop.NativeApplication;
+import flash.display.NativeWindow;
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.filesystem.File;
 import flash.net.SharedObject;
-
-import com.adobe.crypto.MD5;
-
-import deng.fzip.FZip;
-import deng.fzip.FZipFile;
 
 import flump.bytesToXML;
 import flump.display.Movie;
@@ -29,10 +33,6 @@ import spark.components.Window;
 import spark.events.GridSelectionEvent;
 
 import starling.display.Sprite;
-
-import com.threerings.util.F;
-import com.threerings.util.Log;
-import com.threerings.util.StringUtil;
 
 public class Exporter
 {
@@ -84,18 +84,37 @@ public class Exporter
     }
 
     protected function showPreviewWindow (lib :XflLibrary) :void {
-        if (_previewController == null) {
-            const previewWindow :PreviewWindow = new PreviewWindow();
-            const previewControls :PreviewControlsWindow = new PreviewControlsWindow();
-            previewWindow.started = function (container :Sprite) :void {
-                _previewController = new PreviewController(lib, container, previewControls);
+        if (_previewController == null || _previewWindow.closed || _previewControls.closed) {
+            _previewWindow = new PreviewWindow();
+            _previewControls = new PreviewControlsWindow();
+            _previewWindow.started = function (container :Sprite) :void {
+                _previewController = new PreviewController(lib, container, _previewControls);
             }
-            previewWindow.open();
-            previewControls.open();
-        } else _previewController.lib = lib
+            
+            _previewWindow.open();
+            _previewControls.open();
+            
+            preventWindowClose(_previewWindow.nativeWindow);
+            preventWindowClose(_previewControls.nativeWindow);
+            
+        } else {
+            _previewController.lib = lib;
+            _previewWindow.nativeWindow.visible = true;
+            _previewControls.nativeWindow.visible = true;
+        }
+    }
+    
+    // Causes a window to be hidden, rather than closed, when its close box is clicked
+    protected static function preventWindowClose (window :NativeWindow) :void {
+        window.addEventListener(Event.CLOSING, function (e :Event) :void {
+            e.preventDefault();
+            window.visible = false;
+        });
     }
 
     protected var _previewController :PreviewController;
+    protected var _previewWindow :PreviewWindow;
+    protected var _previewControls :PreviewControlsWindow;
 
     protected function findFlashDocuments (base :File, exec :Executor) :void {
         Files.list(base, exec).succeeded.add(function (files :Array) :void {
