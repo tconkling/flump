@@ -5,6 +5,7 @@ package flump.xfl {
 
 import flash.geom.Matrix;
 import flash.geom.Point;
+import com.threerings.util.MatrixUtil;
 
 public class XflKeyframe extends XflComponent
 {
@@ -72,10 +73,9 @@ public class XflKeyframe extends XflComponent
 
         x = matrix.tx;
         y = matrix.ty;
-        var py :Point = matrix.deltaTransformPoint(new Point(1, 0));
-        rotation = Math.atan2(py.y, py.x);
-        scaleX = Math.sqrt((matrix.a * matrix.a) + (matrix.b * matrix.b));
-        scaleY = Math.sqrt((matrix.c * matrix.c) + (matrix.d * matrix.d));
+        rotation = MatrixUtil.rotation(matrix);
+        scaleX = MatrixUtil.scaleX(matrix);
+        scaleY = MatrixUtil.scaleY(matrix);
     }
 
     public function checkSymbols (lib :XflLibrary) :void {
