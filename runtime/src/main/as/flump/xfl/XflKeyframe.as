@@ -4,7 +4,6 @@
 package flump.xfl {
 
 import flash.geom.Matrix;
-import flash.geom.Point;
 
 import flump.MatrixUtil;
 

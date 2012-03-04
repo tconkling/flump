@@ -3,20 +3,17 @@
 
 package flump.export {
 
-import com.adobe.crypto.MD5;
-import com.threerings.util.F;
-import com.threerings.util.Log;
-import com.threerings.util.StringUtil;
-
-import deng.fzip.FZip;
-import deng.fzip.FZipFile;
-
 import flash.desktop.NativeApplication;
 import flash.display.NativeWindow;
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.filesystem.File;
 import flash.net.SharedObject;
+
+import com.adobe.crypto.MD5;
+
+import deng.fzip.FZip;
+import deng.fzip.FZipFile;
 
 import flump.bytesToXML;
 import flump.display.Movie;
@@ -33,6 +30,10 @@ import spark.components.Window;
 import spark.events.GridSelectionEvent;
 
 import starling.display.Sprite;
+
+import com.threerings.util.F;
+import com.threerings.util.Log;
+import com.threerings.util.StringUtil;
 
 public class Exporter
 {
