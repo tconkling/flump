@@ -175,7 +175,7 @@ class Layer {
 
         const kf :XflKeyframe = keyframes[keyframeIdx];
         const layer :DisplayObject = movie.getChildAt(layerIdx);
-        if (keyframeIdx == keyframes.length - 1|| kf.index == frame) {
+        if (keyframeIdx == keyframes.length - 1 || kf.index == frame) {
             layer.x = kf.x;
             layer.y = kf.y;
             layer.scaleX = kf.scaleX;
@@ -191,6 +191,9 @@ class Layer {
             layer.scaleY = kf.scaleY + (nextKf.scaleY - kf.scaleY) * interped;
             layer.rotation = kf.rotation + (nextKf.rotation - kf.rotation) * interped;
         }
+
+        layer.pivotX = kf.pivotX;
+        layer.pivotY = kf.pivotY;
     }
 }
 

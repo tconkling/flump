@@ -22,15 +22,15 @@ public class XflKeyframe extends XflComponent
     /** The name of the symbol in this keyframe, or null if there is no symbol. */
     public var symbol :String;
 
-    /** The transform of the symbol in this keyframe, or null if libraryName is null. */
-    public var matrix :Matrix;
-
     /** The label on this keyframe, or null if there isn't one */
     public var label :String;
 
     /** Exploded values from matrix */
     public var x :Number = 0.0, y :Number = 0.0, scaleX :Number = 1.0, scaleY :Number = 1.0,
         rotation :Number = 0.0;
+
+    /** Transformation point */
+    public var pivotX :Number = 0.0, pivotY :Number = 0.0;
 
     public function XflKeyframe (baseLocation :String, xml :XML, errors :Vector.<ParseError>,
         flipbook :Boolean) {
@@ -56,10 +56,6 @@ public class XflKeyframe extends XflComponent
 
         if (symbolXml == null) return; // Purely labelled frame
 
-        if (!isClassicTween(xml)) {
-            addError(ParseError.WARN, "Motion and Shape tweens are not supported");
-        }
-
         libraryItem = new XmlConverter(symbolXml).getStringAttr("libraryItemName");
 
 
@@ -69,13 +65,34 @@ public class XflKeyframe extends XflComponent
         function m (name :String, def :Number) :Number {
             return matrixConverter == null ? def : matrixConverter.getNumberAttr(name, def);
         }
-        matrix = new Matrix(m("a", 1), m("b", 0), m("c", 0), m("d", 1), m("tx", 0), m("ty", 0));
+        var matrix :Matrix =
+            new Matrix(m("a", 1), m("b", 0), m("c", 0), m("d", 1), m("tx", 0), m("ty", 0));
+
+        // handle "motionTweenRotate" (in this case, the rotation is not embedded in the matrix)
+        if (converter.hasAttr("motionTweenRotateTimes") && duration > 1) {
+            rotation = converter.getNumberAttr("motionTweenRotateTimes") * Math.PI * 2;
+            if (converter.getStringAttr("motionTweenRotate") == "clockwise") {
+                rotation *= -1;
+            }
+
+            MatrixUtil.setRotation(matrix, rotation);
+        } else {
+            rotation = MatrixUtil.rotation(matrix);
+        }
 
         x = matrix.tx;
         y = matrix.ty;
-        rotation = MatrixUtil.rotation(matrix);
         scaleX = MatrixUtil.scaleX(matrix);
         scaleY = MatrixUtil.scaleY(matrix);
+
+        var pivotXml :XML = symbolXml.transformationPoint.Point[0];
+        if (pivotXml != null) {
+            var pivotConverter :XmlConverter = new XmlConverter(pivotXml);
+            pivotX = pivotConverter.getNumberAttr("x", 0);
+            pivotY = pivotConverter.getNumberAttr("y", 0);
+            x += pivotX;
+            y += pivotY;
+        }
     }
 
     public function checkSymbols (lib :XflLibrary) :void {
@@ -98,16 +115,6 @@ public class XflKeyframe extends XflComponent
             json.label = label;
         }
         return json;
-    }
-
-    protected static function isClassicTween (xml :XML) :Boolean {
-        const converter :XmlConverter = new XmlConverter(xml);
-        if (converter.hasAttr("motionTweenRotate") ||
-            converter.hasAttr("motionTweenRotateTimes")) {
-            return false;
-        }
-
-        return true;
     }
 }
 }
