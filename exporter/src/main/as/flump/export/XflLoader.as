@@ -3,15 +3,10 @@
 
 package flump.export {
 
+import flash.filesystem.File;
+
 import com.adobe.crypto.MD5;
 import com.adobe.crypto.MD5Stream;
-import com.threerings.util.F;
-import com.threerings.util.Log;
-import com.threerings.util.Set;
-import com.threerings.util.Sets;
-import com.threerings.util.XmlUtil;
-
-import flash.filesystem.File;
 
 import flump.bytesToXML;
 import flump.executor.Executor;
@@ -24,6 +19,10 @@ import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
 import flump.xfl.XmlConverter;
+
+import com.threerings.util.F;
+import com.threerings.util.Log;
+import com.threerings.util.XmlUtil;
 
 public class XflLoader
 {
