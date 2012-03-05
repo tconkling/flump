@@ -3,10 +3,15 @@
 
 package flump.export {
 
-import flash.filesystem.File;
-
 import com.adobe.crypto.MD5;
 import com.adobe.crypto.MD5Stream;
+import com.threerings.util.F;
+import com.threerings.util.Log;
+import com.threerings.util.Set;
+import com.threerings.util.Sets;
+import com.threerings.util.XmlUtil;
+
+import flash.filesystem.File;
 
 import flump.bytesToXML;
 import flump.executor.Executor;
@@ -18,19 +23,14 @@ import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
-
-import com.threerings.util.F;
-import com.threerings.util.Log;
-import com.threerings.util.Set;
-import com.threerings.util.Sets;
-import com.threerings.util.XmlUtil;
+import flump.xfl.XmlConverter;
 
 public class XflLoader
 {
     public function load (name :String, file :File) :Future {
         log.info("Loading xfl", "path", file.nativePath, "name", name);
         _library = new XflLibrary(name);
-        listLibrary(file.resolvePath("LIBRARY"));
+        listLibrary(file);
         // TODO - construct the swf path for realz
         const swfPath :String = new File(file.nativePath + ".swf").url;
         const loadSwf :Future = new SwfLoader().loadFromUrl(swfPath, _loader);
@@ -39,7 +39,6 @@ public class XflLoader
             _library.addError(ParseError.CRIT, "Unable to load swf " + swfPath, error);
         });
         const future :VisibleFuture = new VisibleFuture();
-        _lister.terminated.add(F.callback(_loader.shutdown));
         _loader.terminated.add(function (..._) :void {
             _library.finishLoading();
             future.succeed(_library);
@@ -47,22 +46,19 @@ public class XflLoader
         return future;
     }
 
-    protected function listLibrary (dirInLibrary :File) :void {
-        log.debug("Listing in library", "file", dirInLibrary.nativePath);
-        const list :Future = Files.list(dirInLibrary, _lister);
-        _listing.add(list);
-        list.completed.add(function (..._) :void {
-            if (list.isSuccessful) {
-                for each (var file :File in list.result) { // It's an array of files
-                    if (Files.hasExtension(file, "xml")) parseLibraryFile(file);
-                    else if (file.isDirectory) listLibrary(file);
-                }
-            } else {
-                _library.addError(ParseError.CRIT,
-                    "Unable to list directory " + dirInLibrary.nativePath, list.result);
+    protected function listLibrary (file :File) :void {
+        use namespace xflns;
+        var loadDomFile :Future = Files.load(file.resolvePath("DOMDocument.xml"), _loader);
+        loadDomFile.succeeded.add(function (domFile :File) :void {
+            const xml :XML = bytesToXML(domFile.data);
+            for each (var symbolXmlPath :XML in xml.symbols.Include) {
+                const conv :XmlConverter = new XmlConverter(symbolXmlPath);
+                var libraryFile :File = file.resolvePath("LIBRARY/" + conv.getStringAttr("href"));
+                parseLibraryFile(libraryFile);
             }
-            _listing.remove(list);
-            if (_listing.isEmpty()) _lister.shutdown();
+
+            // Done loading
+            _loader.shutdown();
         });
     }
 
@@ -95,8 +91,6 @@ public class XflLoader
         });
     }
 
-    protected const _listing :Set = Sets.newSetOf(Future);
-    protected const _lister :Executor = new Executor();
     protected const _loader :Executor = new Executor();
     protected const _hash :MD5Stream = new MD5Stream();
 
