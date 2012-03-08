@@ -49,6 +49,8 @@ public class BetwixtPublisher
         const destDir :File = exportDir.resolvePath(lib.location);
         destDir.createDirectory();
         for each (var atlas :Atlas in packer.atlases) atlas.publish(exportDir);
+
+        // TODO(bruno): Remove this encoder
         var dest :File = destDir.resolvePath("resources.xml");
         var out :FileStream = new FileStream();
         out.open(dest, FileMode.WRITE);
@@ -68,17 +70,38 @@ public class BetwixtPublisher
         out.writeUTFBytes("</resources>");
         out.close();
 
-        // Experimental JSON encoder
-        dest = destDir.resolvePath("resources.json");
-        out = new FileStream();
+        publishMetadata(lib, packer, destDir.resolvePath("resources-new.xml"));
+        publishMetadata(lib, packer, destDir.resolvePath("resources.json"));
+    }
+
+    protected static function publishMetadata (lib :XflLibrary, packer :Packer, dest :File) :void {
+        var out :FileStream = new FileStream();
         out.open(dest, FileMode.WRITE);
 
-        var json :Object = {
-            movies: lib.movies,
-            atlases: packer.atlases
-        };
-        var pretty :Boolean = false;
-        out.writeUTFBytes(JSON.stringify(json, null, pretty ? "  " : null));
+        var url :String = dest.url;
+        var format :String = url.substr(url.lastIndexOf(".") + 1).toLowerCase();
+        switch (format) {
+        case "xml":
+            var xml :XML = <resources/>;
+            for each (var movie :XflMovie in lib.movies) {
+                xml.appendChild(movie.toXML());
+            }
+            for each (var atlas :Atlas in packer.atlases) {
+                xml.appendChild(atlas.toXML());
+            }
+            out.writeUTFBytes(xml.toString());
+            break;
+
+        case "json":
+            var json :Object = {
+                movies: lib.movies,
+                atlases: packer.atlases
+            };
+            var pretty :Boolean = false;
+            out.writeUTFBytes(JSON.stringify(json, null, pretty ? "  " : null));
+            break;
+        }
+
         out.close();
     }
 

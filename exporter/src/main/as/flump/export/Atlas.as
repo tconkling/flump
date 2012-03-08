@@ -46,6 +46,7 @@ public class Atlas
         PngPublisher.publish(dir.resolvePath(name + ".png"), w, h, constructed);
     }
 
+    // TODO(bruno): Remove
     public function toXml () :String {
         var xml :String = '<atlas name="' + name + '" filename="' + name + '.png">\n';
         _root.forEach(function (node :Node) :void {
@@ -54,8 +55,8 @@ public class Atlas
                 '" xOffset="' + tex.offset.x +
                 '" yOffset="' + tex.offset.y +
                 '" md5="' + tex.md5 +
-                '" xAtlas="' + (node.bounds.x + PADDING)
-                '" yAtlas="' + (node.bounds.y + PADDING)
+                '" xAtlas="' + (node.bounds.x + PADDING) +
+                '" yAtlas="' + (node.bounds.y + PADDING) +
                 '" wAtlas="' + tex.w + '" hAtlas="' + tex.h + '"/>\n';
         });
         return xml + '</atlas>\n';
@@ -75,6 +76,23 @@ public class Atlas
             });
         });
         return json;
+    }
+
+    public function toXML () :XML
+    {
+        var json :Object = toJSON(null);
+
+        var xml :XML = <atlas
+            file={json.file}
+        />;
+        for each (var tex :Object in json.textures) {
+            xml.appendChild(<texture
+                name={tex.name}
+                offset={tex.offset}
+                rect={tex.rect}
+            />);
+        }
+        return xml;
     }
 
     // Empty pixels to border around each texture to prevent bleeding

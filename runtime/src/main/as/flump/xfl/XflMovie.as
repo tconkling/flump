@@ -49,5 +49,16 @@ public class XflMovie extends XflTopLevelComponent
             layers: layers
         };
     }
+
+    public function toXML () :XML
+    {
+        var xml :XML = <movie
+            symbol={symbol}
+        />;
+        for each (var layer :XflLayer in layers) {
+            xml.appendChild(layer.toXML());
+        }
+        return xml;
+    }
 }
 }

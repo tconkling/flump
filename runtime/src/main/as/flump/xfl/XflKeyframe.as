@@ -117,5 +117,23 @@ public class XflKeyframe extends XflComponent
         }
         return json;
     }
+
+    public function toXML () :XML
+    {
+        var xml :XML = <kf
+            index={index}
+            duration={duration}
+        />
+        if (symbol != null) {
+            xml.@ref = symbol;
+            xml.@t = [ x, y, scaleX, scaleY, rotation ];
+            xml.@pivot = [ pivotX, pivotY ];
+            // xml.@alpha = 1;
+        }
+        if (label != null) {
+            xml.@label = label;
+        }
+        return xml;
+    }
 }
 }

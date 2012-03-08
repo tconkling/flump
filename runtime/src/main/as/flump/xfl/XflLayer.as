@@ -38,5 +38,17 @@ public class XflLayer extends XflComponent
             keyframes: keyframes
         };
     }
+
+    public function toXML () :XML
+    {
+        var xml :XML = <layer
+            name={name}
+            flipbook={flipbook}
+        />;
+        for each (var kf :XflKeyframe in keyframes) {
+            xml.appendChild(kf.toXML());
+        }
+        return xml;
+    }
 }
 }
