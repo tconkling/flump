@@ -65,7 +65,6 @@ public class XflLoader
         var loadLibraryFile :Future = Files.load(file, _loader);
         loadLibraryFile.succeeded.add(function (file :File) :void {
             const xml :XML = bytesToXML(file.data);
-            trace(xml);
             if (xml.name().localName != "DOMSymbolItem") {
                 _library.addError(ParseError.DEBUG,
                     "Skipping file since its root element isn't DOMSymbolItem");
