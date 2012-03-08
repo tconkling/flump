@@ -52,9 +52,7 @@ public class XflMovie extends XflTopLevelComponent
 
     public function toXML () :XML
     {
-        var xml :XML = <movie
-            symbol={symbol}
-        />;
+        var xml :XML = <movie name={libraryItem}/>
         for each (var layer :XflLayer in layers) {
             xml.appendChild(layer.toXML());
         }

@@ -41,10 +41,11 @@ public class XflLayer extends XflComponent
 
     public function toXML () :XML
     {
-        var xml :XML = <layer
-            name={name}
-            flipbook={flipbook}
-        />;
+        var xml :XML = <layer name={name}/>
+        if (flipbook) {
+            xml.@flipbook = flipbook;
+        }
+
         for each (var kf :XflKeyframe in keyframes) {
             xml.appendChild(kf.toXML());
         }

@@ -126,9 +126,15 @@ public class XflKeyframe extends XflComponent
         />
         if (symbol != null) {
             xml.@ref = symbol;
-            xml.@t = [ x, y, scaleX, scaleY, rotation ];
-            xml.@pivot = [ pivotX, pivotY ];
-            // xml.@alpha = 1;
+            if (x != 0)         { xml.@x = x; }
+            if (y != 0)         { xml.@y = y; }
+            if (scaleX != 1)    { xml.@scaleX = scaleX; }
+            if (scaleY != 1)    { xml.@scaleY = scaleY; }
+            if (rotation != 0)  { xml.@rotation = rotation; }
+            if (pivotX != 0)    { xml.@pivotX = pivotX; }
+            if (pivotY != 0)    { xml.@pivotY = pivotY; }
+            //if (alpha != 1)     { xml.@alpha = alpha; }
+            //if (!visible)       { xml.@visible = visible; }
         }
         if (label != null) {
             xml.@label = label;
