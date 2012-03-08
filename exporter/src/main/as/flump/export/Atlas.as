@@ -25,7 +25,8 @@ public class Atlas
 
     // Try to place a texture in this atlas, return true if it fit
     public function place (texture :SwfTexture) :Boolean {
-        var node :Node = _root.search(new Rectangle(0, 0, texture.w, texture.h));
+        var node :Node = _root.search(
+            new Rectangle(0, 0, texture.w + 2*PADDING, texture.h + 2*PADDING));
         if (node == null) {
             return false;
         }
@@ -49,9 +50,12 @@ public class Atlas
         var xml :String = '<atlas name="' + name + '" filename="' + name + '.png">\n';
         _root.forEach(function (node :Node) :void {
             var tex :SwfTexture = node.texture;
-            xml += '  <texture name="' + tex.libraryItem + '" xOffset="' + tex.offset.x +
-                '" yOffset="' + tex.offset.y + '" md5="' + tex.md5 +
-                '" xAtlas="' + node.bounds.x + '" yAtlas="' + node.bounds.y +
+            xml += '  <texture name="' + tex.libraryItem +
+                '" xOffset="' + tex.offset.x +
+                '" yOffset="' + tex.offset.y +
+                '" md5="' + tex.md5 +
+                '" xAtlas="' + (node.bounds.x + PADDING)
+                '" yAtlas="' + (node.bounds.y + PADDING)
                 '" wAtlas="' + tex.w + '" hAtlas="' + tex.h + '"/>\n';
         });
         return xml + '</atlas>\n';
@@ -67,11 +71,14 @@ public class Atlas
             json.textures.push({
                 name: tex.symbol,
                 offset: [ tex.offset.x, tex.offset.y ],
-                rect: [ node.bounds.x, node.bounds.y, tex.w, tex.h ]
+                rect: [ node.bounds.x + PADDING, node.bounds.y + PADDING, tex.w, tex.h ]
             });
         });
         return json;
     }
+
+    // Empty pixels to border around each texture to prevent bleeding
+    protected static const PADDING :int = 1;
 
     protected var _root :Node;
 }
