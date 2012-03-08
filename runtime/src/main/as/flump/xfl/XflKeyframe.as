@@ -80,8 +80,6 @@ public class XflKeyframe extends XflComponent
             rotation = MatrixUtil.rotation(matrix);
         }
 
-        x = matrix.tx;
-        y = matrix.ty;
         scaleX = MatrixUtil.scaleX(matrix);
         scaleY = MatrixUtil.scaleY(matrix);
 
@@ -90,9 +88,16 @@ public class XflKeyframe extends XflComponent
             var pivotConverter :XmlConverter = new XmlConverter(pivotXml);
             pivotX = pivotConverter.getNumberAttr("x", 0);
             pivotY = pivotConverter.getNumberAttr("y", 0);
-            x += pivotX;
-            y += pivotY;
+
+            // Translate to the pivot point
+            var orig :Matrix = matrix.clone();
+            matrix.identity();
+            matrix.translate(pivotX, pivotY);
+            matrix.concat(orig);
         }
+
+        x = matrix.tx;
+        y = matrix.ty;
     }
 
     public function checkSymbols (lib :XflLibrary) :void {
