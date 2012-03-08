@@ -125,10 +125,8 @@ public class XflKeyframe extends XflComponent
 
     public function toXML () :XML
     {
-        var xml :XML = <kf
-            index={index}
-            duration={duration}
-        />
+        var xml :XML = <kf duration={duration}/>;
+
         if (symbol != null) {
             xml.@ref = symbol;
             if (x != 0)         { xml.@x = x; }
