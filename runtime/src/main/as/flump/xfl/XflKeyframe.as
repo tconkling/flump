@@ -106,9 +106,10 @@ public class XflKeyframe extends XflComponent
             index: index,
             duration: duration
         };
-        if (libraryItem != null) {
+        if (symbol != null) {
             json.ref = symbol;
             json.t = [ x, y, scaleX, scaleY, rotation ];
+            json.pivot = [ pivotX, pivotY ];
             // json.alpha = 1;
         }
         if (label != null) {
