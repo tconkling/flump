@@ -3,13 +3,13 @@
 
 package flump.export {
 
+import com.threerings.util.Comparators;
+
 import flump.SwfTexture;
 import flump.xfl.XflKeyframe;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
-
-import com.threerings.util.Comparators;
 
 public class Packer
 {
@@ -29,6 +29,10 @@ public class Packer
         }
         _unpacked.sort(Comparators.createReverse(Comparators.createFields(["a", "w", "h"])));
         while (_unpacked.length > 0) pack();
+    }
+
+    public function get targetDevice () :DeviceType {
+        return _target;
     }
 
     protected function pack () :void {

@@ -69,7 +69,6 @@ public class Atlas
 
     public function toJSON (_:*) :Object {
         var json :Object = {
-            type: targetDevice.name(),
             file: name + ".png",
             textures: []
         };
@@ -89,7 +88,6 @@ public class Atlas
         var json :Object = toJSON(null);
 
         var xml :XML = <atlas
-            type={json.type}
             file={json.file}
         />;
         for each (var tex :Object in json.textures) {

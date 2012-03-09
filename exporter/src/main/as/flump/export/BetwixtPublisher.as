@@ -3,6 +3,11 @@
 
 package flump.export {
 
+import com.threerings.util.Log;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
+import com.threerings.util.XmlUtil;
+
 import flash.filesystem.File;
 import flash.filesystem.FileMode;
 import flash.filesystem.FileStream;
@@ -12,11 +17,6 @@ import flump.bytesToXML;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
-
-import com.threerings.util.Log;
-import com.threerings.util.Map;
-import com.threerings.util.Maps;
-import com.threerings.util.XmlUtil;
 
 public class BetwixtPublisher
 {
@@ -95,9 +95,13 @@ public class BetwixtPublisher
             for each (var movie :XflMovie in lib.movies) {
                 xml.appendChild(movie.toXML());
             }
+            var groupsXml :XML = <textureGroups/>;
+            xml.appendChild(groupsXml);
             for each (var packer :Packer in packers) {
+                var groupXml :XML = <textureGroup target={packer.targetDevice}/>;
+                groupsXml.appendChild(groupXml);
                 for each (var atlas :Atlas in packer.atlases) {
-                    xml.appendChild(atlas.toXML());
+                    groupXml.appendChild(atlas.toXML());
                 }
             }
             out.writeUTFBytes(xml.toString());
