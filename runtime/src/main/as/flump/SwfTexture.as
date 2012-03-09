@@ -27,9 +27,7 @@ public class SwfTexture
     public static function renderToBitmapData (target :DisplayObject, width :int,
         height :int) :BitmapData {
 
-        const bd :BitmapData = new BitmapData(width, height, true);
-        // Clear bitmapdata's default white background with a transparent one
-        bd.fillRect(new Rectangle(0, 0, width, height), 0);
+        const bd :BitmapData = new BitmapData(width, height, true, 0x00);
         bd.draw(target);
         return bd;
     }
