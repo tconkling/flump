@@ -60,7 +60,7 @@ public class BetwixtPublisher
         }
 
         // TODO(bruno): Remove this encoder
-        /*var dest :File = destDir.resolvePath("resources.xml");
+        var dest :File = destDir.resolvePath("resources-old.xml");
         var out :FileStream = new FileStream();
         out.open(dest, FileMode.WRITE);
         out.writeUTFBytes("<resources>\n");
@@ -77,9 +77,9 @@ public class BetwixtPublisher
         }
         for each (atlas in packer.atlases) out.writeUTFBytes(atlas.toXml());
         out.writeUTFBytes("</resources>");
-        out.close();*/
+        out.close();
 
-        publishMetadata(lib, packers, destDir.resolvePath("resources-new.xml"));
+        publishMetadata(lib, packers, destDir.resolvePath("resources.xml"));
         publishMetadata(lib, packers, destDir.resolvePath("resources.json"));
     }
 
