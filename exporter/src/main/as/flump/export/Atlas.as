@@ -12,10 +12,12 @@ import flump.SwfTexture;
 public class Atlas
 {
     public var name :String;
+    public var targetDevice :DeviceType;
     public var w :int, h :int, id :int;
 
-    public function Atlas(name :String, w :int, h :int) {
+    public function Atlas (name :String, targetDevice :DeviceType, w :int, h :int) {
         this.name = name;
+        this.targetDevice = targetDevice;
         this.w = w;
         this.h = h;
 
@@ -35,7 +37,7 @@ public class Atlas
         return true;
     }
 
-    public function publish (dir :File, nameSuffix :String = "") :void {
+    public function publish (dir :File) :void {
         var constructed :Sprite = new Sprite();
         _root.forEach(function (node :Node) :void {
             var tex :SwfTexture = node.texture;
@@ -45,7 +47,8 @@ public class Atlas
             tex.holder.x = node.bounds.x;
             tex.holder.y = node.bounds.y;
         });
-        PngPublisher.publish(dir.resolvePath(name + nameSuffix + ".png"), w, h, constructed);
+        PngPublisher.publish(dir.resolvePath(name + targetDevice.extension + ".png"),
+            w, h, constructed);
     }
 
     // TODO(bruno): Remove
@@ -66,6 +69,7 @@ public class Atlas
 
     public function toJSON (_:*) :Object {
         var json :Object = {
+            type: targetDevice.name(),
             file: name + ".png",
             textures: []
         };
@@ -85,6 +89,7 @@ public class Atlas
         var json :Object = toJSON(null);
 
         var xml :XML = <atlas
+            type={json.type}
             file={json.file}
         />;
         for each (var tex :Object in json.textures) {

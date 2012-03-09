@@ -3,13 +3,13 @@
 
 package flump.export {
 
-import com.adobe.images.PNGEncoder;
-
 import flash.display.BitmapData;
 import flash.display.DisplayObject;
 import flash.filesystem.File;
 import flash.filesystem.FileMode;
 import flash.filesystem.FileStream;
+
+import com.adobe.images.PNGEncoder;
 
 import flump.SwfTexture;
 import flump.xfl.XflLibrary;

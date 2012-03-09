@@ -3,11 +3,6 @@
 
 package flump.export {
 
-import com.threerings.util.Log;
-import com.threerings.util.Map;
-import com.threerings.util.Maps;
-import com.threerings.util.XmlUtil;
-
 import flash.filesystem.File;
 import flash.filesystem.FileMode;
 import flash.filesystem.FileStream;
@@ -17,6 +12,11 @@ import flump.bytesToXML;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
+
+import com.threerings.util.Log;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
+import com.threerings.util.XmlUtil;
 
 public class BetwixtPublisher
 {
@@ -45,14 +45,19 @@ public class BetwixtPublisher
     }
 
     public static function publish (lib :XflLibrary, source :File, exportDir :File) :void {
-        const hiResPacker :Packer = new Packer(lib, 1);
-        const loResPacker :Packer = new Packer(lib, 0.5);
+        var packers :Array = [
+            new Packer(DeviceType.IPHONE_RETINA, lib),
+            new Packer(DeviceType.IPHONE, lib)
+        ];
 
         const destDir :File = exportDir.resolvePath(lib.location);
         destDir.createDirectory();
 
-        for each (var atlas :Atlas in hiResPacker.atlases) atlas.publish(exportDir, "@2x");
-        for each (atlas in loResPacker.atlases) atlas.publish(exportDir);
+        for each (var packer :Packer in packers) {
+            for each (var atlas :Atlas in packer.atlases) {
+                atlas.publish(exportDir);
+            }
+        }
 
         // TODO(bruno): Remove this encoder
         /*var dest :File = destDir.resolvePath("resources.xml");
@@ -74,11 +79,11 @@ public class BetwixtPublisher
         out.writeUTFBytes("</resources>");
         out.close();*/
 
-        publishMetadata(lib, hiResPacker, destDir.resolvePath("resources-new.xml"));
-        publishMetadata(lib, hiResPacker, destDir.resolvePath("resources.json"));
+        publishMetadata(lib, packers, destDir.resolvePath("resources-new.xml"));
+        publishMetadata(lib, packers, destDir.resolvePath("resources.json"));
     }
 
-    protected static function publishMetadata (lib :XflLibrary, packer :Packer, dest :File) :void {
+    protected static function publishMetadata (lib :XflLibrary, packers :Array, dest :File) :void {
         var out :FileStream = new FileStream();
         out.open(dest, FileMode.WRITE);
 
@@ -90,8 +95,10 @@ public class BetwixtPublisher
             for each (var movie :XflMovie in lib.movies) {
                 xml.appendChild(movie.toXML());
             }
-            for each (var atlas :Atlas in packer.atlases) {
-                xml.appendChild(atlas.toXML());
+            for each (var packer :Packer in packers) {
+                for each (var atlas :Atlas in packer.atlases) {
+                    xml.appendChild(atlas.toXML());
+                }
             }
             out.writeUTFBytes(xml.toString());
             break;
@@ -99,7 +106,7 @@ public class BetwixtPublisher
         case "json":
             var json :Object = {
                 movies: lib.movies,
-                atlases: packer.atlases
+                atlases: packers[0].atlases
             };
             var pretty :Boolean = false;
             out.writeUTFBytes(JSON.stringify(json, null, pretty ? "  " : null));

@@ -3,27 +3,28 @@
 
 package flump.export {
 
-import com.threerings.util.Comparators;
-
 import flump.SwfTexture;
 import flump.xfl.XflKeyframe;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
 
+import com.threerings.util.Comparators;
+
 public class Packer
 {
     public const atlases :Vector.<Atlas> = new Vector.<Atlas>();
 
-    public function Packer (lib :XflLibrary, scale :Number) {
+    public function Packer (target :DeviceType, lib :XflLibrary) {
+        _target = target;
         _lib = lib;
         for each (var tex :XflTexture in _lib.textures) {
-            _unpacked.push(SwfTexture.fromTexture(_lib.swf, tex, scale));
+            _unpacked.push(SwfTexture.fromTexture(_lib.swf, tex, target.scale));
         }
         for each (var movie :XflMovie in _lib.movies) {
             if (!movie.flipbook) continue;
             for each (var kf :XflKeyframe in movie.layers[0].keyframes) {
-                _unpacked.push(SwfTexture.fromFlipbook(lib.swf, movie, kf.index, scale));
+                _unpacked.push(SwfTexture.fromFlipbook(lib.swf, movie, kf.index, target.scale));
             }
         }
         _unpacked.sort(Comparators.createReverse(Comparators.createFields(["a", "w", "h"])));
@@ -43,7 +44,7 @@ public class Packer
 
         // It didn't fit in any existing atlas, add another one
         var minBin :int = findOptimalMinBin();
-        atlases.push(new Atlas(_lib.location + "/atlas" + atlases.length, minBin, minBin));
+        atlases.push(new Atlas(_lib.location + "/atlas" + atlases.length, _target, minBin, minBin));
         pack();
     }
 
@@ -62,6 +63,7 @@ public class Packer
 
     protected var _unpacked :Vector.<SwfTexture> = new Vector.<SwfTexture>();
 
+    protected var _target :DeviceType;
     protected var _lib :XflLibrary;
 
     private static const BIN_SIZES :Vector.<int> = new <int>[8, 16, 32, 64, 128, 256, 512, 1024];
