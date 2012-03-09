@@ -22,35 +22,44 @@ public class SwfTexture
     public var md5 :String;
     public var offset :Point;
     public var w :int, h :int, a :int;
+    public var scale :Number;
 
-    public static function renderToBitmapData (target :DisplayObject, width :int, height :int)
-        :BitmapData {
-            const bd :BitmapData = new BitmapData(width, height, true);
-            // Clear bitmapdata's default white background with a transparent one
-            bd.fillRect(new Rectangle(0, 0, width, height), 0);
-            bd.draw(target);
-            return bd;
+    public static function renderToBitmapData (target :DisplayObject, width :int,
+        height :int) :BitmapData {
+
+        const bd :BitmapData = new BitmapData(width, height, true);
+        // Clear bitmapdata's default white background with a transparent one
+        bd.fillRect(new Rectangle(0, 0, width, height), 0);
+        bd.draw(target);
+        return bd;
     }
 
-    public static function fromFlipbook (swf :LoadedSwf, movie :XflMovie, frame :int)
-            :SwfTexture {
+    public static function fromFlipbook (swf :LoadedSwf, movie :XflMovie, frame :int,
+        scale :Number = 1) :SwfTexture {
+
         const klass :Class = Class(swf.getSymbol(movie.symbol));
         const clip :MovieClip = MovieClip(new klass());
         clip.gotoAndStop(frame + 1);
         var name :String = movie.libraryItem + "_flipbook_" + frame;
-        return new SwfTexture(movie.md5, name, name, clip);
+        return new SwfTexture(movie.md5, name, name, clip, scale);
     }
 
-    public static function fromTexture (swf :LoadedSwf, tex :XflTexture) :SwfTexture {
+    public static function fromTexture (swf :LoadedSwf, tex :XflTexture,
+        scale :Number = 1) :SwfTexture {
+
         const klass :Class = Class(swf.getSymbol(tex.symbol));
         const image :Sprite = Sprite(new klass());
-        return new SwfTexture(tex.md5, tex.symbol, tex.libraryItem, image);
+        return new SwfTexture(tex.md5, tex.symbol, tex.libraryItem, image, scale);
     }
 
-    public function SwfTexture(md5 :String, symbol :String, libraryItem :String, disp :DisplayObject) {
+    public function SwfTexture(md5 :String, symbol :String, libraryItem :String,
+        disp :DisplayObject, scale :Number) {
+
         this.md5 = md5;
         this.symbol = symbol;
         this.libraryItem = libraryItem;
+        this.scale = scale;
+        disp.scaleX = disp.scaleY = scale;
         holder.addChild(disp);
         const bounds :Rectangle = disp.getBounds(holder);
         disp.x = -bounds.x;

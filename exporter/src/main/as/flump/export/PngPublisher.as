@@ -3,13 +3,13 @@
 
 package flump.export {
 
+import com.adobe.images.PNGEncoder;
+
 import flash.display.BitmapData;
 import flash.display.DisplayObject;
 import flash.filesystem.File;
 import flash.filesystem.FileMode;
 import flash.filesystem.FileStream;
-
-import com.adobe.images.PNGEncoder;
 
 import flump.SwfTexture;
 import flump.xfl.XflLibrary;
@@ -24,8 +24,7 @@ public class PngPublisher
         }
     }
 
-    public static function publish (dest :File, width :int, height :int,
-            target :DisplayObject) :void {
+    public static function publish (dest :File, width :int, height :int, target :DisplayObject) :void {
         var bd :BitmapData = SwfTexture.renderToBitmapData(target, width, height);
         var fs :FileStream = new FileStream();
         fs.open(dest, FileMode.WRITE);

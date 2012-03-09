@@ -3,27 +3,27 @@
 
 package flump.export {
 
+import com.threerings.util.Comparators;
+
 import flump.SwfTexture;
 import flump.xfl.XflKeyframe;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
 
-import com.threerings.util.Comparators;
-
 public class Packer
 {
     public const atlases :Vector.<Atlas> = new Vector.<Atlas>();
 
-    public function Packer (lib :XflLibrary) {
+    public function Packer (lib :XflLibrary, scale :Number) {
         _lib = lib;
         for each (var tex :XflTexture in _lib.textures) {
-            _unpacked.push(SwfTexture.fromTexture(_lib.swf, tex));
+            _unpacked.push(SwfTexture.fromTexture(_lib.swf, tex, scale));
         }
         for each (var movie :XflMovie in _lib.movies) {
             if (!movie.flipbook) continue;
             for each (var kf :XflKeyframe in movie.layers[0].keyframes) {
-                _unpacked.push(SwfTexture.fromFlipbook(lib.swf, movie, kf.index));
+                _unpacked.push(SwfTexture.fromFlipbook(lib.swf, movie, kf.index, scale));
             }
         }
         _unpacked.sort(Comparators.createReverse(Comparators.createFields(["a", "w", "h"])));

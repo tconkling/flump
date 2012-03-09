@@ -35,15 +35,17 @@ public class Atlas
         return true;
     }
 
-    public function publish (dir :File) :void {
+    public function publish (dir :File, nameSuffix :String = "") :void {
         var constructed :Sprite = new Sprite();
         _root.forEach(function (node :Node) :void {
             var tex :SwfTexture = node.texture;
+            var sprite :Sprite = new Sprite();
+            sprite.scaleX = sprite.scaleY = tex.scale;
             constructed.addChild(tex.holder);
             tex.holder.x = node.bounds.x;
             tex.holder.y = node.bounds.y;
         });
-        PngPublisher.publish(dir.resolvePath(name + ".png"), w, h, constructed);
+        PngPublisher.publish(dir.resolvePath(name + nameSuffix + ".png"), w, h, constructed);
     }
 
     // TODO(bruno): Remove

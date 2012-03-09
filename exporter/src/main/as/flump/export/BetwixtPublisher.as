@@ -3,6 +3,11 @@
 
 package flump.export {
 
+import com.threerings.util.Log;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
+import com.threerings.util.XmlUtil;
+
 import flash.filesystem.File;
 import flash.filesystem.FileMode;
 import flash.filesystem.FileStream;
@@ -12,11 +17,6 @@ import flump.bytesToXML;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
-
-import com.threerings.util.Log;
-import com.threerings.util.Map;
-import com.threerings.util.Maps;
-import com.threerings.util.XmlUtil;
 
 public class BetwixtPublisher
 {
@@ -45,13 +45,17 @@ public class BetwixtPublisher
     }
 
     public static function publish (lib :XflLibrary, source :File, exportDir :File) :void {
-        const packer :Packer = new Packer(lib);
+        const hiResPacker :Packer = new Packer(lib, 1);
+        const loResPacker :Packer = new Packer(lib, 0.5);
+
         const destDir :File = exportDir.resolvePath(lib.location);
         destDir.createDirectory();
-        for each (var atlas :Atlas in packer.atlases) atlas.publish(exportDir);
+
+        for each (var atlas :Atlas in hiResPacker.atlases) atlas.publish(exportDir, "@2x");
+        for each (atlas in loResPacker.atlases) atlas.publish(exportDir);
 
         // TODO(bruno): Remove this encoder
-        var dest :File = destDir.resolvePath("resources.xml");
+        /*var dest :File = destDir.resolvePath("resources.xml");
         var out :FileStream = new FileStream();
         out.open(dest, FileMode.WRITE);
         out.writeUTFBytes("<resources>\n");
@@ -68,10 +72,10 @@ public class BetwixtPublisher
         }
         for each (atlas in packer.atlases) out.writeUTFBytes(atlas.toXml());
         out.writeUTFBytes("</resources>");
-        out.close();
+        out.close();*/
 
-        publishMetadata(lib, packer, destDir.resolvePath("resources-new.xml"));
-        publishMetadata(lib, packer, destDir.resolvePath("resources.json"));
+        publishMetadata(lib, hiResPacker, destDir.resolvePath("resources-new.xml"));
+        publishMetadata(lib, hiResPacker, destDir.resolvePath("resources.json"));
     }
 
     protected static function publishMetadata (lib :XflLibrary, packer :Packer, dest :File) :void {
