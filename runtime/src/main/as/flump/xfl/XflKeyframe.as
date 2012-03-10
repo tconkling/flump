@@ -32,6 +32,8 @@ public class XflKeyframe extends XflComponent
     /** Transformation point */
     public var pivotX :Number = 0.0, pivotY :Number = 0.0;
 
+    public var alpha :Number = 1;
+
     public function XflKeyframe (baseLocation :String, xml :XML, errors :Vector.<ParseError>,
         flipbook :Boolean) {
         const converter :XmlConverter = new XmlConverter(xml);
@@ -58,46 +60,62 @@ public class XflKeyframe extends XflComponent
 
         libraryItem = new XmlConverter(symbolXml).getStringAttr("libraryItemName");
 
+        var matrix :Matrix = new Matrix();
 
-        const matrixXml :XML = symbolXml.matrix.Matrix[0];
-        const matrixConverter :XmlConverter =
-            matrixXml == null ? null : new XmlConverter(matrixXml);
-        function m (name :String, def :Number) :Number {
-            return matrixConverter == null ? def : matrixConverter.getNumberAttr(name, def);
-        }
-        var matrix :Matrix =
-            new Matrix(m("a", 1), m("b", 0), m("c", 0), m("d", 1), m("tx", 0), m("ty", 0));
+        // Read the matrix transform
+        if (symbolXml.matrix != null) {
+            const matrixXml :XML = symbolXml.matrix.Matrix[0];
+            const matrixConverter :XmlConverter =
+                matrixXml == null ? null : new XmlConverter(matrixXml);
+            function m (name :String, def :Number) :Number {
+                return matrixConverter == null ? def : matrixConverter.getNumberAttr(name, def);
+            }
+            matrix = new Matrix(m("a", 1), m("b", 0), m("c", 0), m("d", 1), m("tx", 0), m("ty", 0));
 
-        // handle "motionTweenRotate" (in this case, the rotation is not embedded in the matrix)
-        if (converter.hasAttr("motionTweenRotateTimes") && duration > 1) {
-            rotation = converter.getNumberAttr("motionTweenRotateTimes") * Math.PI * 2;
-            if (converter.getStringAttr("motionTweenRotate") == "clockwise") {
-                rotation *= -1;
+            // handle "motionTweenRotate" (in this case, the rotation is not embedded in the matrix)
+            if (converter.hasAttr("motionTweenRotateTimes") && duration > 1) {
+                rotation = converter.getNumberAttr("motionTweenRotateTimes") * Math.PI * 2;
+                if (converter.getStringAttr("motionTweenRotate") == "clockwise") {
+                    rotation *= -1;
+                }
+
+                MatrixUtil.setRotation(matrix, rotation);
+            } else {
+                rotation = MatrixUtil.rotation(matrix);
             }
 
-            MatrixUtil.setRotation(matrix, rotation);
-        } else {
-            rotation = MatrixUtil.rotation(matrix);
+            scaleX = MatrixUtil.scaleX(matrix);
+            scaleY = MatrixUtil.scaleY(matrix);
         }
 
-        scaleX = MatrixUtil.scaleX(matrix);
-        scaleY = MatrixUtil.scaleY(matrix);
+        // Read the pivot point
+        if (symbolXml.transformationPoint != null) {
+            var pivotXml :XML = symbolXml.transformationPoint.Point[0];
+            if (pivotXml != null) {
+                var pivotConverter :XmlConverter = new XmlConverter(pivotXml);
+                pivotX = pivotConverter.getNumberAttr("x", 0);
+                pivotY = pivotConverter.getNumberAttr("y", 0);
 
-        var pivotXml :XML = symbolXml.transformationPoint.Point[0];
-        if (pivotXml != null) {
-            var pivotConverter :XmlConverter = new XmlConverter(pivotXml);
-            pivotX = pivotConverter.getNumberAttr("x", 0);
-            pivotY = pivotConverter.getNumberAttr("y", 0);
-
-            // Translate to the pivot point
-            var orig :Matrix = matrix.clone();
-            matrix.identity();
-            matrix.translate(pivotX, pivotY);
-            matrix.concat(orig);
+                // Translate to the pivot point
+                var orig :Matrix = matrix.clone();
+                matrix.identity();
+                matrix.translate(pivotX, pivotY);
+                matrix.concat(orig);
+            }
         }
 
+        // Now that the matrix and pivot point have been read, apply translation
         x = matrix.tx;
         y = matrix.ty;
+
+        // Read the alpha
+        if (symbolXml.color != null) {
+            var colorXml :XML = symbolXml.color.Color[0];
+            if (colorXml != null) {
+                var colorConverter :XmlConverter = new XmlConverter(colorXml);
+                alpha = colorConverter.getNumberAttr("alphaMultiplier", 1);
+            }
+        }
     }
 
     public function checkSymbols (lib :XflLibrary) :void {
@@ -124,6 +142,9 @@ public class XflKeyframe extends XflComponent
             if (pivotX != 0 || pivotY != 0) {
                 json.pivot = pivotX + "," + pivotY;
             }
+            if (alpha != 1) {
+                json.alpha = alpha;
+            }
         }
         if (label != null) {
             json.label = label;
@@ -149,7 +170,9 @@ public class XflKeyframe extends XflComponent
             if (pivotX != 0 || pivotY != 0) {
                 xml.@pivot = "" + pivotX + "," + pivotY;
             }
-            //if (alpha != 1)     { xml.@alpha = alpha; }
+            if (alpha != 1) {
+                xml.@alpha = alpha;
+            }
             //if (!visible)       { xml.@visible = visible; }
         }
         if (label != null) {
