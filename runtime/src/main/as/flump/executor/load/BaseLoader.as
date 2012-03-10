@@ -6,6 +6,7 @@ package flump.executor.load {
 import flash.display.Loader;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
+import flash.events.SecurityErrorEvent;
 import flash.net.URLRequest;
 import flash.system.ApplicationDomain;
 import flash.system.LoaderContext;
@@ -40,11 +41,7 @@ public class BaseLoader
     protected function submitLoader (exec :Executor, loadExecer :Function) :Future {
         if (exec == null) exec = new Executor();
         const context :LoaderContext = new LoaderContext();
-        // allowLoadBytesCodeExecution is an AIR-only LoaderContext property that must be true
-        // to avoid 'SecurityError: Error #3015' when loading swfs with executable code
-        try {
-            Object(context)["allowLoadBytesCodeExecution"] = true;
-        } catch (e :Error) {}
+        context.allowCodeImport = true;
         if (_useSubDomain) {
             context.applicationDomain = new ApplicationDomain(ApplicationDomain.currentDomain);
         } else {
@@ -56,6 +53,7 @@ public class BaseLoader
                 handleSuccess(onSuccess, loader);
             });
             loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onFail);
+            loader.contentLoaderInfo.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onFail);
             loadExecer(loader, context);
         });
     }
