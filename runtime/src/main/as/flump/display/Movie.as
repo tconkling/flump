@@ -183,8 +183,22 @@ class Layer {
             layer.rotation = kf.rotation;
             layer.alpha = kf.alpha;
         } else {
-            // TODO - interpolation types other than linear
             var interped :Number = (frame - kf.index)/kf.duration;
+            var ease :Number = kf.ease;
+            if (ease != 0) {
+                var t :Number;
+                if (ease < 0) {
+                    // Ease in
+                    var inv :Number = 1 - interped;
+                    t = 1 - inv*inv;
+                    ease = -ease;
+                } else {
+                    // Ease out
+                    t = interped*interped;
+                }
+                interped = ease*t + (1 - ease)*interped;
+            }
+
             const nextKf :XflKeyframe = keyframes[keyframeIdx + 1];
             layer.x = kf.x + (nextKf.x - kf.x) * interped;
             layer.y = kf.y + (nextKf.y - kf.y) * interped;

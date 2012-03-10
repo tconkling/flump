@@ -36,6 +36,8 @@ public class XflKeyframe extends XflComponent
 
     public var visible :Boolean = true;
 
+    public var ease :Number = 0;
+
     public function XflKeyframe (baseLocation :String, xml :XML, errors :Vector.<ParseError>,
         flipbook :Boolean) {
         const converter :XmlConverter = new XmlConverter(xml);
@@ -43,6 +45,7 @@ public class XflKeyframe extends XflComponent
         super(baseLocation + ":" + index, errors);
         duration = converter.getNumberAttr("duration", 1);
         label = converter.getStringAttr("name", null);
+        ease = converter.getNumberAttr("acceleration", 0) / 100;
 
         if (flipbook) return;
         var symbolXml :XML;
@@ -152,6 +155,9 @@ public class XflKeyframe extends XflComponent
             if (!visible) {
                 json.visible = visible;
             }
+            if (ease != 0) {
+                json.ease = ease;
+            }
         }
         if (label != null) {
             json.label = label;
@@ -182,6 +188,9 @@ public class XflKeyframe extends XflComponent
             }
             if (!visible) {
                 xml.@visible = visible;
+            }
+            if (ease != 0) {
+                xml.@ease = ease;
             }
         }
         if (label != null) {
