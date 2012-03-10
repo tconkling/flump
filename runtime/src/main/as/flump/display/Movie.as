@@ -196,6 +196,7 @@ class Layer {
 
         layer.pivotX = kf.pivotX;
         layer.pivotY = kf.pivotY;
+        layer.visible = kf.visible;
     }
 }
 

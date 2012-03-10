@@ -34,6 +34,8 @@ public class XflKeyframe extends XflComponent
 
     public var alpha :Number = 1;
 
+    public var visible :Boolean = true;
+
     public function XflKeyframe (baseLocation :String, xml :XML, errors :Vector.<ParseError>,
         flipbook :Boolean) {
         const converter :XmlConverter = new XmlConverter(xml);
@@ -58,7 +60,9 @@ public class XflKeyframe extends XflComponent
 
         if (symbolXml == null) return; // Purely labelled frame
 
-        libraryItem = new XmlConverter(symbolXml).getStringAttr("libraryItemName");
+        var symbolConverter :XmlConverter = new XmlConverter(symbolXml);
+        libraryItem = symbolConverter.getStringAttr("libraryItemName");
+        visible = symbolConverter.getBooleanAttr("isVisible", true);
 
         var matrix :Matrix = new Matrix();
 
@@ -145,6 +149,9 @@ public class XflKeyframe extends XflComponent
             if (alpha != 1) {
                 json.alpha = alpha;
             }
+            if (!visible) {
+                json.visible = visible;
+            }
         }
         if (label != null) {
             json.label = label;
@@ -173,7 +180,9 @@ public class XflKeyframe extends XflComponent
             if (alpha != 1) {
                 xml.@alpha = alpha;
             }
-            //if (!visible)       { xml.@visible = visible; }
+            if (!visible) {
+                xml.@visible = visible;
+            }
         }
         if (label != null) {
             xml.@label = label;

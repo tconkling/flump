@@ -20,7 +20,7 @@ public class XmlConverter
         return getAttr(name, defaultValue);
     }
 
-    public  function getAttr (name :String, defaultValue :*, parseFunction :Function = null) :* {
+    public function getAttr (name :String, defaultValue :*, parseFunction :Function = null) :* {
         var value :*;
 
         // read the attribute; throw an error if it doesn't exist (unless we have a default value)
@@ -50,6 +50,10 @@ public class XmlConverter
 
     public function getNumberAttr (name :String, defaultValue :* = undefined) :Number {
         return getAttr(name, defaultValue, parseFloat);
+    }
+
+    public function getBooleanAttr (name :String, defaultValue :* = undefined) :Boolean {
+        return getAttr(name, defaultValue, function (v :String) :Boolean { return v == "true" });
     }
 }
 }
