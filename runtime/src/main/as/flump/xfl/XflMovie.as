@@ -7,16 +7,14 @@ public class XflMovie extends XflTopLevelComponent
 {
     use namespace xflns;
 
-    public var md5 :String;
     public var libraryItem :String;
     public var symbol :String;
     public var layers :Array;
 
-    public function XflMovie (baseLocation :String, xml :XML, md5 :String) {
+    public function XflMovie (baseLocation :String, xml :XML) {
         const converter :XmlConverter = new XmlConverter(xml);
         libraryItem = converter.getStringAttr("name");
         super(baseLocation + ":" + libraryItem);
-        this.md5 = md5;
         symbol = converter.getStringAttr("linkageClassName", null);
 
         const layerEls :XMLList = xml.timeline.DOMTimeline[0].layers.DOMLayer;

@@ -20,28 +20,29 @@ import flump.xfl.XflTexture;
 
 public class BetwixtPublisher
 {
-    public static function modified(lib :XflLibrary, exportDir :File) :Boolean {
-        const exportLoc :File = exportDir.resolvePath(lib.location + "/resources.xml");
-        if (!exportLoc.exists) return true;
+    public static function modified (lib :XflLibrary, metadata :File) :Boolean
+    {
+        if (!metadata.exists) return true;
 
-        const libMd5s :Map = Maps.newMapOf(String);
-        for each (var movie :XflMovie in lib.movies) libMd5s.put(movie.libraryItem, movie.md5);
-        for each (var tex :XflTexture in lib.textures) libMd5s.put(tex.libraryItem, tex.md5);
+        var stream :FileStream = new FileStream();
+        stream.open(metadata, FileMode.READ);
+        var bytes :ByteArray = new ByteArray();
+        stream.readBytes(bytes);
 
-        const exportMd5s :Map = Maps.newMapOf(String);
-        var export :FileStream = new FileStream();
-        export.open(exportLoc, FileMode.READ);
-        var exportBytes :ByteArray = new ByteArray();
-        export.readBytes(exportBytes);
-        export.close();
-        var xml :XML = bytesToXML(exportBytes);
-        function addMd5(el :XML) :void {
-            exportMd5s.put(XmlUtil.getStringAttr(el, "name"), XmlUtil.getStringAttr(el, "md5"));
-        };
-        // Add md5s one and two levels deep in the resource xml
-        for each (var res :XML in xml.*.(hasOwnProperty('@md5'))) addMd5(res);
-        for each (res in xml.*.*.(hasOwnProperty('@md5'))) addMd5(res);
-        return !exportMd5s.equals(libMd5s);
+        var md5 :String = null;
+        switch (Files.getExtension(metadata)) {
+        case "xml":
+            var xml :XML = bytesToXML(bytes);
+            md5 = xml.@md5;
+            break;
+
+        case "json":
+            var json :Object = JSON.parse(bytes.readUTFBytes(bytes.length));
+            md5 = json.md5;
+            break;
+        }
+
+        return md5 != lib.md5;
     }
 
     public static function publish (lib :XflLibrary, source :File, exportDir :File) :void {
@@ -59,26 +60,6 @@ public class BetwixtPublisher
             }
         }
 
-        // TODO(bruno): Remove this encoder
-        var dest :File = destDir.resolvePath("resources-old.xml");
-        var out :FileStream = new FileStream();
-        out.open(dest, FileMode.WRITE);
-        out.writeUTFBytes("<resources>\n");
-        for each (var movie :XflMovie in lib.movies) {
-            out.writeUTFBytes('  <movie name="' + movie.libraryItem + '" md5="' + movie.md5 + '">\n');
-
-            var movieFile :File = source.resolvePath("LIBRARY/" + movie.libraryItem + ".xml");
-            var copy :FileStream = new FileStream();
-            copy.open(movieFile, FileMode.READ);
-            var bytes :ByteArray = new ByteArray();
-            copy.readBytes(bytes);
-            out.writeBytes(bytes);
-            out.writeUTFBytes('\n  </movie>\n');
-        }
-        for each (atlas in packer.atlases) out.writeUTFBytes(atlas.toXml());
-        out.writeUTFBytes("</resources>");
-        out.close();
-
         publishMetadata(lib, packers, destDir.resolvePath("resources.xml"));
         publishMetadata(lib, packers, destDir.resolvePath("resources.json"));
     }
@@ -87,11 +68,9 @@ public class BetwixtPublisher
         var out :FileStream = new FileStream();
         out.open(dest, FileMode.WRITE);
 
-        var url :String = dest.url;
-        var format :String = url.substr(url.lastIndexOf(".") + 1).toLowerCase();
-        switch (format) {
+        switch (Files.getExtension(dest)) {
         case "xml":
-            var xml :XML = <resources/>;
+            var xml :XML = <resources md5={lib.md5}/>;
             for each (var movie :XflMovie in lib.movies) {
                 xml.appendChild(movie.toXML());
             }
@@ -109,6 +88,7 @@ public class BetwixtPublisher
 
         case "json":
             var json :Object = {
+                md5: lib.md5,
                 movies: lib.movies,
                 atlases: packers[0].atlases
             };

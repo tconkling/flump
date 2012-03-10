@@ -30,13 +30,19 @@ public class XflLoader
         log.info("Loading xfl", "path", file.nativePath, "name", name);
         _library = new XflLibrary(name);
         listLibrary(file);
+
         // TODO - construct the swf path for realz
-        const swfPath :String = new File(file.nativePath + ".swf").url;
-        const loadSwf :Future = new SwfLoader().loadFromUrl(swfPath, _loader);
-        loadSwf.succeeded.add(function (swf :LoadedSwf) :void { _library.swf = swf; });
-        loadSwf.failed.add(function (error :Object) :void {
-            _library.addError(ParseError.CRIT, "Unable to load swf " + swfPath, error);
+        const swfFile :Future = Files.load(new File(file.nativePath + ".swf"), _loader);
+        swfFile.succeeded.add(function (file :File) :void {
+            _library.md5 = MD5.hashBytes(file.data);
+
+            const loadSwf :Future = new SwfLoader().loadFromBytes(file.data, _loader);
+            loadSwf.succeeded.add(function (swf :LoadedSwf) :void { _library.swf = swf; });
+            loadSwf.failed.add(function (error :Object) :void {
+                _library.addError(ParseError.CRIT, "Unable to load swf " + file.nativePath, error);
+            });
         });
+
         const future :VisibleFuture = new VisibleFuture();
         _loader.terminated.add(function (..._) :void {
             _library.finishLoading();
@@ -71,12 +77,10 @@ public class XflLoader
                 return;
             }
             const isSprite :Boolean = XmlUtil.getBooleanAttr(xml, "isSpriteSubclass", false);
-            const md5 :String = MD5.hashBytes(file.data);
-            log.debug("Parsing for library", "file", file.nativePath, "isSprite", isSprite,
-                "md5", md5);
+            log.debug("Parsing for library", "file", file.nativePath, "isSprite", isSprite);
             try {
-                if (isSprite) _library.textures.push(new XflTexture(_library.location, xml, md5));
-                else _library.movies.push(new XflMovie(_library.location, xml, md5));
+                if (isSprite) _library.textures.push(new XflTexture(_library.location, xml));
+                else _library.movies.push(new XflMovie(_library.location, xml));
             } catch (e :Error) {
                 var type :String = isSprite ? "sprite" : "movie";
                 _library.addError(ParseError.CRIT,
@@ -90,7 +94,6 @@ public class XflLoader
     }
 
     protected const _loader :Executor = new Executor();
-    protected const _hash :MD5Stream = new MD5Stream();
 
     protected var _library :XflLibrary;
 

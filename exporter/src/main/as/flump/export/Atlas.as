@@ -51,22 +51,6 @@ public class Atlas
             w, h, constructed);
     }
 
-    // TODO(bruno): Remove
-    public function toXml () :String {
-        var xml :String = '<atlas name="' + name + '" filename="' + name + '.png">\n';
-        _root.forEach(function (node :Node) :void {
-            var tex :SwfTexture = node.texture;
-            xml += '  <texture name="' + tex.libraryItem +
-                '" xOffset="' + tex.offset.x +
-                '" yOffset="' + tex.offset.y +
-                '" md5="' + tex.md5 +
-                '" xAtlas="' + (node.bounds.x + PADDING) +
-                '" yAtlas="' + (node.bounds.y + PADDING) +
-                '" wAtlas="' + tex.w + '" hAtlas="' + tex.h + '"/>\n';
-        });
-        return xml + '</atlas>\n';
-    }
-
     public function toJSON (_:*) :Object {
         var json :Object = {
             file: name + ".png",

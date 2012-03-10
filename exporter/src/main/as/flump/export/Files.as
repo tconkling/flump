@@ -52,5 +52,11 @@ public class Files
     {
         return !file.isHidden && StringUtil.endsWith(file.nativePath, "."+ext);
     }
+
+    public static function getExtension (file :File) :String
+    {
+        var path :String = file.nativePath;
+        return path.substr(path.lastIndexOf(".") + 1).toLowerCase();
+    }
 }
 }

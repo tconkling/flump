@@ -10,6 +10,10 @@ import flump.executor.load.LoadedSwf;
 public class XflLibrary extends XflTopLevelComponent
 {
     public var swf :LoadedSwf;
+
+    // The MD5 of the published library SWF
+    public var md5 :String;
+
     public const movies :Vector.<XflMovie> = new Vector.<XflMovie>();
     public const textures :Vector.<XflTexture> = new Vector.<XflTexture>();
 

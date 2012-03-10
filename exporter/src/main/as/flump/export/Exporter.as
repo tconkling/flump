@@ -151,8 +151,12 @@ public class Exporter
             const load :Future = new XflLoader().load(name, status.file);
             load.succeeded.add(function (lib :XflLibrary) :void {
                 // Don't blow up if the export directory hasn't been chosen
-                const isMod :Boolean = (_exportChooser.dir != null ?
-                    BetwixtPublisher.modified(lib, _exportChooser.dir) : true);
+                var isMod :Boolean = true;
+                if (_exportChooser.dir != null) {
+                    var metadata :File = _exportChooser.dir.resolvePath(
+                        lib.location + "/resources.xml");
+                    isMod = BetwixtPublisher.modified(lib, metadata);
+                }
                 status.lib = lib;
                 status.updateModified(Ternary.of(isMod));
                 for each (var err :ParseError in lib.getErrors()) {
@@ -194,7 +198,7 @@ public class Exporter
             log.info("Loaded", "bytes", file.data.length, "movies", F.map(movies, toFn),
                 "textures", F.map(textures, toFn));
             for each (var fz :FZipFile in movies) {
-                new XflMovie(fz.filename, bytesToXML(fz.content), MD5.hashBytes(fz.content));
+                new XflMovie(fz.filename, bytesToXML(fz.content));
             }
             NA.exit(0);
         });
