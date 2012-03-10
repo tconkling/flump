@@ -32,11 +32,14 @@ public class XflLayer extends XflComponent
     }
 
     public function toJSON (_:*) :Object {
-        return {
+        var json :Object = {
             name: name,
-            flipbook: flipbook,
             keyframes: keyframes
         };
+        if (flipbook) {
+            json.flipbook = flipbook;
+        }
+        return json;
     }
 
     public function toXML () :XML

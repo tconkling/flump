@@ -108,14 +108,22 @@ public class XflKeyframe extends XflComponent
 
     public function toJSON (_:*) :Object {
         var json :Object = {
-            index: index,
             duration: duration
         };
         if (symbol != null) {
             json.ref = symbol;
-            json.t = [ x, y, scaleX, scaleY, rotation ];
-            json.pivot = [ pivotX, pivotY ];
-            // json.alpha = 1;
+            if (x != 0 || y != 0) {
+                json.loc = x + "," + y;
+            }
+            if (scaleX != 1 || scaleY != 1) {
+                json.scale = scaleX + "," + scaleY;
+            }
+            if (rotation != 0) {
+                json.rotation = rotation;
+            }
+            if (pivotX != 0 || pivotY != 0) {
+                json.pivot = pivotX + "," + pivotY;
+            }
         }
         if (label != null) {
             json.label = label;
