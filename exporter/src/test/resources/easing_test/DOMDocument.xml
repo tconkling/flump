@@ -1,0 +1,24 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" currentTimeline="1" xflVersion="2.1" creatorInfo="Adobe Flash Professional CS5.5" platform="Windows" versionInfo="Saved by Adobe Flash Windows 11.5 build 325" majorVersion="11" minorVersion="5" buildNumber="325" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false">
+     <symbols>
+          <Include href="movie.xml" itemID="4f5ac9fa-000001d8" lastModified="1331353122"/>
+          <Include href="sprite.xml" itemID="4f5ac9ed-000001d6" lastModified="1331350010"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="Scene 1">
+               <layers>
+                    <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <PrinterSettings/>
+     <publishHistory>
+          <PublishItem publishSize="1587" publishTime="1331350723"/>
+          <PublishItem publishSize="1600" publishTime="1331350259"/>
+     </publishHistory>
+</DOMDocument>
