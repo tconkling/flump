@@ -6,7 +6,6 @@ package flump.export {
 import flash.filesystem.File;
 
 import com.adobe.crypto.MD5;
-import com.adobe.crypto.MD5Stream;
 
 import flump.bytesToXML;
 import flump.executor.Executor;

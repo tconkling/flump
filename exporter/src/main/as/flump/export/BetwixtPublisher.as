@@ -3,11 +3,6 @@
 
 package flump.export {
 
-import com.threerings.util.Log;
-import com.threerings.util.Map;
-import com.threerings.util.Maps;
-import com.threerings.util.XmlUtil;
-
 import flash.filesystem.File;
 import flash.filesystem.FileMode;
 import flash.filesystem.FileStream;
@@ -16,7 +11,8 @@ import flash.utils.ByteArray;
 import flump.bytesToXML;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
-import flump.xfl.XflTexture;
+
+import com.threerings.util.Log;
 
 public class BetwixtPublisher
 {

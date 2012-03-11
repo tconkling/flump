@@ -10,8 +10,6 @@ import flash.events.MouseEvent;
 import flash.filesystem.File;
 import flash.net.SharedObject;
 
-import com.adobe.crypto.MD5;
-
 import deng.fzip.FZip;
 import deng.fzip.FZipFile;
 

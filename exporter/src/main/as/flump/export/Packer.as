@@ -3,13 +3,13 @@
 
 package flump.export {
 
-import com.threerings.util.Comparators;
-
 import flump.SwfTexture;
 import flump.xfl.XflKeyframe;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
+
+import com.threerings.util.Comparators;
 
 public class Packer
 {
