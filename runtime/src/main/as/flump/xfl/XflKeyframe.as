@@ -22,6 +22,12 @@ public class XflKeyframe extends XflComponent
     /** The name of the symbol in this keyframe, or null if there is no symbol. */
     public var symbol :String;
 
+    /**
+     * The id by which this keyframe's texture can be found. Either the libraryItem for normal
+     * keyframes, or a constructed name for flipbook frames.
+     */
+    public var id :String;
+
     /** The label on this keyframe, or null if there isn't one */
     public var label :String;
 
@@ -64,7 +70,7 @@ public class XflKeyframe extends XflComponent
         if (symbolXml == null) return; // Purely labelled frame
 
         var symbolConverter :XmlConverter = new XmlConverter(symbolXml);
-        libraryItem = symbolConverter.getStringAttr("libraryItemName");
+        id = libraryItem = symbolConverter.getStringAttr("libraryItemName");
         visible = symbolConverter.getBooleanAttr("isVisible", true);
 
         var matrix :Matrix = new Matrix();

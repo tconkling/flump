@@ -26,13 +26,12 @@
   </s:DataGrid>
   <s:DataGrid id="textures" height="50%" width="100%">
     <s:typicalItem>
-      <s:DataItem texture="multiple/segment/movie/name" memory="123456" drawn="123455"/>
+      <s:DataItem texture="multiple/segment/movie/name" memory="123456"/>
     </s:typicalItem>
     <s:columns>
       <s:ArrayList>
         <s:GridColumn dataField="texture" headerText="Texture"/>
         <s:GridColumn dataField="memory" headerText="Memory"/>
-        <s:GridColumn dataField="drawn" headerText="Pixels"/>
       </s:ArrayList>
     </s:columns>
     <mx:ArrayCollection/>

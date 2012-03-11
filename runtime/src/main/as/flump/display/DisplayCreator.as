@@ -7,6 +7,8 @@ import flash.display.BitmapData;
 import flash.utils.Dictionary;
 
 import flump.SwfTexture;
+import flump.xfl.XflKeyframe;
+import flump.xfl.XflLayer;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
@@ -23,10 +25,32 @@ public class DisplayCreator
     }
 
     public function loadMovie (name :String) :Movie {
-        return new Movie(_lib.getLibrary(name, XflMovie), loadLibraryItem);
+        return new Movie(_lib.getLibrary(name, XflMovie), loadId);
     }
 
-    public function loadTexture (name :String) :DisplayObject {
+    public function getMemoryUsage (name :String, subtex :Dictionary = null) :int {
+        if (name == null) return 0;
+        if (FLIPBOOK_TEXTURE.exec(name) != null || _lib.getLibrary(name) is XflTexture) {
+            const tex :Texture = getStarlingTexture(name);
+            const usage :int = tex.width * tex.height;
+            if (subtex != null && !subtex.hasOwnProperty(name)) {
+                subtex[name] = usage;
+            }
+            return usage;
+        }
+        const xflMovie :XflMovie = _lib.getLibrary(name, XflMovie);
+        if (subtex == null) subtex = new Dictionary();
+        for each (var layer :XflLayer in xflMovie.layers) {
+            for each (var kf :XflKeyframe in layer.keyframes) {
+                getMemoryUsage(kf.id, subtex);
+            }
+        }
+        var subtexUsage :int = 0;
+        for (var texName :String in subtex) subtexUsage += subtex[texName];
+        return subtexUsage;
+    }
+
+    private function getStarlingTexture (name :String) :Texture {
         if (!_textures.hasOwnProperty(name)) {
             const match :Object = FLIPBOOK_TEXTURE.exec(name);
             var packed :SwfTexture;
@@ -44,7 +68,11 @@ public class DisplayCreator
             _textures[name] = Texture.fromBitmapData(packed.toBitmapData());
             _textureOffsets[name] = packed.offset;
         }
-        const image :Image = new Image(_textures[name]);
+        return _textures[name];
+    }
+
+    public function loadTexture (name :String) :DisplayObject {
+        const image :Image = new Image(getStarlingTexture(name));
         image.x = _textureOffsets[name].x;
         image.y = _textureOffsets[name].y;
         const holder :Sprite = new Sprite();
@@ -52,10 +80,10 @@ public class DisplayCreator
         return holder;
     }
 
-    public function loadLibraryItem (name :String) :DisplayObject {
-        const match :Object = FLIPBOOK_TEXTURE.exec(name);
-        if (match != null) return loadTexture(name);
-        const libraryItem :* = _lib.getLibrary(name);
+    public function loadId (id :String) :DisplayObject {
+        const match :Object = FLIPBOOK_TEXTURE.exec(id);
+        if (match != null) return loadTexture(id);
+        const libraryItem :* = _lib.getLibrary(id);
         if (libraryItem is XflTexture) return loadTexture(XflTexture(libraryItem).libraryItem);
         else return loadMovie(XflMovie(libraryItem).libraryItem);
     }

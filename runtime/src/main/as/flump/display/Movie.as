@@ -12,18 +12,19 @@ import starling.events.Event;
 
 public class Movie extends Sprite
 {
-    public function Movie (src :XflMovie, libraryItemToDisplayObject :Function) {
+    public function Movie (src :XflMovie, idToDisplayObject :Function) {
         name = src.libraryItem;
         _ticker = new Ticker(advanceTime);
         var frames :int = 0;
+        const flipbook :Boolean = src.flipbook;
         if (src.flipbook) {
             _layers = new Vector.<Layer>(1, true);
-            _layers[0] = new Layer(this, src.layers[0], libraryItemToDisplayObject, true)
+            _layers[0] = new Layer(this, src.layers[0], idToDisplayObject, /*flipbook=*/true);
             frames = src.layers[0].frames;
         } else {
             _layers = new Vector.<Layer>(src.layers.length, true);
             for (var ii :int = 0; ii < _layers.length; ii++) {
-                _layers[ii] = new Layer(this, src.layers[ii], libraryItemToDisplayObject, false);
+                _layers[ii] = new Layer(this, src.layers[ii], idToDisplayObject, /*flipbook=*/false);
                 frames = Math.max(src.layers[ii].frames, frames);
             }
         }
@@ -129,7 +130,7 @@ class Layer {
     // If the keyframe has changed since the last drawFrame
     public var changedKeyframe :Boolean;
 
-    public function Layer (movie :Movie, src :XflLayer, libraryItemToDisplayObject :Function,
+    public function Layer (movie :Movie, src :XflLayer, idToDisplayObject :Function,
             flipbook :Boolean) {
         keyframes = src.keyframes;
         this.movie = movie;
@@ -143,14 +144,11 @@ class Layer {
             for (ii = 0; ii < keyframes.length && !multipleItems; ii++) {
                 multipleItems = keyframes[ii].libraryItem != lastItem;
             }
-            if (!multipleItems) movie.addChild(libraryItemToDisplayObject(lastItem));
+            if (!multipleItems) movie.addChild(idToDisplayObject(lastItem));
             else {
                 displays = new Vector.<DisplayObject>();
                 for each (var kf :XflKeyframe in keyframes) {
-                    var kfItem :String;
-                    if (flipbook) kfItem = movie.name + "_flipbook_" + kf.index;
-                    else kfItem = kf.libraryItem;
-                    var display :DisplayObject = libraryItemToDisplayObject(kfItem);
+                    var display :DisplayObject = idToDisplayObject(kf.id);
                     displays.push(display);
                     display.name = src.name;
                 }

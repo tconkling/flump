@@ -23,6 +23,10 @@ public class XflMovie extends XflTopLevelComponent
             if (symbol == null) {
                 addError(ParseError.CRIT, "Flipbook movie '" + libraryItem + "' not exported");
             }
+            for each (var kf :XflKeyframe in layers[0].keyframes) {
+                kf.id = libraryItem + "_flipbook_" + kf.index;
+
+            }
         } else {
             layers = new Array();
             for each (var layerEl :XML in layerEls) {
