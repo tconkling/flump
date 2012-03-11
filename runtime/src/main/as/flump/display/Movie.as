@@ -148,7 +148,7 @@ class Layer {
             else {
                 displays = new Vector.<DisplayObject>();
                 for each (var kf :XflKeyframe in keyframes) {
-                    var display :DisplayObject = idToDisplayObject(kf.id);
+                    var display :DisplayObject = kf.id == null ? new Sprite() : idToDisplayObject(kf.id);
                     displays.push(display);
                     display.name = src.name;
                 }

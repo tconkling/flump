@@ -24,7 +24,8 @@ public class XflKeyframe extends XflComponent
 
     /**
      * The id by which this keyframe's texture can be found. Either the libraryItem for normal
-     * keyframes, or a constructed name for flipbook frames.
+     * keyframes, or a constructed name for flipbook frames. Since the libraryItem can be null, this
+     * can also be null.
      */
     public var id :String;
 
