@@ -28,7 +28,8 @@ public class PreviewController
         _controls.movies.dataProvider.removeAll();
         for each (var movie :XflMovie in lib.movies) {
             _controls.movies.dataProvider.addItem({movie: movie.libraryItem,
-                memory: _creator.getMemoryUsage(movie.libraryItem), drawn: 0});
+                memory: _creator.getMemoryUsage(movie.libraryItem),
+                drawn: _creator.getMaxDrawn(movie.libraryItem)});
         }
         _controls.textures.dataProvider.removeAll();
         for each (var tex :XflTexture in lib.textures) {

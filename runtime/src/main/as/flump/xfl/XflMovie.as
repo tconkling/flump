@@ -43,6 +43,12 @@ public class XflMovie extends XflTopLevelComponent
         } else for each (var layer :XflLayer in layers) layer.checkSymbols(lib);
     }
 
+    public function get frames () :int {
+        var frames :int = 0;
+        for each (var layer :XflLayer in layers) frames = Math.max(frames, layer.frames);
+        return frames;
+    }
+
     public function get flipbook () :Boolean { return layers[0].flipbook; }
 
     public function toJSON (_:*) :Object {

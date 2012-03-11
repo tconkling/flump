@@ -19,7 +19,7 @@
       <s:ArrayList>
         <s:GridColumn dataField="movie" headerText="Movie"/>
         <s:GridColumn dataField="memory" headerText="Memory"/>
-        <s:GridColumn dataField="drawn" headerText="Pixels"/>
+        <s:GridColumn dataField="drawn" headerText="Max Drawn"/>
       </s:ArrayList>
     </s:columns>
     <mx:ArrayCollection/>

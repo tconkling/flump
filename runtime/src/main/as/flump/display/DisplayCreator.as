@@ -50,6 +50,30 @@ public class DisplayCreator
         return subtexUsage;
     }
 
+    /** Gets the maximum number of pixels drawn in a single frame by the given id. If it's
+     * a texture, that's just the number of pixels in the texture. For a movie, it's the frame with
+     * the largest set of textures present in its keyframe. For movies inside movies, the frame
+     * drawn usage is the maximum that movie can draw. We're trying to get the worst case here.
+     */
+    public function getMaxDrawn (name :String) :int {
+        if (name == null) return 0;
+        if (FLIPBOOK_TEXTURE.exec(name) != null || _lib.getLibrary(name) is XflTexture) {
+            const tex :Texture = getStarlingTexture(name);
+            return tex.width * tex.height;
+        }
+        const xflMovie :XflMovie = _lib.getLibrary(name, XflMovie);
+        var maxDrawn :int = 0;
+        for (var ii :int = 0; ii < xflMovie.frames; ii++) {
+            var drawn :int = 0;
+            for each (var layer :XflLayer in xflMovie.layers) {
+                var kf :XflKeyframe = layer.keyframeForFrame(ii);
+                if (kf.visible) drawn += getMaxDrawn(kf.id);
+            }
+            maxDrawn = Math.max(maxDrawn, drawn);
+        }
+        return maxDrawn;
+    }
+
     private function getStarlingTexture (name :String) :Texture {
         if (!_textures.hasOwnProperty(name)) {
             const match :Object = FLIPBOOK_TEXTURE.exec(name);
