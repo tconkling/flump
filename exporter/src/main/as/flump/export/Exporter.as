@@ -69,6 +69,7 @@ public class Exporter
         _exportChooser =
             new DirChooser(_settings, "EXPORT_ROOT", _win.exportRoot, _win.browseExport);
         _exportChooser.changed.add(updateExportEnabled);
+        _win.addEventListener(Event.CLOSE, function (..._) :void { NA.exit(0); });
 
     }
 
@@ -89,20 +90,20 @@ public class Exporter
             _previewWindow.started = function (container :Sprite) :void {
                 _previewController = new PreviewController(lib, container, _previewControls);
             }
-            
+
             _previewWindow.open();
             _previewControls.open();
-            
+
             preventWindowClose(_previewWindow.nativeWindow);
             preventWindowClose(_previewControls.nativeWindow);
-            
+
         } else {
             _previewController.lib = lib;
             _previewWindow.nativeWindow.visible = true;
             _previewControls.nativeWindow.visible = true;
         }
     }
-    
+
     // Causes a window to be hidden, rather than closed, when its close box is clicked
     protected static function preventWindowClose (window :NativeWindow) :void {
         window.addEventListener(Event.CLOSING, function (e :Event) :void {
