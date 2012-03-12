@@ -69,11 +69,14 @@ public class BetwixtPublisher
         switch (Files.getExtension(dest)) {
         case "xml":
             var xml :XML = <resources md5={lib.md5}/>;
-            var prefix :String = lib.location.replace("/", "_") + "_";
+            var prefix :String = lib.location + "/";
             for each (var movie :XflMovie in lib.movies) {
                 var movieXml :XML = movie.toXML();
                 movieXml.@authoredDevice = authoredDevice.name();
                 movieXml.@name = prefix + movieXml.@name;
+                for each (var kf :XML in movieXml..kf) {
+                    kf.@ref = prefix + kf.@ref;
+                }
                 xml.appendChild(movieXml);
             }
             var groupsXml :XML = <textureGroups/>;
