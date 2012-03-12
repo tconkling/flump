@@ -71,7 +71,7 @@ public class Exporter
         });
 
         function updateExportEnabled (..._) :void {
-            _win.export.enabled = _exportChooser.dir != null &&
+            _win.export.enabled = _exportChooser.dir != null && _libraries.selectionLength > 0 &&
               _libraries.selectedItems.some(function (status :DocStatus, ..._) :Boolean {
                 return status.isValid;
             });
