@@ -58,11 +58,15 @@ public class Atlas
         };
         _root.forEach(function (node :Node) :void {
             var tex :SwfTexture = node.texture;
-            json.textures.push({
+            var textureJson :Object = {
                 name: tex.symbol,
                 offset: [ tex.offset.x, tex.offset.y ],
                 rect: [ node.bounds.x + PADDING, node.bounds.y + PADDING, tex.w, tex.h ]
-            });
+            };
+            if (tex.md5 != null) {
+                textureJson.md5 = tex.md5;
+            }
+            json.textures.push(textureJson);
         });
         return json;
     }
@@ -75,11 +79,15 @@ public class Atlas
             file={json.file}
         />;
         for each (var tex :Object in json.textures) {
-            xml.appendChild(<texture
+            var textureXml :XML = <texture
                 name={tex.name}
                 offset={tex.offset}
                 rect={tex.rect}
-            />);
+            />;
+            if (tex.md5 != null) {
+                textureXml.@md5 = tex.md5;
+            }
+            xml.appendChild(textureXml);
         }
         return xml;
     }

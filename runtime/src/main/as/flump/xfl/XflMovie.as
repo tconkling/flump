@@ -11,10 +11,14 @@ public class XflMovie extends XflTopLevelComponent
     public var symbol :String;
     public var layers :Array;
 
-    public function XflMovie (baseLocation :String, xml :XML) {
+    // The hash of the XML file for this symbol in the library
+    public var md5 :String;
+
+    public function XflMovie (baseLocation :String, xml :XML, md5 :String) {
         const converter :XmlConverter = new XmlConverter(xml);
         libraryItem = converter.getStringAttr("name");
         super(baseLocation + ":" + libraryItem);
+        this.md5 = md5;
         symbol = converter.getStringAttr("linkageClassName", null);
 
         const layerEls :XMLList = xml.timeline.DOMTimeline[0].layers.DOMLayer;
@@ -54,13 +58,17 @@ public class XflMovie extends XflTopLevelComponent
     public function toJSON (_:*) :Object {
         return {
             symbol: symbol,
-            layers: layers
+            layers: layers,
+            md5: md5
         };
     }
 
     public function toXML () :XML
     {
-        var xml :XML = <movie name={libraryItem}/>
+        var xml :XML = <movie
+            name={libraryItem}
+            md5={md5}
+        />;
         for each (var layer :XflLayer in layers) {
             xml.appendChild(layer.toXML());
         }

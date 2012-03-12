@@ -76,10 +76,12 @@ public class XflLoader
                 return;
             }
             const isSprite :Boolean = XmlUtil.getBooleanAttr(xml, "isSpriteSubclass", false);
-            log.debug("Parsing for library", "file", file.nativePath, "isSprite", isSprite);
+            const md5 :String = MD5.hashBytes(file.data);
+            log.debug("Parsing for library", "file", file.nativePath, "isSprite", isSprite,
+                "md5", md5);
             try {
-                if (isSprite) _library.textures.push(new XflTexture(_library.location, xml));
-                else _library.movies.push(new XflMovie(_library.location, xml));
+                if (isSprite) _library.textures.push(new XflTexture(_library.location, xml, md5));
+                else _library.movies.push(new XflMovie(_library.location, xml, md5));
             } catch (e :Error) {
                 var type :String = isSprite ? "sprite" : "movie";
                 _library.addError(ParseError.CRIT,

@@ -10,6 +10,8 @@ import flash.events.MouseEvent;
 import flash.filesystem.File;
 import flash.net.SharedObject;
 
+import com.adobe.crypto.MD5;
+
 import deng.fzip.FZip;
 import deng.fzip.FZipFile;
 
@@ -223,7 +225,7 @@ public class Exporter
             log.info("Loaded", "bytes", file.data.length, "movies", F.map(movies, toFn),
                 "textures", F.map(textures, toFn));
             for each (var fz :FZipFile in movies) {
-                new XflMovie(fz.filename, bytesToXML(fz.content));
+                new XflMovie(fz.filename, bytesToXML(fz.content), MD5.hashBytes(fz.content));
             }
             NA.exit(0);
         });
