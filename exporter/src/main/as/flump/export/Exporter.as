@@ -174,7 +174,8 @@ public class Exporter
     protected function loadFlashDocument (status :DocStatus) :void {
         if (Files.hasExtension(status.file, "xfl")) status.file = status.file.parent;
         if (status.file.isDirectory) {
-            const name :String = status.file.nativePath.substring(_rootLen);
+            const name :String = status.file.nativePath
+                .substring(_rootLen).replace(File.separator, "/");
             const load :Future = new XflLoader().load(name, status.file);
             load.succeeded.add(function (lib :XflLibrary) :void {
                 // Don't blow up if the export directory hasn't been chosen
