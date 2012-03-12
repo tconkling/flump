@@ -15,16 +15,17 @@ public class Packer
 {
     public const atlases :Vector.<Atlas> = new Vector.<Atlas>();
 
-    public function Packer (target :DeviceType, lib :XflLibrary) {
+    public function Packer (target :DeviceType, authored :DeviceType, lib :XflLibrary) {
         _target = target;
         _lib = lib;
+        var scale :Number = target.resWidth / authored.resWidth;
         for each (var tex :XflTexture in _lib.textures) {
-            _unpacked.push(SwfTexture.fromTexture(_lib.swf, tex, target.scale));
+            _unpacked.push(SwfTexture.fromTexture(_lib.swf, tex, scale));
         }
         for each (var movie :XflMovie in _lib.movies) {
             if (!movie.flipbook) continue;
             for each (var kf :XflKeyframe in movie.layers[0].keyframes) {
-                _unpacked.push(SwfTexture.fromFlipbook(lib.swf, movie, kf.index, target.scale));
+                _unpacked.push(SwfTexture.fromFlipbook(lib.swf, movie, kf.index, scale));
             }
         }
         _unpacked.sort(Comparators.createReverse(Comparators.createFields(["a", "w", "h"])));

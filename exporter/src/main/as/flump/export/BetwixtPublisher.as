@@ -41,10 +41,11 @@ public class BetwixtPublisher
         return md5 != lib.md5;
     }
 
-    public static function publish (lib :XflLibrary, source :File, exportDir :File) :void {
+    public static function publish (lib :XflLibrary, source: File, authoredDevice :DeviceType,
+        exportDir :File) :void {
         var packers :Array = [
-            new Packer(DeviceType.IPHONE_RETINA, lib),
-            new Packer(DeviceType.IPHONE, lib)
+            new Packer(DeviceType.IPHONE_RETINA, authoredDevice, lib),
+            new Packer(DeviceType.IPHONE, authoredDevice, lib)
         ];
 
         const destDir :File = exportDir.resolvePath(lib.location);
@@ -56,11 +57,12 @@ public class BetwixtPublisher
             }
         }
 
-        publishMetadata(lib, packers, destDir.resolvePath("resources.xml"));
-        publishMetadata(lib, packers, destDir.resolvePath("resources.json"));
+        publishMetadata(lib, packers, authoredDevice, destDir.resolvePath("resources.xml"));
+        publishMetadata(lib, packers, authoredDevice, destDir.resolvePath("resources.json"));
     }
 
-    protected static function publishMetadata (lib :XflLibrary, packers :Array, dest :File) :void {
+    protected static function publishMetadata (lib :XflLibrary, packers :Array,
+        authoredDevice :DeviceType, dest :File) :void {
         var out :FileStream = new FileStream();
         out.open(dest, FileMode.WRITE);
 
@@ -68,7 +70,9 @@ public class BetwixtPublisher
         case "xml":
             var xml :XML = <resources md5={lib.md5}/>;
             for each (var movie :XflMovie in lib.movies) {
-                xml.appendChild(movie.toXML());
+                var movieXml :XML = movie.toXML();
+                movieXml.@authoredDevice = authoredDevice.name();
+                xml.appendChild(movieXml);
             }
             var groupsXml :XML = <textureGroups/>;
             xml.appendChild(groupsXml);

@@ -22,7 +22,10 @@ import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 
+import mx.collections.ArrayCollection;
+
 import spark.components.DataGrid;
+import spark.components.DropDownList;
 import spark.components.List;
 import spark.components.Window;
 import spark.events.GridSelectionEvent;
@@ -38,11 +41,33 @@ public class Exporter
     public static const NA :NativeApplication = NativeApplication.nativeApplication;
 
     protected static const IMPORT_ROOT :String = "IMPORT_ROOT";
+    protected static const AUTHORED_RESOLUTION :String = "AUTHORED_RESOLUTION";
 
     public function Exporter (win :ExporterWindow) {
         _win = win;
         _errors = _win.errors;
         _libraries = _win.libraries;
+
+        _authoredResolution = _win.authoredResolutionPopup;
+        _authoredResolution.dataProvider = new ArrayCollection(DeviceType.values().map(
+            function (type :DeviceType, ..._) :Object {
+                return new DeviceSelection(type);
+            }));
+        var initialSelection :DeviceType = null;
+        if (_settings.data.hasOwnProperty(AUTHORED_RESOLUTION)) {
+            try {
+                initialSelection = DeviceType.valueOf(_settings.data[AUTHORED_RESOLUTION]);
+            } catch (e :Error) {}
+        }
+        if (initialSelection == null) {
+            initialSelection = DeviceType.IPHONE_RETINA;
+        }
+        _authoredResolution.selectedIndex = DeviceType.values().indexOf(initialSelection);
+        _authoredResolution.addEventListener(Event.CHANGE, function (..._) :void {
+            var selectedType :DeviceType = DeviceSelection(_authoredResolution.selectedItem).type;
+            _settings.data[AUTHORED_RESOLUTION] = selectedType.name();
+        });
+
         function updateExportEnabled (..._) :void {
             _win.export.enabled = _exportChooser.dir != null &&
               _libraries.selectedItems.some(function (status :DocStatus, ..._) :Boolean {
@@ -139,7 +164,8 @@ public class Exporter
     }
 
     protected function exportFlashDocument (status :DocStatus) :void {
-        BetwixtPublisher.publish(status.lib, status.file, _exportChooser.dir);
+        BetwixtPublisher.publish(status.lib, status.file,
+            DeviceSelection(_authoredResolution.selectedItem).type, _exportChooser.dir);
         status.updateModified(Ternary.FALSE);
     }
 
@@ -211,6 +237,7 @@ public class Exporter
     protected var _errors :DataGrid;
     protected var _exportChooser :DirChooser;
     protected var _importChooser :DirChooser;
+    protected var _authoredResolution :DropDownList;
     protected const _settings :SharedObject = SharedObject.getLocal("flump/Exporter");
 
     private static const log :Log = Log.getLog(Exporter);
@@ -219,11 +246,22 @@ public class Exporter
 import flash.events.EventDispatcher;
 import flash.filesystem.File;
 
+import flump.export.DeviceType;
 import flump.export.Ternary;
 import flump.xfl.XflLibrary;
 
 import mx.core.IPropertyChangeNotifier;
 import mx.events.PropertyChangeEvent;
+
+class DeviceSelection {
+    public var type :DeviceType;
+    public function DeviceSelection (type :DeviceType) {
+        this.type = type;
+    }
+    public function toString () :String {
+        return type.displayName + " (" + type.resWidth + "x" + type.resHeight + ")";
+    }
+}
 
 class DocStatus extends EventDispatcher implements IPropertyChangeNotifier {
     public var path :String;

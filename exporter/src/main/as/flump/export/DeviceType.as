@@ -7,22 +7,38 @@ import com.threerings.util.Enum;
 
 public final class DeviceType extends Enum
 {
-    public static const IPHONE :DeviceType = new DeviceType("IPHONE", "", 0.5);
-    public static const IPHONE_RETINA :DeviceType = new DeviceType("IPHONE_RETINA", "@2x", 1);
+    public static const IPHONE :DeviceType = new DeviceType("IPHONE", "iPhone", "", 480, 320);
+    public static const IPHONE_RETINA :DeviceType = new DeviceType("IPHONE_RETINA", "iPhone Retina",
+        "@2x", 960, 640);
+    public static const IPAD :DeviceType = new DeviceType("IPAD", "iPad", "", 1024, 768);
+    public static const IPAD_RETINA :DeviceType = new DeviceType("IPAD_RETINA", "iPad Retina",
+        "", 2048, 1536);
+
     finishedEnumerating(DeviceType);
 
-    public function get scale () :Number {
-        return _scale;
+    public function get displayName () :String {
+        return _displayName;
     }
 
     public function get extension () :String {
         return _extension;
     }
 
-    public function DeviceType (name:String, extension :String, scale :Number) {
+    public function get resWidth () :int {
+        return _resWidth;
+    }
+
+    public function get resHeight () :int {
+        return _resHeight;
+    }
+
+    public function DeviceType (name :String, displayName :String, extension :String,
+        resWidth :int, resHeight :int) {
         super(name);
+        _displayName = displayName;
         _extension = extension;
-        _scale = scale;
+        _resWidth = resWidth;
+        _resHeight = resHeight;
     }
 
     public static function valueOf (name :String) :DeviceType {
@@ -33,7 +49,9 @@ public final class DeviceType extends Enum
         return Enum.values(DeviceType);
     }
 
+    protected var _displayName :String;
     protected var _extension :String;
-    protected var _scale :Number;
+    protected var _resWidth :int;
+    protected var _resHeight :int;
 }
 }
