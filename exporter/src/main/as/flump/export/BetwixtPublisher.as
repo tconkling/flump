@@ -11,6 +11,7 @@ import flash.utils.ByteArray;
 import flump.bytesToXML;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
+import flump.xfl.XmlConverter;
 
 import com.threerings.util.Log;
 
@@ -75,7 +76,9 @@ public class BetwixtPublisher
                 movieXml.@authoredDevice = authoredDevice.name();
                 movieXml.@name = prefix + movieXml.@name;
                 for each (var kf :XML in movieXml..kf) {
-                    kf.@ref = prefix + kf.@ref;
+                    if (new XmlConverter(kf).hasAttr("ref")) {
+                        kf.@ref = prefix + kf.@ref;
+                    }
                 }
                 xml.appendChild(movieXml);
             }
