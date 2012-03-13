@@ -47,13 +47,15 @@ public class XflLibrary extends XflTopLevelComponent
         for each (var movie :XflMovie in movies) {
             if (movie.symbol != null) _symbols[movie.symbol] = movie;
             _libraryItems[movie.libraryItem] = movie;
+        }
+        for each (movie in movies) {
+            movie.checkSymbols(this);
             for each (var layer :XflLayer in movie.layers) {
                 for each (var kf :XflKeyframe in layer.keyframes) {
                     if (kf.libraryItem != null) kf.symbol = _libraryItems[kf.libraryItem].symbol;
                 }
             }
         }
-        for each (movie in movies) movie.checkSymbols(this);
     }
 
     override public function getErrors (sev :String=null) :Vector.<ParseError>{
