@@ -89,7 +89,7 @@ public class XflKeyframe extends XflComponent
             // handle "motionTweenRotate" (in this case, the rotation is not embedded in the matrix)
             if (converter.hasAttr("motionTweenRotateTimes") && duration > 1) {
                 rotation = converter.getNumberAttr("motionTweenRotateTimes") * Math.PI * 2;
-                if (converter.getStringAttr("motionTweenRotate") == "clockwise") {
+                if (converter.getStringAttr("motionTweenRotate", null) == "clockwise") {
                     rotation *= -1;
                 }
 
