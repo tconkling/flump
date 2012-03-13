@@ -31,7 +31,7 @@ public class Packer
             }
         }
         _unpacked.sort(Comparators.createReverse(Comparators.createFields(["a", "w", "h"])));
-        while (_unpacked.length > 0) pack();
+        pack();
     }
 
     public function get targetDevice () :DeviceType {
@@ -39,20 +39,30 @@ public class Packer
     }
 
     protected function pack () :void {
-        const tex :SwfTexture = _unpacked[0];
-        if (tex.w > MAX_SIZE || tex.h > MAX_SIZE) throw new Error("Too large to fit in an atlas");
-        for each (var atlas :Atlas in atlases) {
-            // TODO(bruno): Support rotated textures?
-            if (atlas.place(tex)) {
-                _unpacked.shift();
-                return;
+
+        while (_unpacked.length > 0) {
+            // Add a new atlas
+            var size :Point = findOptimalSize();
+            atlases.push(new Atlas(_lib.location + "/atlas" + atlases.length,
+                _target, size.x, size.y));
+
+            // Try to pack each texture into any atlas
+            for (var ii :int = 0; ii < _unpacked.length; ++ii) {
+                var tex :SwfTexture = _unpacked[ii];
+
+                if (tex.w > MAX_SIZE || tex.h > MAX_SIZE) {
+                    throw new Error("Too large to fit in an atlas");
+                }
+
+                for each (var atlas :Atlas in atlases) {
+                    // TODO(bruno): Support rotated textures?
+                    if (atlas.place(tex)) {
+                        _unpacked.splice(ii--, 1);
+                        break;
+                    }
+                }
             }
         }
-
-        // It didn't fit in any existing atlas, add another one
-        var size :Point = findOptimalSize();
-        atlases.push(new Atlas(_lib.location + "/atlas" + atlases.length, _target, size.x, size.y));
-        pack();
     }
 
     // Estimate the optimal size for the next atlas
@@ -60,6 +70,7 @@ public class Packer
         var area :int = 0;
         var maxW :int = 0;
         var maxH :int = 0;
+
         for each (var tex :SwfTexture in _unpacked) {
             var w :int = tex.w + 2*Atlas.PADDING;
             var h :int = tex.h + 2*Atlas.PADDING;
