@@ -149,16 +149,16 @@ public class XflKeyframe extends XflComponent
         if (symbol != null) {
             json.ref = symbol;
             if (x != 0 || y != 0) {
-                json.loc = x + "," + y;
+                json.loc = [x, y];
             }
             if (scaleX != 1 || scaleY != 1) {
-                json.scale = scaleX + "," + scaleY;
+                json.scale = [scaleX, scaleY];
             }
             if (rotation != 0) {
                 json.rotation = rotation;
             }
             if (pivotX != 0 || pivotY != 0) {
-                json.pivot = pivotX + "," + pivotY;
+                json.pivot = [pivotX, pivotY];
             }
             if (alpha != 1) {
                 json.alpha = alpha;
