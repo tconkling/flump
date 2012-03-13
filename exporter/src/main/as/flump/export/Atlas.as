@@ -16,22 +16,17 @@ public class Atlas
 
     public var name :String;
     public var targetDevice :DeviceType;
-    public var w :int, h :int, id :int;
 
     public function Atlas (name :String, targetDevice :DeviceType, w :int, h :int) {
         this.name = name;
         this.targetDevice = targetDevice;
-        this.w = w;
-        this.h = h;
 
-        _root = new Node();
-        _root.bounds = new Rectangle(0, 0, w, h);
+        _root = new Node(0, 0, w, h);
     }
 
     // Try to place a texture in this atlas, return true if it fit
     public function place (texture :SwfTexture) :Boolean {
-        var node :Node = _root.search(
-            new Rectangle(0, 0, texture.w + 2*PADDING, texture.h + 2*PADDING));
+        var node :Node = _root.search(texture.w + 2*PADDING, texture.h + 2*PADDING);
         if (node == null) {
             return false;
         }
@@ -51,7 +46,7 @@ public class Atlas
             tex.holder.y = node.bounds.y;
         });
         PngPublisher.publish(dir.resolvePath(name + targetDevice.extension + ".png"),
-            w, h, constructed);
+            _root.bounds.width, _root.bounds.height, constructed);
     }
 
     public function toJSON (_:*) :Object {
@@ -109,71 +104,57 @@ class Node
     // The bounds of this node (and its children)
     public var bounds :Rectangle;
 
-    // The texture that is placed here, if any
+    // The texture that is placed here, if any. Implies that this is a leaf node
     public var texture :SwfTexture;
 
-    // This node's two children
+    // This node's two children, if any
     public var left :Node;
     public var right :Node;
 
-    // Find for free node in this tree big enough to fit a rect, or null
-    public function search (rect :Rectangle) :Node
+    public function Node (x :int, y :int, w :int, h :int)
     {
-        // There's already a texture here, terminate
+        bounds = new Rectangle(x, y, w, h);
+    }
+
+    // Find a free node in this tree big enough to fit an area, or null
+    public function search (w :int, h :int) :Node
+    {
         if (texture != null) {
+            // There's already a texture here, terminate
             return null;
         }
 
         if (left != null && right != null) {
             // Try to fit it into this node's children
-            var descendent :Node = left.search(rect);
+            var descendent :Node = left.search(w, h);
             if (descendent == null) {
-                descendent = right.search(rect);
+                descendent = right.search(w, h);
             }
             return descendent;
 
         } else {
-            if (bounds.width == rect.width && bounds.height == rect.height) {
+            if (bounds.width == w && bounds.height == h) {
+                // This node is a perfect size, no need to subdivide
                 return this;
             }
-            if (bounds.width < rect.width || bounds.height < rect.height) {
+            if (bounds.width < w || bounds.height < h) {
+                // This will never fit, terminate
                 return null;
             }
 
-            left = new Node();
-            right = new Node();
-
-            var dw :Number = bounds.width - rect.width;
-            var dh :Number = bounds.height - rect.height;
+            var dw :Number = bounds.width - w;
+            var dh :Number = bounds.height - h;
 
             if (dw > dh) {
-                left.bounds = new Rectangle(
-                    bounds.x,
-                    bounds.y,
-                    rect.width,
-                    bounds.height);
-
-                right.bounds = new Rectangle(
-                    bounds.x + rect.width,
-                    bounds.y,
-                    bounds.width - rect.width,
-                    bounds.height);
+                left = new Node(bounds.x, bounds.y, w, bounds.height);
+                right = new Node(bounds.x + w, bounds.y, dw, bounds.height);
 
             } else {
-                left.bounds = new Rectangle(
-                    bounds.x,
-                    bounds.y,
-                    bounds.width,
-                    rect.height);
-
-                right.bounds = new Rectangle(
-                    bounds.x,
-                    bounds.y + rect.height,
-                    bounds.width,
-                    bounds.height - rect.height);
+                left = new Node(bounds.x, bounds.y, bounds.width, h);
+                right = new Node(bounds.x, bounds.y + h, bounds.width, dh);
             }
 
-            return left.search(rect);
+            return left.search(w, h);
         }
     }
 
