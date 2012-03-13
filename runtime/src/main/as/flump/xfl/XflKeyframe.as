@@ -70,6 +70,10 @@ public class XflKeyframe extends XflComponent
 
         if (symbolXml == null) return; // Purely labelled frame
 
+        if (xml.tweens != null) {
+            addError(ParseError.WARN, "Custom easing is not supported");
+        }
+
         var symbolConverter :XmlConverter = new XmlConverter(symbolXml);
         id = libraryItem = symbolConverter.getStringAttr("libraryItemName");
         visible = symbolConverter.getBooleanAttr("isVisible", true);
