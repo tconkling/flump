@@ -11,6 +11,9 @@ import flump.SwfTexture;
 
 public class Atlas
 {
+    // Empty pixels to border around each texture to prevent bleeding
+    public static const PADDING :int = 1;
+
     public var name :String;
     public var targetDevice :DeviceType;
     public var w :int, h :int, id :int;
@@ -91,9 +94,6 @@ public class Atlas
         }
         return xml;
     }
-
-    // Empty pixels to border around each texture to prevent bleeding
-    protected static const PADDING :int = 1;
 
     protected var _root :Node;
 }

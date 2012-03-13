@@ -3,6 +3,8 @@
 
 package flump.export {
 
+import flash.geom.Point;
+
 import flump.SwfTexture;
 import flump.xfl.XflKeyframe;
 import flump.xfl.XflLibrary;
@@ -38,7 +40,7 @@ public class Packer
 
     protected function pack () :void {
         const tex :SwfTexture = _unpacked[0];
-        if (tex.w > LARGEST_BIN || tex.h > LARGEST_BIN) throw new Error("Too large to fit in bin");
+        if (tex.w > MAX_SIZE || tex.h > MAX_SIZE) throw new Error("Too large to fit in an atlas");
         for each (var atlas :Atlas in atlases) {
             // TODO(bruno): Support rotated textures?
             if (atlas.place(tex)) {
@@ -48,22 +50,48 @@ public class Packer
         }
 
         // It didn't fit in any existing atlas, add another one
-        var minBin :int = findOptimalMinBin();
-        atlases.push(new Atlas(_lib.location + "/atlas" + atlases.length, _target, minBin, minBin));
+        var size :Point = findOptimalSize();
+        atlases.push(new Atlas(_lib.location + "/atlas" + atlases.length, _target, size.x, size.y));
         pack();
     }
 
-    protected function findOptimalMinBin () :int {
+    // Estimate the optimal size for the next atlas
+    protected function findOptimalSize () :Point {
         var area :int = 0;
-        var maxExtent :int = 0;
+        var maxW :int = 0;
+        var maxH :int = 0;
         for each (var tex :SwfTexture in _unpacked) {
-            area += tex.a;
-            maxExtent = Math.max(maxExtent, tex.w, tex.h);
+            var w :int = tex.w + 2*Atlas.PADDING;
+            var h :int = tex.h + 2*Atlas.PADDING;
+            area += w*h;
+            maxW = Math.max(maxW, w);
+            maxH = Math.max(maxH, h);
         }
-        for each (var size :int in BIN_SIZES) {
-            if (size >= maxExtent && size * size >= area) return size;
+
+        var size :Point = new Point(nextPowerOfTwo(maxW), nextPowerOfTwo(maxH));
+
+        // Double the area until it's big enough
+        while (size.x*size.y < area) {
+            if (size.x < size.y) {
+                size.x *= 2;
+            } else {
+                size.y *= 2;
+            }
         }
-        return LARGEST_BIN;
+
+        size.x = Math.min(size.x, MAX_SIZE);
+        size.y = Math.min(size.y, MAX_SIZE);
+
+        return size;
+    }
+
+    protected static function nextPowerOfTwo (n :int) :int
+    {
+        var p :int = 1;
+        while (p < n) {
+            p *= 2;
+        }
+        return p;
     }
 
     protected var _unpacked :Vector.<SwfTexture> = new Vector.<SwfTexture>();
@@ -71,7 +99,7 @@ public class Packer
     protected var _target :DeviceType;
     protected var _lib :XflLibrary;
 
-    private static const BIN_SIZES :Vector.<int> = new <int>[8, 16, 32, 64, 128, 256, 512, 1024];
-    private static const LARGEST_BIN :int = BIN_SIZES[BIN_SIZES.length - 1];
+    // Maximum width or height of a texture atlas
+    private static const MAX_SIZE :int = 1024;
 }
 }
