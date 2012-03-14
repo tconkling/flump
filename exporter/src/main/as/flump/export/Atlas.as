@@ -11,7 +11,7 @@ import flump.SwfTexture;
 
 public class Atlas
 {
-    // Empty pixels to border around each texture to prevent bleeding
+    // The empty border size around the right and bottom edges of each texture, to prevent bleeding
     public static const PADDING :int = 1;
 
     public var name :String;
@@ -26,7 +26,7 @@ public class Atlas
 
     // Try to place a texture in this atlas, return true if it fit
     public function place (texture :SwfTexture) :Boolean {
-        var node :Node = _root.search(texture.w + 2*PADDING, texture.h + 2*PADDING);
+        var node :Node = _root.search(texture.w + PADDING, texture.h + PADDING);
         if (node == null) {
             return false;
         }
@@ -59,7 +59,7 @@ public class Atlas
             var textureJson :Object = {
                 name: tex.symbol,
                 offset: [ tex.offset.x, tex.offset.y ],
-                rect: [ node.bounds.x + PADDING, node.bounds.y + PADDING, tex.w, tex.h ]
+                rect: [ node.bounds.x, node.bounds.y, tex.w, tex.h ]
             };
             if (tex.md5 != null) {
                 textureJson.md5 = tex.md5;

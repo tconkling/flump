@@ -72,8 +72,8 @@ public class Packer
         var maxH :int = 0;
 
         for each (var tex :SwfTexture in _unpacked) {
-            var w :int = tex.w + 2*Atlas.PADDING;
-            var h :int = tex.h + 2*Atlas.PADDING;
+            var w :int = tex.w + Atlas.PADDING;
+            var h :int = tex.h + Atlas.PADDING;
             area += w*h;
             maxW = Math.max(maxW, w);
             maxH = Math.max(maxH, h);
