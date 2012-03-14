@@ -5,7 +5,6 @@ package flump.export {
 
 import flash.display.Sprite;
 import flash.filesystem.File;
-import flash.geom.Rectangle;
 
 import flump.SwfTexture;
 
@@ -33,6 +32,14 @@ public class Atlas
 
         node.texture = texture;
         return true;
+    }
+
+    public function get area () :int { return _root.bounds.width * _root.bounds.height; }
+
+    public function get used () :int {
+        var used :int = 0;
+        _root.forEach(function (n :Node) :void { used += n.bounds.width * n.bounds.height; });
+        return used;
     }
 
     public function publish (dir :File) :void {

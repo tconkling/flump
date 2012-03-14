@@ -9,6 +9,7 @@ import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
 
 import spark.events.GridSelectionEvent;
+import spark.formatters.NumberFormatter;
 
 import starling.display.DisplayObject;
 import starling.display.Sprite;
@@ -25,17 +26,36 @@ public class PreviewController
     public function set lib (lib :XflLibrary) :void {
         _creator = new DisplayCreator(lib);
 
+        const numFormatter :NumberFormatter = new NumberFormatter();
+        const f :Function = numFormatter.format;
+
         _controls.movies.dataProvider.removeAll();
         for each (var movie :XflMovie in lib.movies) {
             _controls.movies.dataProvider.addItem({movie: movie.libraryItem,
-                memory: _creator.getMemoryUsage(movie.libraryItem),
-                drawn: _creator.getMaxDrawn(movie.libraryItem)});
+                memory: f(_creator.getMemoryUsage(movie.libraryItem)),
+                drawn: f(_creator.getMaxDrawn(movie.libraryItem))});
         }
+
+        var totalUsage :int = 0;
         _controls.textures.dataProvider.removeAll();
         for each (var tex :XflTexture in lib.textures) {
-            _controls.textures.dataProvider.addItem({texture: tex.libraryItem,
-              memory:_creator.getMemoryUsage(tex.libraryItem)});
+            var itemUsage :int = _creator.getMemoryUsage(tex.libraryItem);
+            totalUsage += itemUsage;
+            _controls.textures.dataProvider.addItem({texture: tex.libraryItem, memory: f(itemUsage)});
         }
+        _controls.totalValue.text = f(totalUsage);
+
+        const packer :Packer = new Packer(DeviceType.IPHONE, DeviceType.IPHONE, lib)
+        var atlasSize :Number = 0;
+        var atlasUsed :Number = 0;
+        for each (var atlas :Atlas in packer.atlases) {
+            atlasSize += atlas.area;
+            atlasUsed += atlas.used;
+        }
+        const percentFormatter :NumberFormatter = new NumberFormatter();
+        percentFormatter.fractionalDigits = 2;
+        _controls.atlasWasteValue.text = percentFormatter.format((1.0 - (atlasUsed/atlasSize)) * 100) + "%";
+
         _controls.movies.addEventListener(GridSelectionEvent.SELECTION_CHANGE,
             function (..._) :void {
                 _controls.textures.selectedIndex = -1;
