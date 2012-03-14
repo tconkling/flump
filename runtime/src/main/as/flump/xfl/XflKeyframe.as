@@ -91,9 +91,10 @@ public class XflKeyframe extends XflComponent
             matrix = new Matrix(m("a", 1), m("b", 0), m("c", 0), m("d", 1), m("tx", 0), m("ty", 0));
 
             // handle "motionTweenRotate" (in this case, the rotation is not embedded in the matrix)
-            if (converter.hasAttr("motionTweenRotateTimes") && duration > 1) {
+            if (converter.hasAttr("motionTweenRotateTimes") &&
+                    converter.hasAttr("motionTweenRotate") && duration > 1) {
                 rotation = converter.getNumberAttr("motionTweenRotateTimes") * Math.PI * 2;
-                if (converter.getStringAttr("motionTweenRotate", null) == "clockwise") {
+                if (converter.getStringAttr("motionTweenRotate") == "clockwise") {
                     rotation *= -1;
                 }
 
