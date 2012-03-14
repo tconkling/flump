@@ -65,9 +65,11 @@ public class Atlas
             var tex :SwfTexture = node.texture;
             var textureJson :Object = {
                 name: tex.symbol,
-                offset: [ tex.offset.x, tex.offset.y ],
                 rect: [ node.bounds.x, node.bounds.y, tex.w, tex.h ]
             };
+            if (tex.offset.x != 0 || tex.offset.y != 0) {
+                textureJson.offset = [ tex.offset.x, tex.offset.y ];
+            }
             if (tex.md5 != null) {
                 textureJson.md5 = tex.md5;
             }
@@ -86,9 +88,11 @@ public class Atlas
         for each (var tex :Object in json.textures) {
             var textureXml :XML = <texture
                 name={tex.name}
-                offset={tex.offset}
                 rect={tex.rect}
             />;
+            if (tex.offset != null) {
+                textureXml.@offset = tex.offset;
+            }
             if (tex.md5 != null) {
                 textureXml.@md5 = tex.md5;
             }
