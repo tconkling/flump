@@ -5,6 +5,8 @@ package flump.export {
 
 import flash.desktop.NativeApplication;
 import flash.display.NativeWindow;
+import flash.display.Stage;
+import flash.display.StageQuality;
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.filesystem.File;
@@ -166,8 +168,15 @@ public class Exporter
     }
 
     protected function exportFlashDocument (status :DocStatus) :void {
+
+        var stage :Stage = NA.activeWindow.stage;
+        var prevQuality :String = stage.quality;
+
+        stage.quality = StageQuality.BEST;
         BetwixtPublisher.publish(status.lib, status.file,
             DeviceSelection(_authoredResolution.selectedItem).type, _exportChooser.dir);
+
+        stage.quality = prevQuality;
         status.updateModified(Ternary.FALSE);
     }
 
