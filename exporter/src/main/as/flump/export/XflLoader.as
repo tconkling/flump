@@ -30,23 +30,32 @@ public class XflLoader
         _library = new XflLibrary(name);
         listLibrary(file);
 
+        const swfExecutor :Executor = new Executor();
+        const future :VisibleFuture = new VisibleFuture();
+
         // TODO - construct the swf path for realz
-        const swfFile :Future = Files.load(new File(file.nativePath + ".swf"), _loader);
+        const swfFile :Future = Files.load(new File(file.nativePath + ".swf"), swfExecutor);
         swfFile.succeeded.add(function (file :File) :void {
             _library.md5 = MD5.hashBytes(file.data);
 
-            const loadSwf :Future = new SwfLoader().loadFromBytes(file.data, _loader);
+            const loadSwf :Future = new SwfLoader().loadFromBytes(file.data, swfExecutor);
             loadSwf.succeeded.add(function (swf :LoadedSwf) :void { _library.swf = swf; });
             loadSwf.failed.add(function (error :Object) :void {
                 _library.addError(ParseError.CRIT, "Unable to load swf " + file.nativePath, error);
             });
+
+            swfExecutor.shutdown();
         });
 
-        const future :VisibleFuture = new VisibleFuture();
-        _loader.terminated.add(function (..._) :void {
-            _library.finishLoading();
-            future.succeed(_library);
-        });
+        const maybeSucceed :Function = function (..._) :void {
+            if (swfExecutor.isShutdown && _loader.isShutdown) {
+                _library.finishLoading();
+                future.succeed(_library);
+            }
+        };
+        _loader.terminated.add(maybeSucceed);
+        swfExecutor.terminated.add(maybeSucceed);
+
         return future;
     }
 
