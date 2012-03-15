@@ -103,8 +103,9 @@ public class XflKeyframe extends XflComponent
                 rotation = MatrixUtil.rotation(matrix);
             }
 
-            scaleX = MatrixUtil.scaleX(matrix);
-            scaleY = MatrixUtil.scaleY(matrix);
+            rotation = round(rotation);
+            scaleX = round(MatrixUtil.scaleX(matrix));
+            scaleY = round(MatrixUtil.scaleY(matrix));
         }
 
         // Read the pivot point
@@ -124,8 +125,8 @@ public class XflKeyframe extends XflComponent
         }
 
         // Now that the matrix and pivot point have been read, apply translation
-        x = matrix.tx;
-        y = matrix.ty;
+        x = round(matrix.tx);
+        y = round(matrix.ty);
 
         // Read the alpha
         if (symbolXml.color != null) {
@@ -209,6 +210,12 @@ public class XflKeyframe extends XflComponent
             xml.@label = label;
         }
         return xml;
+    }
+
+    protected static function round (n :Number, places :int = 4) :Number
+    {
+        var shift :int = Math.pow(10, places);
+        return Math.round(n*shift) / shift;
     }
 }
 }
