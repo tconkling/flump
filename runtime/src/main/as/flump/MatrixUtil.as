@@ -9,7 +9,7 @@ public class MatrixUtil
 {
     public static function scaleX (m :Matrix) :Number
     {
-        return Math.sqrt(m.a * m.a + m.b * m.b);
+        return sign(m.a) * Math.sqrt(m.a * m.a + m.b * m.b);
     }
 
     public static function setScaleX (m :Matrix, scaleX :Number) :void
@@ -28,7 +28,7 @@ public class MatrixUtil
 
     public static function scaleY (m :Matrix) :Number
     {
-        return Math.sqrt(m.c * m.c + m.d * m.d);
+        return sign(m.d) * Math.sqrt(m.c * m.c + m.d * m.d);
     }
 
     public static function setScaleY (m :Matrix, scaleY :Number) :void
@@ -71,7 +71,7 @@ public class MatrixUtil
 
     public static function rotation (m :Matrix) :Number
     {
-        return MatrixUtil.skewY(m);
+        return (m.a == 0) ? 0 : Math.atan(m.b / m.a);
     }
 
     public static function setRotation (m :Matrix, rotation :Number) :void
@@ -80,6 +80,11 @@ public class MatrixUtil
         var curSkewX :Number = MatrixUtil.skewX(m);
         MatrixUtil.setSkewX(m, curSkewX + rotation - curRotation);
         MatrixUtil.setSkewY(m, rotation);
+    }
+
+    protected static function sign (value :Number) :Number
+    {
+        return (value < 0) ? -1 : (value > 0) ? 1 : 0;
     }
 }
 }
