@@ -75,7 +75,7 @@ public class BetwixtPublisher
                 var movieXml :XML = movie.toXML();
                 movieXml.@authoredDevice = authoredDevice.name();
                 movieXml.@name = prefix + movieXml.@name;
-                for each (var kf :XML in movieXml..kf.@ref) {
+                for each (var kf :XML in movieXml..kf.(@ref != null)) {
                     kf.@ref = prefix + kf.@ref;
                 }
                 xml.appendChild(movieXml);
