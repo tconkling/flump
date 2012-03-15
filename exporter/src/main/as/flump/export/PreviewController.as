@@ -67,10 +67,12 @@ public class PreviewController
                 displayLibraryItem(_controls.textures.selectedItem.texture);
         });
 
-        // Play the first movie
-        _controls.movies.selectedIndex = 0;
-        // Grumble, wish setting the index above would fire the listener
-        displayLibraryItem(lib.movies[0].libraryItem);
+        if (lib.movies.length > 0) {
+            // Play the first movie
+            _controls.movies.selectedIndex = 0;
+            // Grumble, wish setting the index above would fire the listener
+            displayLibraryItem(lib.movies[0].libraryItem);
+        }
     }
 
     protected function displayLibraryItem (name :String) :void {
