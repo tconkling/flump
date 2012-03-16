@@ -85,10 +85,10 @@ public class XflLoader
                 return;
             }
 
-            // Skip non-exported symbols
-            if (!XmlUtil.getBooleanAttr(xml, "linkageExportForAS", false)) {
-                return;
-            }
+            // // Skip non-exported symbols
+            // if (!XmlUtil.getBooleanAttr(xml, "linkageExportForAS", false)) {
+            //     return;
+            // }
 
             const isSprite :Boolean = XmlUtil.getBooleanAttr(xml, "isSpriteSubclass", false);
             const md5 :String = MD5.hashBytes(file.data);

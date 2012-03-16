@@ -68,11 +68,14 @@ public class BetwixtPublisher
         var out :FileStream = new FileStream();
         out.open(dest, FileMode.WRITE);
 
+        var symbolMovies :Vector.<XflMovie> = lib.movies.filter(
+            function (movie :XflMovie, ..._) :Boolean { return movie.symbol != null });
+
         switch (Files.getExtension(dest)) {
         case "xml":
             var xml :XML = <resources md5={lib.md5}/>;
             var prefix :String = lib.location + "/";
-            for each (var movie :XflMovie in lib.movies) {
+            for each (var movie :XflMovie in symbolMovies) {
                 var movieXml :XML = movie.toXML();
                 movieXml.@authoredDevice = authoredDevice.name();
                 movieXml.@name = prefix + movieXml.@name;
@@ -101,7 +104,7 @@ public class BetwixtPublisher
         case "json":
             var json :Object = {
                 md5: lib.md5,
-                movies: lib.movies,
+                movies: symbolMovies,
                 atlases: packers[0].atlases
             };
             var pretty :Boolean = false;

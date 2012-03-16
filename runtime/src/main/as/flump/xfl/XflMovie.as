@@ -41,12 +41,6 @@ public class XflMovie extends XflTopLevelComponent
         }
     }
 
-    public function checkSymbols (lib :XflLibrary) :void {
-        if (flipbook && !lib.hasSymbol(symbol)) {
-            addError(ParseError.CRIT, "Flipbook movie '" + symbol + "' not exported");
-        } else for each (var layer :XflLayer in layers) layer.checkSymbols(lib);
-    }
-
     public function get frames () :int {
         var frames :int = 0;
         for each (var layer :XflLayer in layers) frames = Math.max(frames, layer.frames);

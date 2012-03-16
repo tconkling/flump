@@ -138,12 +138,6 @@ public class XflKeyframe extends XflComponent
         }
     }
 
-    public function checkSymbols (lib :XflLibrary) :void {
-        if (symbol != null && !lib.hasSymbol(symbol)) {
-            addError(ParseError.CRIT, "Symbol '" + symbol + "' not exported");
-        }
-    }
-
     public function toJSON (_:*) :Object {
         var json :Object = {
             duration: duration

@@ -33,10 +33,6 @@ public class XflLayer extends XflComponent
         return lastKf.index + lastKf.duration;
     }
 
-    public function checkSymbols (lib :XflLibrary) :void {
-        for each (var kf :XflKeyframe in keyframes) kf.checkSymbols(lib);
-    }
-
     public function toJSON (_:*) :Object {
         var json :Object = {
             name: name,

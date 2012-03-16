@@ -9,6 +9,10 @@ import flump.executor.load.LoadedSwf;
 
 public class XflLibrary extends XflTopLevelComponent
 {
+    // When an exported movie contains an unexported movie, it gets assigned a generated symbol name
+    // with this prefix.
+    public static const IMPLICIT_PREFIX :String = "~";
+
     public var swf :LoadedSwf;
 
     // The MD5 of the published library SWF
@@ -48,11 +52,21 @@ public class XflLibrary extends XflTopLevelComponent
             if (movie.symbol != null) _symbols[movie.symbol] = movie;
             _libraryItems[movie.libraryItem] = movie;
         }
+
+        var generatedId :int = 0;
         for each (movie in movies) {
-            movie.checkSymbols(this);
             for each (var layer :XflLayer in movie.layers) {
                 for each (var kf :XflKeyframe in layer.keyframes) {
-                    if (kf.libraryItem != null) kf.symbol = _libraryItems[kf.libraryItem].symbol;
+                    if (kf.libraryItem != null) {
+                        var item :Object = _libraryItems[kf.libraryItem];
+                        if (item.symbol == null) {
+                            // This unexported movie was referenced, generate a symbol name for it
+                            item.symbol = IMPLICIT_PREFIX + generatedId;
+                            _symbols[item.symbol] = item;
+                            ++generatedId;
+                        }
+                        kf.symbol = item.symbol;
+                    }
                 }
             }
         }

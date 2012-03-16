@@ -14,6 +14,8 @@ import spark.formatters.NumberFormatter;
 import starling.display.DisplayObject;
 import starling.display.Sprite;
 
+import com.threerings.util.StringUtil;
+
 public class PreviewController
 {
     public function PreviewController (lib :XflLibrary, container :Sprite,
@@ -29,8 +31,15 @@ public class PreviewController
         const numFormatter :NumberFormatter = new NumberFormatter();
         const f :Function = numFormatter.format;
 
+        // All explicitly exported movies
+        var previewMovies :Vector.<XflMovie> =
+            lib.movies.filter(function (movie :XflMovie, ..._) :Boolean {
+                return movie.symbol != null &&
+                    !StringUtil.startsWith(movie.symbol, XflLibrary.IMPLICIT_PREFIX);
+            });
+
         _controls.movies.dataProvider.removeAll();
-        for each (var movie :XflMovie in lib.movies) {
+        for each (var movie :XflMovie in previewMovies) {
             _controls.movies.dataProvider.addItem({movie: movie.libraryItem,
                 memory: f(_creator.getMemoryUsage(movie.libraryItem)),
                 drawn: f(_creator.getMaxDrawn(movie.libraryItem))});
@@ -67,11 +76,11 @@ public class PreviewController
                 displayLibraryItem(_controls.textures.selectedItem.texture);
         });
 
-        if (lib.movies.length > 0) {
+        if (previewMovies.length > 0) {
             // Play the first movie
             _controls.movies.selectedIndex = 0;
             // Grumble, wish setting the index above would fire the listener
-            displayLibraryItem(lib.movies[0].libraryItem);
+            displayLibraryItem(previewMovies[0].libraryItem);
         }
     }
 
