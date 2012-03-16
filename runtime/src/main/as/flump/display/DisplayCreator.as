@@ -32,7 +32,7 @@ public class DisplayCreator
         if (name == null) return 0;
         if (FLIPBOOK_TEXTURE.exec(name) != null || _lib.getLibrary(name) is XflTexture) {
             const tex :Texture = getStarlingTexture(name);
-            const usage :int = tex.width * tex.height;
+            const usage :int = 4 * tex.width * tex.height;
             if (subtex != null && !subtex.hasOwnProperty(name)) {
                 subtex[name] = usage;
             }
