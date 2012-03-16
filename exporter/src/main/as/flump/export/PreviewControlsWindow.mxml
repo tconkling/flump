@@ -18,8 +18,8 @@
     <s:columns>
       <s:ArrayList>
         <s:GridColumn dataField="movie" headerText="Movie"/>
-        <s:GridColumn dataField="memory" headerText="Memory"/>
-        <s:GridColumn dataField="drawn" headerText="Max Drawn"/>
+        <s:GridColumn id="movieMemory" dataField="memory" headerText="Memory"/>
+        <s:GridColumn id="maxDrawn" dataField="drawn" headerText="Max Drawn"/>
       </s:ArrayList>
     </s:columns>
     <mx:ArrayCollection/>
@@ -31,7 +31,7 @@
     <s:columns>
       <s:ArrayList>
         <s:GridColumn dataField="texture" headerText="Texture"/>
-        <s:GridColumn dataField="memory" headerText="Memory"/>
+        <s:GridColumn id="textureMemory" dataField="memory" headerText="Memory"/>
       </s:ArrayList>
     </s:columns>
     <mx:ArrayCollection/>

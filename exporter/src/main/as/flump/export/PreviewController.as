@@ -28,8 +28,15 @@ public class PreviewController
     public function set lib (lib :XflLibrary) :void {
         _creator = new DisplayCreator(lib);
 
-        const numFormatter :NumberFormatter = new NumberFormatter();
-        const f :Function = numFormatter.format;
+        const intFormatter :NumberFormatter = new NumberFormatter();
+        const formatMemory :Function = function (item :Object, ..._) :String {
+            return intFormatter.format(item.memory/1024) + "k";
+        };
+        intFormatter.fractionalDigits = 0;
+
+        // Use a labelFunction so column sorting works as expected
+        _controls.movieMemory.labelFunction = formatMemory;
+        _controls.textureMemory.labelFunction = formatMemory;
 
         // All explicitly exported movies
         var previewMovies :Vector.<XflMovie> =
@@ -41,8 +48,8 @@ public class PreviewController
         _controls.movies.dataProvider.removeAll();
         for each (var movie :XflMovie in previewMovies) {
             _controls.movies.dataProvider.addItem({movie: movie.libraryItem,
-                memory: f(_creator.getMemoryUsage(movie.libraryItem)),
-                drawn: f(_creator.getMaxDrawn(movie.libraryItem))});
+                memory: _creator.getMemoryUsage(movie.libraryItem),
+                drawn: _creator.getMaxDrawn(movie.libraryItem)});
         }
 
         var totalUsage :int = 0;
@@ -50,9 +57,9 @@ public class PreviewController
         for each (var tex :XflTexture in lib.textures) {
             var itemUsage :int = _creator.getMemoryUsage(tex.libraryItem);
             totalUsage += itemUsage;
-            _controls.textures.dataProvider.addItem({texture: tex.libraryItem, memory: f(itemUsage)});
+            _controls.textures.dataProvider.addItem({texture: tex.libraryItem, memory: itemUsage});
         }
-        _controls.totalValue.text = f(totalUsage);
+        _controls.totalValue.text = formatMemory({memory: totalUsage});
 
         const packer :Packer = new Packer(DeviceType.IPHONE, DeviceType.IPHONE, lib)
         var atlasSize :Number = 0;
