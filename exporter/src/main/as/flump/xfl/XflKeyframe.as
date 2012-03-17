@@ -7,45 +7,43 @@ import flash.geom.Matrix;
 
 import flump.MatrixUtil;
 import flump.mold.KeyframeMold;
-import flump.mold.ParseError;
 
-public class XflKeyframe extends KeyframeMold
+public class XflKeyframe
 {
     use namespace xflns;
 
-    public function XflKeyframe (baseLocation :String, xml :XML, errors :Vector.<ParseError>,
-        flipbook :Boolean) {
+    public static function parse (lib :XflLibrary, baseLocation :String, xml :XML, flipbook :Boolean) :KeyframeMold {
+        const kf :KeyframeMold = new KeyframeMold();
         const converter :XmlConverter = new XmlConverter(xml);
-        index = converter.getIntAttr("index");
-        location = baseLocation + ":" + index;
-        super(errors);
-        duration = converter.getNumberAttr("duration", 1);
-        label = converter.getStringAttr("name", null);
-        ease = converter.getNumberAttr("acceleration", 0) / 100;
+        kf.index = converter.getIntAttr("index");
+        kf.location = baseLocation + ":" + kf.index;
+        kf.duration = converter.getNumberAttr("duration", 1);
+        kf.label = converter.getStringAttr("name", null);
+        kf.ease = converter.getNumberAttr("acceleration", 0) / 100;
 
-        if (flipbook) return;
+        if (flipbook) return kf;
         var symbolXml :XML;
         for each (var frameEl :XML in xml.elements.elements()) {
             if (frameEl.name().localName == "DOMSymbolInstance") {
                 if (symbolXml != null)  {
-                    addError(ParseError.CRIT, "There can be only one symbol instance at " +
+                    lib.addError(kf, ParseError.CRIT, "There can be only one symbol instance at " +
                         "a time in a keyframe.");
                 } else symbolXml = frameEl;
             } else {
-                addError(ParseError.CRIT, "Non-symbols may not be in exported movie " +
+                lib.addError(kf, ParseError.CRIT, "Non-symbols may not be in exported movie " +
                     "layers");
             }
         }
 
-        if (symbolXml == null) return; // Purely labelled frame
+        if (symbolXml == null) return kf; // Purely labelled frame
 
         if (xml.tweens != null) {
-            addError(ParseError.WARN, "Custom easing is not supported");
+            lib.addError(kf, ParseError.WARN, "Custom easing is not supported");
         }
 
         var symbolConverter :XmlConverter = new XmlConverter(symbolXml);
-        id = libraryItem = symbolConverter.getStringAttr("libraryItemName");
-        visible = symbolConverter.getBooleanAttr("isVisible", true);
+        kf.id = kf.libraryItem = symbolConverter.getStringAttr("libraryItemName");
+        kf.visible = symbolConverter.getBooleanAttr("isVisible", true);
 
         var matrix :Matrix = new Matrix();
 
@@ -61,20 +59,20 @@ public class XflKeyframe extends KeyframeMold
 
             // handle "motionTweenRotate" (in this case, the rotation is not embedded in the matrix)
             if (converter.hasAttr("motionTweenRotateTimes") &&
-                    converter.hasAttr("motionTweenRotate") && duration > 1) {
-                rotation = converter.getNumberAttr("motionTweenRotateTimes") * Math.PI * 2;
+                    converter.hasAttr("motionTweenRotate") && kf.duration > 1) {
+                kf.rotation = converter.getNumberAttr("motionTweenRotateTimes") * Math.PI * 2;
                 if (converter.getStringAttr("motionTweenRotate") == "clockwise") {
-                    rotation *= -1;
+                    kf.rotation *= -1;
                 }
 
-                MatrixUtil.setRotation(matrix, rotation);
+                MatrixUtil.setRotation(matrix, kf.rotation);
             } else {
-                rotation = MatrixUtil.rotation(matrix);
+                kf.rotation = MatrixUtil.rotation(matrix);
             }
 
-            rotation = round(rotation);
-            scaleX = round(MatrixUtil.scaleX(matrix));
-            scaleY = round(MatrixUtil.scaleY(matrix));
+            kf.rotation = round(kf.rotation);
+            kf.scaleX = round(MatrixUtil.scaleX(matrix));
+            kf.scaleY = round(MatrixUtil.scaleY(matrix));
         }
 
         // Read the pivot point
@@ -82,29 +80,30 @@ public class XflKeyframe extends KeyframeMold
             var pivotXml :XML = symbolXml.transformationPoint.Point[0];
             if (pivotXml != null) {
                 var pivotConverter :XmlConverter = new XmlConverter(pivotXml);
-                pivotX = pivotConverter.getNumberAttr("x", 0);
-                pivotY = pivotConverter.getNumberAttr("y", 0);
+                kf.pivotX = pivotConverter.getNumberAttr("x", 0);
+                kf.pivotY = pivotConverter.getNumberAttr("y", 0);
 
                 // Translate to the pivot point
                 var orig :Matrix = matrix.clone();
                 matrix.identity();
-                matrix.translate(pivotX, pivotY);
+                matrix.translate(kf.pivotX, kf.pivotY);
                 matrix.concat(orig);
             }
         }
 
         // Now that the matrix and pivot point have been read, apply translation
-        x = round(matrix.tx);
-        y = round(matrix.ty);
+        kf.x = round(matrix.tx);
+        kf.y = round(matrix.ty);
 
         // Read the alpha
         if (symbolXml.color != null) {
             var colorXml :XML = symbolXml.color.Color[0];
             if (colorXml != null) {
                 var colorConverter :XmlConverter = new XmlConverter(colorXml);
-                alpha = colorConverter.getNumberAttr("alphaMultiplier", 1);
+                kf.alpha = colorConverter.getNumberAttr("alphaMultiplier", 1);
             }
         }
+        return kf;
     }
 
     protected static function round (n :Number, places :int = 4) :Number {

@@ -3,37 +3,39 @@
 
 package flump.xfl {
 
+import flump.mold.KeyframeMold;
 import flump.mold.MovieMold;
-import flump.mold.ParseError;
 
-public class XflMovie extends MovieMold
+public class XflMovie
 {
     use namespace xflns;
 
-    public function XflMovie (baseLocation :String, xml :XML, md5 :String) {
+    public static function parse (lib :XflLibrary, xml :XML, md5 :String) :MovieMold {
         const converter :XmlConverter = new XmlConverter(xml);
-        libraryItem = converter.getStringAttr("name");
-        location = baseLocation + ":" + libraryItem;
-        this.md5 = md5;
-        symbol = converter.getStringAttr("linkageClassName", null);
+        const movie :MovieMold = new MovieMold();
+        movie.libraryItem = converter.getStringAttr("name");
+        movie.location = lib.location + ":" + movie.libraryItem;
+        movie.md5 = md5;
+        movie.symbol = converter.getStringAttr("linkageClassName", null);
 
         const layerEls :XMLList = xml.timeline.DOMTimeline[0].layers.DOMLayer;
         if (new XmlConverter(layerEls[0]).getStringAttr("name") == "flipbook") {
-            layers.push(new XflLayer(location, layerEls[0], _errors, true));
-            if (symbol == null) {
-                addError(ParseError.CRIT, "Flipbook movie '" + libraryItem + "' not exported");
+            movie.layers.push(XflLayer.parse(lib, movie.location, layerEls[0], true));
+            if (movie.symbol == null) {
+                lib.addError(movie, ParseError.CRIT, "Flipbook movie '" + movie.libraryItem + "' not exported");
             }
-            for each (var kf :XflKeyframe in layers[0].keyframes) {
-                kf.id = libraryItem + "_flipbook_" + kf.index;
+            for each (var kf :KeyframeMold in movie.layers[0].keyframes) {
+                kf.id = movie.libraryItem + "_flipbook_" + kf.index;
 
             }
         } else {
             for each (var layerEl :XML in layerEls) {
                 if (new XmlConverter(layerEl).getStringAttr("layerType", "") != "guide") {
-                    layers.unshift(new XflLayer(location, layerEl, _errors, false));
+                    movie.layers.unshift(XflLayer.parse(lib, movie.location, layerEl, false));
                 }
             }
         }
+        return movie;
     }
 }
 }

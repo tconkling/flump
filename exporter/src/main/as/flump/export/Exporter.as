@@ -22,7 +22,7 @@ import flump.display.Movie;
 import flump.executor.Executor;
 import flump.executor.Future;
 import flump.export.Ternary;
-import flump.mold.ParseError;
+import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 
@@ -99,7 +99,6 @@ public class Exporter
             new DirChooser(_settings, "EXPORT_ROOT", _win.exportRoot, _win.browseExport);
         _exportChooser.changed.add(updateExportEnabled);
         _win.addEventListener(Event.CLOSE, function (..._) :void { NA.exit(0); });
-
     }
 
     protected function setImport (root :File) :void {
@@ -225,7 +224,7 @@ public class Exporter
             log.info("Loaded", "bytes", file.data.length, "movies", F.map(movies, toFn),
                 "textures", F.map(textures, toFn));
             for each (var fz :FZipFile in movies) {
-                new XflMovie(fz.filename, bytesToXML(fz.content), MD5.hashBytes(fz.content));
+                XflMovie.parse(null, bytesToXML(fz.content), MD5.hashBytes(fz.content));
             }
             NA.exit(0);
         });

@@ -3,8 +3,8 @@
 
 package flump.export {
 
+import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
-import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
 
 import spark.events.GridSelectionEvent;
@@ -38,14 +38,14 @@ public class PreviewController
         _controls.textureMemory.labelFunction = formatMemory;
 
         // All explicitly exported movies
-        var previewMovies :Vector.<XflMovie> =
-            lib.movies.filter(function (movie :XflMovie, ..._) :Boolean {
+        var previewMovies :Vector.<MovieMold> =
+            lib.movies.filter(function (movie :MovieMold, ..._) :Boolean {
                 return movie.symbol != null &&
                     !StringUtil.startsWith(movie.symbol, XflLibrary.IMPLICIT_PREFIX);
             });
 
         _controls.movies.dataProvider.removeAll();
-        for each (var movie :XflMovie in previewMovies) {
+        for each (var movie :MovieMold in previewMovies) {
             _controls.movies.dataProvider.addItem({movie: movie.libraryItem,
                 memory: _creator.getMemoryUsage(movie.libraryItem),
                 drawn: _creator.getMaxDrawn(movie.libraryItem)});

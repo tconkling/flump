@@ -6,9 +6,9 @@ package flump.export {
 import flash.geom.Point;
 
 import flump.SwfTexture;
-import flump.xfl.XflKeyframe;
+import flump.mold.KeyframeMold;
+import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
-import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
 
 import com.threerings.util.Comparators;
@@ -24,9 +24,9 @@ public class Packer
         for each (var tex :XflTexture in _lib.textures) {
             _unpacked.push(SwfTexture.fromTexture(_lib.swf, tex, scale));
         }
-        for each (var movie :XflMovie in _lib.movies) {
+        for each (var movie :MovieMold in _lib.movies) {
             if (!movie.flipbook) continue;
-            for each (var kf :XflKeyframe in movie.layers[0].keyframes) {
+            for each (var kf :KeyframeMold in movie.layers[0].keyframes) {
                 _unpacked.push(SwfTexture.fromFlipbook(lib.swf, movie, kf.index, scale));
             }
         }

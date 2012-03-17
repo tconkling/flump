@@ -11,7 +11,7 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 
 import flump.executor.load.LoadedSwf;
-import flump.xfl.XflMovie;
+import flump.mold.MovieMold;
 import flump.xfl.XflTexture;
 
 public class SwfTexture
@@ -34,7 +34,7 @@ public class SwfTexture
         return bd;
     }
 
-    public static function fromFlipbook (swf :LoadedSwf, movie :XflMovie, frame :int,
+    public static function fromFlipbook (swf :LoadedSwf, movie :MovieMold, frame :int,
         scale :Number = 1) :SwfTexture {
 
         const klass :Class = Class(swf.getSymbol(movie.symbol));

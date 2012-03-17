@@ -4,22 +4,21 @@
 package flump.xfl {
 
 import flump.mold.LayerMold;
-import flump.mold.ParseError;
 
-public class XflLayer extends LayerMold
+public class XflLayer
 {
     use namespace xflns;
 
-    public function XflLayer (baseLocation :String, xml :XML, errors :Vector.<ParseError>,
-        flipbook :Boolean) {
-        super(errors);
-        name = new XmlConverter(xml).getStringAttr("name");
-        this.flipbook = flipbook;
-        location = baseLocation + ":" + name
+    public static function parse (lib :XflLibrary, baseLocation :String, xml :XML, flipbook :Boolean) :LayerMold {
+        const layer :LayerMold = new LayerMold();
+        layer.name = new XmlConverter(xml).getStringAttr("name");
+        layer.flipbook = flipbook;
+        layer.location = baseLocation + ":" + layer.name
         for each (var frameEl :XML in xml.frames.DOMFrame) {
-            keyframes.push(new XflKeyframe(location, frameEl, _errors, flipbook));
+            layer.keyframes.push(XflKeyframe.parse(lib, layer.location, frameEl, flipbook));
         }
-        if (keyframes.length == 0) addError(ParseError.INFO, "No keyframes on layer");
+        if (layer.keyframes.length == 0) lib.addError(layer, ParseError.INFO, "No keyframes on layer");
+        return layer;
     }
 
 }

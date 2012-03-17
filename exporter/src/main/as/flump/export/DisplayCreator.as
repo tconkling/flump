@@ -9,10 +9,9 @@ import flash.utils.Dictionary;
 import flump.SwfTexture;
 import flump.display.Movie;
 import flump.mold.KeyframeMold;
-import flump.xfl.XflKeyframe;
-import flump.xfl.XflLayer;
+import flump.mold.LayerMold;
+import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
-import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
 
 import starling.display.DisplayObject;
@@ -27,7 +26,7 @@ public class DisplayCreator
     }
 
     public function loadMovie (name :String) :Movie {
-        return new Movie(_lib.getLibrary(name, XflMovie), loadId);
+        return new Movie(_lib.getLibrary(name, MovieMold), loadId);
     }
 
     public function getMemoryUsage (name :String, subtex :Dictionary = null) :int {
@@ -40,10 +39,10 @@ public class DisplayCreator
             }
             return usage;
         }
-        const xflMovie :XflMovie = _lib.getLibrary(name, XflMovie);
+        const xflMovie :MovieMold = _lib.getLibrary(name, MovieMold);
         if (subtex == null) subtex = new Dictionary();
-        for each (var layer :XflLayer in xflMovie.layers) {
-            for each (var kf :XflKeyframe in layer.keyframes) {
+        for each (var layer :LayerMold in xflMovie.layers) {
+            for each (var kf :KeyframeMold in layer.keyframes) {
                 getMemoryUsage(kf.id, subtex);
             }
         }
@@ -63,11 +62,11 @@ public class DisplayCreator
             const tex :Texture = getStarlingTexture(name);
             return tex.width * tex.height;
         }
-        const xflMovie :XflMovie = _lib.getLibrary(name, XflMovie);
+        const xflMovie :MovieMold = _lib.getLibrary(name, MovieMold);
         var maxDrawn :int = 0;
         for (var ii :int = 0; ii < xflMovie.frames; ii++) {
             var drawn :int = 0;
-            for each (var layer :XflLayer in xflMovie.layers) {
+            for each (var layer :LayerMold in xflMovie.layers) {
                 var kf :KeyframeMold = layer.keyframeForFrame(ii);
                 if (kf.visible) drawn += getMaxDrawn(kf.id);
             }
@@ -85,7 +84,7 @@ public class DisplayCreator
             } else {
                 const movieName :String = match[1];
                 const frame :int = int(match[2]);
-                const movie :XflMovie = _lib.getLibrary(movieName, XflMovie);
+                const movie :MovieMold = _lib.getLibrary(movieName, MovieMold);
                 if (!movie.flipbook) {
                     throw new Error("Got non-flipbook movie for flipbook texture '" + name + "'");
                 }
@@ -111,7 +110,7 @@ public class DisplayCreator
         if (match != null) return loadTexture(id);
         const libraryItem :* = _lib.getLibrary(id);
         if (libraryItem is XflTexture) return loadTexture(XflTexture(libraryItem).libraryItem);
-        else return loadMovie(XflMovie(libraryItem).libraryItem);
+        else return loadMovie(MovieMold(libraryItem).libraryItem);
     }
 
     protected const _textures :Dictionary = new Dictionary();// library name to Texture

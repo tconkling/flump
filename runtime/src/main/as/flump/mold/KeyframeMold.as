@@ -2,8 +2,13 @@
 // Flump - Copyright 2012 Three Rings Design
 package flump.mold {
 
+import flash.net.registerClassAlias;
+
 public class KeyframeMold extends Mold
 {
+    // Make this come out as itself in AMF
+    registerClassAlias("KeyframeMold", KeyframeMold);
+
     public var index :int;
 
     /** The length of this keyframe in frames. */
@@ -37,11 +42,6 @@ public class KeyframeMold extends Mold
     public var visible :Boolean = true;
 
     public var ease :Number = 0;
-
-    public function KeyframeMold (errors :Vector.<ParseError>)
-    {
-        super(errors);
-    }
 
     public function toJSON (_:*) :Object {
         var json :Object = {

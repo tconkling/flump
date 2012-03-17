@@ -9,8 +9,8 @@ import flash.filesystem.FileStream;
 import flash.utils.ByteArray;
 
 import flump.bytesToXML;
+import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
-import flump.xfl.XflMovie;
 
 import com.threerings.util.Log;
 import com.threerings.util.XmlUtil;
@@ -67,14 +67,14 @@ public class BetwixtPublisher
         var out :FileStream = new FileStream();
         out.open(dest, FileMode.WRITE);
 
-        var symbolMovies :Vector.<XflMovie> = lib.movies.filter(
-            function (movie :XflMovie, ..._) :Boolean { return movie.symbol != null });
+        var symbolMovies :Vector.<MovieMold> = lib.movies.filter(
+            function (movie :MovieMold, ..._) :Boolean { return movie.symbol != null });
 
         switch (Files.getExtension(dest)) {
         case "xml":
             var xml :XML = <resources md5={lib.md5}/>;
             var prefix :String = lib.location + "/";
-            for each (var movie :XflMovie in symbolMovies) {
+            for each (var movie :MovieMold in symbolMovies) {
                 var movieXml :XML = movie.toXML();
                 movieXml.@authoredDevice = authoredDevice.name();
                 movieXml.@name = prefix + movieXml.@name;

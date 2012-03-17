@@ -3,15 +3,16 @@
 
 package flump.mold {
 
+import flash.net.registerClassAlias;
+
 public class LayerMold extends Mold
 {
-    public var name :String;
-    public const keyframes :Vector.<KeyframeMold> = new Vector.<KeyframeMold>();
-    public var flipbook :Boolean;
+    // Make this come out as itself in AMF
+    registerClassAlias("LayerMold", LayerMold);
 
-    public function LayerMold (errors :Vector.<ParseError>) {
-        super(errors);
-    }
+    public var name :String;
+    public var keyframes :Vector.<KeyframeMold> = new Vector.<KeyframeMold>();
+    public var flipbook :Boolean;
 
     public function keyframeForFrame (frame :int) :KeyframeMold {
         var ii :int = 1;

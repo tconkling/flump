@@ -1,7 +1,7 @@
 //
 // Flump - Copyright 2012 Three Rings Design
 
-package flump.mold {
+package flump.xfl {
 
 public class ParseError
 {
@@ -17,7 +17,7 @@ public class ParseError
         else return 3;
     }
 
-    public function ParseError (location :String, severity :String, message :String,
+    public function ParseError (location :String=null, severity :String=null, message :String=null,
         error :Object=null) {
         _severity = severity;
         _message = message;

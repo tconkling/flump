@@ -6,10 +6,12 @@ package flump.xfl {
 import flash.utils.Dictionary;
 
 import flump.executor.load.LoadedSwf;
-import flump.mold.ParseError;
-import flump.mold.TopLevelMold;
+import flump.mold.KeyframeMold;
+import flump.mold.LayerMold;
+import flump.mold.Mold;
+import flump.mold.MovieMold;
 
-public class XflLibrary extends TopLevelMold
+public class XflLibrary extends Mold
 {
     // When an exported movie contains an unexported movie, it gets assigned a generated symbol name
     // with this prefix.
@@ -20,7 +22,7 @@ public class XflLibrary extends TopLevelMold
     // The MD5 of the published library SWF
     public var md5 :String;
 
-    public const movies :Vector.<XflMovie> = new Vector.<XflMovie>();
+    public const movies :Vector.<MovieMold> = new Vector.<MovieMold>();
     public const textures :Vector.<XflTexture> = new Vector.<XflTexture>();
 
     public function XflLibrary(location :String) {
@@ -50,14 +52,14 @@ public class XflLibrary extends TopLevelMold
             _libraryItems[tex.libraryItem] = tex;
             _symbols[tex.symbol] = tex;
         }
-        for each (var movie :XflMovie in movies) {
+        for each (var movie :MovieMold in movies) {
             if (movie.symbol != null) _symbols[movie.symbol] = movie;
             _libraryItems[movie.libraryItem] = movie;
         }
 
         for each (movie in movies) {
-            for each (var layer :XflLayer in movie.layers) {
-                for each (var kf :XflKeyframe in layer.keyframes) {
+            for each (var layer :LayerMold in movie.layers) {
+                for each (var kf :KeyframeMold in layer.keyframes) {
                     if (kf.libraryItem != null) {
                         var item :Object = _libraryItems[kf.libraryItem];
                         if (item.symbol == null) {
@@ -72,12 +74,23 @@ public class XflLibrary extends TopLevelMold
         }
     }
 
-    override public function getErrors (sev :String=null) :Vector.<ParseError>{
-        var base :Vector.<ParseError> = super.getErrors(sev).concat();
-        for each (var movie :XflMovie in movies) base = base.concat(movie.getErrors(sev));
-        for each (var tex :XflTexture in textures) base = base.concat(tex.getErrors(sev));
-        return base;
+    public function getErrors (sev :String=null) :Vector.<ParseError> {
+        if (sev == null) return _errors;
+        const sevOrdinal :int = ParseError.severityToOrdinal(sev);
+        return _errors.filter(function (err :ParseError, ..._) :Boolean {
+            return err.sevOrdinal >= sevOrdinal;
+        });
     }
+
+    public function get valid () :Boolean {
+        return getErrors(ParseError.CRIT).length == 0;
+    }
+
+    public function addError(mold :Mold, severity :String, message :String, e :Object=null) :void {
+        _errors.push(new ParseError(mold.location, severity, message, e));
+    }
+
+    protected var _errors :Vector.<ParseError> = new Vector.<ParseError>;
 
     protected const _libraryItems :Dictionary = new Dictionary();
     protected const _symbols :Dictionary = new Dictionary();

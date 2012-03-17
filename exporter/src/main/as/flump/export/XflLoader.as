@@ -13,7 +13,7 @@ import flump.executor.Future;
 import flump.executor.VisibleFuture;
 import flump.executor.load.LoadedSwf;
 import flump.executor.load.SwfLoader;
-import flump.mold.ParseError;
+import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
@@ -41,7 +41,7 @@ public class XflLoader
             const loadSwf :Future = new SwfLoader().loadFromBytes(file.data, swfExecutor);
             loadSwf.succeeded.add(function (swf :LoadedSwf) :void { _library.swf = swf; });
             loadSwf.failed.add(function (error :Object) :void {
-                _library.addError(ParseError.CRIT, "Unable to load swf " + file.nativePath, error);
+                _library.addError(_library, ParseError.CRIT, "Unable to load swf " + file.nativePath, error);
             });
 
             swfExecutor.shutdown();
@@ -80,7 +80,7 @@ public class XflLoader
         loadLibraryFile.succeeded.add(function (file :File) :void {
             const xml :XML = bytesToXML(file.data);
             if (xml.name().localName != "DOMSymbolItem") {
-                _library.addError(ParseError.DEBUG,
+                _library.addError(_library, ParseError.DEBUG,
                     "Skipping file since its root element isn't DOMSymbolItem");
                 return;
             }
@@ -96,15 +96,15 @@ public class XflLoader
                 "md5", md5);
             try {
                 if (isSprite) _library.textures.push(new XflTexture(_library.location, xml, md5));
-                else _library.movies.push(new XflMovie(_library.location, xml, md5));
+                else _library.movies.push(XflMovie.parse(_library, xml, md5));
             } catch (e :Error) {
                 var type :String = isSprite ? "sprite" : "movie";
-                _library.addError(ParseError.CRIT,
+                _library.addError(_library, ParseError.CRIT,
                     "Unable to parse " + type + " in " + file.nativePath, e);
             }
         });
         loadLibraryFile.failed.add(function (error :Object) :void {
-            _library.addError(ParseError.CRIT,
+            _library.addError(_library, ParseError.CRIT,
                 "Unable to load file " + file.nativePath, error);
         });
     }
