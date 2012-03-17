@@ -3,27 +3,23 @@
 
 package flump.xfl {
 
-public class XflMovie extends XflTopLevelComponent
+import flump.mold.MovieMold;
+import flump.mold.ParseError;
+
+public class XflMovie extends MovieMold
 {
     use namespace xflns;
-
-    public var libraryItem :String;
-    public var symbol :String;
-    public var layers :Array;
-
-    // The hash of the XML file for this symbol in the library
-    public var md5 :String;
 
     public function XflMovie (baseLocation :String, xml :XML, md5 :String) {
         const converter :XmlConverter = new XmlConverter(xml);
         libraryItem = converter.getStringAttr("name");
-        super(baseLocation + ":" + libraryItem);
+        location = baseLocation + ":" + libraryItem;
         this.md5 = md5;
         symbol = converter.getStringAttr("linkageClassName", null);
 
         const layerEls :XMLList = xml.timeline.DOMTimeline[0].layers.DOMLayer;
         if (new XmlConverter(layerEls[0]).getStringAttr("name") == "flipbook") {
-            layers = [new XflLayer(location, layerEls[0], _errors, true)];
+            layers.push(new XflLayer(location, layerEls[0], _errors, true));
             if (symbol == null) {
                 addError(ParseError.CRIT, "Flipbook movie '" + libraryItem + "' not exported");
             }
@@ -32,41 +28,12 @@ public class XflMovie extends XflTopLevelComponent
 
             }
         } else {
-            layers = new Array();
             for each (var layerEl :XML in layerEls) {
                 if (new XmlConverter(layerEl).getStringAttr("layerType", "") != "guide") {
                     layers.unshift(new XflLayer(location, layerEl, _errors, false));
                 }
             }
         }
-    }
-
-    public function get frames () :int {
-        var frames :int = 0;
-        for each (var layer :XflLayer in layers) frames = Math.max(frames, layer.frames);
-        return frames;
-    }
-
-    public function get flipbook () :Boolean { return layers[0].flipbook; }
-
-    public function toJSON (_:*) :Object {
-        return {
-            symbol: symbol,
-            layers: layers,
-            md5: md5
-        };
-    }
-
-    public function toXML () :XML
-    {
-        var xml :XML = <movie
-            name={symbol}
-            md5={md5}
-        />;
-        for each (var layer :XflLayer in layers) {
-            xml.appendChild(layer.toXML());
-        }
-        return xml;
     }
 }
 }

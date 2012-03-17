@@ -3,7 +3,7 @@
 
 package flump.display {
 
-import flump.xfl.XflMovie;
+import flump.mold.MovieMold;
 
 import starling.core.Starling;
 import starling.display.DisplayObject;
@@ -12,7 +12,7 @@ import starling.events.Event;
 
 public class Movie extends Sprite
 {
-    public function Movie (src :XflMovie, idToDisplayObject :Function) {
+    public function Movie (src :MovieMold, idToDisplayObject :Function) {
         name = src.libraryItem;
         _ticker = new Ticker(advanceTime);
         var frames :int = 0;
@@ -112,10 +112,9 @@ public class Movie extends Sprite
     private static const NO_FRAME :int = -1;
 }
 }
-
 import flump.display.Movie;
-import flump.xfl.XflKeyframe;
-import flump.xfl.XflLayer;
+import flump.mold.KeyframeMold;
+import flump.mold.LayerMold;
 
 import starling.display.DisplayObject;
 import starling.display.Sprite;
@@ -123,14 +122,14 @@ import starling.display.Sprite;
 class Layer {
     public var keyframeIdx :int ;// The index of the last keyframe drawn in drawFrame
     public var layerIdx :int;// This layer's index in the movie
-    public var keyframes :Vector.<XflKeyframe>;
+    public var keyframes :Vector.<KeyframeMold>;
     // Only created if there are multiple items on this layer. If it does exist, the appropriate display is swapped in at keyframe changes. If it doesn't, the display is only added to the parent on layer creation
     public var displays :Vector.<DisplayObject>;// <SPDisplayObject*>
     public var movie :Movie; // The movie this layer belongs to
     // If the keyframe has changed since the last drawFrame
     public var changedKeyframe :Boolean;
 
-    public function Layer (movie :Movie, src :XflLayer, idToDisplayObject :Function,
+    public function Layer (movie :Movie, src :LayerMold, idToDisplayObject :Function,
             flipbook :Boolean) {
         keyframes = src.keyframes;
         this.movie = movie;
@@ -147,7 +146,7 @@ class Layer {
             if (!multipleItems) movie.addChild(idToDisplayObject(lastItem));
             else {
                 displays = new Vector.<DisplayObject>();
-                for each (var kf :XflKeyframe in keyframes) {
+                for each (var kf :KeyframeMold in keyframes) {
                     var display :DisplayObject = kf.id == null ? new Sprite() : idToDisplayObject(kf.id);
                     displays.push(display);
                     display.name = src.name;
@@ -171,7 +170,7 @@ class Layer {
         }
         changedKeyframe = false;
 
-        const kf :XflKeyframe = keyframes[keyframeIdx];
+        const kf :KeyframeMold = keyframes[keyframeIdx];
         const layer :DisplayObject = movie.getChildAt(layerIdx);
         if (keyframeIdx == keyframes.length - 1 || kf.index == frame) {
             layer.x = kf.x;
@@ -197,7 +196,7 @@ class Layer {
                 interped = ease*t + (1 - ease)*interped;
             }
 
-            const nextKf :XflKeyframe = keyframes[keyframeIdx + 1];
+            const nextKf :KeyframeMold = keyframes[keyframeIdx + 1];
             layer.x = kf.x + (nextKf.x - kf.x) * interped;
             layer.y = kf.y + (nextKf.y - kf.y) * interped;
             layer.scaleX = kf.scaleX + (nextKf.scaleX - kf.scaleX) * interped;

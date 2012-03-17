@@ -3,7 +3,9 @@
 
 package flump.xfl {
 
-public class XflTexture extends XflTopLevelComponent
+import flump.mold.TopLevelMold;
+
+public class XflTexture extends TopLevelMold
 {
     public var libraryItem :String;
     public var symbol :String;
@@ -14,7 +16,7 @@ public class XflTexture extends XflTopLevelComponent
     public function XflTexture (location :String, xml :XML, md5 :String) {
         const converter :XmlConverter = new XmlConverter(xml);
         libraryItem = converter.getStringAttr("name");
-        super(location + ":" + libraryItem);
+        this.location = location + ":" + libraryItem;
         this.md5 = md5;
         symbol = converter.getStringAttr("linkageClassName");
     }

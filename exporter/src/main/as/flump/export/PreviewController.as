@@ -3,7 +3,6 @@
 
 package flump.export {
 
-import flump.display.DisplayCreator;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;

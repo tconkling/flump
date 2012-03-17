@@ -22,7 +22,7 @@ import flump.display.Movie;
 import flump.executor.Executor;
 import flump.executor.Future;
 import flump.export.Ternary;
-import flump.xfl.ParseError;
+import flump.mold.ParseError;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 
@@ -245,15 +245,7 @@ public class Exporter
     private static const log :Log = Log.getLog(Exporter);
 }
 }
-import flash.events.EventDispatcher;
-import flash.filesystem.File;
-
 import flump.export.DeviceType;
-import flump.export.Ternary;
-import flump.xfl.XflLibrary;
-
-import mx.core.IPropertyChangeNotifier;
-import mx.events.PropertyChangeEvent;
 
 class DeviceSelection {
     public var type :DeviceType;
@@ -264,6 +256,14 @@ class DeviceSelection {
         return type.displayName + " (" + type.resWidth + "x" + type.resHeight + ")";
     }
 }
+import flash.events.EventDispatcher;
+import flash.filesystem.File;
+
+import flump.export.Ternary;
+import flump.xfl.XflLibrary;
+
+import mx.core.IPropertyChangeNotifier;
+import mx.events.PropertyChangeEvent;
 
 class DocStatus extends EventDispatcher implements IPropertyChangeNotifier {
     public var path :String;

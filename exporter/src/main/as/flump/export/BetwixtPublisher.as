@@ -11,7 +11,6 @@ import flash.utils.ByteArray;
 import flump.bytesToXML;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
-import flump.xfl.XmlConverter;
 
 import com.threerings.util.Log;
 import com.threerings.util.XmlUtil;

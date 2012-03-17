@@ -1,12 +1,14 @@
 //
 // Flump - Copyright 2012 Three Rings Design
 
-package flump.display {
+package flump.export {
 
 import flash.display.BitmapData;
 import flash.utils.Dictionary;
 
 import flump.SwfTexture;
+import flump.display.Movie;
+import flump.mold.KeyframeMold;
 import flump.xfl.XflKeyframe;
 import flump.xfl.XflLayer;
 import flump.xfl.XflLibrary;
@@ -66,7 +68,7 @@ public class DisplayCreator
         for (var ii :int = 0; ii < xflMovie.frames; ii++) {
             var drawn :int = 0;
             for each (var layer :XflLayer in xflMovie.layers) {
-                var kf :XflKeyframe = layer.keyframeForFrame(ii);
+                var kf :KeyframeMold = layer.keyframeForFrame(ii);
                 if (kf.visible) drawn += getMaxDrawn(kf.id);
             }
             maxDrawn = Math.max(maxDrawn, drawn);

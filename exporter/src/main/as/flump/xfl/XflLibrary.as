@@ -6,8 +6,10 @@ package flump.xfl {
 import flash.utils.Dictionary;
 
 import flump.executor.load.LoadedSwf;
+import flump.mold.ParseError;
+import flump.mold.TopLevelMold;
 
-public class XflLibrary extends XflTopLevelComponent
+public class XflLibrary extends TopLevelMold
 {
     // When an exported movie contains an unexported movie, it gets assigned a generated symbol name
     // with this prefix.
@@ -22,7 +24,7 @@ public class XflLibrary extends XflTopLevelComponent
     public const textures :Vector.<XflTexture> = new Vector.<XflTexture>();
 
     public function XflLibrary(location :String) {
-        super(location);
+        this.location = location;
     }
 
     public function hasSymbol (symbol :String) :Boolean {

@@ -1,14 +1,13 @@
 //
 // Flump - Copyright 2012 Three Rings Design
 
-package flump.xfl {
+package flump.mold {
 
-public class XflComponent
+public class Mold
 {
     public var location :String;
 
-    public function XflComponent(location :String, errors :Vector.<ParseError>) {
-        this.location = location;
+    public function Mold(errors :Vector.<ParseError>) {
         _errors = errors;
     }
 

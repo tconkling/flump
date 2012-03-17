@@ -13,7 +13,7 @@ import flump.executor.Future;
 import flump.executor.VisibleFuture;
 import flump.executor.load.LoadedSwf;
 import flump.executor.load.SwfLoader;
-import flump.xfl.ParseError;
+import flump.mold.ParseError;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
