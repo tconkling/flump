@@ -53,7 +53,6 @@ public class XflLibrary extends XflTopLevelComponent
             _libraryItems[movie.libraryItem] = movie;
         }
 
-        var generatedId :int = 0;
         for each (movie in movies) {
             for each (var layer :XflLayer in movie.layers) {
                 for each (var kf :XflKeyframe in layer.keyframes) {
@@ -61,9 +60,8 @@ public class XflLibrary extends XflTopLevelComponent
                         var item :Object = _libraryItems[kf.libraryItem];
                         if (item.symbol == null) {
                             // This unexported movie was referenced, generate a symbol name for it
-                            item.symbol = IMPLICIT_PREFIX + generatedId;
+                            item.symbol = IMPLICIT_PREFIX + item.libraryItem;
                             _symbols[item.symbol] = item;
-                            ++generatedId;
                         }
                         kf.symbol = item.symbol;
                     }
