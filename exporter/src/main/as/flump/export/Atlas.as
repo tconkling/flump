@@ -3,10 +3,20 @@
 
 package flump.export {
 
+import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.filesystem.File;
+import flash.filesystem.FileMode;
+import flash.filesystem.FileStream;
+import flash.geom.Point;
+import flash.geom.Rectangle;
+import flash.utils.IDataOutput;
+
+import com.adobe.images.PNGEncoder;
 
 import flump.SwfTexture;
+import flump.mold.AtlasMold;
+import flump.mold.AtlasTextureMold;
 
 public class Atlas
 {
@@ -42,7 +52,7 @@ public class Atlas
         return used;
     }
 
-    public function publish (dir :File) :void {
+    public function writePNG (bytes :IDataOutput) :void {
         var constructed :Sprite = new Sprite();
         _root.forEach(function (node :Node) :void {
             var tex :SwfTexture = node.texture;
@@ -52,54 +62,36 @@ public class Atlas
             tex.holder.x = node.bounds.x;
             tex.holder.y = node.bounds.y;
         });
-        PngPublisher.publish(dir.resolvePath(name + targetDevice.extension + ".png"),
-            _root.bounds.width, _root.bounds.height, constructed);
+        var bd :BitmapData =
+            SwfTexture.renderToBitmapData(constructed, _root.bounds.width, _root.bounds.height);
+        bytes.writeBytes(PNGEncoder.encode(bd));
     }
 
-    public function toJSON (_:*) :Object {
-        var json :Object = {
-            file: name + ".png",
-            textures: []
-        };
+    public function get fileName () :String { return name + targetDevice.extension + ".png"; }
+
+    public function publish (dir :File) :void {
+        var fs :FileStream = new FileStream();
+        fs.open(dir.resolvePath(fileName), FileMode.WRITE);
+        writePNG(fs);
+        fs.close();
+    }
+
+    public function toMold () :AtlasMold {
+        const mold :AtlasMold = new AtlasMold();
+        mold.file = name + ".png";
         _root.forEach(function (node :Node) :void {
             var tex :SwfTexture = node.texture;
-            var textureJson :Object = {
-                name: tex.symbol,
-                rect: [ node.bounds.x, node.bounds.y, tex.w, tex.h ]
-            };
-            if (tex.offset.x != 0 || tex.offset.y != 0) {
-                textureJson.offset = [ tex.offset.x, tex.offset.y ];
-            }
-            if (tex.md5 != null) {
-                textureJson.md5 = tex.md5;
-            }
-            json.textures.push(textureJson);
+            const texMold :AtlasTextureMold = new AtlasTextureMold();
+            texMold.name = tex.symbol;
+            texMold.bounds = new Rectangle(node.bounds.x, node.bounds.y, tex.w, tex.h);
+            texMold.offset = new Point(tex.offset.x, tex.offset.y);
+            texMold.md5 = tex.md5;
+            mold.textures.push(texMold);
         });
-        return json;
+        return mold;
     }
 
-    public function toXML () :XML
-    {
-        var json :Object = toJSON(null);
-
-        var xml :XML = <atlas
-            file={json.file}
-        />;
-        for each (var tex :Object in json.textures) {
-            var textureXml :XML = <texture
-                name={tex.name}
-                rect={tex.rect}
-            />;
-            if (tex.offset != null) {
-                textureXml.@offset = tex.offset;
-            }
-            if (tex.md5 != null) {
-                textureXml.@md5 = tex.md5;
-            }
-            xml.appendChild(textureXml);
-        }
-        return xml;
-    }
+    public function toJSON (_:*) :Object { return toMold().toJSON(null); }
 
     protected var _root :Node;
 }

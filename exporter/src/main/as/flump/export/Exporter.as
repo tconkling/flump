@@ -100,8 +100,10 @@ public class Exporter
         _exportChooser.changed.add(updateExportEnabled);
         function updatePublisher (..._) :void {
             if (_exportChooser.dir == null) _publisher = null;
-            else _publisher = new Publisher(_exportChooser.dir, new XMLFormat(), new JSONFormat());
-
+            else {
+                _publisher =
+                    new Publisher(_exportChooser.dir, new XMLFormat(), new JSONFormat(), new StarlingFormat());
+            }
         };
         _exportChooser.changed.add(updatePublisher);
         updatePublisher();

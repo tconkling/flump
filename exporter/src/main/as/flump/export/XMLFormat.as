@@ -43,7 +43,7 @@ packers :Vector.<Packer>, authoredDevice :DeviceType) :void {
             var groupXml :XML = <textureGroup target={packer.targetDevice}/>;
             groupsXml.appendChild(groupXml);
             for each (var atlas :Atlas in packer.atlases) {
-                groupXml.appendChild(atlas.toXML());
+                groupXml.appendChild(atlas.toMold().toXML());
             }
         }
         for each (var texture :XML in groupsXml..texture) {
