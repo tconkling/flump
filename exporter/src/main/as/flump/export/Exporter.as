@@ -194,10 +194,7 @@ public class Exporter
             load.succeeded.add(function (lib :XflLibrary) :void {
                 status.lib = lib;
                 status.updateModified(Ternary.of(_publisher == null || _publisher.modified(lib)));
-                for each (var err :ParseError in lib.getErrors()) {
-                    _errors.dataProvider.addItem(err);
-                    trace(err);
-                }
+                for each (var err :ParseError in lib.getErrors()) _errors.dataProvider.addItem(err);
                 status.updateValid(Ternary.of(lib.valid));
             });
         } else loadFla(status.file);
