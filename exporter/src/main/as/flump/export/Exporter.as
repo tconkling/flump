@@ -98,6 +98,13 @@ public class Exporter
         _exportChooser =
             new DirChooser(_settings, "EXPORT_ROOT", _win.exportRoot, _win.browseExport);
         _exportChooser.changed.add(updateExportEnabled);
+        function updatePublisher (..._) :void {
+            if (_exportChooser.dir == null) _publisher = null;
+            else _publisher = new Publisher(_exportChooser.dir, new XMLFormat(), new JSONFormat());
+
+        };
+        _exportChooser.changed.add(updatePublisher);
+        updatePublisher();
         _win.addEventListener(Event.CLOSE, function (..._) :void { NA.exit(0); });
     }
 
@@ -172,8 +179,7 @@ public class Exporter
         var prevQuality :String = stage.quality;
 
         stage.quality = StageQuality.BEST;
-        BetwixtPublisher.publish(status.lib, status.file,
-            DeviceSelection(_authoredResolution.selectedItem).type, _exportChooser.dir);
+        _publisher.publish(status.lib, DeviceSelection(_authoredResolution.selectedItem).type);
 
         stage.quality = prevQuality;
         status.updateModified(Ternary.FALSE);
@@ -186,15 +192,8 @@ public class Exporter
                 .substring(_rootLen).replace(File.separator, "/");
             const load :Future = new XflLoader().load(name, status.file);
             load.succeeded.add(function (lib :XflLibrary) :void {
-                // Don't blow up if the export directory hasn't been chosen
-                var isMod :Boolean = true;
-                if (_exportChooser.dir != null) {
-                    var metadata :File = _exportChooser.dir.resolvePath(
-                        lib.location + "/resources.xml");
-                    isMod = BetwixtPublisher.modified(lib, metadata);
-                }
                 status.lib = lib;
-                status.updateModified(Ternary.of(isMod));
+                status.updateModified(Ternary.of(_publisher == null || _publisher.modified(lib)));
                 for each (var err :ParseError in lib.getErrors()) {
                     _errors.dataProvider.addItem(err);
                     trace(err);
@@ -232,6 +231,7 @@ public class Exporter
 
     protected var _rootLen :int;
 
+    protected var _publisher :Publisher;
     protected var _docFinder :Executor;
     protected var _win :ExporterWindow;
     protected var _libraries :DataGrid;
