@@ -38,7 +38,7 @@ public class XflKeyframe
 
         if (symbolXml == null) return kf; // Purely labelled frame
 
-        if (xml.tweens != null) {
+        if (XmlUtil.hasChild(xml, "tweens")) {
             lib.addError(kf, ParseError.WARN, "Custom easing is not supported");
         }
 
