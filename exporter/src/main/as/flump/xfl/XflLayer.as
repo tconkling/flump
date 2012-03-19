@@ -5,13 +5,15 @@ package flump.xfl {
 
 import flump.mold.LayerMold;
 
+import com.threerings.util.XmlUtil;
+
 public class XflLayer
 {
     use namespace xflns;
 
     public static function parse (lib :XflLibrary, baseLocation :String, xml :XML, flipbook :Boolean) :LayerMold {
         const layer :LayerMold = new LayerMold();
-        layer.name = new XmlConverter(xml).getStringAttr("name");
+        layer.name = XmlUtil.getStringAttr(xml, "name");
         layer.flipbook = flipbook;
         layer.location = baseLocation + ":" + layer.name
         for each (var frameEl :XML in xml.frames.DOMFrame) {

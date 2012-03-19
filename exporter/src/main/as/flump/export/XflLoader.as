@@ -17,7 +17,6 @@ import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
-import flump.xfl.XmlConverter;
 
 import com.threerings.util.F;
 import com.threerings.util.Log;
@@ -65,8 +64,8 @@ public class XflLoader
         loadDomFile.succeeded.add(function (domFile :File) :void {
             const xml :XML = bytesToXML(domFile.data);
             for each (var symbolXmlPath :XML in xml.symbols.Include) {
-                const conv :XmlConverter = new XmlConverter(symbolXmlPath);
-                var libraryFile :File = file.resolvePath("LIBRARY/" + conv.getStringAttr("href"));
+                var libraryFile :File =
+                    file.resolvePath("LIBRARY/" + XmlUtil.getStringAttr(symbolXmlPath, "href"));
                 parseLibraryFile(libraryFile);
             }
 

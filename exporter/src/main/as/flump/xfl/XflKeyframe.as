@@ -8,18 +8,19 @@ import flash.geom.Matrix;
 import flump.MatrixUtil;
 import flump.mold.KeyframeMold;
 
+import com.threerings.util.XmlUtil;
+
 public class XflKeyframe
 {
     use namespace xflns;
 
     public static function parse (lib :XflLibrary, baseLocation :String, xml :XML, flipbook :Boolean) :KeyframeMold {
         const kf :KeyframeMold = new KeyframeMold();
-        const converter :XmlConverter = new XmlConverter(xml);
-        kf.index = converter.getIntAttr("index");
+        kf.index = XmlUtil.getIntAttr(xml, "index");
         kf.location = baseLocation + ":" + kf.index;
-        kf.duration = converter.getNumberAttr("duration", 1);
-        kf.label = converter.getStringAttr("name", null);
-        kf.ease = converter.getNumberAttr("acceleration", 0) / 100;
+        kf.duration = XmlUtil.getNumberAttr(xml, "duration", 1);
+        kf.label = XmlUtil.getStringAttr(xml, "name", null);
+        kf.ease = XmlUtil.getNumberAttr(xml, "acceleration", 0) / 100;
 
         if (flipbook) return kf;
         var symbolXml :XML;
@@ -41,27 +42,24 @@ public class XflKeyframe
             lib.addError(kf, ParseError.WARN, "Custom easing is not supported");
         }
 
-        var symbolConverter :XmlConverter = new XmlConverter(symbolXml);
-        kf.id = kf.libraryItem = symbolConverter.getStringAttr("libraryItemName");
-        kf.visible = symbolConverter.getBooleanAttr("isVisible", true);
+        kf.id = kf.libraryItem = XmlUtil.getStringAttr(symbolXml, "libraryItemName");
+        kf.visible = XmlUtil.getBooleanAttr(symbolXml, "isVisible", true);
 
         var matrix :Matrix = new Matrix();
 
         // Read the matrix transform
         if (symbolXml.matrix != null) {
             const matrixXml :XML = symbolXml.matrix.Matrix[0];
-            const matrixConverter :XmlConverter =
-                matrixXml == null ? null : new XmlConverter(matrixXml);
             function m (name :String, def :Number) :Number {
-                return matrixConverter == null ? def : matrixConverter.getNumberAttr(name, def);
+                return matrixXml == null ? def : XmlUtil.getNumberAttr(matrixXml, name, def);
             }
             matrix = new Matrix(m("a", 1), m("b", 0), m("c", 0), m("d", 1), m("tx", 0), m("ty", 0));
 
             // handle "motionTweenRotate" (in this case, the rotation is not embedded in the matrix)
-            if (converter.hasAttr("motionTweenRotateTimes") &&
-                    converter.hasAttr("motionTweenRotate") && kf.duration > 1) {
-                kf.rotation = converter.getNumberAttr("motionTweenRotateTimes") * Math.PI * 2;
-                if (converter.getStringAttr("motionTweenRotate") == "clockwise") {
+            if (XmlUtil.hasAttr(xml, "motionTweenRotateTimes") &&
+                    XmlUtil.hasAttr(xml, "motionTweenRotate") && kf.duration > 1) {
+                kf.rotation = XmlUtil.getNumberAttr(xml, "motionTweenRotateTimes") * Math.PI * 2;
+                if (XmlUtil.getStringAttr(xml, "motionTweenRotate") == "clockwise") {
                     kf.rotation *= -1;
                 }
 
@@ -79,9 +77,8 @@ public class XflKeyframe
         if (symbolXml.transformationPoint != null) {
             var pivotXml :XML = symbolXml.transformationPoint.Point[0];
             if (pivotXml != null) {
-                var pivotConverter :XmlConverter = new XmlConverter(pivotXml);
-                kf.pivotX = pivotConverter.getNumberAttr("x", 0);
-                kf.pivotY = pivotConverter.getNumberAttr("y", 0);
+                kf.pivotX = XmlUtil.getNumberAttr(pivotXml, "x", 0);
+                kf.pivotY = XmlUtil.getNumberAttr(pivotXml, "y", 0);
 
                 // Translate to the pivot point
                 var orig :Matrix = matrix.clone();
@@ -99,8 +96,7 @@ public class XflKeyframe
         if (symbolXml.color != null) {
             var colorXml :XML = symbolXml.color.Color[0];
             if (colorXml != null) {
-                var colorConverter :XmlConverter = new XmlConverter(colorXml);
-                kf.alpha = colorConverter.getNumberAttr("alphaMultiplier", 1);
+                kf.alpha = XmlUtil.getNumberAttr(colorXml, "alphaMultiplier", 1);
             }
         }
         return kf;
