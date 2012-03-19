@@ -12,6 +12,8 @@ import starling.events.Event;
 
 public class Movie extends Sprite
 {
+    public static const FRAMERATE :Number = 30;
+
     public function Movie (src :MovieMold, idToDisplayObject :Function) {
         name = src.libraryItem;
         _ticker = new Ticker(advanceTime);
@@ -28,7 +30,7 @@ public class Movie extends Sprite
                 frames = Math.max(src.layers[ii].frames, frames);
             }
         }
-        _duration = frames / 30.0;
+        _duration = frames / FRAMERATE;
         goto(0, true, false);
         addEventListener(Event.ADDED_TO_STAGE, addedToStage);
         addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
@@ -39,7 +41,7 @@ public class Movie extends Sprite
 
         _playTime += dt;
         if (_playTime > _duration) _playTime = _playTime % _duration;
-        var newFrame :int = int(_playTime * 30);
+        var newFrame :int = int(_playTime * FRAMERATE);
         const overDuration :Boolean = dt >= _duration;
         // If the update crosses or goes to the stopFrame, go to the stop frame, stop the movie and
         // clear it
@@ -76,7 +78,7 @@ public class Movie extends Sprite
         _frame = newFrame;
         if (fromSkip) {
             // TODO [self fireLabelsFrom:newFrame to:newFrame];
-            _playTime = newFrame/30.0;
+            _playTime = newFrame/FRAMERATE;
         } else if (overDuration) {
             //[self fireLabelsFrom:oldFrame + 1 to:[_labels count] - 1];
             //[self fireLabelsFrom:0 to:_frame];
