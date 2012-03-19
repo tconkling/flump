@@ -4,6 +4,7 @@
 package flump.xfl {
 
 import flash.geom.Matrix;
+import flash.geom.Point;
 
 import flump.MatrixUtil;
 import flump.mold.KeyframeMold;
@@ -55,6 +56,10 @@ public class XflKeyframe
             }
             matrix = new Matrix(m("a", 1), m("b", 0), m("c", 0), m("d", 1), m("tx", 0), m("ty", 0));
 
+            // Back out of translation
+            var rewound :Matrix = matrix.clone();
+            rewound.tx = rewound.ty = 0;
+
             // handle "motionTweenRotate" (in this case, the rotation is not embedded in the matrix)
             if (XmlUtil.hasAttr(xml, "motionTweenRotateTimes") &&
                     XmlUtil.hasAttr(xml, "motionTweenRotate") && kf.duration > 1) {
@@ -62,15 +67,26 @@ public class XflKeyframe
                 if (XmlUtil.getStringAttr(xml, "motionTweenRotate") == "clockwise") {
                     kf.rotation *= -1;
                 }
-
                 MatrixUtil.setRotation(matrix, kf.rotation);
+
             } else {
-                kf.rotation = MatrixUtil.rotation(matrix);
+                var p0 :Point = rewound.transformPoint(new Point(0, 0));
+                var p1 :Point = rewound.transformPoint(new Point(1, 0));
+                kf.rotation = Math.atan2(p1.y - p0.y, p1.x - p0.x);
             }
 
+            // Back out of rotation
+            rewound.rotate(-kf.rotation);
+
+            p0 = rewound.transformPoint(new Point(0, 0));
+            p1 = rewound.transformPoint(new Point(1, 1));
+
+            kf.scaleX = round(p1.x - p0.x);
+            kf.scaleY = round(p1.y - p0.y);
             kf.rotation = round(kf.rotation);
-            kf.scaleX = round(MatrixUtil.scaleX(matrix));
-            kf.scaleY = round(MatrixUtil.scaleY(matrix));
+
+            // var skewX :Number = p1.x - 1;
+            // var skewY :Number = p1.y - 1;
         }
 
         // Read the pivot point
