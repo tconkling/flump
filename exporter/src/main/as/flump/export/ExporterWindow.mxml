@@ -50,6 +50,7 @@
         </s:FormItem>
         <s:FormItem>
           <s:HGroup>
+            <s:Button id="reload" label="Reload" enabled="false"/>
             <s:Button id="preview" label="Preview" enabled="false"/>
             <s:Button id="export" label="Export" enabled="false"/>
           </s:HGroup>

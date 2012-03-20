@@ -83,6 +83,9 @@ public class Exporter
             updateExportEnabled();
             _win.preview.enabled = _libraries.selectedItem.isValid;
         });
+        _win.reload.addEventListener(MouseEvent.CLICK, function (..._) :void {
+            setImport(_importChooser.dir);
+        });
         _win.export.addEventListener(MouseEvent.CLICK, function (..._) :void {
             for each (var status :DocStatus in _libraries.selectedItems) {
                 exportFlashDocument(status);
@@ -118,6 +121,7 @@ public class Exporter
         if (_docFinder != null) _docFinder.shutdownNow();
         _docFinder = new Executor(2);
         findFlashDocuments(root, _docFinder);
+        _win.reload.enabled = true;
     }
 
     protected function showPreviewWindow (lib :XflLibrary) :void {
