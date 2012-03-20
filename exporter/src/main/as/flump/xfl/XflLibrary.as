@@ -19,6 +19,8 @@ public class XflLibrary extends Mold
 
     public var swf :LoadedSwf;
 
+    public var frameRate :Number;
+
     // The MD5 of the published library SWF
     public var md5 :String;
 

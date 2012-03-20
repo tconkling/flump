@@ -19,13 +19,16 @@ public class JSONFormat extends Format
         return JSON.parse(metadata.readUTFBytes(metadata.length)).md5;
     }
 
-    override public function publish(out :IDataOutput, lib :XflLibrary, movies :Vector.<MovieMold>,
-        packers :Vector.<Packer>, authoredDevice :DeviceType) :void {
+    override public function publish (out :IDataOutput, lib :XflLibrary, movies :Vector.<MovieMold>,
+            packers :Vector.<Packer>, authoredDevice :DeviceType) :void {
         var json :Object = {
             md5: lib.md5,
             movies: movies,
             atlases: packers[0].atlases
         };
+        if (lib.frameRate != 30) {
+            json.frameRate = lib.frameRate;
+        }
         var pretty :Boolean = false;
         out.writeUTFBytes(JSON.stringify(json, null, pretty ? "  " : null));
     }

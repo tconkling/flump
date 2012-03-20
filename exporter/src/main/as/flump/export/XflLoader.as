@@ -63,6 +63,9 @@ public class XflLoader
         var loadDomFile :Future = Files.load(file.resolvePath("DOMDocument.xml"), _loader);
         loadDomFile.succeeded.add(function (domFile :File) :void {
             const xml :XML = bytesToXML(domFile.data);
+
+            _library.frameRate = XmlUtil.getNumberAttr(xml, "frameRate");
+
             for each (var symbolXmlPath :XML in xml.symbols.Include) {
                 var libraryFile :File =
                     file.resolvePath("LIBRARY/" + XmlUtil.getStringAttr(symbolXmlPath, "href"));
@@ -83,11 +86,6 @@ public class XflLoader
                     "Skipping file since its root element isn't DOMSymbolItem");
                 return;
             }
-
-            // // Skip non-exported symbols
-            // if (!XmlUtil.getBooleanAttr(xml, "linkageExportForAS", false)) {
-            //     return;
-            // }
 
             const isSprite :Boolean = XmlUtil.getBooleanAttr(xml, "isSpriteSubclass", false);
             const md5 :String = MD5.hashBytes(file.data);
