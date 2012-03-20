@@ -3,9 +3,12 @@
 
 package flump.export {
 
-import flash.filesystem.File;
-
 import com.adobe.crypto.MD5;
+import com.threerings.util.F;
+import com.threerings.util.Log;
+import com.threerings.util.XmlUtil;
+
+import flash.filesystem.File;
 
 import flump.bytesToXML;
 import flump.executor.Executor;
@@ -17,10 +20,6 @@ import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
-
-import com.threerings.util.F;
-import com.threerings.util.Log;
-import com.threerings.util.XmlUtil;
 
 public class XflLoader
 {
@@ -64,7 +63,7 @@ public class XflLoader
         loadDomFile.succeeded.add(function (domFile :File) :void {
             const xml :XML = bytesToXML(domFile.data);
 
-            _library.frameRate = XmlUtil.getNumberAttr(xml, "frameRate");
+            _library.frameRate = XmlUtil.getNumberAttr(xml, "frameRate", DEFAULT_FLASH_FRAMERATE);
 
             for each (var symbolXmlPath :XML in xml.symbols.Include) {
                 var libraryFile :File =
@@ -111,5 +110,7 @@ public class XflLoader
     protected var _library :XflLibrary;
 
     private static const log :Log = Log.getLog(XflLoader);
+
+    protected static const DEFAULT_FLASH_FRAMERATE :Number = 24;
 }
 }
