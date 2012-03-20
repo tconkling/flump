@@ -24,10 +24,7 @@ public class XMLFormat extends Format
 
     override public function publish (out :IDataOutput, lib :XflLibrary, movies :Vector.<MovieMold>,
             packers :Vector.<Packer>, authoredDevice :DeviceType) :void {
-        var xml :XML = <resources md5={lib.md5}/>;
-        if (lib.frameRate != 30) {
-            xml.@frameRate = lib.frameRate;
-        }
+        var xml :XML = <resources frameRate={lib.frameRate} md5={lib.md5}/>;
         var prefix :String = lib.location + "/";
         for each (var movie :MovieMold in movies) {
             var movieXml :XML = movie.toXML();

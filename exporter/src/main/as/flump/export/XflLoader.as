@@ -23,6 +23,8 @@ import flump.xfl.XflTexture;
 
 public class XflLoader
 {
+    public static const DEFAULT_FLASH_FRAMERATE :Number = 24;
+
     public function load (name :String, file :File) :Future {
         log.info("Loading xfl", "path", file.nativePath, "name", name);
         _library = new XflLibrary(name);
@@ -114,7 +116,5 @@ public class XflLoader
     protected var _library :XflLibrary;
 
     private static const log :Log = Log.getLog(XflLoader);
-
-    protected static const DEFAULT_FLASH_FRAMERATE :Number = 24;
 }
 }
