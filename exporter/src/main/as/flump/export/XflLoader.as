@@ -84,6 +84,10 @@ public class XflLoader
                 _library.addError(_library, ParseError.DEBUG,
                     "Skipping file since its root element isn't DOMSymbolItem");
                 return;
+            } else if (XmlUtil.getStringAttr(xml, "symbolType", "") == "graphic") {
+                _library.addError(_library, ParseError.DEBUG,
+                    "Skipping file because symbolType=graphic");
+                return;
             }
 
             const isSprite :Boolean = XmlUtil.getBooleanAttr(xml, "isSpriteSubclass", false);
