@@ -32,8 +32,7 @@ public class XflKeyframe
                         "a time in a keyframe.");
                 } else symbolXml = frameEl;
             } else {
-                lib.addError(kf, ParseError.CRIT, "Non-symbols may not be in exported movie " +
-                    "layers");
+                lib.addError(kf, ParseError.CRIT, "Non-symbols may not be in movie layers");
             }
         }
 
