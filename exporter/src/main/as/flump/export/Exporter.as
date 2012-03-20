@@ -203,7 +203,8 @@ public class Exporter
     }
 
     protected function loadFla (file :File) :void {
-        log.info("Loading fla", "path", file.nativePath);
+        log.info("fla support not implemented", "path", file.nativePath);
+        return;
         Files.load(file).succeeded.add(function (file :File) :void {
             const zip :FZip = new FZip();
             zip.loadBytes(file.data);
