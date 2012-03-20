@@ -35,24 +35,26 @@
         <s:FormItem label="Import Directory" width="50%">
           <s:HGroup>
             <!-- Explicitly set the width to make it line up with the export form -->
-            <s:Label id="importRoot" width="300"/>
+            <s:Label id="importRoot" width="280"/>
             <s:Button id="browseImport" width="40" label="..."/>
           </s:HGroup>
         </s:FormItem>
         <s:FormItem label="Export Directory" width="50%">
           <s:HGroup>
-            <s:Label id="exportRoot" width="300"/>
+            <s:Label id="exportRoot" width="280"/>
             <s:Button id="browseExport" width="40" label="..."/>
           </s:HGroup>
         </s:FormItem>
+        <s:FormItem label="Authored Resolution">
+          <s:DropDownList id="authoredResolutionPopup" width="200"></s:DropDownList>
+        </s:FormItem>
+        <s:FormItem>
+          <s:HGroup>
+            <s:Button id="preview" label="Preview" enabled="false"/>
+            <s:Button id="export" label="Export" enabled="false"/>
+          </s:HGroup>
+        </s:FormItem>
       </s:Form>
-        <s:Group width="481" height="42">
-            <s:Button id="preview" x="326" y="10" label="Preview" enabled="false"/>
-            <s:Button id="export" x="401" y="10" label="Export" enabled="false"/>
-            <s:Label x="24" y="16" text="Authored Resolution" fontWeight="bold"/>
-            <s:DropDownList id="authoredResolutionPopup" x="151" y="9" width="167" fontSize="11"></s:DropDownList>
-        </s:Group>
-      <!-- Grumble, don't know how to make this horizontally align in the center -->
     </s:VGroup>
   </s:HGroup>
   <s:DataGrid id="errors" width="100%" height="375">
