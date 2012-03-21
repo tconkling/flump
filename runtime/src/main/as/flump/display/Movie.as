@@ -17,42 +17,50 @@ public class Movie extends Sprite
     public function Movie (src :MovieMold, idToDisplayObject :Function) {
         name = src.libraryItem;
         _ticker = new Ticker(advanceTime);
-        var frames :int = 0;
         const flipbook :Boolean = src.flipbook;
         if (src.flipbook) {
             _layers = new Vector.<Layer>(1, true);
             _layers[0] = new Layer(this, src.layers[0], idToDisplayObject, /*flipbook=*/true);
-            frames = src.layers[0].frames;
+            _frames = src.layers[0].frames;
         } else {
             _layers = new Vector.<Layer>(src.layers.length, true);
             for (var ii :int = 0; ii < _layers.length; ii++) {
                 _layers[ii] = new Layer(this, src.layers[ii], idToDisplayObject, /*flipbook=*/false);
-                frames = Math.max(src.layers[ii].frames, frames);
+                _frames = Math.max(src.layers[ii].frames, _frames);
             }
         }
-        _duration = frames / FRAMERATE;
+        _duration = _frames / FRAMERATE;
         goto(0, true, false);
         addEventListener(Event.ADDED_TO_STAGE, addedToStage);
         addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
+    }
+
+    public function frames () :int {
+        return _frames;
     }
 
     protected function advanceTime (dt :Number) :void {
         if (!_playing) return;
 
         _playTime += dt;
+        var actualPlaytime :Number = _playTime;
         if (_playTime > _duration) _playTime = _playTime % _duration;
         var newFrame :int = int(_playTime * FRAMERATE);
         const overDuration :Boolean = dt >= _duration;
         // If the update crosses or goes to the stopFrame, go to the stop frame, stop the movie and
         // clear it
-        if (_stopFrame != NO_FRAME &&
-            ((newFrame >= _stopFrame && (_frame < _stopFrame || newFrame < _frame)) || overDuration)) {
-            _playing = false
-            newFrame = _stopFrame;
-            _stopFrame = NO_FRAME;
+        if (_stopFrame != NO_FRAME) {
+            // how many frames remain to the stopframe?
+            var framesRemaining :int =
+                (_frame <= _stopFrame ? _stopFrame - _frame : _frames - _frame + _stopFrame);
+            var framesElapsed :int = int(actualPlaytime * FRAMERATE) - _frame;
+            if (framesElapsed >= framesRemaining) {
+                _playing = false;
+                newFrame = _stopFrame;
+                _stopFrame = NO_FRAME;
+            }
         }
         goto(newFrame, false, overDuration);
-
     }
 
     protected function goto (newFrame :int, fromSkip :Boolean, overDuration :Boolean) :void {
@@ -110,6 +118,7 @@ public class Movie extends Sprite
     protected var _playTime :Number, _duration :Number;
     protected var _layers :Vector.<Layer>;
     protected var _ticker :Ticker;
+    protected var _frames :int;
 
     private static const NO_FRAME :int = -1;
 }
