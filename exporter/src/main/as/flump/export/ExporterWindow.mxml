@@ -16,7 +16,7 @@
     ]]>
   </fx:Script>
   <s:HGroup>
-    <s:DataGrid id="libraries" width="50%" height="300">
+    <s:DataGrid id="libraries" width="480" height="300">
       <s:typicalItem>
         <s:DataItem path="multiple/segment/nested/path/of/some/depth" modified="" valid=""/>
       </s:typicalItem>
@@ -32,25 +32,26 @@
     <!-- Both the Form and the FormItems need widths on them to make the percentage work -->
     <s:VGroup width="50%">
       <s:Form width="50%">
-        <s:FormItem label="Import Directory" width="50%">
+        <s:FormItem label="Import Directory" width="500">
           <s:HGroup>
             <!-- Explicitly set the width to make it line up with the export form -->
-            <s:Label id="importRoot" width="280"/>
+            <s:Label id="importRoot" width="240"/>
+            <s:Button id="reload" label="Reload" width="60" enabled="false"/>
             <s:Button id="browseImport" width="40" label="..."/>
           </s:HGroup>
         </s:FormItem>
-        <s:FormItem label="Export Directory" width="50%">
+        <s:FormItem label="Export Directory" width="500">
           <s:HGroup>
-            <s:Label id="exportRoot" width="280"/>
+            <s:Label id="exportRoot" width="305"/>
             <s:Button id="browseExport" width="40" label="..."/>
           </s:HGroup>
         </s:FormItem>
-        <s:FormItem label="Authored Resolution">
-          <s:DropDownList id="authoredResolutionPopup" width="200"></s:DropDownList>
-        </s:FormItem>
-        <s:FormItem>
+          <s:FormItem>
+            <s:Spacer width="10" height="10"/>
+          </s:FormItem>
+        <s:FormItem width="500" label="Authored Resolution">
           <s:HGroup>
-            <s:Button id="reload" label="Reload" enabled="false"/>
+            <s:DropDownList id="authoredResolutionPopup" width="200"></s:DropDownList>
             <s:Button id="preview" label="Preview" enabled="false"/>
             <s:Button id="export" label="Export" enabled="false"/>
           </s:HGroup>
