@@ -53,6 +53,11 @@ public class Publisher
         const destDir :File = _exportDir.resolvePath(lib.location);
         destDir.createDirectory();
 
+        // Ensure any previously generated atlases don't linger
+        for each (var file :File in destDir.getDirectoryListing()) {
+            if (file.name.match(/atlas.*\.png/)) file.deleteFile();
+        }
+
         for each (var packer :Packer in packers) {
             for each (var atlas :Atlas in packer.atlases) {
                 atlas.publish(_exportDir);
