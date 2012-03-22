@@ -120,7 +120,7 @@ public class Exporter
         _rootLen = root.nativePath.length + 1;
         if (_docFinder != null) _docFinder.shutdownNow();
         _docFinder = new Executor(2);
-        findFlashDocuments(root, _docFinder);
+        findFlashDocuments(root, _docFinder, true);
         _win.reload.enabled = true;
     }
 
@@ -157,12 +157,19 @@ public class Exporter
     protected var _previewWindow :PreviewWindow;
     protected var _previewControls :PreviewControlsWindow;
 
-    protected function findFlashDocuments (base :File, exec :Executor) :void {
+    protected function findFlashDocuments (
+            base :File, exec :Executor, ignoreXflAtBase :Boolean = false) :void {
         Files.list(base, exec).succeeded.add(function (files :Array) :void {
             if (exec.isShutdown) return;
             for each (var file :File in files) {
                 if (Files.hasExtension(file, "xfl")) {
-                    addFlashDocument(file.parent);
+                    if (ignoreXflAtBase) {
+                        _errors.dataProvider.addItem(new ParseError(base.nativePath,
+                            ParseError.CRIT, "The import directory can't be an XFL directory, did you mean " +
+                            base.parent.nativePath + "?"));
+                    } else {
+                        addFlashDocument(file.parent);
+                    }
                     return;
                 }
             }
