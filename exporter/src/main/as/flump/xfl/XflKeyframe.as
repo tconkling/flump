@@ -71,9 +71,8 @@ public class XflKeyframe
             p0 = rewound.transformPoint(new Point(0, 0));
             p1 = rewound.transformPoint(new Point(1, 1));
 
-            kf.scaleX = round(p1.x - p0.x);
-            kf.scaleY = round(p1.y - p0.y);
-            kf.rotation = round(kf.rotation);
+            kf.scaleX = p1.x - p0.x;
+            kf.scaleY = p1.y - p0.y;
 
             // var skewX :Number = p1.x - 1;
             // var skewY :Number = p1.y - 1;
@@ -95,8 +94,8 @@ public class XflKeyframe
         }
 
         // Now that the matrix and pivot point have been read, apply translation
-        kf.x = round(matrix.tx);
-        kf.y = round(matrix.ty);
+        kf.x = matrix.tx;
+        kf.y = matrix.ty;
 
         // Read the alpha
         if (symbolXml.color != null) {
@@ -106,11 +105,6 @@ public class XflKeyframe
             }
         }
         return kf;
-    }
-
-    protected static function round (n :Number, places :int = 4) :Number {
-        var shift :int = Math.pow(10, places);
-        return Math.round(n*shift) / shift;
     }
 }
 }
