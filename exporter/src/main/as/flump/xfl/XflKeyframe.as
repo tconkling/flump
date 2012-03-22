@@ -15,8 +15,10 @@ public class XflKeyframe
 {
     use namespace xflns;
 
-    public static function parse (lib :XflLibrary, baseLocation :String, xml :XML, flipbook :Boolean) :KeyframeMold {
-        const kf :KeyframeMold = new KeyframeMold();
+    public static function parse (lib :XflLibrary, baseLocation :String, xml :XML,
+        flipbook :Boolean) :KeyframeMold {
+
+        var kf :KeyframeMold = new KeyframeMold();
         kf.index = XmlUtil.getIntAttr(xml, "index");
         kf.location = baseLocation + ":" + kf.index;
         kf.duration = XmlUtil.getNumberAttr(xml, "duration", 1);
@@ -59,20 +61,9 @@ public class XflKeyframe
             var rewound :Matrix = matrix.clone();
             rewound.tx = rewound.ty = 0;
 
-            // handle "motionTweenRotate" (in this case, the rotation is not embedded in the matrix)
-            if (XmlUtil.hasAttr(xml, "motionTweenRotateTimes") &&
-                    XmlUtil.hasAttr(xml, "motionTweenRotate") && kf.duration > 1) {
-                kf.rotation = XmlUtil.getNumberAttr(xml, "motionTweenRotateTimes") * Math.PI * 2;
-                if (XmlUtil.getStringAttr(xml, "motionTweenRotate") == "clockwise") {
-                    kf.rotation *= -1;
-                }
-                MatrixUtil.setRotation(matrix, kf.rotation);
-
-            } else {
-                var p0 :Point = rewound.transformPoint(new Point(0, 0));
-                var p1 :Point = rewound.transformPoint(new Point(1, 0));
-                kf.rotation = Math.atan2(p1.y - p0.y, p1.x - p0.x);
-            }
+            var p0 :Point = rewound.transformPoint(new Point(0, 0));
+            var p1 :Point = rewound.transformPoint(new Point(1, 0));
+            kf.rotation = Math.atan2(p1.y - p0.y, p1.x - p0.x);
 
             // Back out of rotation
             rewound.rotate(-kf.rotation);
