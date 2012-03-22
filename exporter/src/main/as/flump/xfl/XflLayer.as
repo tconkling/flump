@@ -24,14 +24,23 @@ public class XflLayer
 
         // normalize rotations, so that we always rotate the shortest distance between
         // two angles (we don't want to rotate more than Math.PI)
-        // TODO: support keyframes with rotations >= TWO_PI
-        for (var ii :int = 0; ii < layer.keyframes.length - 1; ++ii) {
+        var spins :int = 0;
+        for (var ii :int = 0; ii < layer.keyframes.length; ++ii) {
             var kf :KeyframeMold = layer.keyframes[ii];
-            var nextKf :KeyframeMold = layer.keyframes[ii+1];
-            if (kf.rotation + Math.PI < nextKf.rotation) {
-                nextKf.rotation -= Math.PI * 2;
-            } else if (kf.rotation - Math.PI > nextKf.rotation) {
-                nextKf.rotation += Math.PI * 2;
+
+            // Preserve "spins" - full rotations that occur on single keyframes -
+            // by propagating them through all following keyframes.
+            var kfSpins :int = int(kf.rotation / (Math.PI * 2));
+            kf.rotation += (spins * Math.PI * 2);
+            spins += kfSpins;
+
+            if (ii < layer.keyframes.length - 1) {
+                var nextKf :KeyframeMold = layer.keyframes[ii+1];
+                if (kf.rotation + Math.PI < nextKf.rotation) {
+                    nextKf.rotation -= Math.PI * 2;
+                } else if (kf.rotation - Math.PI > nextKf.rotation) {
+                    nextKf.rotation += Math.PI * 2;
+                }
             }
         }
         return layer;
