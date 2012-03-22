@@ -22,24 +22,24 @@
     <qtDefaultName>1</qtDefaultName>
     <rnwkDefaultName>1</rnwkDefaultName>
     <swcDefaultName>1</swcDefaultName>
-    <flashFileName>flump_test.swf</flashFileName>
-    <projectorWinFileName>flump_test.exe</projectorWinFileName>
-    <projectorMacFileName>flump_test.app</projectorMacFileName>
-    <htmlFileName>flump_test.html</htmlFileName>
-    <gifFileName>flump_test.gif</gifFileName>
-    <jpegFileName>flump_test.jpg</jpegFileName>
-    <pngFileName>flump_test.png</pngFileName>
-    <qtFileName>flump_test.mov</qtFileName>
-    <rnwkFileName>flump_test.smil</rnwkFileName>
-    <swcFileName>flump_test.swc</swcFileName>
+    <flashFileName>rotate_test.swf</flashFileName>
+    <projectorWinFileName>rotate_test.exe</projectorWinFileName>
+    <projectorMacFileName>rotate_test.app</projectorMacFileName>
+    <htmlFileName>rotate_test.html</htmlFileName>
+    <gifFileName>rotate_test.gif</gifFileName>
+    <jpegFileName>rotate_test.jpg</jpegFileName>
+    <pngFileName>rotate_test.png</pngFileName>
+    <qtFileName>rotate_test.mov</qtFileName>
+    <rnwkFileName>rotate_test.smil</rnwkFileName>
+    <swcFileName>rotate_test.swc</swcFileName>
   </PublishFormatProperties>
   <PublishHtmlProperties enabled="true">
     <VersionDetectionIfAvailable>0</VersionDetectionIfAvailable>
     <VersionInfo>10,2,153,0;10,1,52,0;9,0,124,0;8,0,24,0;7,0,14,0;6,0,79,0;5,0,58,0;4,0,32,0;3,0,8,0;2,0,1,12;1,0,0,1;</VersionInfo>
     <UsingDefaultContentFilename>1</UsingDefaultContentFilename>
     <UsingDefaultAlternateFilename>1</UsingDefaultAlternateFilename>
-    <ContentFilename>flump_test.xfl_content.html</ContentFilename>
-    <AlternateFilename>flump_test.xfl_alternate.html</AlternateFilename>
+    <ContentFilename>rotate_test.xfl_content.html</ContentFilename>
+    <AlternateFilename>rotate_test.xfl_alternate.html</AlternateFilename>
     <UsingOwnAlternateFile>0</UsingOwnAlternateFile>
     <OwnAlternateFilename></OwnAlternateFilename>
     <Width>550</Width>

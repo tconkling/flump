@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="bone_root" itemID="4f4be448-00000b88" lastModified="1330721562" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="bone_root" itemID="4f4be448-00000b88" linkageExportForAS="true" linkageClassName="bone_root" lastModified="1332448871" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="bone_root" currentFrame="19">
       <layers>
