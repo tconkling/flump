@@ -1,0 +1,89 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#CC9900" width="80" height="100" frameRate="30" currentTimeline="1" xflVersion="2.1" creatorInfo="Adobe Flash Professional CS5.5" platform="Macintosh" versionInfo="Saved by Adobe Flash Macintosh 11.5 build 349" majorVersion="11" minorVersion="5" buildNumber="349" objectsSnapTo="false" timelineLabelWidth="195" viewAngle3D="8.66021495624002" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false">
+     <media>
+          <DOMBitmapItem name="hero_bicep_L.png" itemID="4f5a3e37-0000038e" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/hero_bicep_L.png" sourceLastImported="1331312038" externalFileSize="2281" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="hero_bicep_L.png" bitmapDataHRef="M 20 1331314205.dat" frameRight="320" frameBottom="740"/>
+          <DOMBitmapItem name="hero_bicep_R.png" itemID="4f5a417a-000003ce" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/hero_bicep_R.png" sourceLastImported="1331310897" externalFileSize="2270" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="hero_bicep_R.png" bitmapDataHRef="M 23 1331314670.dat" frameRight="320" frameBottom="780"/>
+          <DOMBitmapItem name="hero_calf_L.png" itemID="4f5a3bd1-00000347" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/hero_calf_L.png" sourceLastImported="1331313107" externalFileSize="1693" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="hero_calf_L.png" bitmapDataHRef="M 14 1331313602.dat" frameRight="260" frameBottom="760"/>
+          <DOMBitmapItem name="hero_calf_R.png" itemID="4f5a3ddc-0000037f" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/hero_calf_R.png" sourceLastImported="1331313035" externalFileSize="1699" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="hero_calf_R.png" bitmapDataHRef="M 18 1331313904.dat" frameRight="280" frameBottom="780"/>
+          <DOMBitmapItem name="hero_cape.png" itemID="4f5a4eb6-000003de" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/hero_cape.png" sourceLastImported="1331312279" externalFileSize="3551" originalCompressionType="lossless" quality="50" href="hero_cape.png" bitmapDataHRef="M 26 1331318430.dat" frameRight="820" frameBottom="800"/>
+          <DOMBitmapItem name="hero_chest.png" itemID="4f5a114b-0000022c" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/hero_chest.png" sourceLastImported="1331302676" externalFileSize="4009" originalCompressionType="lossless" quality="50" href="hero_chest.png" bitmapDataHRef="M 11 1331302691.dat" frameRight="700" frameBottom="820"/>
+          <DOMBitmapItem name="hero_foot_L.png" itemID="4f5a3c0f-00000350" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/hero_foot_L.png" sourceLastImported="1331313403" externalFileSize="1321" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="hero_foot_L.png" bitmapDataHRef="M 15 1331313660.dat" frameRight="220" frameBottom="460"/>
+          <DOMBitmapItem name="hero_foot_R.png" itemID="4f5a3ddc-00000380" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/hero_foot_R.png" sourceLastImported="1331313482" externalFileSize="1406" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="hero_foot_R.png" bitmapDataHRef="M 19 1331313962.dat" frameRight="460" frameBottom="320"/>
+          <DOMBitmapItem name="hero_forearm_L.png" itemID="4f5a3f2d-000003a9" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/hero_forearm_L.png" sourceLastImported="1331312113" externalFileSize="2122" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="hero_forearm_L.png" bitmapDataHRef="M 21 1331314374.dat" frameRight="300" frameBottom="720"/>
+          <DOMBitmapItem name="hero_forearm_R.png" itemID="4f5a417a-000003cf" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/hero_forearm_R.png" sourceLastImported="1331311100" externalFileSize="2056" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="hero_forearm_R.png" bitmapDataHRef="M 24 1331314758.dat" frameRight="300" frameBottom="740"/>
+          <DOMBitmapItem name="hero_hair.png" itemID="4f592c85-00000214" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/biter_jaw.png" sourceLastImported="1331243920" externalFileSize="14061" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="hero_hair.png" bitmapDataHRef="M 8 1330916016.dat" frameRight="1440" frameBottom="1980"/>
+          <DOMBitmapItem name="hero_hand_L.png" itemID="4f5a3f2d-000003aa" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/hero_hand_L.png" sourceLastImported="1331312175" externalFileSize="1661" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="hero_hand_L.png" bitmapDataHRef="M 22 1331314467.dat" frameRight="300" frameBottom="360"/>
+          <DOMBitmapItem name="hero_hand_R.png" itemID="4f5a417a-000003d0" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/hero_hand_R.png" sourceLastImported="1331311198" externalFileSize="1587" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="hero_hand_R.png" bitmapDataHRef="M 25 1331315047.dat" frameRight="280" frameBottom="320"/>
+          <DOMBitmapItem name="hero_head.png" itemID="4f592b4d-0000020f" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/biter_head.png" sourceLastImported="1331503451" externalFileSize="10611" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="hero_head.png" bitmapDataHRef="M 7 1330915705.dat" frameRight="1320" frameBottom="1440"/>
+          <DOMBitmapItem name="hero_hips.png" itemID="4f5a3bd1-00000348" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/hero_hips.png" sourceLastImported="1331310509" externalFileSize="2901" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="hero_hips.png" bitmapDataHRef="M 12 1331313496.dat" frameRight="620" frameBottom="740"/>
+          <DOMBitmapItem name="hero_neck.png" itemID="4f592cf2-00000222" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/hero_neck.png" sourceLastImported="1331244162" externalFileSize="2266" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="hero_neck.png" bitmapDataHRef="M 10 1331244249.dat" frameRight="400" frameBottom="580"/>
+          <DOMBitmapItem name="hero_shadow.png" itemID="4f592b4d-00000210" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/hero_shadow.png" sourceLastImported="1331243853" externalFileSize="2688" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="hero_shadow.png" bitmapDataHRef="M 9 1331049373.dat" frameRight="1780" frameBottom="860"/>
+          <DOMBitmapItem name="hero_starpoint_small.png" itemID="4f5a69cb-00000465" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/hero_starpoint_small.png" sourceLastImported="1331325178" externalFileSize="1151" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="hero_starpoint_small.png" bitmapDataHRef="M 29 1331325227.dat" frameRight="180" frameBottom="320"/>
+          <DOMBitmapItem name="hero_starpoint.png" itemID="4f5a67b2-0000042e" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/hero_starpoint.png" sourceLastImported="1331324293" externalFileSize="1425" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="hero_starpoint.png" bitmapDataHRef="M 28 1331324651.dat" frameRight="220" frameBottom="1480"/>
+          <DOMBitmapItem name="hero_thigh_L.png" itemID="4f5a3bd1-00000349" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/hero_thigh_L.png" sourceLastImported="1331312968" externalFileSize="2354" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="hero_thigh_L.png" bitmapDataHRef="M 13 1331313538.dat" frameRight="400" frameBottom="980"/>
+          <DOMBitmapItem name="hero_thigh_R.png" itemID="4f5a3cdf-00000371" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/hero_thigh_R.png" sourceLastImported="1331312889" externalFileSize="2569" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="hero_thigh_R.png" bitmapDataHRef="M 17 1331313849.dat" frameRight="440" frameBottom="1060"/>
+          <DOMBitmapItem name="hero_weapon.png" itemID="4f5a6c74-00000499" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01_temp/LIBRARY/hero_weapon.png" sourceLastImported="1331326033" externalFileSize="1329" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="hero_weapon.png" bitmapDataHRef="M 27 1331324471.dat" frameRight="340" frameBottom="880"/>
+          <DOMBitmapItem name="reference.png" itemID="4f5e7558-00000284" sourceExternalFilepath="../../../../../export/nod-art/prototype/heroes/hero_A_01/LIBRARY/reference.png" sourceLastImported="1331503451" externalFileSize="31609" originalCompressionType="lossless" quality="50" href="reference.png" bitmapDataHRef="M 1 1330912876.dat" frameRight="2280" frameBottom="3840"/>
+     </media>
+     <symbols>
+          <Include href="attack.xml" itemID="4f62672a-0000032b" lastModified="1332446386"/>
+          <Include href="bone_bicep_L.xml" itemID="4f5a3e0b-00000389" lastModified="1331314219"/>
+          <Include href="bone_bicep_R.xml" itemID="4f5a3fd8-000003b7" lastModified="1331314682"/>
+          <Include href="bone_calf_L.xml" itemID="4f5a3bd7-0000034b" lastModified="1331313625"/>
+          <Include href="bone_calf_R.xml" itemID="4f5a3cd8-00000370" lastModified="1331313910"/>
+          <Include href="bone_cape.xml" itemID="4f5a4277-000003d9" lastModified="1331318443"/>
+          <Include href="bone_chest.xml" itemID="4f5a1133-00000227" lastModified="1331302707"/>
+          <Include href="bone_foot_L.xml" itemID="4f5a3c3d-00000351" lastModified="1331313727"/>
+          <Include href="bone_foot_R.xml" itemID="4f5a3d08-0000037a" lastModified="1331314127"/>
+          <Include href="bone_forearm_L.xml" itemID="4f5a3eb6-00000397" lastModified="1331314379"/>
+          <Include href="bone_forearm_R.xml" itemID="4f5a402a-000003c0" lastModified="1331314764"/>
+          <Include href="bone_hair.xml" itemID="4f592ba5-00000211" lastModified="1331243963"/>
+          <Include href="bone_hand_L.xml" itemID="4f5a3f11-000003a4" lastModified="1331314482"/>
+          <Include href="bone_hand_R.xml" itemID="4f5a40e9-000003c9" lastModified="1331315059"/>
+          <Include href="bone_head.xml" itemID="4f542968-00000227" lastModified="1331243836"/>
+          <Include href="bone_hips.xml" itemID="4f5a2ec0-00000339" lastModified="1331313500"/>
+          <Include href="bone_neck.xml" itemID="4f592cc9-0000021d" lastModified="1331244264"/>
+          <Include href="bone_shadow.xml" itemID="4f563d05-00000253" lastModified="1331243227"/>
+          <Include href="bone_starpoint.xml" itemID="4f5a66d0-0000040d" lastModified="1331325385"/>
+          <Include href="bone_starpoint_small.xml" itemID="4f5a691b-0000044c" lastModified="1331325380"/>
+          <Include href="bone_thigh_L.xml" itemID="4f5a3b92-00000342" lastModified="1331313554"/>
+          <Include href="bone_thigh_R.xml" itemID="4f5a3ca1-00000367" lastModified="1331313854"/>
+          <Include href="bone_weapon_hilt.xml" itemID="4f5a6629-000003f7" lastModified="1331325397"/>
+          <Include href="tile.xml" itemIcon="1" loadImmediate="false" itemID="4f67adec-0000024f" lastModified="1332274006"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="Scene 1">
+               <layers>
+                    <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true" layerType="guide">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <PrinterSettings platform="macintosh"/>
+     <publishHistory>
+          <PublishItem publishSize="50490" publishTime="1332444596"/>
+          <PublishItem publishSize="50490" publishTime="1332444526"/>
+          <PublishItem publishSize="50490" publishTime="1332444432"/>
+          <PublishItem publishSize="65687" publishTime="1332444382"/>
+          <PublishItem publishSize="75143" publishTime="1332275471"/>
+          <PublishItem publishSize="75139" publishTime="1332273848"/>
+          <PublishItem publishSize="75149" publishTime="1332252299"/>
+          <PublishItem publishSize="75148" publishTime="1332252245"/>
+          <PublishItem publishSize="75149" publishTime="1332252190"/>
+          <PublishItem publishSize="74939" publishTime="1332251983"/>
+          <PublishItem publishSize="74893" publishTime="1332251750"/>
+          <PublishItem publishSize="74891" publishTime="1332251679"/>
+          <PublishItem publishSize="74887" publishTime="1332251648"/>
+          <PublishItem publishSize="74889" publishTime="1332251535"/>
+          <PublishItem publishSize="74892" publishTime="1332251477"/>
+          <PublishItem publishSize="74820" publishTime="1332251294"/>
+          <PublishItem publishSize="74815" publishTime="1332251260"/>
+          <PublishItem publishSize="74805" publishTime="1332251152"/>
+          <PublishItem publishSize="74804" publishTime="1332251033"/>
+          <PublishItem publishSize="74762" publishTime="1332250859"/>
+     </publishHistory>
+</DOMDocument>

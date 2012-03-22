@@ -1,0 +1,21 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="bone_hips" itemID="4f5a2ec0-00000339" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="bone_hips" lastModified="1331313500" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="bone_hips">
+      <layers>
+        <DOMLayer name="Layer 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="hero_hips.png">
+                  <matrix>
+                    <Matrix tx="-14.5" ty="-23.5"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

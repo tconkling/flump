@@ -1,0 +1,21 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="bone_body" itemID="4f542366-000001e5" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="bone_body" lastModified="1330979629" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="bone_body">
+      <layers>
+        <DOMLayer name="Layer 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="biter_body.png">
+                  <matrix>
+                    <Matrix tx="-30.1" ty="-23.45"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,21 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="bone_starpoint_small" itemID="4f5a691b-0000044c" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="bone_starpoint_small" lastModified="1331325380" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="bone_starpoint_small">
+      <layers>
+        <DOMLayer name="Layer 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="hero_starpoint_small.png">
+                  <matrix>
+                    <Matrix tx="-4.5" ty="-14"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

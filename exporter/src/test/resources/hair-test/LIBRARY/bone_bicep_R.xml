@@ -1,0 +1,21 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="bone_bicep_R" itemID="4f5a3fd8-000003b7" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="bone_bicep_R" lastModified="1331314682" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="bone_bicep_R">
+      <layers>
+        <DOMLayer name="Layer 3" color="#FF800A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="hero_bicep_R.png">
+                  <matrix>
+                    <Matrix tx="-8.5" ty="-6.5"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
