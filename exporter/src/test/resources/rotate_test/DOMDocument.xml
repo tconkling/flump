@@ -1,7 +1,7 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" currentTimeline="1" xflVersion="2.1" creatorInfo="Adobe Flash Professional CS5.5" platform="Macintosh" versionInfo="Saved by Adobe Flash Macintosh 11.5 build 349" majorVersion="11" minorVersion="5" buildNumber="349" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false">
      <symbols>
           <Include href="bone_arm.xml" itemID="4f4be457-00000b8d" lastModified="1330721557"/>
-          <Include href="bone_root.xml" itemID="4f4be448-00000b88" lastModified="1332448871"/>
+          <Include href="bone_root.xml" itemID="4f4be448-00000b88" lastModified="1332449816"/>
           <Include href="bone_root_contents.xml" itemID="4f513301-000001d6" lastModified="1330721562"/>
      </symbols>
      <timelines>
@@ -35,6 +35,8 @@
      </timelines>
      <PrinterSettings platform="macintosh"/>
      <publishHistory>
+          <PublishItem publishSize="1373" publishTime="1332449612"/>
+          <PublishItem publishSize="1372" publishTime="1332448887"/>
           <PublishItem publishSize="1204" publishTime="1330373949"/>
      </publishHistory>
 </DOMDocument>

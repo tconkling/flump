@@ -1,12 +1,12 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="bone_root" itemID="4f4be448-00000b88" linkageExportForAS="true" linkageClassName="bone_root" lastModified="1332448871" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="bone_root" itemID="4f4be448-00000b88" linkageExportForAS="true" linkageClassName="bone_root" lastModified="1332449816" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="bone_root" currentFrame="19">
       <layers>
-        <DOMLayer name="Layer 2" color="#9933CC">
+        <DOMLayer name="Layer 2" color="#9933CC" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenRotate="clockwise" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="22017">
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenRotate="counter-clockwise" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="bone_arm" centerPoint3DX="115" centerPoint3DY="-1.05">
+                <DOMSymbolInstance libraryItemName="bone_arm" selected="true" centerPoint3DX="115" centerPoint3DY="-1.05">
                   <matrix>
                     <Matrix tx="-9" ty="-1.05"/>
                   </matrix>
@@ -30,11 +30,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+        <DOMLayer name="Layer 1" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="bone_root_contents" selected="true">
+                <DOMSymbolInstance libraryItemName="bone_root_contents">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
