@@ -61,21 +61,15 @@ public class XflKeyframe
             var rewound :Matrix = matrix.clone();
             rewound.tx = rewound.ty = 0;
 
-            var p0 :Point = rewound.transformPoint(new Point(0, 0));
-            var p1 :Point = rewound.transformPoint(new Point(1, 0));
-            kf.rotation = Math.atan2(p1.y - p0.y, p1.x - p0.x);
+            var p :Point = rewound.transformPoint(new Point(1, 0));
+            kf.rotation = Math.atan2(p.y, p.x);
 
             // Back out of rotation
             rewound.rotate(-kf.rotation);
 
-            p0 = rewound.transformPoint(new Point(0, 0));
-            p1 = rewound.transformPoint(new Point(1, 1));
-
-            kf.scaleX = p1.x - p0.x;
-            kf.scaleY = p1.y - p0.y;
-
-            // var skewX :Number = p1.x - 1;
-            // var skewY :Number = p1.y - 1;
+            p = rewound.transformPoint(new Point(1, 1));
+            kf.scaleX = p.x;
+            kf.scaleY = p.y;
         }
 
         // Read the pivot point
