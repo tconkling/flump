@@ -70,6 +70,12 @@ public class XflKeyframe
             p = rewound.transformPoint(new Point(1, 1));
             kf.scaleX = p.x;
             kf.scaleY = p.y;
+
+            var skewX :Number = Math.atan(rewound.c);
+            var skewY :Number = Math.atan(rewound.b);
+            if (Math.abs(skewX) > 0.0001 || Math.abs(skewY) > 0.0001) {
+                lib.addError(kf, ParseError.WARN, "Skewing is not supported");
+            }
         }
 
         // Read the pivot point
