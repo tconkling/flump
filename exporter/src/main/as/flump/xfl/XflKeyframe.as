@@ -6,7 +6,6 @@ package flump.xfl {
 import flash.geom.Matrix;
 import flash.geom.Point;
 
-import flump.MatrixUtil;
 import flump.mold.KeyframeMold;
 
 import com.threerings.util.XmlUtil;

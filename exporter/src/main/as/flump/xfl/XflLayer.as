@@ -3,10 +3,10 @@
 
 package flump.xfl {
 
-import com.threerings.util.XmlUtil;
-
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
+
+import com.threerings.util.XmlUtil;
 
 public class XflLayer
 {

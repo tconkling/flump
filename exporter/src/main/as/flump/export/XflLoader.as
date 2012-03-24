@@ -3,12 +3,9 @@
 
 package flump.export {
 
-import com.adobe.crypto.MD5;
-import com.threerings.util.F;
-import com.threerings.util.Log;
-import com.threerings.util.XmlUtil;
-
 import flash.filesystem.File;
+
+import com.adobe.crypto.MD5;
 
 import flump.bytesToXML;
 import flump.executor.Executor;
@@ -20,6 +17,10 @@ import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 import flump.xfl.XflTexture;
+
+import com.threerings.util.F;
+import com.threerings.util.Log;
+import com.threerings.util.XmlUtil;
 
 public class XflLoader
 {
