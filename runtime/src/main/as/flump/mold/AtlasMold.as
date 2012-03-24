@@ -3,13 +3,8 @@
 
 package flump.mold {
 
-import flash.net.registerClassAlias;
-
 public class AtlasMold
 {
-    // Make this come out as itself in AMF
-    registerClassAlias("AtlasMold", AtlasMold);
-
     public var file :String;
     public var textures :Vector.<AtlasTextureMold> = new Vector.<AtlasTextureMold>();
 
@@ -25,6 +20,5 @@ public class AtlasMold
         for each (var tex :AtlasTextureMold in textures) xml.appendChild(tex.toXML());
         return xml;
     }
-
 }
 }

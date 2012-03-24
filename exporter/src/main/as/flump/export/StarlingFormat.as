@@ -10,6 +10,7 @@ import deng.fzip.FZip;
 import deng.fzip.FZipFile;
 
 import flump.mold.AtlasMold;
+import flump.mold.Molds;
 import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
 
@@ -28,6 +29,7 @@ public class StarlingFormat extends Format
 
     override public function publish(out :IDataOutput, lib :XflLibrary, movies :Vector.<MovieMold>,
             packers :Vector.<Packer>, authoredDevice :DeviceType) :void {
+        Molds.registerClassAliases();
         const zip :FZip = new FZip();
 
         function addToZip(name :String, contentWriter :Function) :void {

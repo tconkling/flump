@@ -3,13 +3,8 @@
 
 package flump.mold {
 
-import flash.net.registerClassAlias;
-
 public class MovieMold extends Mold
 {
-    // Make this come out as itself in AMF
-    registerClassAlias("MovieMold", MovieMold);
-
     public var libraryItem :String;
     public var symbol :String;
     public var layers :Vector.<LayerMold> = new Vector.<LayerMold>();

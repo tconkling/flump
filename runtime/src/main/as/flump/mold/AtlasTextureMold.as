@@ -5,13 +5,9 @@ package flump.mold {
 
 import flash.geom.Point;
 import flash.geom.Rectangle;
-import flash.net.registerClassAlias;
 
 public class AtlasTextureMold
 {
-    // Make this come out as itself in AMF
-    registerClassAlias("AtlasTextureMold", AtlasTextureMold);
-
     public var name :String;
     public var bounds :Rectangle;
     public var offset :Point;

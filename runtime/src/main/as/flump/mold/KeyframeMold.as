@@ -2,13 +2,8 @@
 // Flump - Copyright 2012 Three Rings Design
 package flump.mold {
 
-import flash.net.registerClassAlias;
-
 public class KeyframeMold extends Mold
 {
-    // Make this come out as itself in AMF
-    registerClassAlias("KeyframeMold", KeyframeMold);
-
     public var index :int;
 
     /** The length of this keyframe in frames. */
