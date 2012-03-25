@@ -1,0 +1,24 @@
+<?xml version="1.0" standalone="yes"?>
+<project name="flump-loadertest" default="swf" basedir=".">
+  <property name="asrc.dir" location="src/main/as"/>
+  <property name="deploy.dir" location="dist"/>
+
+  <property name="ooo-build.vers" value="2.5"/>
+  <ant antfile="../etc/bootstrap.xml"/>
+  <import file="${user.home}/.m2/ooo-build/${ooo-build.vers}/ooo-build.xml"/>
+
+  <target name="clean" description="Removes all generated files and directories">
+    <delete dir="${deploy.dir}"/>
+  </target>
+
+  <target name="swf" depends="-init-ooo" description="Builds the swf">
+    <mkdir dir="${deploy.dir}"/>
+    <mavendep pom="pom.xml" pathProp="aslib.path"/>
+    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.5"/>
+    <amxmlc srcdir="${asrc.dir}" libpath="${aslib.path}"
+      dest="${deploy.dir}/${ant.project.name}.swf" static-lrsl="true"
+      main="flump/test/Bootstrap.as">
+      <arg value="-swf-version=13"/>
+    </amxmlc>
+  </target>
+</project>

@@ -24,5 +24,11 @@
       <version>46f31516</version>
       <type>swc</type>
     </dependency>
+    <dependency>
+      <groupId>deng</groupId>
+      <artifactId>fzip</artifactId>
+      <version>a5430bd</version>
+      <type>swc</type>
+    </dependency>
   </dependencies>
 </project>

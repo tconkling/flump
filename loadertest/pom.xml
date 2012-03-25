@@ -18,17 +18,5 @@
       <version>0.1-SNAPSHOT</version>
       <type>swc</type>
     </dependency>
-    <dependency>
-      <groupId>com.adobe</groupId>
-      <artifactId>as3corelib</artifactId>
-      <version>0.93</version>
-      <type>swc</type>
-    </dependency>
-    <dependency>
-      <groupId>com.threerings</groupId>
-      <artifactId>aspirin</artifactId>
-      <version>1.13-SNAPSHOT</version>
-      <type>swc</type>
-    </dependency>
   </dependencies>
 </project>
