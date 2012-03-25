@@ -82,7 +82,7 @@ public class Atlas
         _root.forEach(function (node :Node) :void {
             var tex :SwfTexture = node.texture;
             const texMold :AtlasTextureMold = new AtlasTextureMold();
-            texMold.name = tex.symbol;
+            texMold.name = tex.libraryItem;
             texMold.bounds = new Rectangle(node.bounds.x, node.bounds.y, tex.w, tex.h);
             texMold.offset = new Point(tex.offset.x, tex.offset.y);
             texMold.md5 = tex.md5;
