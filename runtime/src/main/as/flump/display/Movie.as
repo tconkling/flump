@@ -146,13 +146,13 @@ class Layer {
         this.movie = movie;
         var lastItem :String;
         for (var ii :int = 0; ii < keyframes.length && lastItem == null; ii++) {
-            lastItem = keyframes[ii].libraryItem;
+            lastItem = keyframes[ii].id;
         }
         if (!flipbook && lastItem == null) movie.addChild(new Sprite());// Label only layer
         else {
             var multipleItems :Boolean = flipbook;
             for (ii = 0; ii < keyframes.length && !multipleItems; ii++) {
-                multipleItems = keyframes[ii].libraryItem != lastItem;
+                multipleItems = keyframes[ii].id != lastItem;
             }
             if (!multipleItems) movie.addChild(idToDisplayObject(lastItem));
             else {
