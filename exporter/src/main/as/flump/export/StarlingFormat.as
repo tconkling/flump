@@ -10,7 +10,7 @@ import deng.fzip.FZip;
 import deng.fzip.FZipFile;
 
 import flump.display.StarlingResources;
-import flump.mold.AtlasMold;
+import flump.mold.LibraryMold;
 import flump.mold.Molds;
 import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
@@ -38,18 +38,16 @@ public class StarlingFormat extends Format
             contentWriter(bytes);
             zip.addFile(name, bytes);
         }
-        addToZip(StarlingResources.MD5_LOCATION,
-            function (b :ByteArray) :void { b.writeUTFBytes(lib.md5); });
-        addToZip(StarlingResources.MOVIE_LOCATION,
-            function (b :ByteArray) :void { b.writeObject(movies); });
-        addToZip(StarlingResources.ATLAS_LOCATION, function (b :ByteArray) :void {
-            const atlasMolds :Vector.<AtlasMold> = new Vector.<AtlasMold>();
-            for each (var atlas :Atlas in packers[0].atlases) atlasMolds.push(atlas.toMold());
-            b.writeObject(atlasMolds);
-        });
+
+        const mold :LibraryMold = lib.toMold();
         for each (var atlas :Atlas in packers[0].atlases) {
+            mold.atlases.push(atlas.toMold());
             addToZip(atlas.fileName, function (b :ByteArray) :void { atlas.writePNG(b); });
         }
+        addToZip(StarlingResources.LIBRARY_LOCATION,
+            function (b :ByteArray) :void { b.writeObject(mold); });
+        addToZip(StarlingResources.MD5_LOCATION,
+            function (b :ByteArray) :void { b.writeUTFBytes(mold.md5); });
 
         zip.serialize(out, /*includeAdler32=*/true);
     }

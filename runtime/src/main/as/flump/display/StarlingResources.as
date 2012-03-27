@@ -12,8 +12,7 @@ import starling.display.DisplayObject;
 
 public class StarlingResources
 {
-    public static const MOVIE_LOCATION :String = "movies.amf";
-    public static const ATLAS_LOCATION :String = "atlases.amf";
+    public static const LIBRARY_LOCATION :String = "library.amf";
     public static const MD5_LOCATION :String = "md5";
 
     public static function loadURL (url :String) :Future {
@@ -74,6 +73,7 @@ import flump.executor.load.ImageLoader;
 import flump.executor.load.LoadedImage;
 import flump.mold.AtlasMold;
 import flump.mold.AtlasTextureMold;
+import flump.mold.LibraryMold;
 import flump.mold.Molds;
 import flump.mold.MovieMold;
 
@@ -96,10 +96,8 @@ class Loader extends VisibleFuture
     protected function onFileLoaded (e :FZipEvent) :void {
         const loaded :FZipFile = zip.removeFileAt(zip.getFileCount() - 1);
         const name :String = loaded.filename;
-        if (name == StarlingResources.ATLAS_LOCATION) {
-            _atlases = loaded.content.readObject();
-        } else if (name == StarlingResources.MOVIE_LOCATION) {
-            _movies = loaded.content.readObject();
+        if (name == StarlingResources.LIBRARY_LOCATION) {
+            _lib = loaded.content.readObject();
         } else if (name == StarlingResources.MD5_LOCATION ) { // Nothing to verify
         } else if (name.indexOf('.png', name.length - 4) != -1) {
             // TODO - specify density?
@@ -110,7 +108,7 @@ class Loader extends VisibleFuture
     protected function onZipLoadingComplete (..._) :void {
         const loader :ImageLoader = new ImageLoader();
         _pngLoaders.terminated.add(onPngLoadingComplete);
-        for each (var atlas :AtlasMold in _atlases) loadAtlas(loader, atlas);
+        for each (var atlas :AtlasMold in _lib.atlases) loadAtlas(loader, atlas);
         _pngLoaders.shutdown();
     }
 
@@ -130,8 +128,9 @@ class Loader extends VisibleFuture
     }
 
     public function onPngLoadingComplete (..._) :void {
-        for each (var movie :MovieMold in _movies) {
+        for each (var movie :MovieMold in _lib.movies) {
             var creator :MovieCreator = new MovieCreator();
+            creator.frameRate = _lib.frameRate;
             creator.mold = movie;
             _creators[movie.libraryItem] = creator;
         }
@@ -144,8 +143,7 @@ class Loader extends VisibleFuture
     }
 
     protected var _creators :Dictionary = new Dictionary();//<name, TextureCreator/MovieCreator>
-    protected var _atlases :Vector.<AtlasMold>;
-    protected var _movies :Vector.<MovieMold>;
+    protected var _lib :LibraryMold;
     protected var _pngBytes :Dictionary = new Dictionary();//<String name, ByteArray>
     protected var _pngLoaders :Executor = new Executor();
 }
@@ -170,14 +168,16 @@ class TextureCreator {
     }
 }
 import flump.display.Movie;
+import flump.mold.LibraryMold;
 import flump.mold.MovieMold;
 
 import starling.display.DisplayObject;
 
 class MovieCreator {
+    public var frameRate :Number;
     public var mold :MovieMold;
 
     public function create (idToDisplayObject :Function) :DisplayObject {
-        return new Movie(mold, idToDisplayObject);
+        return new Movie(mold, frameRate, idToDisplayObject);
     }
 }

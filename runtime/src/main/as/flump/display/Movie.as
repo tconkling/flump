@@ -12,9 +12,7 @@ import starling.events.Event;
 
 public class Movie extends Sprite
 {
-    public static const FRAMERATE :Number = 30;
-
-    public function Movie (src :MovieMold, idToDisplayObject :Function) {
+    public function Movie (src :MovieMold, frameRate :Number, idToDisplayObject :Function) {
         name = src.libraryItem;
         _ticker = new Ticker(advanceTime);
         const flipbook :Boolean = src.flipbook;
@@ -29,7 +27,8 @@ public class Movie extends Sprite
                 _frames = Math.max(src.layers[ii].frames, _frames);
             }
         }
-        _duration = _frames / FRAMERATE;
+        _frameRate = frameRate;
+        _duration = _frames / _frameRate;
         goto(0, true, false);
         addEventListener(Event.ADDED_TO_STAGE, addedToStage);
         addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
@@ -45,7 +44,7 @@ public class Movie extends Sprite
         _playTime += dt;
         var actualPlaytime :Number = _playTime;
         if (_playTime > _duration) _playTime = _playTime % _duration;
-        var newFrame :int = int(_playTime * FRAMERATE);
+        var newFrame :int = int(_playTime * _frameRate);
         const overDuration :Boolean = dt >= _duration;
         // If the update crosses or goes to the stopFrame, go to the stop frame, stop the movie and
         // clear it
@@ -53,7 +52,7 @@ public class Movie extends Sprite
             // how many frames remain to the stopframe?
             var framesRemaining :int =
                 (_frame <= _stopFrame ? _stopFrame - _frame : _frames - _frame + _stopFrame);
-            var framesElapsed :int = int(actualPlaytime * FRAMERATE) - _frame;
+            var framesElapsed :int = int(actualPlaytime * _frameRate) - _frame;
             if (framesElapsed >= framesRemaining) {
                 _playing = false;
                 newFrame = _stopFrame;
@@ -86,7 +85,7 @@ public class Movie extends Sprite
         _frame = newFrame;
         if (fromSkip) {
             // TODO [self fireLabelsFrom:newFrame to:newFrame];
-            _playTime = newFrame/FRAMERATE;
+            _playTime = newFrame/_frameRate;
         } else if (overDuration) {
             //[self fireLabelsFrom:oldFrame + 1 to:[_labels count] - 1];
             //[self fireLabelsFrom:0 to:_frame];
@@ -119,6 +118,7 @@ public class Movie extends Sprite
     protected var _layers :Vector.<Layer>;
     protected var _ticker :Ticker;
     protected var _frames :int;
+    protected var _frameRate :Number;
 
     private static const NO_FRAME :int = -1;
 }

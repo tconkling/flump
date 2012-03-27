@@ -8,6 +8,7 @@ import flash.utils.Dictionary;
 import flump.executor.load.LoadedSwf;
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
+import flump.mold.LibraryMold;
 import flump.mold.Mold;
 import flump.mold.MovieMold;
 
@@ -90,6 +91,15 @@ public class XflLibrary extends Mold
 
     public function addError(mold :Mold, severity :String, message :String, e :Object=null) :void {
         _errors.push(new ParseError(mold.location, severity, message, e));
+    }
+
+    public function toMold () :LibraryMold {
+        const mold :LibraryMold = new LibraryMold();
+        mold.frameRate = frameRate;
+        mold.md5 = md5;
+        mold.movies = movies;
+        // Leave mold.atlases unpopulated
+        return mold;
     }
 
     protected var _errors :Vector.<ParseError> = new Vector.<ParseError>;

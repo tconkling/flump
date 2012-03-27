@@ -26,7 +26,7 @@ public class DisplayCreator
     }
 
     public function loadMovie (name :String) :Movie {
-        return new Movie(_lib.getLibrary(name, MovieMold), loadId);
+        return new Movie(_lib.getLibrary(name, MovieMold), _lib.frameRate, loadId);
     }
 
     public function getMemoryUsage (name :String, subtex :Dictionary = null) :int {
