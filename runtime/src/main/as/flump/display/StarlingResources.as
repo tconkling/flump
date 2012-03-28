@@ -168,7 +168,6 @@ class TextureCreator {
     }
 }
 import flump.display.Movie;
-import flump.mold.LibraryMold;
 import flump.mold.MovieMold;
 
 import starling.display.DisplayObject;

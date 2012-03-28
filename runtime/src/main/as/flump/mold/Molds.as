@@ -22,6 +22,7 @@ public class Molds
         AtlasTextureMold,
         KeyframeMold,
         LayerMold,
+        LibraryMold,
         MovieMold,
 
         Point,
