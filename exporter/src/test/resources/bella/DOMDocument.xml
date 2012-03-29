@@ -1,9 +1,14 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#660000" gridColor="#C0C0C0" guidesColor="#00FF00" width="170" height="420" frameRate="30" currentTimeline="1" xflVersion="2.1" creatorInfo="Adobe Flash Professional CS5.5" platform="Macintosh" versionInfo="Saved by Adobe Flash Macintosh 11.5 build 349" majorVersion="11" minorVersion="5" buildNumber="349" gridSpacingX="18" gridSpacingY="18" snapAlignBorderSpacing="18" objectsSnapTo="false" timelineHeight="793" timelineLabelWidth="0" nextSceneIdentifier="33" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#660000" gridColor="#C0C0C0" guidesColor="#00FF00" width="170" height="420" frameRate="30" currentTimeline="1" xflVersion="2.1" creatorInfo="Adobe Flash Professional CS5.5" platform="Macintosh" versionInfo="Saved by Adobe Flash Macintosh 11.5 build 325" majorVersion="11" minorVersion="5" buildNumber="325" gridSpacingX="18" gridSpacingY="18" snapAlignBorderSpacing="18" objectsSnapTo="false" timelineHeight="793" timelineLabelWidth="0" nextSceneIdentifier="33" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveEnabled="true" autoSaveHasPrompted="true">
+     <media>
+          <DOMBitmapItem name="background.png" itemID="4f73cb9f-000003a9" sourceExternalFilepath="./LIBRARY/background.png" sourceLastImported="1332988112" sourcePlatform="macintosh" externalFileSize="25752" originalCompressionType="lossless" quality="50" href="background.png" bitmapDataHRef="M 1 1332988732.dat" frameRight="12800" frameBottom="9600"/>
+     </media>
      <symbols>
+          <Include href="background.xml" itemID="4f73cb51-0000035e" lastModified="1332989461"/>
           <Include href="Brow.xml" itemID="454a687e-00000038" lastModified="1330491202"/>
           <Include href="Cheeks.xml" itemID="454a68d5-00000046" lastModified="1330491169"/>
           <Include href="dance_01.xml" itemID="461acdf0-00000037" lastModified="1330743885"/>
           <Include href="dance_02.xml" loadImmediate="false" itemID="461ace7c-00000039" lastModified="1330494104"/>
+          <Include href="dance_scene.xml" itemID="4f73cb81-00000366" lastModified="1332989452"/>
           <Include href="Eyelid Lower.xml" itemID="454a6899-0000003c" lastModified="1330491245"/>
           <Include href="Eyelid Upper.xml" itemID="454a6888-0000003a" lastModified="1330491254"/>
           <Include href="Eyelids closed.xml" itemID="45e60f03-00000033" lastModified="1330491267"/>
@@ -368,6 +373,8 @@
      </timelines>
      <PrinterSettings platform="macintosh"/>
      <publishHistory>
+          <PublishItem publishSize="70009" publishTime="1332989145"/>
+          <PublishItem publishSize="70015" publishTime="1332988837"/>
           <PublishItem publishSize="61526" publishTime="1330494121"/>
           <PublishItem publishSize="61548" publishTime="1330493958"/>
           <PublishItem publishSize="61548" publishTime="1330493807"/>
@@ -386,7 +393,5 @@
           <PublishItem publishSize="189544" publishTime="1330492292"/>
           <PublishItem publishSize="187832" publishTime="1330492209"/>
           <PublishItem publishSize="188114" publishTime="1330492143"/>
-          <PublishItem publishSize="187832" publishTime="1330492120"/>
-          <PublishItem publishSize="187847" publishTime="1330492103"/>
      </publishHistory>
 </DOMDocument>

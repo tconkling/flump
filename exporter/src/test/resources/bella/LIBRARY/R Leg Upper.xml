@@ -7,19 +7,13 @@
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMGroup selected="true">
-                  <matrix>
-                    <Matrix tx="-241.9" ty="-181.4"/>
-                  </matrix>
                   <transformationPoint>
-                    <Point x="259.9" y="189.2"/>
+                    <Point x="18" y="7.8"/>
                   </transformationPoint>
                   <members>
                     <DOMShape selected="true">
-                      <matrix>
-                        <Matrix tx="-241.9" ty="-181.4"/>
-                      </matrix>
                       <transformationPoint>
-                        <Point x="259.9" y="189.2"/>
+                        <Point x="18" y="7.8"/>
                       </transformationPoint>
                       <fills>
                         <FillStyle index="1">
@@ -27,8 +21,7 @@
                         </FillStyle>
                       </fills>
                       <edges>
-                        <Edge fillStyle1="1" edges="!5421.5 3871.5[#1590.4B #1003.39 5414 4924.5!5414 4924.5|5351 5491.5!5351 5491.5[#14D8.F8 #163D.EB 5283.5 5772.5!5283.5 5772.5[#1467.11 #16E7.7C 5181 5848!5181 5848[#1413.0A #16C8.A2 5071.5 5766!5071.5 5766[#138B.EE #1643.4B 4903 4927
-!4903 4927[#12C1.F7 #103A.CF 4858 3896!4858 3896[#1332.38 #E35.17 5049 3627.5!5049 3627.5[#14CA.16 #E3C.B9 5421.5 3871.5"/>
+                        <Edge fillStyle1="1" edges="!211 0S2[484 17 584 244!584 244[682 471 576 1297!576 1297|513 1864!513 1864[499 2066 446 2145!446 2145[385 2235 343 2220!343 2220[301 2205 234 2138!234 2138[166 2071 65 1299!65 1299[-36 527 20 268!20 268[76 9 211 0"/>
                       </edges>
                     </DOMShape>
                   </members>

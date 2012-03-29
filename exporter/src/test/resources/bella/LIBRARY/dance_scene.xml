@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="dance_scene" itemID="4f73cb81-00000366" linkageExportForAS="true" linkageClassName="dance_scene" lastModified="1332989452" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="dance_scene">
+      <layers>
+        <DOMLayer name="Layer 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="dance_01" centerPoint3DX="543.95" centerPoint3DY="256.15">
+                  <matrix>
+                    <Matrix tx="550.85" ty="261.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-6.9" y="-5.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="background" selected="true" centerPoint3DX="321" centerPoint3DY="240">
+                  <transformationPoint>
+                    <Point x="321" y="240"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

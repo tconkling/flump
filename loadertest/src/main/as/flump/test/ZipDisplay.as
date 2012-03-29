@@ -17,10 +17,7 @@ public class ZipDisplay extends Sprite
     }
 
     protected function onResourcesLoaded (resources :StarlingResources) :void {
-        const movie :Movie = resources.loadMovie("dance_01");
-        movie.x = movie.width;
-        movie.y = movie.height/2;
-        addChild(movie);
+        addChild(resources.loadMovie("dance_scene"));
     }
 
     [Embed(source="/../../../bella.zip", mimeType="application/octet-stream")]

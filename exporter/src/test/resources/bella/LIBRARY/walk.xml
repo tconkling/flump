@@ -125,7 +125,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Hair Front">
                   <matrix>
-                    <Matrix a="1.10794067382812" d="1.0244140625" tx="-38.75" ty="-189.8"/>
+                    <Matrix a="1.10792541503906" d="1.0244140625" tx="-38.75" ty="-189.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="33.5" y="4.6"/>
@@ -168,7 +168,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Hair Front">
                   <matrix>
-                    <Matrix a="0.997146606445312" d="1.09619140625" tx="-35.05" ty="-186.55"/>
+                    <Matrix a="0.99713134765625" d="1.09619140625" tx="-35.05" ty="-186.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="33.5" y="4.55"/>
@@ -207,7 +207,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Brow">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-33.15" ty="-165.8"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-33.15" ty="-165.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="16.8" y="2.95"/>
@@ -230,7 +230,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Brow">
                   <matrix>
-                    <Matrix a="1.05140686035156" b="-0.134902954101562" c="0.134918212890625" d="1.05123901367188" tx="-33" ty="-155.65"/>
+                    <Matrix a="1.0513916015625" b="-0.1348876953125" c="0.134918212890625" d="1.05123901367188" tx="-33" ty="-155.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="16.75" y="2.85"/>
@@ -253,7 +253,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Brow">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-33.15" ty="-165.8"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-33.15" ty="-165.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="16.8" y="2.95"/>
@@ -276,7 +276,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Brow">
                   <matrix>
-                    <Matrix a="1.05140686035156" b="-0.134902954101562" c="0.134918212890625" d="1.05123901367188" tx="-33" ty="-155.65"/>
+                    <Matrix a="1.0513916015625" b="-0.1348876953125" c="0.134918212890625" d="1.05123901367188" tx="-33" ty="-155.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="16.75" y="2.85"/>
@@ -299,7 +299,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Brow">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-33.15" ty="-165.8"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-33.15" ty="-165.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="16.8" y="2.95"/>
@@ -326,7 +326,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Eyelid Upper">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-32.85" ty="-155.1"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-32.85" ty="-155.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="17.5" y="4.3"/>
@@ -349,7 +349,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Eyelid Upper">
                   <matrix>
-                    <Matrix a="1.05140686035156" b="-0.134902954101562" c="0.134918212890625" d="1.05123901367188" tx="-33" ty="-143.5"/>
+                    <Matrix a="1.0513916015625" b="-0.1348876953125" c="0.134918212890625" d="1.05123901367188" tx="-33" ty="-143.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="17.5" y="4.35"/>
@@ -372,7 +372,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Eyelid Upper">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-32.85" ty="-155.1"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-32.85" ty="-155.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="17.5" y="4.3"/>
@@ -395,7 +395,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Eyelid Upper">
                   <matrix>
-                    <Matrix a="1.05140686035156" b="-0.134902954101562" c="0.134918212890625" d="1.05123901367188" tx="-33" ty="-143.5"/>
+                    <Matrix a="1.0513916015625" b="-0.1348876953125" c="0.134918212890625" d="1.05123901367188" tx="-33" ty="-143.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="17.5" y="4.35"/>
@@ -418,7 +418,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Eyelid Upper">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-32.85" ty="-155.1"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-32.85" ty="-155.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="17.5" y="4.3"/>
@@ -445,7 +445,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Eyelid Lower">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-30.15" ty="-146.25"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-30.15" ty="-146.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="16" y="2.25"/>
@@ -468,7 +468,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Eyelid Lower">
                   <matrix>
-                    <Matrix a="1.05140686035156" b="-0.134902954101562" c="0.134918212890625" d="1.05123901367188" tx="-30.65" ty="-134.5"/>
+                    <Matrix a="1.0513916015625" b="-0.1348876953125" c="0.134918212890625" d="1.05123901367188" tx="-30.65" ty="-134.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="16.1" y="2.15"/>
@@ -491,7 +491,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Eyelid Lower">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-30.15" ty="-146.25"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-30.15" ty="-146.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="16" y="2.25"/>
@@ -514,7 +514,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Eyelid Lower">
                   <matrix>
-                    <Matrix a="1.05140686035156" b="-0.134902954101562" c="0.134918212890625" d="1.05123901367188" tx="-30.65" ty="-134.5"/>
+                    <Matrix a="1.0513916015625" b="-0.1348876953125" c="0.134918212890625" d="1.05123901367188" tx="-30.65" ty="-134.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="16.1" y="2.15"/>
@@ -537,7 +537,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Eyelid Lower">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-30.15" ty="-146.25"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-30.15" ty="-146.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="16" y="2.25"/>
@@ -564,7 +564,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Pupil">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-28.8" ty="-152.9"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-28.8" ty="-152.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.2" y="3.65"/>
@@ -587,7 +587,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Pupil">
                   <matrix>
-                    <Matrix a="1.05140686035156" b="-0.134902954101562" c="0.134918212890625" d="1.05123901367188" tx="-29.05" ty="-140.95"/>
+                    <Matrix a="1.0513916015625" b="-0.1348876953125" c="0.134918212890625" d="1.05123901367188" tx="-29.05" ty="-140.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.2" y="3.7"/>
@@ -610,7 +610,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Pupil">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-28.8" ty="-152.9"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-28.8" ty="-152.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.2" y="3.65"/>
@@ -633,7 +633,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Pupil">
                   <matrix>
-                    <Matrix a="1.05140686035156" b="-0.134902954101562" c="0.134918212890625" d="1.05123901367188" tx="-29.05" ty="-140.95"/>
+                    <Matrix a="1.0513916015625" b="-0.1348876953125" c="0.134918212890625" d="1.05123901367188" tx="-29.05" ty="-140.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.2" y="3.7"/>
@@ -656,7 +656,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Pupil">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-28.8" ty="-152.9"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-28.8" ty="-152.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.2" y="3.65"/>
@@ -683,7 +683,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Eyes">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-32" ty="-153.1"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-32" ty="-153.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="16.7" y="5.3"/>
@@ -706,7 +706,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Eyes">
                   <matrix>
-                    <Matrix a="1.05140686035156" b="-0.134902954101562" c="0.134918212890625" d="1.05123901367188" tx="-32.25" ty="-141.45"/>
+                    <Matrix a="1.0513916015625" b="-0.1348876953125" c="0.134918212890625" d="1.05123901367188" tx="-32.25" ty="-141.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="16.75" y="5.2"/>
@@ -729,7 +729,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Eyes">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-32" ty="-153.1"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-32" ty="-153.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="16.7" y="5.3"/>
@@ -752,7 +752,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Eyes">
                   <matrix>
-                    <Matrix a="1.05140686035156" b="-0.134902954101562" c="0.134918212890625" d="1.05123901367188" tx="-32.25" ty="-141.45"/>
+                    <Matrix a="1.0513916015625" b="-0.1348876953125" c="0.134918212890625" d="1.05123901367188" tx="-32.25" ty="-141.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="16.75" y="5.2"/>
@@ -775,7 +775,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Eyes">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-32" ty="-153.1"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-32" ty="-153.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="16.7" y="5.3"/>
@@ -802,7 +802,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="nose">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-21.95" ty="-141.9"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-21.95" ty="-141.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="3.65" y="2.35"/>
@@ -825,7 +825,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="nose">
                   <matrix>
-                    <Matrix a="1.05140686035156" b="-0.134902954101562" c="0.134918212890625" d="1.05123901367188" tx="-22.5" ty="-129.95"/>
+                    <Matrix a="1.0513916015625" b="-0.1348876953125" c="0.134918212890625" d="1.05123901367188" tx="-22.5" ty="-129.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="3.6" y="2.4"/>
@@ -848,7 +848,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="nose">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-21.95" ty="-141.9"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-21.95" ty="-141.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="3.65" y="2.35"/>
@@ -871,7 +871,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="nose">
                   <matrix>
-                    <Matrix a="1.05140686035156" b="-0.134902954101562" c="0.134918212890625" d="1.05123901367188" tx="-22.5" ty="-129.95"/>
+                    <Matrix a="1.0513916015625" b="-0.1348876953125" c="0.134918212890625" d="1.05123901367188" tx="-22.5" ty="-129.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="3.6" y="2.4"/>
@@ -894,7 +894,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="nose">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-21.95" ty="-141.9"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-21.95" ty="-141.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="3.65" y="2.35"/>
@@ -921,7 +921,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="mouth_symbol" name="mouth">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-22.25" ty="-134.1"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-22.25" ty="-134.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="11.85" y="2.3"/>
@@ -944,7 +944,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="mouth_symbol" name="mouth">
                   <matrix>
-                    <Matrix a="1.05140686035156" b="-0.134902954101562" c="0.134918212890625" d="1.05123901367188" tx="-23.1" ty="-122.15"/>
+                    <Matrix a="1.0513916015625" b="-0.1348876953125" c="0.134918212890625" d="1.05123901367188" tx="-23.1" ty="-122.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="11.8" y="2.35"/>
@@ -967,7 +967,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="mouth_symbol" name="mouth">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-22.25" ty="-134.1"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-22.25" ty="-134.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="11.85" y="2.3"/>
@@ -990,7 +990,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="mouth_symbol" name="mouth">
                   <matrix>
-                    <Matrix a="1.05140686035156" b="-0.134902954101562" c="0.134918212890625" d="1.05123901367188" tx="-23.1" ty="-122.15"/>
+                    <Matrix a="1.0513916015625" b="-0.1348876953125" c="0.134918212890625" d="1.05123901367188" tx="-23.1" ty="-122.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="11.8" y="2.35"/>
@@ -1013,7 +1013,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="mouth_symbol" name="mouth">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-22.25" ty="-134.1"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-22.25" ty="-134.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="11.85" y="2.3"/>
@@ -1040,7 +1040,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Cheeks">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-32.3" ty="-143.9"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-32.3" ty="-143.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="20" y="7"/>
@@ -1063,7 +1063,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Cheeks">
                   <matrix>
-                    <Matrix a="1.05140686035156" b="-0.134902954101562" c="0.134918212890625" d="1.05123901367188" tx="-32.8" ty="-132.3"/>
+                    <Matrix a="1.0513916015625" b="-0.1348876953125" c="0.134918212890625" d="1.05123901367188" tx="-32.8" ty="-132.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="19.95" y="7.05"/>
@@ -1086,7 +1086,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Cheeks">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-32.3" ty="-143.9"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-32.3" ty="-143.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="20" y="7"/>
@@ -1109,7 +1109,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Cheeks">
                   <matrix>
-                    <Matrix a="1.05140686035156" b="-0.134902954101562" c="0.134918212890625" d="1.05123901367188" tx="-32.8" ty="-132.3"/>
+                    <Matrix a="1.0513916015625" b="-0.1348876953125" c="0.134918212890625" d="1.05123901367188" tx="-32.8" ty="-132.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="19.95" y="7.05"/>
@@ -1132,7 +1132,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Cheeks">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-32.3" ty="-143.9"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-32.3" ty="-143.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="20" y="7"/>
@@ -1159,7 +1159,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Head">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-38.55" ty="-185.15"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-38.55" ty="-185.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="37.9" y="54.2"/>
@@ -1182,7 +1182,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Head">
                   <matrix>
-                    <Matrix a="1.05140686035156" b="-0.134902954101562" c="0.134918212890625" d="1.05123901367188" tx="-37.65" ty="-173.75"/>
+                    <Matrix a="1.0513916015625" b="-0.1348876953125" c="0.134918212890625" d="1.05123901367188" tx="-37.65" ty="-173.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="37.9" y="54.25"/>
@@ -1205,7 +1205,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Head">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-38.55" ty="-185.15"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-38.55" ty="-185.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="37.9" y="54.2"/>
@@ -1228,7 +1228,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Head">
                   <matrix>
-                    <Matrix a="1.05140686035156" b="-0.134902954101562" c="0.134918212890625" d="1.05123901367188" tx="-37.65" ty="-173.75"/>
+                    <Matrix a="1.0513916015625" b="-0.1348876953125" c="0.134918212890625" d="1.05123901367188" tx="-37.65" ty="-173.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="37.9" y="54.25"/>
@@ -1251,7 +1251,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Head">
                   <matrix>
-                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.171096801757812" d="1.04583740234375" tx="-38.55" ty="-185.15"/>
+                    <Matrix a="1.04600524902344" b="-0.17108154296875" c="0.17108154296875" d="1.04583740234375" tx="-38.55" ty="-185.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="37.9" y="54.2"/>
@@ -1298,7 +1298,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Hair Middle">
                   <matrix>
-                    <Matrix a="1.08010864257812" d="1.00688171386719" tx="-40.35" ty="-188.55"/>
+                    <Matrix a="1.08009338378906" d="1.00688171386719" tx="-40.35" ty="-188.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="32.4" y="4.15"/>
@@ -1341,7 +1341,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Hair Middle">
                   <matrix>
-                    <Matrix a="1.02774047851562" d="1.09429931640625" tx="-38.65" ty="-188.2"/>
+                    <Matrix a="1.02772521972656" d="1.09429931640625" tx="-38.65" ty="-188.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="32.4" y="4.15"/>
@@ -1381,7 +1381,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Hair Middle">
                   <matrix>
-                    <Matrix a="1.08010864257812" d="1.00688171386719" tx="-40.35" ty="-188.55"/>
+                    <Matrix a="1.08009338378906" d="1.00688171386719" tx="-40.35" ty="-188.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="32.4" y="4.15"/>
@@ -1424,7 +1424,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Hair Middle">
                   <matrix>
-                    <Matrix a="1.02774047851562" d="1.09429931640625" tx="-38.65" ty="-188.2"/>
+                    <Matrix a="1.02772521972656" d="1.09429931640625" tx="-38.65" ty="-188.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="32.4" y="4.15"/>
@@ -1571,7 +1571,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Hand">
                   <matrix>
-                    <Matrix a="0.951614379882812" b="-0.460418701171875" c="0.460494995117188" d="0.951461791992188" tx="21.75" ty="20.25"/>
+                    <Matrix a="0.95159912109375" b="-0.460418701171875" c="0.460494995117188" d="0.951461791992188" tx="21.75" ty="20.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="4.25" y="1.85"/>
@@ -1657,7 +1657,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Hand">
                   <matrix>
-                    <Matrix a="1.03016662597656" b="-0.243789672851562" c="0.243820190429688" d="1.02999877929688" tx="43.15" ty="27.55"/>
+                    <Matrix a="1.0301513671875" b="-0.2437744140625" c="0.243820190429688" d="1.02999877929688" tx="43.15" ty="27.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="4.3" y="2"/>
@@ -1680,7 +1680,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Hand">
                   <matrix>
-                    <Matrix a="0.951614379882812" b="-0.460418701171875" c="0.460494995117188" d="0.951461791992188" tx="21.75" ty="20.25"/>
+                    <Matrix a="0.95159912109375" b="-0.460418701171875" c="0.460494995117188" d="0.951461791992188" tx="21.75" ty="20.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="4.25" y="1.85"/>
@@ -1727,7 +1727,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Arm Lower">
                   <matrix>
-                    <Matrix a="1.05061340332031" b="0.130905151367188" c="-0.13092041015625" d="1.05044555664062" tx="15.45" ty="-23.75"/>
+                    <Matrix a="1.05059814453125" b="0.130905151367188" c="-0.13092041015625" d="1.05043029785156" tx="15.45" ty="-23.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="4.45" y="1.55"/>
@@ -1793,7 +1793,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Arm Lower">
                   <matrix>
-                    <Matrix a="1.04530334472656" b="-0.16937255859375" c="0.169403076171875" d="1.04513549804688" tx="28.25" ty="-21.95"/>
+                    <Matrix a="1.0452880859375" b="-0.16937255859375" c="0.169403076171875" d="1.04513549804688" tx="28.25" ty="-21.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="4.4" y="1.65"/>
@@ -1843,7 +1843,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Arm Upper">
                   <matrix>
-                    <Matrix a="1.05691528320312" b="0.073974609375" c="-0.073974609375" d="1.05674743652344" tx="19.25" ty="-103.25"/>
+                    <Matrix a="1.05690002441406" b="0.073974609375" c="-0.073974609375" d="1.05674743652344" tx="19.25" ty="-103.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="5.1" y="2.25"/>
@@ -1863,7 +1863,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Arm Upper">
                   <matrix>
-                    <Matrix a="1.04193115234375" b="0.192733764648438" c="-0.192764282226562" d="1.04176330566406" tx="19.6" ty="-91.15"/>
+                    <Matrix a="1.04193115234375" b="0.192733764648438" c="-0.1927490234375" d="1.041748046875" tx="19.6" ty="-91.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="5.1" y="2.3"/>
@@ -1886,7 +1886,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Arm Upper">
                   <matrix>
-                    <Matrix a="1.02352905273438" b="0.265045166015625" c="-0.265090942382812" d="1.02336120605469" tx="20" ty="-94"/>
+                    <Matrix a="1.02352905273438" b="0.265045166015625" c="-0.26507568359375" d="1.02336120605469" tx="20" ty="-94"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="4.9" y="2.15"/>
@@ -1929,7 +1929,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Arm Upper">
                   <matrix>
-                    <Matrix a="1.05946350097656" b="-0.02362060546875" c="0.02362060546875" d="1.05929565429688" tx="19.05" ty="-90.05"/>
+                    <Matrix a="1.0594482421875" b="-0.02362060546875" c="0.02362060546875" d="1.05929565429688" tx="19.05" ty="-90.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="5.05" y="2.3"/>
@@ -1952,7 +1952,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Arm Upper">
                   <matrix>
-                    <Matrix a="1.05691528320312" b="0.073974609375" c="-0.073974609375" d="1.05674743652344" tx="19.25" ty="-103.25"/>
+                    <Matrix a="1.05690002441406" b="0.073974609375" c="-0.073974609375" d="1.05674743652344" tx="19.25" ty="-103.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="5.1" y="2.25"/>
@@ -2002,7 +2002,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Torso">
                   <matrix>
-                    <Matrix a="1.07791137695312" b="0.03338623046875" c="-0.033355712890625" d="1.07603454589844" tx="-26.25" ty="-99"/>
+                    <Matrix a="1.07789611816406" b="0.03338623046875" c="-0.033355712890625" d="1.07603454589844" tx="-26.25" ty="-99"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="24.2" y="95.45"/>
@@ -2087,7 +2087,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Leg Upper">
                   <matrix>
-                    <Matrix a="1.060302734375" b="-0.0148162841796875" c="0.0148162841796875" d="1.06013488769531" tx="-10.3" ty="-12.85"/>
+                    <Matrix a="1.060302734375" b="-0.0148162841796875" c="0.0148162841796875" d="1.06011962890625" tx="-10.3" ty="-12.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="18.3" y="11.3"/>
@@ -2110,7 +2110,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Leg Upper">
                   <matrix>
-                    <Matrix a="1.05703735351562" b="-0.0789337158203125" c="0.078948974609375" d="1.05686950683594" tx="-13.05" ty="3.7"/>
+                    <Matrix a="1.05702209472656" b="-0.0789337158203125" c="0.078948974609375" d="1.05686950683594" tx="-13.05" ty="3.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="18.25" y="11.35"/>
@@ -2133,7 +2133,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Leg Upper">
                   <matrix>
-                    <Matrix a="0.911422729492188" b="0.538803100585938" c="-0.538894653320312" d="0.911285400390625" tx="-0.25" ty="-19.75"/>
+                    <Matrix a="0.911422729492188" b="0.538803100585938" c="-0.53887939453125" d="0.911285400390625" tx="-0.25" ty="-19.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="18.3" y="11.35"/>
@@ -2156,7 +2156,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Leg Upper">
                   <matrix>
-                    <Matrix a="0.932846069335938" b="0.49932861328125" c="-0.499404907226562" d="0.932693481445312" tx="5.05" ty="-5.95"/>
+                    <Matrix a="0.932846069335938" b="0.49932861328125" c="-0.4993896484375" d="0.93267822265625" tx="5.05" ty="-5.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="18.3" y="11.25"/>
@@ -2179,7 +2179,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Leg Upper">
                   <matrix>
-                    <Matrix a="1.060302734375" b="-0.0148162841796875" c="0.0148162841796875" d="1.06013488769531" tx="-10.3" ty="-12.85"/>
+                    <Matrix a="1.060302734375" b="-0.0148162841796875" c="0.0148162841796875" d="1.06011962890625" tx="-10.3" ty="-12.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="18.3" y="11.3"/>
@@ -2206,7 +2206,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Foot">
                   <matrix>
-                    <Matrix a="1.03363037109375" b="0.229827880859375" c="-0.2298583984375" d="1.03346252441406" tx="12.4" ty="171.3"/>
+                    <Matrix a="1.03363037109375" b="0.229827880859375" c="-0.2298583984375" d="1.033447265625" tx="12.4" ty="171.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="30.6" y="2.15"/>
@@ -2272,7 +2272,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Foot">
                   <matrix>
-                    <Matrix a="0.995498657226562" b="-0.353164672851562" c="0.353134155273438" d="0.995498657226562" tx="-43.65" ty="186.35"/>
+                    <Matrix a="0.9954833984375" b="-0.3531494140625" c="0.353134155273438" d="0.9954833984375" tx="-43.65" ty="186.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="30.65" y="2.1"/>
@@ -2318,7 +2318,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Foot">
                   <matrix>
-                    <Matrix a="1.03363037109375" b="0.229827880859375" c="-0.2298583984375" d="1.03346252441406" tx="12.4" ty="171.3"/>
+                    <Matrix a="1.03363037109375" b="0.229827880859375" c="-0.2298583984375" d="1.033447265625" tx="12.4" ty="171.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="30.6" y="2.15"/>
@@ -2345,7 +2345,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Leg Lower">
                   <matrix>
-                    <Matrix a="1.06047058105469" d="1.16004943847656" tx="24.15" ty="90.3"/>
+                    <Matrix a="1.06047058105469" d="1.1600341796875" tx="24.15" ty="90.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="5.8" y="9.05"/>
@@ -2368,7 +2368,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Leg Lower">
                   <matrix>
-                    <Matrix a="0.993316650390625" b="-0.368057250976562" c="0.396270751953125" d="1.06913757324219" tx="26.7" ty="102.7"/>
+                    <Matrix a="0.993316650390625" b="-0.3680419921875" c="0.396270751953125" d="1.06913757324219" tx="26.7" ty="102.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="5.75" y="9.2"/>
@@ -2414,7 +2414,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Leg Lower">
                   <matrix>
-                    <Matrix a="0.95697021484375" b="0.453292846679688" c="-0.464920043945312" d="0.981231689453125" tx="-16.5" ty="99.8"/>
+                    <Matrix a="0.95697021484375" b="0.453292846679688" c="-0.46490478515625" d="0.981231689453125" tx="-16.5" ty="99.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="5.85" y="9.15"/>
@@ -2437,7 +2437,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="L Leg Lower">
                   <matrix>
-                    <Matrix a="1.06047058105469" d="1.16004943847656" tx="24.15" ty="90.3"/>
+                    <Matrix a="1.06047058105469" d="1.1600341796875" tx="24.15" ty="90.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="5.8" y="9.05"/>
@@ -2583,7 +2583,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="R Leg Upper">
                   <matrix>
-                    <Matrix a="1.03028869628906" b="0.247756958007812" c="-0.247802734375" d="1.03013610839844" tx="-25.9" ty="-23.25"/>
+                    <Matrix a="1.0302734375" b="0.24774169921875" c="-0.247802734375" d="1.03013610839844" tx="-25.9" ty="-23.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="7.25" y="11.6"/>
@@ -2629,7 +2629,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="R Leg Upper">
                   <matrix>
-                    <Matrix a="1.03279113769531" b="-0.237213134765625" c="0.243667602539062" d="1.06059265136719" tx="-32.15" ty="-17.25"/>
+                    <Matrix a="1.03277587890625" b="-0.237213134765625" c="0.24365234375" d="1.06059265136719" tx="-32.15" ty="-17.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="7.15" y="11.6"/>
@@ -2652,7 +2652,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="R Leg Upper">
                   <matrix>
-                    <Matrix a="1.00700378417969" b="-0.327423095703125" c="0.327484130859375" d="1.00685119628906" tx="-31.45"/>
+                    <Matrix a="1.00700378417969" b="-0.327423095703125" c="0.327484130859375" d="1.0068359375" tx="-31.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="7.15" y="11.55"/>
@@ -2675,7 +2675,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="R Leg Upper">
                   <matrix>
-                    <Matrix a="1.03028869628906" b="0.247756958007812" c="-0.247802734375" d="1.03013610839844" tx="-25.9" ty="-23.25"/>
+                    <Matrix a="1.0302734375" b="0.24774169921875" c="-0.247802734375" d="1.03013610839844" tx="-25.9" ty="-23.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="7.25" y="11.6"/>
@@ -2725,7 +2725,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="R Foot">
                   <matrix>
-                    <Matrix a="1.0235595703125" b="0.270477294921875" c="-0.270523071289062" d="1.02339172363281" tx="-79.25" ty="167.05"/>
+                    <Matrix a="1.0235595703125" b="0.270477294921875" c="-0.2705078125" d="1.02337646484375" tx="-79.25" ty="167.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="31.1" y="2.85"/>
@@ -2748,7 +2748,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="R Foot">
                   <matrix>
-                    <Matrix a="1.0435791015625" b="0.18511962890625" c="-0.185150146484375" d="1.04341125488281" tx="-10.45" ty="165.5"/>
+                    <Matrix a="1.0435791015625" b="0.18511962890625" c="-0.185150146484375" d="1.04339599609375" tx="-10.45" ty="165.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="31.1" y="2.85"/>
@@ -2771,7 +2771,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="R Foot">
                   <matrix>
-                    <Matrix a="1.04495239257812" b="-0.14666748046875" c="0.307693481445312" d="1.02218627929688" tx="16.7" ty="172.7"/>
+                    <Matrix a="1.04493713378906" b="-0.14666748046875" c="0.30767822265625" d="1.02218627929688" tx="16.7" ty="172.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="31" y="2.9"/>
@@ -2844,7 +2844,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="R Leg Lower">
                   <matrix>
-                    <Matrix a="1.031005859375" b="0.24365234375" c="-0.243698120117188" d="1.03083801269531" tx="-42.95" ty="95.5"/>
+                    <Matrix a="1.031005859375" b="0.243637084960938" c="-0.243698120117188" d="1.03082275390625" tx="-42.95" ty="95.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="4.3" y="5.55"/>
@@ -2890,7 +2890,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="R Leg Lower">
                   <matrix>
-                    <Matrix a="1.01397705078125" b="-0.304733276367188" c="0.296951293945312" d="0.987716674804688" tx="15" ty="97.55"/>
+                    <Matrix a="1.01397705078125" b="-0.304733276367188" c="0.29693603515625" d="0.987716674804688" tx="15" ty="97.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="4.25" y="5.55"/>
@@ -2940,7 +2940,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="R Hand">
                   <matrix>
-                    <Matrix a="1.03640747070312" b="0.221160888671875" c="-0.221206665039062" d="1.03623962402344" tx="-28.4" ty="10"/>
+                    <Matrix a="1.03639221191406" b="0.221160888671875" c="-0.22119140625" d="1.03623962402344" tx="-28.4" ty="10"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="6.5" y="2.8"/>
@@ -2963,7 +2963,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="R Hand">
                   <matrix>
-                    <Matrix a="1.0489501953125" b="0.152481079101562" c="-0.152511596679688" d="1.04878234863281" tx="-25.45" ty="22"/>
+                    <Matrix a="1.0489501953125" b="0.1524658203125" c="-0.152511596679688" d="1.04876708984375" tx="-25.45" ty="22"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="6.55" y="2.85"/>
@@ -2986,7 +2986,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="R Hand">
                   <matrix>
-                    <Matrix a="1.01560974121094" b="-0.301788330078125" c="0.301834106445312" d="1.01545715332031" tx="-24.9" ty="17.4"/>
+                    <Matrix a="1.01560974121094" b="-0.301788330078125" c="0.30181884765625" d="1.01544189453125" tx="-24.9" ty="17.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="6.45" y="2.9"/>
@@ -3029,7 +3029,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="R Hand">
                   <matrix>
-                    <Matrix a="0.899673461914062" b="0.557998657226562" c="-0.558090209960938" d="0.8995361328125" tx="-35.3" ty="17.55"/>
+                    <Matrix a="0.899658203125" b="0.5579833984375" c="-0.558090209960938" d="0.8995361328125" tx="-35.3" ty="17.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="6.5" y="2.85"/>
@@ -3052,7 +3052,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="R Hand">
                   <matrix>
-                    <Matrix a="1.03640747070312" b="0.221160888671875" c="-0.221206665039062" d="1.03623962402344" tx="-28.4" ty="10"/>
+                    <Matrix a="1.03639221191406" b="0.221160888671875" c="-0.22119140625" d="1.03623962402344" tx="-28.4" ty="10"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="6.5" y="2.8"/>
@@ -3102,7 +3102,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="R Arm Lower">
                   <matrix>
-                    <Matrix a="1.0489501953125" b="-0.1524658203125" c="0.152496337890625" d="1.04878234863281" tx="-28.75" ty="-25.1"/>
+                    <Matrix a="1.0489501953125" b="-0.1524658203125" c="0.152496337890625" d="1.04876708984375" tx="-28.75" ty="-25.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="20" y="2.25"/>
@@ -3125,7 +3125,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="R Arm Lower">
                   <matrix>
-                    <Matrix a="1.02680969238281" b="-0.26165771484375" c="0.261703491210938" d="1.02665710449219" tx="-31.45" ty="-36.5"/>
+                    <Matrix a="1.02679443359375" b="-0.26165771484375" c="0.261703491210938" d="1.02665710449219" tx="-31.45" ty="-36.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="19.95" y="2.25"/>
@@ -3241,7 +3241,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="R Arm Upper">
                   <matrix>
-                    <Matrix a="1.05947875976562" b="-0.042388916015625" c="0.042388916015625" d="1.05931091308594" tx="-17.45" ty="-93.4"/>
+                    <Matrix a="1.05946350097656" b="-0.042388916015625" c="0.042388916015625" d="1.05931091308594" tx="-17.45" ty="-93.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="7.7" y="3.65"/>
@@ -3377,7 +3377,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Hair Back">
                   <matrix>
-                    <Matrix a="1.07901000976562" d="1.02543640136719" tx="-38.2" ty="-184.45"/>
+                    <Matrix a="1.07899475097656" d="1.02543640136719" tx="-38.2" ty="-184.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="38.7" y="2.35"/>
@@ -3420,7 +3420,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Hair Back">
                   <matrix>
-                    <Matrix a="1.02339172363281" d="1.08644104003906" tx="-36.05" ty="-183.95"/>
+                    <Matrix a="1.02337646484375" d="1.08642578125" tx="-36.05" ty="-183.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="38.7" y="2.35"/>
@@ -3463,7 +3463,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Hair Back">
                   <matrix>
-                    <Matrix a="1.07901000976562" d="1.02543640136719" tx="-38.2" ty="-184.45"/>
+                    <Matrix a="1.07899475097656" d="1.02543640136719" tx="-38.2" ty="-184.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="38.7" y="2.35"/>
@@ -3509,7 +3509,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Hair Back">
                   <matrix>
-                    <Matrix a="1.02339172363281" d="1.08644104003906" tx="-36.05" ty="-183.95"/>
+                    <Matrix a="1.02337646484375" d="1.08642578125" tx="-36.05" ty="-183.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="38.7" y="2.35"/>

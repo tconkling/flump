@@ -7,7 +7,7 @@ import flash.display.Sprite;
 
 import starling.core.Starling;
 
-[SWF(width="400", height="600", frameRate="60", backgroundColor="#ffffff")]
+[SWF(width="640", height="480", frameRate="60", backgroundColor="#ffffff")]
 public class Bootstrap extends Sprite
 {
     public function Bootstrap () {

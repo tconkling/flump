@@ -7,35 +7,28 @@
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMGroup selected="true">
-                  <matrix>
-                    <Matrix tx="-288.4" ty="-286.15"/>
-                  </matrix>
                   <transformationPoint>
-                    <Point x="294.7" y="294.25"/>
+                    <Point x="6.3" y="8.1"/>
                   </transformationPoint>
                   <members>
                     <DOMShape selected="true">
-                      <matrix>
-                        <Matrix tx="-288.4" ty="-286.15"/>
-                      </matrix>
                       <transformationPoint>
-                        <Point x="294.7" y="294.25"/>
+                        <Point x="6.3" y="8.1"/>
                       </transformationPoint>
                       <fills>
                         <FillStyle index="1">
-                          <SolidColor color="#E1B777"/>
+                          <SolidColor color="#E7C48F"/>
                         </FillStyle>
                         <FillStyle index="2">
-                          <SolidColor color="#E7C48F"/>
+                          <SolidColor color="#E1B777"/>
                         </FillStyle>
                       </fills>
                       <edges>
-                        <Edge fillStyle1="1" edges="!5801.5 6127.5|5768 5888.5!5768 5888.5[#16B6.CA #15F7.9F 6000 5781"/>
-                        <Edge fillStyle1="2" edges="!6000 5781[#181D.5A #1856.0F 6178.5 6376.5!6178.5 6376.5[#1827.5A #197A.EE 6171 6727.5!6171 6727.5[#1812.BF #1AD3.18 6158.5 7046!6158.5 7046[#1810.59 #1B91.E 6162 7071!6162 7071[6172 7143 6175 7216!6175 7216[6175 #1C4C.C8 6171 7265.5
-!6171 7265.5[#1815.61 #1C7F.2D 6151.5 7308!6151.5 7308[#17FD.3C 7318 6126 7318!6126 7318[#17B8.13 7318 6068 7260.5!6068 7260.5[#17B2.F9 #1C5A.46 6066 7256!6066 7256[#17B0.68 #1C4A.35 6063.5 7235.5!6063.5 7235.5[#17AF.1C #1C43.17 6062.5
- 7234.5!6062.5 7234.5[#173C.BF #1A90.FF 5835 6367.5!5835 6367.5|5801.5 6127.5"/>
-                        <Edge fillStyle0="2" fillStyle1="1" edges="
-!6000 5781[#17AB.6 #17A5.64 5801.5 6127.5"/>
+                        <Edge fillStyle1="2" edges="!34 405S2|0 166!0 166[47 -99 232 58"/>
+                        <Edge fillStyle1="1" edges="!232 58S2[405 507 411 654!411 654[415 800 403 1005!403 1005[395 1144 391 1323!391 1323[392 1335 394 1348!394 1348[404 1420 407 1493!407 1493[407 1522 403 1543!403 1543[397 1572 384 1585!384 1585[373 1595 358 1595!358 1595[304 1595 300
+ 1538!300 1538[299 1535 298 1533!298 1533[296 1519 296 1513!296 1513|295 1512!295 1512[181 1078 67 645!67 645|34 405"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="
+!232 58S3[291 330 34 405"/>
                       </edges>
                     </DOMShape>
                   </members>
