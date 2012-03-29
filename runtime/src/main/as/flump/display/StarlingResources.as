@@ -4,6 +4,7 @@
 package flump.display {
 
 import flash.net.URLRequest;
+import flash.utils.ByteArray;
 import flash.utils.Dictionary;
 
 import flump.executor.Future;
@@ -14,6 +15,12 @@ public class StarlingResources
 {
     public static const LIBRARY_LOCATION :String = "library.amf";
     public static const MD5_LOCATION :String = "md5";
+
+    public static function loadBytes (bytes :ByteArray) :Future {
+        const loader :Loader = new Loader();
+        loader.zip.loadBytes(bytes);
+        return loader;
+    }
 
     public static function loadURL (url :String) :Future {
         const loader :Loader = new Loader();

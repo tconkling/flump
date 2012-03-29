@@ -3,7 +3,7 @@
 
 package flump.test {
 
-import flash.filesystem.File;
+import flash.utils.ByteArray;
 
 import flump.display.Movie;
 import flump.display.StarlingResources;
@@ -13,11 +13,7 @@ import starling.display.Sprite;
 public class ZipDisplay extends Sprite
 {
     public function ZipDisplay () {
-        // Run the app directory through new File to make a real path out of it. Otherwise it
-        // resolves as 'app:/'
-        const root :File = new File(File.applicationDirectory.nativePath);
-        const resources :File = root.resolvePath('../bella.zip');
-        StarlingResources.loadURL(resources.url).succeeded.add(onResourcesLoaded);
+        StarlingResources.loadBytes(ByteArray(new BELLA_ZIP())).succeeded.add(onResourcesLoaded);
     }
 
     protected function onResourcesLoaded (resources :StarlingResources) :void {
@@ -26,5 +22,8 @@ public class ZipDisplay extends Sprite
         movie.y = movie.height/2;
         addChild(movie);
     }
+
+    [Embed(source="/../../../bella.zip", mimeType="application/octet-stream")]
+    private static const BELLA_ZIP :Class;
 }
 }
