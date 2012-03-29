@@ -3,10 +3,10 @@
 
 package flump.display {
 
-import flash.net.URLRequest;
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
 
+import flump.executor.Executor;
 import flump.executor.Future;
 
 import starling.display.DisplayObject;
@@ -16,16 +16,12 @@ public class StarlingResources
     public static const LIBRARY_LOCATION :String = "library.amf";
     public static const MD5_LOCATION :String = "md5";
 
-    public static function loadBytes (bytes :ByteArray) :Future {
-        const loader :Loader = new Loader();
-        loader.zip.loadBytes(bytes);
-        return loader;
+    public static function loadBytes (bytes :ByteArray, executor :Executor=null) :Future {
+        return (executor || new Executor()).submit(new Loader(bytes).load);
     }
 
-    public static function loadURL (url :String) :Future {
-        const loader :Loader = new Loader();
-        loader.zip.load(new URLRequest(url));
-        return loader;
+    public static function loadURL (url :String, executor :Executor=null) :Future {
+        return (executor || new Executor()).submit(new Loader(url).load);
     }
 
     public function StarlingResources (creators :Dictionary) {
@@ -57,14 +53,19 @@ public class StarlingResources
     }
 
     protected function idToDisplayObject (name :String) :DisplayObject {
-        // TODO - fail on missing item
-        return _creators[name].create(idToDisplayObject);
+        var creator :* = _creators[name];
+        if (creator === undefined) {
+            throw new Error("No such id '" + name + "'");
+        }
+        return creator.create(idToDisplayObject);
     }
 
     protected var _creators :Dictionary;
 }
 }
 import flash.events.Event;
+import flash.net.URLRequest;
+import flash.utils.ByteArray;
 import flash.utils.Dictionary;
 
 import deng.fzip.FZip;
@@ -75,7 +76,6 @@ import deng.fzip.FZipFile;
 import flump.display.StarlingResources;
 import flump.executor.Executor;
 import flump.executor.Future;
-import flump.executor.VisibleFuture;
 import flump.executor.load.ImageLoader;
 import flump.executor.load.LoadedImage;
 import flump.mold.AtlasMold;
@@ -86,22 +86,33 @@ import flump.mold.MovieMold;
 
 import starling.textures.Texture;
 
-class Loader extends VisibleFuture
+class Loader
 {
-    public var zip :FZip = new FZip();
-
-    public function Loader() {
+    public function Loader(toLoad :Object) {
         Molds.registerClassAliases();
-        // Don't keep the zip in memory after completion
-        completed.add(function (..._) :void { zip = null; });
+        _toLoad = toLoad;
+    }
 
-        zip.addEventListener(Event.COMPLETE, onZipLoadingComplete);
-        zip.addEventListener(FZipErrorEvent.PARSE_ERROR, fail);
-        zip.addEventListener(FZipEvent.FILE_LOADED, onFileLoaded);
+    public function load(onSuccess :Function, onFailure :Function) :void {
+        _onFailure = onFailure;
+        _onSuccess = onSuccess;
+
+        _zip.addEventListener(Event.COMPLETE, onZipLoadingComplete);
+        _zip.addEventListener(FZipErrorEvent.PARSE_ERROR, fail);
+        _zip.addEventListener(FZipEvent.FILE_LOADED, onFileLoaded);
+
+        if (_toLoad is String) _zip.load(new URLRequest(String(_toLoad)));
+        else _zip.loadBytes(ByteArray(_toLoad));
+    }
+
+    protected function fail(e :Error) :void {
+        _failed = true;
+        _onFailure(e);
     }
 
     protected function onFileLoaded (e :FZipEvent) :void {
-        const loaded :FZipFile = zip.removeFileAt(zip.getFileCount() - 1);
+        if (_failed) return;
+        const loaded :FZipFile = _zip.removeFileAt(_zip.getFileCount() - 1);
         const name :String = loaded.filename;
         if (name == StarlingResources.LIBRARY_LOCATION) {
             _lib = loaded.content.readObject();
@@ -113,15 +124,22 @@ class Loader extends VisibleFuture
     }
 
     protected function onZipLoadingComplete (..._) :void {
+        _zip = null;
+        if (_failed) return;
         const loader :ImageLoader = new ImageLoader();
         _pngLoaders.terminated.add(onPngLoadingComplete);
         for each (var atlas :AtlasMold in _lib.atlases) loadAtlas(loader, atlas);
         _pngLoaders.shutdown();
     }
 
-    public function loadAtlas (loader :ImageLoader, atlas :AtlasMold) :void {
-        // TODO check for missing _pngBytes
-        var atlasFuture :Future = loader.loadFromBytes(_pngBytes[atlas.file], _pngLoaders);
+    protected function loadAtlas (loader :ImageLoader, atlas :AtlasMold) :void {
+        if (_failed) return;
+        const pngBytes :* = _pngBytes[atlas.file];
+        if (pngBytes === undefined) {
+            onPngLoadingFailed(new Error("Expected an atlas '" + atlas.file + "', but it wasn't in the zip"));
+            return;
+        }
+        var atlasFuture :Future = loader.loadFromBytes(pngBytes, _pngLoaders);
         atlasFuture.failed.add(onPngLoadingFailed);
         atlasFuture.succeeded.add(function (img :LoadedImage) :void {
             const baseTexture :Texture = Texture.fromBitmapData(img.bitmapData);
@@ -134,21 +152,28 @@ class Loader extends VisibleFuture
         });
     }
 
-    public function onPngLoadingComplete (..._) :void {
+    protected function onPngLoadingComplete (..._) :void {
+        if (_failed) return;
         for each (var movie :MovieMold in _lib.movies) {
             var creator :MovieCreator = new MovieCreator();
             creator.frameRate = _lib.frameRate;
             creator.mold = movie;
             _creators[movie.libraryItem] = creator;
         }
-        succeed(new StarlingResources(_creators));
+        _onSuccess(new StarlingResources(_creators));
     }
 
-    public function onPngLoadingFailed (e :*) :void {
-        // TODO - stop loading, fail everything
-        trace("Png loading failed!" + e)
+    protected function onPngLoadingFailed (e :*) :void {
+        fail(e);
+        _pngLoaders.shutdownNow();
     }
 
+    protected var _toLoad :Object;
+    protected var _onFailure :Function;
+    protected var _onSuccess :Function;
+    protected var _failed :Boolean;
+
+    protected var _zip :FZip = new FZip();
     protected var _creators :Dictionary = new Dictionary();//<name, TextureCreator/MovieCreator>
     protected var _lib :LibraryMold;
     protected var _pngBytes :Dictionary = new Dictionary();//<String name, ByteArray>

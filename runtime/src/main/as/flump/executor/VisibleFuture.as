@@ -10,6 +10,7 @@ public class VisibleFuture extends Future
         if (result.length == 0) super.onSuccess();
         else super.onSuccess(result[0]);
     }
+
     public function fail (error :Object) :void { super.onFailure(error); }
 }
 }
