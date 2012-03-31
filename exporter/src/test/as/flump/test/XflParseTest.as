@@ -11,33 +11,26 @@ import flump.xfl.XflLibrary;
 public class XflParseTest
 {
     public function XflParseTest (runner :TestRunner) {
-        _runner = runner;
-        runner.run("Parse Bella", parseBella);
-        runner.run("Parse Squaredance", parseSquare);
+        runner.runAsync("Parse Bella", makeParseTest("bella", function (lib :XflLibrary) :void {
+            assert(lib.getErrors().length != 0, "Expected warnings in bella");
+        }));
+        runner.runAsync("Parse Squaredance", makeParseTest("squaredance", function (lib :XflLibrary) :void {
+            assert(lib.getErrors().length == 0, "Expected no errors in squaredance");
+            new PublishTest(runner, lib);
+        }));
     }
 
-    protected function parseBella (finisher :Finisher) :void {
-        parse("bella", onBellaSuccess, finisher);
+    protected function makeParseTest (name :String, postParse :Function) :Function {
+        return function (finisher :Finisher) :void {
+            const load :Future = new XflLoader().load(name, TestRunner.resources.resolvePath(name));
+            load.succeeded.add(function (lib :XflLibrary) :void {
+                finisher.succeedAfter(function (..._) :void {
+                    assert(lib.valid, "Lib should be valid");
+                    postParse(lib);
+                });
+            });
+            load.failed.add(finisher.fail);
+         }
     }
-
-    protected function onBellaSuccess (lib :XflLibrary, finisher :Finisher) :void {
-        finisher.succeed();
-    }
-
-    protected function parseSquare (finisher :Finisher) :void {
-        parse("squaredance", onSquareSuccess, finisher);
-    }
-
-    protected function onSquareSuccess (lib :XflLibrary, finisher :Finisher) :void {
-        finisher.succeed();
-    }
-
-    public function parse (name :String, onSuccess :Function, finisher :Finisher) :void {
-       const load :Future = new XflLoader().load(name, TestRunner.resources.resolvePath(name));
-       load.succeeded.add(function (lib :XflLibrary) :void { onSuccess(lib, finisher);  });
-       load.failed.add(finisher.fail);
-    }
-
-    protected var _runner :TestRunner;
 }
 }

@@ -18,6 +18,23 @@ public class Finisher
 
     public function fail (result :*) :void { _onFailure(result); }
 
+    public function monitor (f :Function) :void {
+        try {
+            f();
+        } catch (e :Error) {
+            fail(e);
+        }
+    }
+
+    public function succeedAfter(f :Function) :void {
+        try {
+            f();
+            succeed();
+        } catch (e: Error) {
+            fail(e);
+        }
+    }
+
     protected var _onSucceed :Function;
     protected var _onFailure :Function;
 }

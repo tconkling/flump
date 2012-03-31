@@ -7,6 +7,7 @@ import flash.desktop.NativeApplication;
 import flash.filesystem.File;
 
 import flump.executor.Executor;
+import flump.executor.Finisher;
 import flump.executor.Future;
 
 import starling.display.Sprite;
@@ -29,10 +30,6 @@ public class TestRunner extends Sprite
                 trace("Passed:");
                 for each (var name :String in _passed) trace("  " + name);
             }
-            if (_skipped.length > 0) {
-                trace("Skipped:");
-                for each (name in _skipped) trace("  " + name);
-            }
             if (_failed.length > 0) {
                 trace("Failed:");
                 for each (name in _failed) trace("  " + name);
@@ -42,9 +39,11 @@ public class TestRunner extends Sprite
         new XflParseTest(this);
     }
 
-    public function run (name :String, f :Function) :void { _runs.put(_exec.submit(f), name); }
+    public function run (name :String, f :Function) :void {
+        runAsync(name, function (finisher :Finisher) :void { finisher.succeedAfter(f); });
+    }
 
-    public function skip (name :String) :void { _skipped.push(name); }
+    public function runAsync (name :String, f :Function) :void { _runs.put(_exec.submit(f), name); }
 
     protected function onCompletion (f :Future) :void {
         const name :String = _runs.remove(f);
@@ -52,10 +51,11 @@ public class TestRunner extends Sprite
             log.error("Unknown test completed", "future", f, "result", f.result);
             return;
         }
-        if (f.succeeded) _passed.push(name);
+        if (f.isSuccessful) _passed.push(name);
         else {
             _failed.push(name)
-            log.error("Failed", "test", name, f.result);
+            if (f.result is Error) log.error("Failed", "test", name, f.result);
+            else log.error("Failed", "test", name, "reason", f.result);
         }
         if (_exec.isIdle) _exec.shutdown();
     }
@@ -64,7 +64,6 @@ public class TestRunner extends Sprite
     protected const _runs :Map = Maps.newMapOf(Future);//String name
 
     protected const _passed :Vector.<String> = new Vector.<String>();
-    protected const _skipped :Vector.<String> = new Vector.<String>();
     protected const _failed :Vector.<String> = new Vector.<String>();
 
     private static const log :Log = Log.getLog(TestRunner);
