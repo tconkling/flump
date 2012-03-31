@@ -92,7 +92,8 @@ public class Executor
             const willRun :ToRun = _toRun.shift();
             _running.push(willRun.future);// Fill in running first so onCompleted can remove it
             try {
-                willRun.f(willRun.future.onSuccess, willRun.future.onFailure);
+                if (willRun.f.length == 1) willRun.f(new Finisher(willRun.future.onSuccess, willRun.future.onFailure));
+                else willRun.f(willRun.future.onSuccess, willRun.future.onFailure);
             } catch (e :Error) {
                 willRun.future.onFailure(e);// This invokes onCompleted on this class
                 return;// The runIfAvailable from onCompleted takes care of everything
@@ -103,6 +104,9 @@ public class Executor
     /** Returns true if shutdown has been called on this Executor. */
     public function get isShutdown () :Boolean { return _shutdown; }
 
+    /** Returns true if shutdown has been called on this Executor. */
+    public function get isIdle () :Boolean { return _running.length == 0 && _toRun.length == 0; }
+
     /**
      * Prevents additional jobs from being submitted to this Executor. Jobs that have already been
      * submitted will be executed. After this has been called terminated will be dispatched once
@@ -112,7 +116,7 @@ public class Executor
     public function shutdown () :void {
         const wasShutdown :Boolean = _shutdown
         _shutdown = true;
-        if (!wasShutdown && _toRun.length == 0 && _running.length == 0) terminated.dispatch(this);
+        if (!wasShutdown && isIdle) terminated.dispatch(this);
     }
 
     /**
