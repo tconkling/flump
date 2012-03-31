@@ -20,6 +20,12 @@ public class Files
     public static function load (file :File, exec :Executor=null) :Future {
         if (!exec) exec = new Executor();
         return exec.submit(function (onSuccess :Function, onError :Function) :void {
+            // Check for non-existence specifically. It'll fire an IO_ERROR, but that error just
+            // says "Error #2038", which isn't very helpful.
+            if (!file.exists) {
+                onError(new Error(file.nativePath + " doesn't exist to load"));
+                return;
+            }
             file.addEventListener(Event.COMPLETE, F.callback(onSuccess, file));
             file.addEventListener(IOErrorEvent.IO_ERROR, onError);
             file.load();

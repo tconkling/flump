@@ -34,17 +34,21 @@ public class XflLoader
         const swfExecutor :Executor = new Executor();
         const future :VisibleFuture = new VisibleFuture();
 
-        // TODO - construct the swf path for realz
-        const swfFile :Future = Files.load(new File(file.nativePath + ".swf"), swfExecutor);
-        swfFile.succeeded.add(function (file :File) :void {
+        const swfFile :File = new File(file.nativePath + ".swf");
+        const loadSwfFile :Future = Files.load(swfFile, swfExecutor);
+        loadSwfFile.succeeded.add(function (file :File) :void {
             _library.md5 = MD5.hashBytes(file.data);
 
             const loadSwf :Future = new SwfLoader().loadFromBytes(file.data, swfExecutor);
             loadSwf.succeeded.add(function (swf :LoadedSwf) :void { _library.swf = swf; });
             loadSwf.failed.add(function (error :Object) :void {
-                _library.addError(_library, ParseError.CRIT, "Unable to load swf " + file.nativePath, error);
+                _library.addError(_library, ParseError.CRIT, "Unable to load " + swfFile.nativePath, error);
             });
 
+            swfExecutor.shutdown();
+        });
+        loadSwfFile.failed.add(function (error :Object) :void {
+            _library.addError(_library, ParseError.CRIT, "Unable to read " + swfFile.nativePath, error);
             swfExecutor.shutdown();
         });
 
