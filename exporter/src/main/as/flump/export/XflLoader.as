@@ -66,7 +66,8 @@ public class XflLoader
 
     protected function listLibrary (file :File) :void {
         use namespace xflns;
-        var loadDomFile :Future = Files.load(file.resolvePath("DOMDocument.xml"), _loader);
+        const domFile :File = file.resolvePath("DOMDocument.xml");
+        const loadDomFile :Future = Files.load(domFile, _loader);
         loadDomFile.succeeded.add(function (domFile :File) :void {
             const xml :XML = bytesToXML(domFile.data);
 
@@ -79,6 +80,11 @@ public class XflLoader
             }
 
             // Done loading
+            _loader.shutdown();
+        });
+        loadDomFile.failed.add(function (error :Object) :void {
+            _library.addError(_library, ParseError.CRIT, "Unable to read " + domFile.nativePath,
+                error);
             _loader.shutdown();
         });
     }
@@ -111,8 +117,7 @@ public class XflLoader
             }
         });
         loadLibraryFile.failed.add(function (error :Object) :void {
-            _library.addError(_library, ParseError.CRIT,
-                "Unable to load file " + file.nativePath, error);
+            _library.addError(_library, ParseError.CRIT, "Unable to read " + file.nativePath, error);
         });
     }
 
