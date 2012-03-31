@@ -37,7 +37,7 @@ public class XflMovie
                 }
             }
         }
-        movie.labels = new Vector.<Vector.<String>>(movie.frames, /*fixed=*/true);
+        movie.labels = new Vector.<Vector.<String>>(movie.frames, true);
         for each (var layer :LayerMold in movie.layers) {
             for each (kf in layer.keyframes) {
                 if (kf.label != null) {

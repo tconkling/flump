@@ -26,7 +26,12 @@ public class Molds
         MovieMold,
 
         Point,
-        Rectangle
+        Rectangle,
+        // The following two need to be registered for being in a Vector.<Vector.<String>> in
+        // MovieMold. String comes through on its own normally, but not as a Vector type without
+        // registration.
+        String,
+        Vector.<String>
     ];
 
 }
