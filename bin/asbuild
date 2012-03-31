@@ -15,8 +15,8 @@ def makebuilders(b, assemblage, target):
         nailguntarget='swc', pom='pom.xml'),
         b(flump, 'exporter', ngscript='dist/flump-exporter.ng.sh',
             result='dist/flump-exporter.swf', deploy=False, nailguntarget='swf', pom='pom.xml'),
-        b(flump, 'loadertest', ngscript='dist/flump-loadertest.ng.sh',
-            result='dist/flump-loadertest.swf', deploy=False, nailguntarget='swf', pom='pom.xml')]
+        b(flump, 'demo', ngscript='dist/flump-demo.ng.sh',
+            result='dist/flump-demo.swf', deploy=False, nailguntarget='swf', pom='pom.xml')]
 
 localrepobuild.buildasprojects(base, makebuilders, assemblage=base)
 

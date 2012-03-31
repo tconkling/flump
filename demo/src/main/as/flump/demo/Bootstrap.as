@@ -1,7 +1,7 @@
 //
 // Flump - Copyright 2012 Three Rings Design
 
-package flump.test {
+package flump.demo {
 
 import flash.display.Sprite;
 

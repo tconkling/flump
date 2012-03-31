@@ -1,7 +1,7 @@
 //
 // Flump - Copyright 2012 Three Rings Design
 
-package flump.test {
+package flump.demo {
 
 import flash.utils.ByteArray;
 
@@ -23,7 +23,7 @@ public class ZipDisplay extends Sprite
         addChild(resources.loadMovie("dance_scene"));
     }
 
-    [Embed(source="/../../../bella.zip", mimeType="application/octet-stream")]
+    [Embed(source="/bella.zip", mimeType="application/octet-stream")]
     private static const BELLA_ZIP :Class;
 }
 }

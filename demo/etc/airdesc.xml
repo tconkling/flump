@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <application xmlns="http://ns.adobe.com/air/application/3.1">
-  <id>flumploader</id>
+  <id>flumpdemo</id>
   <versionNumber>0.1</versionNumber>
-  <filename>Flump Loader</filename>
+  <filename>Flump Demo</filename>
   <initialWindow>
     <renderMode>direct</renderMode>
-    <content>flump-loadertest.swf</content>
+    <content>flump-demo.swf</content>
     <visible>true</visible>
   </initialWindow>
 </application>
