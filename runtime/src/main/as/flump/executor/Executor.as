@@ -44,10 +44,13 @@ public class Executor
             }
         }
         if (!removed) throw new Error("Unknown future completed? " + f);
+        // Only dispatch terminated if it was set when this future completed. If it's set as
+        // part of this dispatch, it'll dispatch in the shutdown call
+        const wasShutdown :Boolean = _shutdown
         completed.dispatch(f);
 
         runIfAvailable();
-        if (_running.length == 0 && _shutdown) terminated.dispatch(this);
+        if (_running.length == 0 && wasShutdown) terminated.dispatch(this);
     }
 
     /** Submits all the functions through submit and returns their Futures. */
