@@ -104,8 +104,11 @@ public class Executor
     /** Returns true if shutdown has been called on this Executor. */
     public function get isShutdown () :Boolean { return _shutdown; }
 
-    /** Returns true if shutdown has been called on this Executor. */
+    /** Returns true if there are no pending or running jobs. */
     public function get isIdle () :Boolean { return _running.length == 0 && _toRun.length == 0; }
+
+    /** Returns true if shutdown has been called and there are no pending or running jobs. */
+    public function get isTerminated () :Boolean { return isShutdown && isIdle; }
 
     /**
      * Prevents additional jobs from being submitted to this Executor. Jobs that have already been
@@ -114,7 +117,7 @@ public class Executor
      * will be dispatched immediately.
      */
     public function shutdown () :void {
-        const wasShutdown :Boolean = _shutdown
+        const wasShutdown :Boolean = _shutdown;
         _shutdown = true;
         if (!wasShutdown && isIdle) terminated.dispatch(this);
     }

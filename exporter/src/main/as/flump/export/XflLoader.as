@@ -53,7 +53,7 @@ public class XflLoader
         });
 
         const maybeSucceed :Function = function (..._) :void {
-            if (swfExecutor.isShutdown && _loader.isShutdown) {
+            if (swfExecutor.isTerminated && _loader.isTerminated) {
                 _library.finishLoading();
                 future.succeed(_library);
             }
