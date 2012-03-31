@@ -24,7 +24,19 @@
     <genairkeystore keystore="${keystore}" password="${PASSWORD}" orgname="Three Rings Design"/>
   </target>
 
-  <target name="swf" depends="-init-ooo" description="Builds the library (.swc file)">
+  <target name="test" depends="-init-ooo" description="Builds the test swf">
+    <mkdir dir="${deploy.dir}"/>
+    <mavendep pom="pom.xml" pathProp="aslib.path"/>
+    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.5"/>
+    <amxmlc srcdir="src/test/as" libpath="${aslib.path}" id="flump-test"
+      dest="${deploy.dir}/flump-test.swf" static-lrsl="true"
+      main="flump/test/Bootstrap.as">
+      <arg value="-source-path+=${asrc.dir}"/>
+      <arg value="-swf-version=13"/>
+    </amxmlc>
+  </target>
+
+  <target name="swf" depends="-init-ooo" description="Builds the swf">
     <mkdir dir="${deploy.dir}"/>
     <mavendep pom="pom.xml" pathProp="aslib.path"/>
     <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.5"/>
