@@ -39,9 +39,7 @@ public class Movie extends Sprite
         addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
     }
 
-    public function frames () :int {
-        return _frames;
-    }
+    public function frames () :int { return _frames; }
 
     protected function advanceTime (dt :Number) :void {
         if (!_playing) return;

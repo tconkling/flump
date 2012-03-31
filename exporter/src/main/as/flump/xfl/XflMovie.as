@@ -3,8 +3,8 @@
 
 package flump.xfl {
 
-import flump.mold.LayerMold;
 import flump.mold.KeyframeMold;
+import flump.mold.LayerMold;
 import flump.mold.MovieMold;
 
 import com.threerings.util.XmlUtil;

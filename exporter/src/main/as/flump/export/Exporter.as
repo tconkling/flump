@@ -210,6 +210,11 @@ public class Exporter
                 for each (var err :ParseError in lib.getErrors()) _errors.dataProvider.addItem(err);
                 status.updateValid(Ternary.of(lib.valid));
             });
+            load.failed.add(function (e :Error) :void {
+                trace("Failed to load " + status.file.nativePath + ":" + e);
+                status.updateValid(Ternary.FALSE);
+                throw e;
+            });
         } else loadFla(status.file);
     }
 
