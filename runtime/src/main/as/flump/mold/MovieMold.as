@@ -8,6 +8,7 @@ public class MovieMold extends Mold
     public var libraryItem :String;
     public var symbol :String;
     public var layers :Vector.<LayerMold> = new Vector.<LayerMold>();
+    public var labels :Vector.<Vector.<String>>;
 
     // The hash of the XML file for this symbol in the library
     public var md5 :String;

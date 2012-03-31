@@ -3,6 +3,7 @@
 
 package flump.xfl {
 
+import flump.mold.LayerMold;
 import flump.mold.KeyframeMold;
 import flump.mold.MovieMold;
 
@@ -33,6 +34,19 @@ public class XflMovie
             for each (var layerEl :XML in layerEls) {
                 if (XmlUtil.getStringAttr(layerEl, "layerType", "") != "guide") {
                     movie.layers.unshift(XflLayer.parse(lib, movie.location, layerEl, false));
+                }
+            }
+        }
+        movie.labels = new Vector.<Vector.<String>>(movie.frames, /*fixed=*/true);
+        for each (var layer :LayerMold in movie.layers) {
+            for each (kf in layer.keyframes) {
+                if (kf.label != null) {
+                    var frameLabels :Vector.<String> = movie.labels[kf.index];
+                    if (frameLabels == null) {
+                        frameLabels = new Vector.<String>();
+                        movie.labels[kf.index] = frameLabels;
+                    }
+                    frameLabels.push(kf.label);
                 }
             }
         }

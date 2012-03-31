@@ -5,6 +5,8 @@ package flump.display {
 
 import flump.mold.MovieMold;
 
+import org.osflash.signals.Signal;
+
 import starling.core.Starling;
 import starling.display.DisplayObject;
 import starling.display.Sprite;
@@ -12,8 +14,12 @@ import starling.events.Event;
 
 public class Movie extends Sprite
 {
+    public const labelPassed :Signal = new Signal(String);
+
     public function Movie (src :MovieMold, frameRate :Number, idToDisplayObject :Function) {
         name = src.libraryItem;
+        _labels = src.labels;
+        _frameRate = frameRate;
         _ticker = new Ticker(advanceTime);
         const flipbook :Boolean = src.flipbook;
         if (src.flipbook) {
@@ -27,7 +33,6 @@ public class Movie extends Sprite
                 _frames = Math.max(src.layers[ii].frames, _frames);
             }
         }
-        _frameRate = frameRate;
         _duration = _frames / _frameRate;
         goto(0, true, false);
         addEventListener(Event.ADDED_TO_STAGE, addedToStage);
@@ -84,17 +89,17 @@ public class Movie extends Sprite
         const oldFrame :int = _frame;
         _frame = newFrame;
         if (fromSkip) {
-            // TODO [self fireLabelsFrom:newFrame to:newFrame];
+            fireLabels(newFrame, newFrame);
             _playTime = newFrame/_frameRate;
         } else if (overDuration) {
-            //[self fireLabelsFrom:oldFrame + 1 to:[_labels count] - 1];
-            //[self fireLabelsFrom:0 to:_frame];
+            fireLabels(oldFrame + 1, _frames - 1);
+            fireLabels(0, _frame);
         } else if (differentFrame) {
             if (wrapped) {
-                //[self fireLabelsFrom:oldFrame + 1 to:[_labels count] - 1];
-                //[self fireLabelsFrom:0 to:_frame];
+                fireLabels(oldFrame + 1, _frames - 1);
+                fireLabels(0, _frame);
             } else {
-                //[self fireLabelsFrom:oldFrame + 1 to:_frame];
+                fireLabels(oldFrame + 1, _frame);
             }
         }
         _goingToFrame = false;
@@ -104,6 +109,13 @@ public class Movie extends Sprite
             goto(newFrame, true, false);
         }
 
+    }
+
+    protected function fireLabels (startFrame :int, endFrame :int) :void {
+        for (var ii :int = startFrame; ii <= endFrame; ii++) {
+            if (_labels[ii] == null) continue;
+            for each (var label :String in _labels[ii]) labelPassed.dispatch(label);
+        }
     }
 
     protected function addedToStage (..._) :void { Starling.juggler.add(_ticker); }
@@ -119,6 +131,7 @@ public class Movie extends Sprite
     protected var _ticker :Ticker;
     protected var _frames :int;
     protected var _frameRate :Number;
+    protected var _labels :Vector.<Vector.<String>>;
 
     private static const NO_FRAME :int = -1;
 }
