@@ -46,11 +46,10 @@ public class Executor
         if (!removed) throw new Error("Unknown future completed? " + f);
         // Only dispatch terminated if it was set when this future completed. If it's set as
         // part of this dispatch, it'll dispatch in the shutdown call
-        const wasShutdown :Boolean = _shutdown
         completed.dispatch(f);
 
         runIfAvailable();
-        if (_running.length == 0 && wasShutdown) terminated.dispatch(this);
+        terminateIfNecessary();
     }
 
     /** Submits all the functions through submit and returns their Futures. */
@@ -108,7 +107,7 @@ public class Executor
     public function get isIdle () :Boolean { return _running.length == 0 && _toRun.length == 0; }
 
     /** Returns true if shutdown has been called and there are no pending or running jobs. */
-    public function get isTerminated () :Boolean { return isShutdown && isIdle; }
+    public function get isTerminated () :Boolean { return _terminated; }
 
     /**
      * Prevents additional jobs from being submitted to this Executor. Jobs that have already been
@@ -117,9 +116,8 @@ public class Executor
      * will be dispatched immediately.
      */
     public function shutdown () :void {
-        const wasShutdown :Boolean = _shutdown;
         _shutdown = true;
-        if (!wasShutdown && isIdle) terminated.dispatch(this);
+        terminateIfNecessary();
     }
 
     /**
@@ -136,7 +134,14 @@ public class Executor
             cancelled.push(toRun.f);
         }
         _toRun = new Vector.<ToRun>();
+        terminateIfNecessary();
         return cancelled;
+    }
+
+    protected function terminateIfNecessary () :void {
+        if (_terminated || !isIdle) return;
+        _terminated = true;
+        terminated.dispatch(this);
     }
 
     protected function handleTimer (event :TimerEvent) :void {
@@ -147,6 +152,7 @@ public class Executor
 
     protected var _maxSimultaneous :int;
     protected var _shutdown :Boolean;
+    protected var _terminated :Boolean;
     protected var _running :Vector.<Future> = new Vector.<Future>();
     protected var _toRun :Vector.<ToRun> = new Vector.<ToRun>();
     protected var _timer :Timer = new Timer(1);
