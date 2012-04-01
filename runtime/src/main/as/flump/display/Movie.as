@@ -14,9 +14,13 @@ import starling.events.Event;
 
 public class Movie extends Sprite
 {
+    /** A label fired by all movies when entering their first frame. */
     public static const FIRST_FRAME :String = "flump.movie.FIRST_FRAME";
+
+    /** A label fired by all movies when entering their last frame. */
     public static const LAST_FRAME :String = "flump.movie.LAST_FRAME";
 
+    /** Fires whenever the a label is passed in playing. */
     public const labelPassed :Signal = new Signal(String);
 
     public function Movie (src :MovieMold, frameRate :Number, idToDisplayObject :Function) {
@@ -37,7 +41,7 @@ public class Movie extends Sprite
             }
         }
         _duration = _frames / _frameRate;
-        goto(0, true, false);
+        updateFrame(0, /*fromSkip=*/true, /*overDuration=*/false);
         addEventListener(Event.ADDED_TO_STAGE, addedToStage);
         addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
     }
@@ -46,12 +50,65 @@ public class Movie extends Sprite
 
     public function get frames () :int { return _frames; }
 
+    public function get isPlaying () :Boolean { return _playing; }
+
+    /** Starts playing if not already doing so, and continues to do so indefinitely.  */
+    public function loop () :Movie {
+        _playing = true;
+        _stopFrame = NO_FRAME;
+        return this;
+    }
+
+    /**
+     * Moves to the given String label or int frame. Doesn't alter playing status or stop frame.
+     * If there are labels at the given position, they're fired as part of the goto, even if the
+     * current frame is equal to the destination. Labels between the current frame and the
+     * destination frame are not fired.
+     */
+    public function goto (position :Object) :Movie {
+        const frame :int = extractFrame(position);
+        updateFrame(frame, /*fromSkip=*/true, /*overDuration=*/false);
+        return this;
+    }
+
+    /**
+     * Starts playing if not already doing so, and continues to do so to the last frame in the
+     * movie.
+     */
+    public function play () :Movie { return playTo(LAST_FRAME); }
+
+   /**
+    * Starts playing if not already doing so, and continues to do so to the given stop label or
+    * frame.
+    */
+   public function playTo (position :Object) :Movie {
+       _stopFrame = extractFrame(position);
+       _playing = true;
+       return this;
+   }
+
+   /** Stops playback if it's currently active. Doesn't alter the current frame or stop frame. */
+    public function stop () :Movie {
+        _playing = false;
+        return this;
+    }
+
+    protected function extractFrame (position :Object) :int {
+        if (position is int) return int(position);
+        if (!(position is String)) throw new Error("Movie position must be an int frame or String label");
+        const label :String = String(position);
+        for (var ii :int = 0; ii < _labels.length; ii++) {
+            if (_labels[ii] != null && _labels[ii].indexOf(label) != -1) return ii;
+        }
+        throw new Error("No such label '" + label + "'");
+    }
+
     protected function advanceTime (dt :Number) :void {
         if (!_playing) return;
 
         _playTime += dt;
         var actualPlaytime :Number = _playTime;
-        if (_playTime > _duration) _playTime = _playTime % _duration;
+        if (_playTime >= _duration) _playTime = _playTime % _duration;
         var newFrame :int = int(_playTime * _frameRate);
         const overDuration :Boolean = dt >= _duration;
         // If the update crosses or goes to the stopFrame, go to the stop frame, stop the movie and
@@ -67,10 +124,14 @@ public class Movie extends Sprite
                 _stopFrame = NO_FRAME;
             }
         }
-        goto(newFrame, false, overDuration);
+        updateFrame(newFrame, false, overDuration);
     }
 
-    protected function goto (newFrame :int, fromSkip :Boolean, overDuration :Boolean) :void {
+    protected function updateFrame (newFrame :int, fromSkip :Boolean, overDuration :Boolean) :void {
+        if (newFrame >= _frames) {
+            throw new Error("Asked to go to frame " + newFrame + " past the last frame, " +
+                (_frames - 1));
+        }
         if (_goingToFrame) {
             _pendingFrame = newFrame;
             return;
@@ -109,7 +170,7 @@ public class Movie extends Sprite
         if (_pendingFrame != NO_FRAME) {
             newFrame = _pendingFrame;
             _pendingFrame = NO_FRAME;
-            goto(newFrame, true, false);
+            updateFrame(newFrame, true, false);
         }
 
     }
