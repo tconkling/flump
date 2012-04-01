@@ -12,7 +12,6 @@ import flump.executor.Future;
 
 import starling.core.Starling;
 
-import com.threerings.util.DelayUtil;
 import com.threerings.util.F;
 
 public class StarlingResourcesTest
@@ -35,24 +34,8 @@ public class StarlingResourcesTest
             assertThrows(F.callback(res.loadTexture, "nesteddance"), "Loaded movie as texture");
             assertThrows(F.callback(res.loadMovie, "redsquare"), "Loaded texture as movie");
             assertThrows(F.callback(res.loadMovie, "no movie with this id "));
-            runner.addChild(movie);
-            runner.runAsync("Play Nesteddance", function (finisher :Finisher) :void {
-                checkNested(finisher, movie);
-            });
+            RuntimePlaybackTest.addTests(runner, res);
         }
-    }
-
-    protected function checkNested (finisher :Finisher, nested :Movie) :void {
-        assert(nested.name == "nesteddance");
-        assert(nested.frame == 0, "Frame starts at 0");
-        const passed :Vector.<String> = new Vector.<String>();
-        nested.labelPassed.add(passed.push);
-        DelayUtil.delayFrames(2, finisher.monitor, [function (..._) :void {
-            assert(nested.frame > 0, "Frame advances with time");
-            DelayUtil.delayFrames(30, finisher.succeedAfter, [function (..._) :void {
-                assert(passed.indexOf("timepassed") != -1, "timepassed should've been fired");
-            }]);
-        }]);
     }
 }
 }

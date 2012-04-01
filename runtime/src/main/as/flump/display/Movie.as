@@ -14,6 +14,9 @@ import starling.events.Event;
 
 public class Movie extends Sprite
 {
+    public static const FIRST_FRAME :String = "flump.movie.FIRST_FRAME";
+    public static const LAST_FRAME :String = "flump.movie.LAST_FRAME";
+
     public const labelPassed :Signal = new Signal(String);
 
     public function Movie (src :MovieMold, frameRate :Number, idToDisplayObject :Function) {
