@@ -39,8 +39,13 @@ public class RuntimePlaybackTest
 
     public function gotoFrameAndLabel () :void {
         _movie = _res.loadMovie("nesteddance");
+        _movie.labelPassed.add(_labelsPassed.push);
         _movie.goto("timepassed");
         assert(_movie.frame == 9);
+        passed("timepassed");
+        assert(_labelsPassed.length == 1);
+        _movie.goto("timepassed");
+        assert(_labelsPassed.length == 2);
         assert(_movie.isPlaying, "Playing changed in goto");
 
         _movie.stop();
