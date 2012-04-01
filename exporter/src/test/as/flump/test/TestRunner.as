@@ -51,8 +51,10 @@ public class TestRunner extends Sprite
             log.error("Unknown test completed", "future", f, "result", f.result);
             return;
         }
-        if (f.isSuccessful) _passed.push(name);
-        else {
+        if (f.isSuccessful) {
+            log.info("Passed", "test", name);
+            _passed.push(name);
+        } else {
             _failed.push(name)
             if (f.result is Error) log.error("Failed", "test", name, f.result);
             else log.error("Failed", "test", name, "reason", f.result);
