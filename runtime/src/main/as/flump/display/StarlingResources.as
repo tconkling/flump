@@ -33,7 +33,12 @@ public class StarlingResources
     }
 
     public function loadTexture (name :String) :DisplayObject {
-        return DisplayObject(idToDisplayObject(name));
+        const disp :DisplayObject = DisplayObject(idToDisplayObject(name));
+        // TODO - add loadDisplayObject to load either if the user doesn't care?
+        if (disp is Movie) {
+            throw new Error(name + " is a movie, not a texture");
+        }
+        return disp;
     }
 
     public function get movieNames () :Vector.<String> {
@@ -147,6 +152,7 @@ class Loader
                 const creator :TextureCreator = new TextureCreator();
                 creator.offset = atlasTexture.offset;
                 creator.texture = Texture.fromTexture(baseTexture, atlasTexture.bounds);
+                creator.name = atlasTexture.name;
                 _creators[atlasTexture.name] = creator;
             }
         });
@@ -189,6 +195,7 @@ import starling.textures.Texture;
 class TextureCreator {
     public var texture :Texture;
     public var offset :Point;
+    public var name :String;
 
     public function create (..._) :DisplayObject {
         const image :Image = new Image(texture);
@@ -196,6 +203,7 @@ class TextureCreator {
         image.y = offset.y;
         const holder :Sprite = new Sprite();
         holder.addChild(image);
+        holder.name = name;
         return holder;
     }
 }
