@@ -114,6 +114,7 @@ public class XflLoader
                 var type :String = isSprite ? "sprite" : "movie";
                 _library.addError(_library, ParseError.CRIT,
                     "Unable to parse " + type + " in " + file.nativePath, e);
+                log.error("Unable to parse " + file.nativePath, e);
             }
         });
         loadLibraryFile.failed.add(function (error :Object) :void {
