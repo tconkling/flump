@@ -123,7 +123,7 @@ public class Movie extends Sprite
 
     protected function addedToStage (..._) :void { Starling.juggler.add(_ticker); }
 
-    protected function removedFromStage (..._) :void { Starling.juggler.add(_ticker); }
+    protected function removedFromStage (..._) :void { Starling.juggler.remove(_ticker); }
 
     protected var _goingToFrame :Boolean;
     protected var _pendingFrame :int = NO_FRAME;
