@@ -48,6 +48,7 @@ public class Exporter
     protected static const AUTHORED_RESOLUTION :String = "AUTHORED_RESOLUTION";
 
     public function Exporter (win :ExporterWindow) {
+        Log.setLevel("", Log.INFO);
         _win = win;
         _errors = _win.errors;
         _libraries = _win.libraries;
