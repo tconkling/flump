@@ -58,6 +58,7 @@ public class TestRunner extends Sprite
             _failed.push(name)
             if (f.result is Error) log.error("Failed", "test", name, f.result);
             else log.error("Failed", "test", name, "reason", f.result);
+            _exec.shutdownNow();
         }
         if (_exec.isIdle) _exec.shutdown();
     }
