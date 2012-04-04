@@ -6,6 +6,7 @@ package flump.xfl {
 import flash.utils.Dictionary;
 
 import flump.executor.load.LoadedSwf;
+import flump.export.Atlas;
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
 import flump.mold.LibraryMold;
@@ -93,12 +94,12 @@ public class XflLibrary extends Mold
         _errors.push(new ParseError(mold.location, severity, message, e));
     }
 
-    public function toMold () :LibraryMold {
+    public function toMold (atlases :Vector.<Atlas>) :LibraryMold {
         const mold :LibraryMold = new LibraryMold();
         mold.frameRate = frameRate;
         mold.md5 = md5;
         mold.movies = movies;
-        // Leave mold.atlases unpopulated
+        for each (var atlas :Atlas in atlases) mold.atlases.push(atlas.toMold());
         return mold;
     }
 

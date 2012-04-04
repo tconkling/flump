@@ -23,10 +23,20 @@ public class MovieMold extends Mold
 
     public function toJSON (_:*) :Object {
         return {
+            libraryItem: libraryItem,
             symbol: symbol,
             layers: layers,
             md5: md5
         };
+    }
+
+    public static function fromJSON (o :Object) :MovieMold {
+        const mold :MovieMold = new MovieMold();
+        mold.libraryItem = require(o, "libraryItem");
+        mold.symbol = require(o, "symbol");
+        for each (var layer :Object in require(o, "layers")) mold.layers.push(LayerMold.fromJSON(layer));
+        mold.md5 = require(o, "md5");
+        return mold;
     }
 
     public function toXML () :XML {

@@ -3,13 +3,8 @@
 
 package flump.mold {
 
-import flash.net.registerClassAlias;
-
 public class LibraryMold
 {
-    // Make this come out as itself in AMF
-    registerClassAlias("LibraryMold", LibraryMold);
-
     // The frame rate of movies in this library
     public var frameRate :Number;
 
@@ -19,5 +14,23 @@ public class LibraryMold
     public var movies :Vector.<MovieMold> = new Vector.<MovieMold>();
 
     public var atlases :Vector.<AtlasMold> = new Vector.<AtlasMold>();
+
+    public function toJSON (_:*) :Object {
+        return {
+            frameRate: frameRate,
+            md5: md5,
+            movies: movies,
+            atlases: atlases
+        };
+    }
+
+    public static function fromJSON (o :Object) :LibraryMold {
+        const mold :LibraryMold = new LibraryMold();
+        mold.frameRate = require(o, "frameRate");
+        mold.md5 = require(o, "md5");
+        for each (var movie :Object in require(o, "movies")) mold.movies.push(MovieMold.fromJSON(movie));
+        for each (var atlas :Object in require(o, "atlases")) mold.atlases.push(AtlasMold.fromJSON(atlas));
+        return mold;
+    }
 }
 }

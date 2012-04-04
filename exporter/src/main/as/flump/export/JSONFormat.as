@@ -6,6 +6,7 @@ package flump.export {
 import flash.utils.ByteArray;
 import flash.utils.IDataOutput;
 
+import flump.mold.LibraryMold;
 import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
 
@@ -21,14 +22,9 @@ public class JSONFormat extends Format
 
     override public function publish (out :IDataOutput, lib :XflLibrary, movies :Vector.<MovieMold>,
             packers :Vector.<Packer>, authoredDevice :DeviceType) :void {
-        var json :Object = {
-            frameRate: lib.frameRate,
-            md5: lib.md5,
-            movies: movies,
-            atlases: packers[0].atlases
-        };
+        const mold :LibraryMold = lib.toMold(packers[0].atlases);
         var pretty :Boolean = false;
-        out.writeUTFBytes(JSON.stringify(json, null, pretty ? "  " : null));
+        out.writeUTFBytes(JSON.stringify(mold, null, pretty ? "  " : null));
     }
 }
 }

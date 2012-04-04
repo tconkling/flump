@@ -39,9 +39,8 @@ public class StarlingFormat extends Format
             zip.addFile(name, bytes);
         }
 
-        const mold :LibraryMold = lib.toMold();
+        const mold :LibraryMold = lib.toMold(packers[0].atlases);
         for each (var atlas :Atlas in packers[0].atlases) {
-            mold.atlases.push(atlas.toMold());
             addToZip(atlas.fileName, function (b :ByteArray) :void { atlas.writePNG(b); });
         }
         addToZip(StarlingResources.LIBRARY_LOCATION,

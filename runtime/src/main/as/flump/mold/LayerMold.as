@@ -25,10 +25,16 @@ public class LayerMold extends Mold
             name: name,
             keyframes: keyframes
         };
-        if (flipbook) {
-            json.flipbook = flipbook;
-        }
+        if (flipbook) json.flipbook = flipbook;
         return json;
+    }
+
+    public static function fromJSON (o :Object) :LayerMold {
+        const mold :LayerMold = new LayerMold();
+        mold.name = require(o, "name");
+        for each (var kf :Object in require(o, "keyframes")) mold.keyframes.push(KeyframeMold.fromJSON(kf));
+        mold.flipbook = o.hasOwnProperty("flipbook");
+        return mold;
     }
 
     public function toXML () :XML

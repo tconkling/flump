@@ -91,8 +91,6 @@ public class Atlas
         return mold;
     }
 
-    public function toJSON (_:*) :Object { return toMold().toJSON(null); }
-
     protected var _root :Node;
 }
 }

@@ -15,6 +15,15 @@ public class AtlasMold
         };
     }
 
+    public static function fromJSON (o :Object) :AtlasMold {
+        const mold :AtlasMold = new AtlasMold();
+        mold.file = require(o, "file");
+        for each (var tex :Object in require(o, "textures")) {
+            mold.textures.push(AtlasTextureMold.fromJSON(tex));
+        }
+        return mold;
+    }
+
     public function toXML () :XML {
         var xml :XML = <atlas file={file} />;
         for each (var tex :AtlasTextureMold in textures) xml.appendChild(tex.toXML());
