@@ -5,8 +5,10 @@ package flump {
 
 import flash.display.BitmapData;
 import flash.display.DisplayObject;
+import flash.display.IBitmapDrawable;
 import flash.display.MovieClip;
 import flash.display.Sprite;
+import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
@@ -16,7 +18,6 @@ import flump.xfl.XflTexture;
 
 public class SwfTexture
 {
-    public const holder :Sprite = new Sprite();
     public var symbol :String;
     public var libraryItem :String;
     public var offset :Point;
@@ -26,11 +27,13 @@ public class SwfTexture
     // The MD5 of the symbol XML in the library, or null if there is no associated symbol
     public var md5 :String;
 
-    public static function renderToBitmapData (target :DisplayObject, width :int,
-        height :int) :BitmapData {
+    public static function renderToBitmapData (target :IBitmapDrawable, width :int,
+        height :int, scale :Number = 1) :BitmapData {
 
         const bd :BitmapData = new BitmapData(width, height, true, 0x00);
-        bd.draw(target);
+        var m :Matrix = new Matrix();
+        m.scale(scale, scale);
+        bd.draw(target, m, null, null, null, true);
         return bd;
     }
 
@@ -59,21 +62,63 @@ public class SwfTexture
         this.symbol = symbol;
         this.libraryItem = libraryItem;
         this.scale = scale;
-        disp.scaleX = disp.scaleY = scale;
-        holder.addChild(disp);
-        const bounds :Rectangle = disp.getBounds(holder);
-        disp.x = -bounds.x;
-        disp.y = -bounds.y;
-        offset = new Point(bounds.x, bounds.y);
-        w = Math.ceil(bounds.width);
-        h = Math.ceil(bounds.height);
+        _disp = disp;
+
+        offset = getOffset(_disp, scale);
+
+        var size :Point = getSize(_disp, scale);
+        w = size.x;
+        h = size.y;
         a = w * h;
     }
 
-    public function toBitmapData () :BitmapData { return renderToBitmapData(holder, w, h); }
+    public function toBitmapData () :BitmapData {
+        var holder :Sprite = new Sprite();
+
+        if (scale != 1) {
+            // render at normal size first, then scale to get the
+            // benefit of bitmap smoothing. BitmapData.draw smoothing only works
+            // when the source is itself a BitmapData object.
+            var fullsizeOffset :Point = getOffset(_disp, 1);
+            var fullSize :Point = getSize(_disp, 1);
+            _disp.x = -fullsizeOffset.x;
+            _disp.y = -fullsizeOffset.y;
+            holder.addChild(_disp);
+            var bmd :BitmapData = renderToBitmapData(holder, fullSize.x, fullSize.y, 1);
+            return renderToBitmapData(bmd, w, h, scale);
+
+        } else {
+            _disp.x = -offset.x;
+            _disp.y = -offset.y;
+            holder.addChild(_disp);
+            return renderToBitmapData(holder, w, h, 1);
+        }
+    }
 
     public function toString () :String {
         return "a " + a + " w " + w + " h " + h;
     }
+
+    protected static function getSize (disp :DisplayObject, scale :Number) :Point {
+        var bounds :Rectangle = getBounds(disp, scale);
+        return new Point(Math.ceil(bounds.width), Math.ceil(bounds.height));
+    }
+
+    protected static function getOffset (disp :DisplayObject, scale :Number) :Point {
+        var bounds :Rectangle = getBounds(disp, scale);
+        return new Point(bounds.x, bounds.y);
+    }
+
+    protected static function getBounds (disp :DisplayObject, scale :Number) :Rectangle {
+        var oldScale :Number = disp.scaleX;
+        disp.scaleX = disp.scaleY = scale;
+        const holder :Sprite = new Sprite();
+        holder.addChild(disp);
+        const bounds :Rectangle = disp.getBounds(holder);
+        disp.scaleX = disp.scaleY = oldScale;
+        return bounds;
+    }
+
+    protected var _disp :DisplayObject;
 }
 }

@@ -3,6 +3,7 @@
 
 package flump.export {
 
+import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.filesystem.File;
@@ -56,11 +57,10 @@ public class Atlas
         var constructed :Sprite = new Sprite();
         _root.forEach(function (node :Node) :void {
             var tex :SwfTexture = node.texture;
-            var sprite :Sprite = new Sprite();
-            sprite.scaleX = sprite.scaleY = tex.scale;
-            constructed.addChild(tex.holder);
-            tex.holder.x = node.bounds.x;
-            tex.holder.y = node.bounds.y;
+            var bm :Bitmap = new Bitmap(node.texture.toBitmapData(), "auto", true);
+            constructed.addChild(bm);
+            bm.x = node.bounds.x;
+            bm.y = node.bounds.y;
         });
         var bd :BitmapData =
             SwfTexture.renderToBitmapData(constructed, _root.bounds.width, _root.bounds.height);
