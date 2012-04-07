@@ -3,7 +3,6 @@
 
 package flump.export {
 
-import flash.display.BitmapData;
 import flash.utils.Dictionary;
 
 import flump.SwfTexture;
@@ -18,6 +17,9 @@ import starling.display.DisplayObject;
 import starling.display.Image;
 import starling.display.Sprite;
 import starling.textures.Texture;
+
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 
 public class DisplayCreator
 {
@@ -64,11 +66,17 @@ public class DisplayCreator
         }
         const xflMovie :MovieMold = _lib.getLibrary(name, MovieMold);
         var maxDrawn :int = 0;
+        var calculatedKeyframes :Map = Maps.newMapOf(KeyframeMold);
         for (var ii :int = 0; ii < xflMovie.frames; ii++) {
             var drawn :int = 0;
             for each (var layer :LayerMold in xflMovie.layers) {
                 var kf :KeyframeMold = layer.keyframeForFrame(ii);
-                if (kf.visible) drawn += getMaxDrawn(kf.id);
+                if (kf.visible) {
+                    if (!calculatedKeyframes.containsKey(kf)) {
+                        calculatedKeyframes.put(kf, getMaxDrawn(kf.id));
+                    }
+                    drawn += calculatedKeyframes.get(kf);
+                }
             }
             maxDrawn = Math.max(maxDrawn, drawn);
         }
