@@ -24,7 +24,7 @@ public class Movie extends Sprite
     public const labelPassed :Signal = new Signal(String);
 
     public function Movie (src :MovieMold, frameRate :Number, idToDisplayObject :Function) {
-        name = src.libraryItem;
+        name = src.id;
         _labels = src.labels;
         _frameRate = frameRate;
         _ticker = new Ticker(advanceTime);
@@ -223,19 +223,19 @@ class Layer {
         this.movie = movie;
         var lastItem :String;
         for (var ii :int = 0; ii < keyframes.length && lastItem == null; ii++) {
-            lastItem = keyframes[ii].id;
+            lastItem = keyframes[ii].ref;
         }
         if (!flipbook && lastItem == null) movie.addChild(new Sprite());// Label only layer
         else {
             var multipleItems :Boolean = flipbook;
             for (ii = 0; ii < keyframes.length && !multipleItems; ii++) {
-                multipleItems = keyframes[ii].id != lastItem;
+                multipleItems = keyframes[ii].ref != lastItem;
             }
             if (!multipleItems) movie.addChild(idToDisplayObject(lastItem));
             else {
                 displays = new Vector.<DisplayObject>();
                 for each (var kf :KeyframeMold in keyframes) {
-                    var display :DisplayObject = kf.id == null ? new Sprite() : idToDisplayObject(kf.id);
+                    var display :DisplayObject = kf.ref == null ? new Sprite() : idToDisplayObject(kf.ref);
                     displays.push(display);
                     display.name = src.name;
                 }

@@ -8,14 +8,14 @@ import flash.geom.Rectangle;
 
 public class AtlasTextureMold
 {
-    public var name :String;
+    public var symbol :String;
     public var bounds :Rectangle;
     public var offset :Point;
     public var md5 :String;
 
     public function toJSON (_:*) :Object {
         return {
-            name: name,
+            symbol: symbol,
             rect: [bounds.x, bounds.y, bounds.width, bounds.height],
             offset: [offset.x, offset.y],
             md5: md5
@@ -24,7 +24,7 @@ public class AtlasTextureMold
 
     public static function fromJSON (o :Object) :AtlasTextureMold {
         const mold :AtlasTextureMold = new AtlasTextureMold();
-        mold.name = require(o, "name");
+        mold.symbol = require(o, "symbol");
         const rect :Array = require(o, "rect");
         mold.bounds = new Rectangle(rect[0], rect[1], rect[2], rect[3]);
         const off :Array = require(o, "offset");
@@ -35,7 +35,7 @@ public class AtlasTextureMold
 
     public function toXML () :XML {
         const json :Object = toJSON(null);
-        return <texture name={name} rect={json.rect} offset={json.offset} md5={md5} />;
+        return <texture name={symbol} rect={json.rect} offset={json.offset} md5={md5} />;
     }
 
 }

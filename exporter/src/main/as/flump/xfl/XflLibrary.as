@@ -13,10 +13,17 @@ import flump.mold.LayerMold;
 import flump.mold.LibraryMold;
 import flump.mold.MovieMold;
 
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
+import com.threerings.util.Set;
+import com.threerings.util.Sets;
+
 public class XflLibrary extends LibraryElement
 {
-    // When an exported movie contains an unexported movie, it gets assigned a generated symbol name
-    // with this prefix.
+    /**
+     * When an exported movie contains an unexported movie, it gets assigned a generated symbol
+     * name with this prefix.
+     */
     public static const IMPLICIT_PREFIX :String = "~";
 
     public var swf :LoadedSwf;
@@ -33,55 +40,48 @@ public class XflLibrary extends LibraryElement
         this.location = location;
     }
 
-    public function hasSymbol (symbol :String) :Boolean {
-        return _symbols[symbol] !== undefined;
-    }
-
-    public function getSymbol (symbol :String, requiredType :Class=null) :* {
-        const result :* = _symbols[symbol];
-        if (result === undefined) throw new Error("Unknown symbol '" + symbol + "'");
+    public function get (id :String, requiredType :Class=null) :* {
+        const result :* = _ids[id];
+        if (result === undefined) throw new Error("Unknown library item '" + id + "'");
         else if (requiredType != null) return requiredType(result);
         else return result;
     }
 
-    public function getLibrary (name :String, requiredType :Class=null) :* {
-        const result :* = _libraryItems[name];
-        if (result === undefined) throw new Error("Unknown library item '" + name + "'");
-        else if (requiredType != null) return requiredType(result);
-        else return result;
+    public function isExported (movie :MovieMold) :Boolean {
+        return _moldToSymbol.containsKey(movie);
+    }
+
+    public function get publishedMovies () :Vector.<MovieMold> {
+        const result :Vector.<MovieMold> = new Vector.<MovieMold>();
+        for each (var movie :MovieMold in _toPublish.toArray) result.push(movie);
+        return result;
     }
 
     public function finishLoading () :void {
-        for each (var tex :XflTexture in textures) {
-            _libraryItems[tex.libraryItem] = tex;
-            _symbols[tex.symbol] = tex;
-        }
-        for each (var movie :MovieMold in movies) {
-            if (movie.symbol != null) _symbols[movie.symbol] = movie;
-            _libraryItems[movie.libraryItem] = movie;
-        }
+        for each (var movie :MovieMold in movies) if (isExported(movie)) addToPublished(movie);
+    }
 
-        for each (movie in movies) {
-            for each (var layer :LayerMold in movie.layers) {
-                for each (var kf :KeyframeMold in layer.keyframes) {
-                    if (kf.libraryItem != null) {
-                        var item :Object = _libraryItems[kf.libraryItem];
-                        if (item == null) {
-                            addError(kf, ParseError.CRIT,
-                                "unrecognized library item '" + kf.libraryItem + "'");
-                        } else {
-                            if (item.symbol == null) {
-                                // This unexported movie was referenced,
-                                // generate a symbol name for it
-                                item.symbol = IMPLICIT_PREFIX + item.libraryItem;
-                                _symbols[item.symbol] = item;
-                            }
-                            kf.symbol = item.symbol;
-                        }
-                    }
-                }
+    protected function addToPublished (movie :MovieMold) :void {
+        if (!_toPublish.add(movie) || movie.flipbook) return;
+        for each (var layer :LayerMold in movie.layers) {
+            for each (var kf :KeyframeMold in layer.keyframes) {
+                if (kf.ref == null) continue;
+                kf.ref = _libraryNameToId.get(kf.ref);
+                var item :Object = _ids[kf.ref];
+                if (item == null) {
+                    addError(kf, ParseError.CRIT,
+                            "unrecognized library item '" + kf.ref + "'");
+                } else if (item is MovieMold) addToPublished(MovieMold(item));
             }
         }
+    }
+
+    public function createId (mold :Object, libraryName :String, symbol :String) :String {
+        if (symbol != null) _moldToSymbol.put(mold, symbol);
+        const id :String = symbol == null ? IMPLICIT_PREFIX + libraryName : symbol;
+        _libraryNameToId.put(libraryName, id);
+        _ids[id] = mold;
+        return id;
     }
 
     public function getErrors (sev :String=null) :Vector.<ParseError> {
@@ -92,9 +92,7 @@ public class XflLibrary extends LibraryElement
         });
     }
 
-    public function get valid () :Boolean {
-        return getErrors(ParseError.CRIT).length == 0;
-    }
+    public function get valid () :Boolean { return getErrors(ParseError.CRIT).length == 0; }
 
     public function addError(element :LibraryElement, severity :String, message :String, e :Object=null) :void {
         _errors.push(new ParseError(element.location, severity, message, e));
@@ -109,9 +107,18 @@ public class XflLibrary extends LibraryElement
         return mold;
     }
 
-    protected var _errors :Vector.<ParseError> = new Vector.<ParseError>;
+    /** Object to symbol name for all exported textures and movies in the library */
+    protected const _moldToSymbol :Map = Maps.newMapOf(Object);
 
-    protected const _libraryItems :Dictionary = new Dictionary();
-    protected const _symbols :Dictionary = new Dictionary();
+    /** Library name to symbol or generated symbol for all textures and movies in the library */
+    protected const _libraryNameToId :Map = Maps.newMapOf(String);
+
+    /** Exported movies or movies used in exported movies. */
+    protected const _toPublish :Set = Sets.newSetOf(MovieMold);
+
+    /** Symbol or generated symbol to texture or movie. */
+    protected const _ids :Dictionary = new Dictionary();
+
+    protected const _errors :Vector.<ParseError> = new Vector.<ParseError>;
 }
 }

@@ -7,7 +7,6 @@ import flash.filesystem.File;
 import flash.utils.ByteArray;
 import flash.utils.IDataOutput;
 
-import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
 
 public class Format
@@ -23,8 +22,8 @@ public class Format
 
     }
 
-    public function publish(out :IDataOutput, lib :XflLibrary, movies :Vector.<MovieMold>,
-        packers :Vector.<Packer>, authoredDevice :DeviceType) :void {
+    public function publish(out :IDataOutput, lib :XflLibrary, packers :Vector.<Packer>,
+        authoredDevice :DeviceType) :void {
         throw new Error("Must be implemented by a subclass");
     }
 

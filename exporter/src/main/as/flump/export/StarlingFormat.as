@@ -12,7 +12,6 @@ import deng.fzip.FZipFile;
 import flump.display.StarlingResources;
 import flump.mold.LibraryMold;
 import flump.mold.Molds;
-import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
 
 public class StarlingFormat extends Format
@@ -28,8 +27,8 @@ public class StarlingFormat extends Format
         return md5File.content.readUTFBytes(md5File.content.length);
     }
 
-    override public function publish(out :IDataOutput, lib :XflLibrary, movies :Vector.<MovieMold>,
-            packers :Vector.<Packer>, authoredDevice :DeviceType) :void {
+    override public function publish(out :IDataOutput, lib :XflLibrary, packers :Vector.<Packer>,
+        authoredDevice :DeviceType) :void {
         Molds.registerClassAliases();
         const zip :FZip = new FZip();
 

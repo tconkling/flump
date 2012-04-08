@@ -152,8 +152,8 @@ class Loader
                 const creator :TextureCreator = new TextureCreator();
                 creator.offset = atlasTexture.offset;
                 creator.texture = Texture.fromTexture(baseTexture, atlasTexture.bounds);
-                creator.name = atlasTexture.name;
-                _creators[atlasTexture.name] = creator;
+                creator.symbol = atlasTexture.symbol;
+                _creators[atlasTexture.symbol] = creator;
             }
         });
     }
@@ -164,7 +164,7 @@ class Loader
             var creator :MovieCreator = new MovieCreator();
             creator.frameRate = _lib.frameRate;
             creator.mold = movie;
-            _creators[movie.libraryItem] = creator;
+            _creators[movie.id] = creator;
         }
         _onSuccess(new StarlingResources(_creators));
     }
@@ -195,7 +195,7 @@ import starling.textures.Texture;
 class TextureCreator {
     public var texture :Texture;
     public var offset :Point;
-    public var name :String;
+    public var symbol :String;
 
     public function create (..._) :DisplayObject {
         const image :Image = new Image(texture);
@@ -203,7 +203,7 @@ class TextureCreator {
         image.y = offset.y;
         const holder :Sprite = new Sprite();
         holder.addChild(image);
-        holder.name = name;
+        holder.name = symbol;
         return holder;
     }
 }

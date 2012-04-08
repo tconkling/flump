@@ -43,7 +43,9 @@ public class XflKeyframe
             lib.addError(kf, ParseError.WARN, "Custom easing is not supported");
         }
 
-        kf.id = kf.libraryItem = XmlUtil.getStringAttr(symbolXml, "libraryItemName");
+        // Fill this in with the library name for now. XflLibrary.finishLoading will swap in the
+        // symbol or implicit symbol the library item corresponds to.
+        kf.ref = XmlUtil.getStringAttr(symbolXml, "libraryItemName");
         kf.visible = XmlUtil.getBooleanAttr(symbolXml, "isVisible", true);
 
         var matrix :Matrix = new Matrix();

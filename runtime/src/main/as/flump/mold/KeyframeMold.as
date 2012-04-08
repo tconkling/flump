@@ -11,18 +11,11 @@ public class KeyframeMold extends LibraryElement
     /** The length of this keyframe in frames. */
     public var duration :Number;
 
-    /** The name of the libraryItem in this keyframe, or null if there is no libraryItem. */
-    public var libraryItem :String;
-
-    /** The name of the symbol in this keyframe, or null if there is no symbol. */
-    public var symbol :String;
-
     /**
-     * The id by which this keyframe's texture can be found. Either the libraryItem for normal
-     * keyframes, or a constructed name for flipbook frames. Since the libraryItem can be null, this
-     * can also be null.
+     * The symbol of the texture or movie in this keyframe, or null if there is nothing in it.
+     * For flipbook frames, this will be a name constructed out of the movie and frame index.
      */
-    public var id :String;
+    public var ref :String;
 
     /** The label on this keyframe, or null if there isn't one */
     public var label :String;
@@ -43,12 +36,10 @@ public class KeyframeMold extends LibraryElement
     public function toJSON (_:*) :Object {
         var json :Object = {
             index: index,
-            duration: duration,
-            // TODO - resolve the whole symbol/libraryItem/generated name confusion
-            id: id
+            duration: duration
         };
-        if (symbol != null) {
-            json.ref = symbol;
+        if (ref != null) {
+            json.ref = ref;
             if (x != 0 || y != 0) json.loc = [x, y];
             if (scaleX != 1 || scaleY != 1) json.scale = [scaleX, scaleY];
             if (rotation != 0) json.rotation = rotation;
@@ -79,8 +70,8 @@ public class KeyframeMold extends LibraryElement
         const mold :KeyframeMold = new KeyframeMold();
         mold.index = require(o, "index");
         mold.duration = require(o, "duration");
-        mold.id = require(o, "id");
-        extractField(o, mold, "ref", "symbol");
+        mold.ref = require(o, "ref");
+        extractField(o, mold, "symbol", "symbol");
         extractFields(o, mold, "loc", "x", "y");
         extractFields(o, mold, "scale", "scaleX", "scaleY");
         extractField(o, mold, "rotation");
@@ -95,8 +86,8 @@ public class KeyframeMold extends LibraryElement
     {
         var xml :XML = <kf duration={duration}/>;
 
-        if (symbol != null) {
-            xml.@ref = symbol;
+        if (ref != null) {
+            xml.@ref = ref;
             if (x != 0 || y != 0) {
                 xml.@loc = "" + x + "," + y;
             }

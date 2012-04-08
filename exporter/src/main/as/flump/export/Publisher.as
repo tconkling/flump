@@ -8,7 +8,6 @@ import flash.filesystem.FileMode;
 import flash.filesystem.FileStream;
 import flash.utils.ByteArray;
 
-import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
 
 import com.threerings.util.Log;
@@ -63,14 +62,11 @@ public class Publisher
                 atlas.publish(_exportDir);
             }
         }
-        const symbolMovies :Vector.<MovieMold> = lib.movies.filter(
-            function (movie :MovieMold, ..._) :Boolean { return movie.symbol != null });
-
         for each (var format :Format in _formats) {
             var out :FileStream = new FileStream();
             out.open(format.getMetadata(destDir), FileMode.WRITE);
 
-            format.publish(out, lib, symbolMovies, packers, authoredDevice);
+            format.publish(out, lib, packers, authoredDevice);
             out.close();
         }
     }

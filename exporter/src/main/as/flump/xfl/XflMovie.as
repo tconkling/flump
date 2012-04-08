@@ -16,25 +16,20 @@ public class XflMovie
 
     public static function parse (lib :XflLibrary, xml :XML, md5 :String) :MovieMold {
         const movie :MovieMold = new MovieMold();
-        movie.libraryItem = XmlUtil.getStringAttr(xml, "name");
-        movie.location = lib.location + ":" + movie.libraryItem;
+        const name :String = XmlUtil.getStringAttr(xml, "name")
+        const symbol :String = XmlUtil.getStringAttr(xml, "linkageClassName", null);
+        movie.id = lib.createId(movie, name, symbol);
+        movie.location = lib.location + ":" + movie.id;
         movie.md5 = md5;
-        movie.symbol = XmlUtil.getStringAttr(xml, "linkageClassName", null);
-
-        if (movie.symbol != null && movie.symbol != movie.libraryItem) {
-            lib.addError(movie, ParseError.CRIT,
-                "export name doesn't match library name (" +
-                movie.symbol + ", " + movie.libraryItem + ")");
-        }
 
         const layerEls :XMLList = xml.timeline.DOMTimeline[0].layers.DOMLayer;
         if (XmlUtil.getStringAttr(layerEls[0], "name") == "flipbook") {
             movie.layers.push(XflLayer.parse(lib, movie.location, layerEls[0], true));
-            if (movie.symbol == null) {
-                lib.addError(movie, ParseError.CRIT, "Flipbook movie '" + movie.libraryItem + "' not exported");
+            if (symbol == null) {
+                lib.addError(movie, ParseError.CRIT, "Flipbook movie '" + movie.id + "' not exported");
             }
             for each (var kf :KeyframeMold in movie.layers[0].keyframes) {
-                kf.id = movie.libraryItem + "_flipbook_" + kf.index;
+                kf.ref = movie.id + "_flipbook_" + kf.index;
 
             }
         } else {

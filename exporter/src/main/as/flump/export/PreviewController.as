@@ -13,8 +13,6 @@ import spark.formatters.NumberFormatter;
 import starling.display.DisplayObject;
 import starling.display.Sprite;
 
-import com.threerings.util.StringUtil;
-
 public class PreviewController
 {
     public function PreviewController (lib :XflLibrary, container :Sprite,
@@ -40,23 +38,24 @@ public class PreviewController
         // All explicitly exported movies
         var previewMovies :Vector.<MovieMold> =
             lib.movies.filter(function (movie :MovieMold, ..._) :Boolean {
-                return movie.symbol != null &&
-                    !StringUtil.startsWith(movie.symbol, XflLibrary.IMPLICIT_PREFIX);
+                return lib.isExported(movie);
             });
 
         _controls.movies.dataProvider.removeAll();
         for each (var movie :MovieMold in previewMovies) {
-            _controls.movies.dataProvider.addItem({movie: movie.libraryItem,
-                memory: _creator.getMemoryUsage(movie.libraryItem),
-                drawn: _creator.getMaxDrawn(movie.libraryItem)});
+            _controls.movies.dataProvider.addItem({
+                movie: movie.id,
+                memory: _creator.getMemoryUsage(movie.id),
+                drawn: _creator.getMaxDrawn(movie.id)
+            });
         }
 
         var totalUsage :int = 0;
         _controls.textures.dataProvider.removeAll();
         for each (var tex :XflTexture in lib.textures) {
-            var itemUsage :int = _creator.getMemoryUsage(tex.libraryItem);
+            var itemUsage :int = _creator.getMemoryUsage(tex.symbol);
             totalUsage += itemUsage;
-            _controls.textures.dataProvider.addItem({texture: tex.libraryItem, memory: itemUsage});
+            _controls.textures.dataProvider.addItem({texture: tex.symbol, memory: itemUsage});
         }
         _controls.totalValue.text = formatMemory({memory: totalUsage});
 
@@ -86,7 +85,7 @@ public class PreviewController
             // Play the first movie
             _controls.movies.selectedIndex = 0;
             // Grumble, wish setting the index above would fire the listener
-            displayLibraryItem(previewMovies[0].libraryItem);
+            displayLibraryItem(previewMovies[0].id);
         }
     }
 

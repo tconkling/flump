@@ -27,7 +27,7 @@ public class Packer
         for each (var movie :MovieMold in _lib.movies) {
             if (!movie.flipbook) continue;
             for each (var kf :KeyframeMold in movie.layers[0].keyframes) {
-                _unpacked.push(SwfTexture.fromFlipbook(lib.swf, movie, kf.index, scale));
+                _unpacked.push(SwfTexture.fromFlipbook(lib, movie, kf.index, scale));
             }
         }
         _unpacked.sort(Comparators.createReverse(Comparators.createFields(["a", "w", "h"])));

@@ -7,8 +7,7 @@ import flump.LibraryElement;
 
 public class MovieMold extends LibraryElement
 {
-    public var libraryItem :String;
-    public var symbol :String;
+    public var id :String;
     public var layers :Vector.<LayerMold> = new Vector.<LayerMold>();
     public var labels :Vector.<Vector.<String>>;
 
@@ -24,31 +23,25 @@ public class MovieMold extends LibraryElement
     public function get flipbook () :Boolean { return layers[0].flipbook; }
 
     public function toJSON (_:*) :Object {
-        return {
-            libraryItem: libraryItem,
-            symbol: symbol,
+        const json :Object = {
+            id: id,
             layers: layers,
             md5: md5
         };
+        return json
     }
 
     public static function fromJSON (o :Object) :MovieMold {
         const mold :MovieMold = new MovieMold();
-        mold.libraryItem = require(o, "libraryItem");
-        mold.symbol = require(o, "symbol");
+        mold.id = require(o, "id");
         for each (var layer :Object in require(o, "layers")) mold.layers.push(LayerMold.fromJSON(layer));
         mold.md5 = require(o, "md5");
         return mold;
     }
 
     public function toXML () :XML {
-        var xml :XML = <movie
-            name={symbol}
-            md5={md5}
-        />;
-        for each (var layer :LayerMold in layers) {
-            xml.appendChild(layer.toXML());
-        }
+        var xml :XML = <movie name={id} md5={md5} />;
+        for each (var layer :LayerMold in layers) xml.appendChild(layer.toXML());
         return xml;
     }
 

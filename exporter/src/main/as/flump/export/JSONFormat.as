@@ -7,7 +7,6 @@ import flash.utils.ByteArray;
 import flash.utils.IDataOutput;
 
 import flump.mold.LibraryMold;
-import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
 
 public class JSONFormat extends Format
@@ -20,8 +19,8 @@ public class JSONFormat extends Format
         return JSON.parse(metadata.readUTFBytes(metadata.length)).md5;
     }
 
-    override public function publish (out :IDataOutput, lib :XflLibrary, movies :Vector.<MovieMold>,
-            packers :Vector.<Packer>, authoredDevice :DeviceType) :void {
+    override public function publish (out :IDataOutput, lib :XflLibrary, packers :Vector.<Packer>,
+        authoredDevice :DeviceType) :void {
         const mold :LibraryMold = lib.toMold(packers[0].atlases);
         var pretty :Boolean = false;
         out.writeUTFBytes(JSON.stringify(mold, null, pretty ? "  " : null));

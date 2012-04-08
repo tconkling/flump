@@ -28,25 +28,23 @@ public class DisplayCreator
     }
 
     public function loadMovie (name :String) :Movie {
-        return new Movie(_lib.getLibrary(name, MovieMold), _lib.frameRate, loadId);
+        return new Movie(_lib.get(name, MovieMold), _lib.frameRate, loadId);
     }
 
-    public function getMemoryUsage (name :String, subtex :Dictionary = null) :int {
-        if (name == null) return 0;
-        if (FLIPBOOK_TEXTURE.exec(name) != null || _lib.getLibrary(name) is XflTexture) {
-            const tex :Texture = getStarlingTexture(name);
+    public function getMemoryUsage (id :String, subtex :Dictionary = null) :int {
+        if (id == null) return 0;
+        if (FLIPBOOK_TEXTURE.exec(id) != null || _lib.get(id) is XflTexture) {
+            const tex :Texture = getStarlingTexture(id);
             const usage :int = 4 * tex.width * tex.height;
-            if (subtex != null && !subtex.hasOwnProperty(name)) {
-                subtex[name] = usage;
+            if (subtex != null && !subtex.hasOwnProperty(id)) {
+                subtex[id] = usage;
             }
             return usage;
         }
-        const xflMovie :MovieMold = _lib.getLibrary(name, MovieMold);
+        const xflMovie :MovieMold = _lib.get(id, MovieMold);
         if (subtex == null) subtex = new Dictionary();
         for each (var layer :LayerMold in xflMovie.layers) {
-            for each (var kf :KeyframeMold in layer.keyframes) {
-                getMemoryUsage(kf.id, subtex);
-            }
+            for each (var kf :KeyframeMold in layer.keyframes) getMemoryUsage(kf.ref, subtex);
         }
         var subtexUsage :int = 0;
         for (var texName :String in subtex) subtexUsage += subtex[texName];
@@ -59,52 +57,52 @@ public class DisplayCreator
      * the largest set of textures present in its keyframe. For movies inside movies, the frame
      * drawn usage is the maximum that movie can draw. We're trying to get the worst case here.
      */
-    public function getMaxDrawn (name :String) :int { return _maxDrawn.get(name); }
+    public function getMaxDrawn (id :String) :int { return _maxDrawn.get(id); }
 
-    protected function calcMaxDrawn (name :String) :int {
-        if (name == null) return 0;
-        if (FLIPBOOK_TEXTURE.exec(name) != null || _lib.getLibrary(name) is XflTexture) {
-            const tex :Texture = getStarlingTexture(name);
+    protected function calcMaxDrawn (id :String) :int {
+        if (id == null) return 0;
+        if (FLIPBOOK_TEXTURE.exec(id) != null || _lib.get(id) is XflTexture) {
+            const tex :Texture = getStarlingTexture(id);
             return tex.width * tex.height;
         }
-        const xflMovie :MovieMold = _lib.getLibrary(name, MovieMold);
+        const xflMovie :MovieMold = _lib.get(id, MovieMold);
         var maxDrawn :int = 0;
         for (var ii :int = 0; ii < xflMovie.frames; ii++) {
             var drawn :int = 0;
             for each (var layer :LayerMold in xflMovie.layers) {
                 var kf :KeyframeMold = layer.keyframeForFrame(ii);
-                drawn += kf.visible ? getMaxDrawn(kf.id) : 0;
+                drawn += kf.visible ? getMaxDrawn(kf.ref) : 0;
             }
             maxDrawn = Math.max(maxDrawn, drawn);
         }
         return maxDrawn;
     }
 
-    private function getStarlingTexture (name :String) :Texture {
-        if (!_textures.hasOwnProperty(name)) {
-            const match :Object = FLIPBOOK_TEXTURE.exec(name);
+    private function getStarlingTexture (symbol :String) :Texture {
+        if (!_textures.hasOwnProperty(symbol)) {
+            const match :Object = FLIPBOOK_TEXTURE.exec(symbol);
             var packed :SwfTexture;
             if (match == null)  {
-                packed = SwfTexture.fromTexture(_lib.swf, _lib.getLibrary(name, XflTexture));
+                packed = SwfTexture.fromTexture(_lib.swf, _lib.get(symbol, XflTexture));
             } else {
                 const movieName :String = match[1];
                 const frame :int = int(match[2]);
-                const movie :MovieMold = _lib.getLibrary(movieName, MovieMold);
+                const movie :MovieMold = _lib.get(movieName, MovieMold);
                 if (!movie.flipbook) {
-                    throw new Error("Got non-flipbook movie for flipbook texture '" + name + "'");
+                    throw new Error("Got non-flipbook movie for flipbook texture '" + symbol + "'");
                 }
-                packed = SwfTexture.fromFlipbook(_lib.swf, movie, frame);
+                packed = SwfTexture.fromFlipbook(_lib, movie, frame);
             }
-            _textures[name] = Texture.fromBitmapData(packed.toBitmapData());
-            _textureOffsets[name] = packed.offset;
+            _textures[symbol] = Texture.fromBitmapData(packed.toBitmapData());
+            _textureOffsets[symbol] = packed.offset;
         }
-        return _textures[name];
+        return _textures[symbol];
     }
 
-    public function loadTexture (name :String) :DisplayObject {
-        const image :Image = new Image(getStarlingTexture(name));
-        image.x = _textureOffsets[name].x;
-        image.y = _textureOffsets[name].y;
+    public function loadTexture (symbol :String) :DisplayObject {
+        const image :Image = new Image(getStarlingTexture(symbol));
+        image.x = _textureOffsets[symbol].x;
+        image.y = _textureOffsets[symbol].y;
         const holder :Sprite = new Sprite();
         holder.addChild(image);
         return holder;
@@ -113,9 +111,9 @@ public class DisplayCreator
     public function loadId (id :String) :DisplayObject {
         const match :Object = FLIPBOOK_TEXTURE.exec(id);
         if (match != null) return loadTexture(id);
-        const libraryItem :* = _lib.getLibrary(id);
-        if (libraryItem is XflTexture) return loadTexture(XflTexture(libraryItem).libraryItem);
-        else return loadMovie(MovieMold(libraryItem).libraryItem);
+        const item :* = _lib.get(id);
+        if (item is XflTexture) return loadTexture(XflTexture(item).symbol);
+        else return loadMovie(MovieMold(item).id);
     }
 
     protected var _maxDrawn :Map = ValueComputingMap.newMapOf(String, calcMaxDrawn);

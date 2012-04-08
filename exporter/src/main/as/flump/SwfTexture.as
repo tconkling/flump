@@ -14,12 +14,12 @@ import flash.geom.Rectangle;
 
 import flump.executor.load.LoadedSwf;
 import flump.mold.MovieMold;
+import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;
 
 public class SwfTexture
 {
     public var symbol :String;
-    public var libraryItem :String;
     public var offset :Point;
     public var w :int, h :int, a :int;
     public var scale :Number;
@@ -37,14 +37,14 @@ public class SwfTexture
         return bd;
     }
 
-    public static function fromFlipbook (swf :LoadedSwf, movie :MovieMold, frame :int,
+    public static function fromFlipbook (lib :XflLibrary, movie :MovieMold, frame :int,
         scale :Number = 1) :SwfTexture {
 
-        const klass :Class = Class(swf.getSymbol(movie.symbol));
+        const klass :Class = Class(lib.swf.getSymbol(movie.id));
         const clip :MovieClip = MovieClip(new klass());
         clip.gotoAndStop(frame + 1);
-        var name :String = movie.libraryItem + "_flipbook_" + frame;
-        return new SwfTexture(null, name, name, clip, scale);
+        var name :String = movie.id + "_flipbook_" + frame;
+        return new SwfTexture(null, name, clip, scale);
     }
 
     public static function fromTexture (swf :LoadedSwf, tex :XflTexture,
@@ -52,15 +52,13 @@ public class SwfTexture
 
         const klass :Class = Class(swf.getSymbol(tex.symbol));
         const image :Sprite = Sprite(new klass());
-        return new SwfTexture(tex.md5, tex.symbol, tex.libraryItem, image, scale);
+        return new SwfTexture(tex.md5, tex.symbol, image, scale);
     }
 
-    public function SwfTexture (md5 :String, symbol :String, libraryItem :String,
-        disp :DisplayObject, scale :Number) {
+    public function SwfTexture (md5 :String, symbol :String, disp :DisplayObject, scale :Number) {
 
         this.md5 = md5;
         this.symbol = symbol;
-        this.libraryItem = libraryItem;
         this.scale = scale;
         _disp = disp;
 

@@ -22,11 +22,11 @@ public class XMLFormat extends Format
         return bytesToXML(metadata).@md5;
     }
 
-    override public function publish (out :IDataOutput, lib :XflLibrary, movies :Vector.<MovieMold>,
-            packers :Vector.<Packer>, authoredDevice :DeviceType) :void {
+    override public function publish (out :IDataOutput, lib :XflLibrary, packers :Vector.<Packer>,
+        authoredDevice :DeviceType) :void {
         var xml :XML = <resources md5={lib.md5}/>;
         var prefix :String = lib.location + "/";
-        for each (var movie :MovieMold in movies) {
+        for each (var movie :MovieMold in lib.publishedMovies) {
             var movieXml :XML = movie.toXML();
             movieXml.@authoredDevice = authoredDevice.name();
             movieXml.@name = prefix + movieXml.@name;
