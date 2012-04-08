@@ -57,22 +57,21 @@ public class KeyframeMold
         destObj[dest2] = extracted[1];
     }
 
-    protected static function extractField(o :Object, destObj :Object, field :String, destField :String=null) :void {
+    protected static function extractField(o :Object, destObj :Object, field :String) :void {
         const extracted :* = o[field];
         if (extracted === undefined) return;
-        if (destField == null) destField = field;
-        destObj[destField] = extracted;
+        destObj[field] = extracted;
     }
 
     public static function fromJSON (o :Object) :KeyframeMold {
         const mold :KeyframeMold = new KeyframeMold();
         mold.index = require(o, "index");
         mold.duration = require(o, "duration");
-        mold.ref = require(o, "ref");
-        extractField(o, mold, "symbol", "symbol");
+        extractField(o, mold, "ref");
         extractFields(o, mold, "loc", "x", "y");
         extractFields(o, mold, "scale", "scaleX", "scaleY");
         extractField(o, mold, "rotation");
+        extractFields(o, mold, "pivot", "pivotX", "pivotY");
         extractField(o, mold, "alpha");
         extractField(o, mold, "visible");
         extractField(o, mold, "ease");

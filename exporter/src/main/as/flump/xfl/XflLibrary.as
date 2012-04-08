@@ -103,6 +103,10 @@ public class XflLibrary
         _errors.push(new ParseError(location, severity, message, e));
     }
 
+    public function toJSONString (atlases :Vector.<Atlas>, pretty :Boolean=false) :String {
+        return JSON.stringify(toMold(atlases), null, pretty ? "  " : null);
+    }
+
     public function toMold (atlases :Vector.<Atlas>) :LibraryMold {
         const mold :LibraryMold = new LibraryMold();
         mold.frameRate = frameRate;

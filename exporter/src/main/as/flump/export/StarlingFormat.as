@@ -10,8 +10,6 @@ import deng.fzip.FZip;
 import deng.fzip.FZipFile;
 
 import flump.display.StarlingResources;
-import flump.mold.LibraryMold;
-import flump.mold.Molds;
 import flump.xfl.XflLibrary;
 
 public class StarlingFormat extends Format
@@ -29,7 +27,6 @@ public class StarlingFormat extends Format
 
     override public function publish(out :IDataOutput, lib :XflLibrary, packers :Vector.<Packer>,
         authoredDevice :DeviceType) :void {
-        Molds.registerClassAliases();
         const zip :FZip = new FZip();
 
         function addToZip(name :String, contentWriter :Function) :void {
@@ -38,14 +35,13 @@ public class StarlingFormat extends Format
             zip.addFile(name, bytes);
         }
 
-        const mold :LibraryMold = lib.toMold(packers[0].atlases);
         for each (var atlas :Atlas in packers[0].atlases) {
             addToZip(atlas.fileName, function (b :ByteArray) :void { atlas.writePNG(b); });
         }
         addToZip(StarlingResources.LIBRARY_LOCATION,
-            function (b :ByteArray) :void { b.writeObject(mold); });
+            function (b :ByteArray) :void { b.writeUTFBytes(lib.toJSONString(packers[0].atlases)); });
         addToZip(StarlingResources.MD5_LOCATION,
-            function (b :ByteArray) :void { b.writeUTFBytes(mold.md5); });
+            function (b :ByteArray) :void { b.writeUTFBytes(lib.md5); });
 
         zip.serialize(out, /*includeAdler32=*/true);
     }

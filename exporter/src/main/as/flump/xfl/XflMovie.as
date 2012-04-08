@@ -5,7 +5,6 @@ package flump.xfl {
 
 import flump.display.Movie;
 import flump.mold.KeyframeMold;
-import flump.mold.LayerMold;
 import flump.mold.MovieMold;
 
 import com.threerings.util.XmlUtil;
@@ -39,23 +38,7 @@ public class XflMovie
                 }
             }
         }
-        movie.labels = new Vector.<Vector.<String>>(movie.frames, true);
-        movie.labels[0] = new Vector.<String>();
-        movie.labels[0].push(Movie.FIRST_FRAME);
-        movie.labels[movie.frames - 1] = new Vector.<String>();
-        movie.labels[movie.frames - 1].push(Movie.LAST_FRAME);
-        for each (var layer :LayerMold in movie.layers) {
-            for each (kf in layer.keyframes) {
-                if (kf.label != null) {
-                    var frameLabels :Vector.<String> = movie.labels[kf.index];
-                    if (frameLabels == null) {
-                        frameLabels = new Vector.<String>();
-                        movie.labels[kf.index] = frameLabels;
-                    }
-                    frameLabels.push(kf.label);
-                }
-            }
-        }
+        movie.fillLabels();
         return movie;
     }
 }

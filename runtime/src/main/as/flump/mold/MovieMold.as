@@ -3,6 +3,8 @@
 
 package flump.mold {
 
+import flump.display.Movie;
+
 public class MovieMold
 {
     public var id :String;
@@ -19,6 +21,22 @@ public class MovieMold
     }
 
     public function get flipbook () :Boolean { return layers[0].flipbook; }
+
+    public function fillLabels () :void {
+        labels = new Vector.<Vector.<String>>(frames, true);
+        labels[0] = new Vector.<String>();
+        labels[0].push(Movie.FIRST_FRAME);
+        labels[frames - 1] = new Vector.<String>();
+        labels[frames - 1].push(Movie.LAST_FRAME);
+        for each (var layer :LayerMold in layers) {
+            for each (var kf :KeyframeMold in layer.keyframes) {
+                if (kf.label == null) continue;
+                if (labels[kf.index] == null) labels[kf.index] = new Vector.<String>();
+                labels[kf.index].push(kf.label);
+            }
+
+        }
+    }
 
     public function toJSON (_:*) :Object {
         const json :Object = {

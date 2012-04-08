@@ -6,7 +6,6 @@ package flump.export {
 import flash.utils.ByteArray;
 import flash.utils.IDataOutput;
 
-import flump.mold.LibraryMold;
 import flump.xfl.XflLibrary;
 
 public class JSONFormat extends Format
@@ -21,9 +20,7 @@ public class JSONFormat extends Format
 
     override public function publish (out :IDataOutput, lib :XflLibrary, packers :Vector.<Packer>,
         authoredDevice :DeviceType) :void {
-        const mold :LibraryMold = lib.toMold(packers[0].atlases);
-        var pretty :Boolean = false;
-        out.writeUTFBytes(JSON.stringify(mold, null, pretty ? "  " : null));
+        out.writeUTFBytes(lib.toJSONString(packers[0].atlases));
     }
 }
 }

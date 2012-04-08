@@ -13,7 +13,7 @@ import starling.display.DisplayObject;
 
 public class StarlingResources
 {
-    public static const LIBRARY_LOCATION :String = "library.amf";
+    public static const LIBRARY_LOCATION :String = "library.json";
     public static const MD5_LOCATION :String = "md5";
 
     public static function loadBytes (bytes :ByteArray, executor :Executor=null) :Future {
@@ -86,7 +86,6 @@ import flump.executor.load.LoadedImage;
 import flump.mold.AtlasMold;
 import flump.mold.AtlasTextureMold;
 import flump.mold.LibraryMold;
-import flump.mold.Molds;
 import flump.mold.MovieMold;
 
 import starling.textures.Texture;
@@ -94,7 +93,6 @@ import starling.textures.Texture;
 class Loader
 {
     public function Loader(toLoad :Object) {
-        Molds.registerClassAliases();
         _toLoad = toLoad;
     }
 
@@ -120,7 +118,8 @@ class Loader
         const loaded :FZipFile = _zip.removeFileAt(_zip.getFileCount() - 1);
         const name :String = loaded.filename;
         if (name == StarlingResources.LIBRARY_LOCATION) {
-            _lib = loaded.content.readObject();
+            const jsonString :String = loaded.content.readUTFBytes(loaded.content.length);
+            _lib = LibraryMold.fromJSON(JSON.parse(jsonString));
         } else if (name == StarlingResources.MD5_LOCATION ) { // Nothing to verify
         } else if (name.indexOf('.png', name.length - 4) != -1) {
             // TODO - specify density?
@@ -161,6 +160,7 @@ class Loader
     protected function onPngLoadingComplete (..._) :void {
         if (_failed) return;
         for each (var movie :MovieMold in _lib.movies) {
+            movie.fillLabels();
             var creator :MovieCreator = new MovieCreator();
             creator.frameRate = _lib.frameRate;
             creator.mold = movie;
