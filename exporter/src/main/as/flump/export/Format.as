@@ -17,10 +17,7 @@ public class Format
         this.metaFilename = metaFilename;
     }
 
-    public function getMetadata (destDir :File) :File {
-        return destDir.resolvePath(metaFilename);
-
-    }
+    public function getMetadata (destDir :File) :File { return destDir.resolvePath(metaFilename); }
 
     public function publish(out :IDataOutput, lib :XflLibrary, packers :Vector.<Packer>,
         authoredDevice :DeviceType) :void {

@@ -90,7 +90,7 @@ public class XflLoader
     }
 
     protected function parseLibraryFile (file :File) :void {
-        var loadLibraryFile :Future = Files.load(file, _loader);
+        const loadLibraryFile :Future = Files.load(file, _loader);
         loadLibraryFile.succeeded.add(function (file :File) :void {
             const xml :XML = bytesToXML(file.data);
             if (xml.name().localName != "DOMSymbolItem") {

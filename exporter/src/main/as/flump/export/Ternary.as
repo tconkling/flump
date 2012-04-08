@@ -20,9 +20,7 @@ public class Ternary extends Enum
         return Enum.valueOf(Ternary, name) as Ternary;
     }
 
-   public static function values () :Array {
-       return Enum.values(Ternary);
-   }
+   public static function values () :Array { return Enum.values(Ternary); }
 
    public static function of (value :Boolean) :Ternary { return value ? TRUE : FALSE; }
 }

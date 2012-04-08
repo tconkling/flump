@@ -36,9 +36,7 @@ public class DisplayCreator
         if (FLIPBOOK_TEXTURE.exec(id) != null || _lib.get(id) is XflTexture) {
             const tex :Texture = getStarlingTexture(id);
             const usage :int = 4 * tex.width * tex.height;
-            if (subtex != null && !subtex.hasOwnProperty(id)) {
-                subtex[id] = usage;
-            }
+            if (subtex != null && !subtex.hasOwnProperty(id)) subtex[id] = usage;
             return usage;
         }
         const xflMovie :MovieMold = _lib.get(id, MovieMold);
@@ -116,7 +114,7 @@ public class DisplayCreator
         else return loadMovie(MovieMold(item).id);
     }
 
-    protected var _maxDrawn :Map = ValueComputingMap.newMapOf(String, calcMaxDrawn);
+    protected const _maxDrawn :Map = ValueComputingMap.newMapOf(String, calcMaxDrawn);
     protected const _textures :Dictionary = new Dictionary();// library name to Texture
     protected const _textureOffsets :Dictionary = new Dictionary();// library name to Point
     protected var _lib :XflLibrary;

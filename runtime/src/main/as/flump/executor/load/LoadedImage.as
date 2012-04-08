@@ -13,13 +13,9 @@ public class LoadedImage
         _loader = loader;
     }
 
-    public function get bitmap () :Bitmap {
-        return (_loader.content as Bitmap);
-    }
+    public function get bitmap () :Bitmap { return (_loader.content as Bitmap); }
 
-   public function get bitmapData () :BitmapData {
-        return bitmap.bitmapData;
-    }
+   public function get bitmapData () :BitmapData { return bitmap.bitmapData; }
 
     public function unload () :void {
         try {

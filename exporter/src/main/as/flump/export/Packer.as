@@ -20,7 +20,7 @@ public class Packer
     public function Packer (target :DeviceType, authored :DeviceType, lib :XflLibrary) {
         _target = target;
         _lib = lib;
-        var scale :Number = target.resWidth / authored.resWidth;
+        const scale :Number = target.resWidth / authored.resWidth;
         for each (var tex :XflTexture in _lib.textures) {
             _unpacked.push(SwfTexture.fromTexture(_lib.swf, tex, scale));
         }
@@ -34,15 +34,12 @@ public class Packer
         pack();
     }
 
-    public function get targetDevice () :DeviceType {
-        return _target;
-    }
+    public function get targetDevice () :DeviceType { return _target; }
 
     protected function pack () :void {
-
         while (_unpacked.length > 0) {
             // Add a new atlas
-            var size :Point = findOptimalSize();
+            const size :Point = findOptimalSize();
             atlases.push(new Atlas(_lib.location + "/atlas" + atlases.length,
                 _target, size.x, size.y));
 
@@ -72,22 +69,19 @@ public class Packer
         var maxH :int = 0;
 
         for each (var tex :SwfTexture in _unpacked) {
-            var w :int = tex.w + Atlas.PADDING;
-            var h :int = tex.h + Atlas.PADDING;
-            area += w*h;
+            const w :int = tex.w + Atlas.PADDING;
+            const h :int = tex.h + Atlas.PADDING;
+            area += w * h;
             maxW = Math.max(maxW, w);
             maxH = Math.max(maxH, h);
         }
 
-        var size :Point = new Point(nextPowerOfTwo(maxW), nextPowerOfTwo(maxH));
+        const size :Point = new Point(nextPowerOfTwo(maxW), nextPowerOfTwo(maxH));
 
         // Double the area until it's big enough
-        while (size.x*size.y < area) {
-            if (size.x < size.y) {
-                size.x *= 2;
-            } else {
-                size.y *= 2;
-            }
+        while (size.x * size.y < area) {
+            if (size.x < size.y) size.x *= 2;
+            else size.y *= 2;
         }
 
         size.x = Math.min(size.x, MAX_SIZE);
@@ -96,16 +90,13 @@ public class Packer
         return size;
     }
 
-    protected static function nextPowerOfTwo (n :int) :int
-    {
+    protected static function nextPowerOfTwo (n :int) :int {
         var p :int = 1;
-        while (p < n) {
-            p *= 2;
-        }
+        while (p < n) p *= 2;
         return p;
     }
 
-    protected var _unpacked :Vector.<SwfTexture> = new Vector.<SwfTexture>();
+    protected const _unpacked :Vector.<SwfTexture> = new Vector.<SwfTexture>();
 
     protected var _target :DeviceType;
     protected var _lib :XflLibrary;

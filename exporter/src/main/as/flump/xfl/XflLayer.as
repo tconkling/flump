@@ -27,11 +27,8 @@ public class XflLayer
         for (var ii :int = 0; ii < layer.keyframes.length - 1; ++ii) {
             var kf :KeyframeMold = layer.keyframes[ii];
             var nextKf :KeyframeMold = layer.keyframes[ii+1];
-            if (kf.rotation + Math.PI < nextKf.rotation) {
-                nextKf.rotation -= Math.PI * 2;
-            } else if (kf.rotation - Math.PI > nextKf.rotation) {
-                nextKf.rotation += Math.PI * 2;
-            }
+            if (kf.rotation + Math.PI < nextKf.rotation) nextKf.rotation -= Math.PI * 2;
+            else if (kf.rotation - Math.PI > nextKf.rotation) nextKf.rotation += Math.PI * 2;
         }
 
         // handle "motionTweenRotate", which applies additional rotations to the next
@@ -39,9 +36,7 @@ public class XflLayer
         ii = 1;
         var additionalRotation :Number = 0;
         for each (frameEl in xml.frames.DOMFrame) {
-            if (ii >= layer.keyframes.length) {
-                break;
-            }
+            if (ii >= layer.keyframes.length) break;
 
             if (XmlUtil.hasAttr(frameEl, "motionTweenRotateTimes") &&
                 XmlUtil.hasAttr(frameEl, "motionTweenRotate")) {
@@ -72,8 +67,8 @@ public class XflLayer
     }
 
     protected static function round (n :Number, places :int = 4) :Number {
-        var shift :int = Math.pow(10, places);
-        return Math.round(n*shift) / shift;
+        const shift :int = Math.pow(10, places);
+        return Math.round(n * shift) / shift;
     }
 
 }

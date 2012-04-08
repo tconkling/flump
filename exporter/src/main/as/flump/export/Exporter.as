@@ -64,9 +64,7 @@ public class Exporter
                 initialSelection = DeviceType.valueOf(_settings.data[AUTHORED_RESOLUTION]);
             } catch (e :Error) {}
         }
-        if (initialSelection == null) {
-            initialSelection = DeviceType.IPHONE_RETINA;
-        }
+        if (initialSelection == null) initialSelection = DeviceType.IPHONE_RETINA;
         _authoredResolution.selectedIndex = DeviceType.values().indexOf(initialSelection);
         _authoredResolution.addEventListener(Event.CHANGE, function (..._) :void {
             var selectedType :DeviceType = DeviceSelection(_authoredResolution.selectedItem).type;
@@ -158,8 +156,8 @@ public class Exporter
     protected var _previewWindow :PreviewWindow;
     protected var _previewControls :PreviewControlsWindow;
 
-    protected function findFlashDocuments (
-            base :File, exec :Executor, ignoreXflAtBase :Boolean = false) :void {
+    protected function findFlashDocuments (base :File, exec :Executor,
+        ignoreXflAtBase :Boolean = false) :void {
         Files.list(base, exec).succeeded.add(function (files :Array) :void {
             if (exec.isShutdown) return;
             for each (var file :File in files) {
@@ -168,9 +166,7 @@ public class Exporter
                         _errors.dataProvider.addItem(new ParseError(base.nativePath,
                             ParseError.CRIT, "The import directory can't be an XFL directory, did you mean " +
                             base.parent.nativePath + "?"));
-                    } else {
-                        addFlashDocument(file.parent);
-                    }
+                    } else addFlashDocument(file.parent);
                     return;
                 }
             }
@@ -188,9 +184,8 @@ public class Exporter
     }
 
     protected function exportFlashDocument (status :DocStatus) :void {
-
-        var stage :Stage = NA.activeWindow.stage;
-        var prevQuality :String = stage.quality;
+        const stage :Stage = NA.activeWindow.stage;
+        const prevQuality :String = stage.quality;
 
         stage.quality = StageQuality.BEST;
         _publisher.publish(status.lib, DeviceSelection(_authoredResolution.selectedItem).type);

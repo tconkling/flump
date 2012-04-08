@@ -28,9 +28,7 @@ public class StarlingResources
         _creators = creators;
     }
 
-    public function loadMovie (name :String) :Movie {
-        return Movie(idToDisplayObject(name));
-    }
+    public function loadMovie (name :String) :Movie { return Movie(idToDisplayObject(name)); }
 
     public function loadTexture (name :String) :DisplayObject {
         const disp :DisplayObject = DisplayObject(idToDisplayObject(name));
@@ -59,9 +57,7 @@ public class StarlingResources
 
     protected function idToDisplayObject (name :String) :DisplayObject {
         var creator :* = _creators[name];
-        if (creator === undefined) {
-            throw new Error("No such id '" + name + "'");
-        }
+        if (creator === undefined) throw new Error("No such id '" + name + "'");
         return creator.create(idToDisplayObject);
     }
 
@@ -143,7 +139,7 @@ class Loader
             onPngLoadingFailed(new Error("Expected an atlas '" + atlas.file + "', but it wasn't in the zip"));
             return;
         }
-        var atlasFuture :Future = loader.loadFromBytes(pngBytes, _pngLoaders);
+        const atlasFuture :Future = loader.loadFromBytes(pngBytes, _pngLoaders);
         atlasFuture.failed.add(onPngLoadingFailed);
         atlasFuture.succeeded.add(function (img :LoadedImage) :void {
             const baseTexture :Texture = Texture.fromBitmapData(img.bitmapData);
@@ -180,10 +176,11 @@ class Loader
     protected var _failed :Boolean;
 
     protected var _zip :FZip = new FZip();
-    protected var _creators :Dictionary = new Dictionary();//<name, TextureCreator/MovieCreator>
     protected var _lib :LibraryMold;
-    protected var _pngBytes :Dictionary = new Dictionary();//<String name, ByteArray>
-    protected var _pngLoaders :Executor = new Executor();
+
+    protected const _creators :Dictionary = new Dictionary();//<name, TextureCreator/MovieCreator>
+    protected const _pngBytes :Dictionary = new Dictionary();//<String name, ByteArray>
+    protected const _pngLoaders :Executor = new Executor();
 }
 import flash.geom.Point;
 

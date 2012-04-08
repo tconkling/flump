@@ -16,21 +16,13 @@ public final class DeviceType extends Enum
 
     finishedEnumerating(DeviceType);
 
-    public function get displayName () :String {
-        return _displayName;
-    }
+    public function get displayName () :String { return _displayName; }
 
-    public function get extension () :String {
-        return _extension;
-    }
+    public function get extension () :String { return _extension; }
 
-    public function get resWidth () :int {
-        return _resWidth;
-    }
+    public function get resWidth () :int { return _resWidth; }
 
-    public function get resHeight () :int {
-        return _resHeight;
-    }
+    public function get resHeight () :int { return _resHeight; }
 
     public function DeviceType (name :String, displayName :String, extension :String,
         resWidth :int, resHeight :int) {
@@ -45,9 +37,7 @@ public final class DeviceType extends Enum
         return Enum.valueOf(DeviceType, name) as DeviceType;
     }
 
-    public static function values () :Array {
-        return Enum.values(DeviceType);
-    }
+    public static function values () :Array { return Enum.values(DeviceType); }
 
     protected var _displayName :String;
     protected var _extension :String;

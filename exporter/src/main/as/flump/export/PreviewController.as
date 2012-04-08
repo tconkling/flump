@@ -36,7 +36,7 @@ public class PreviewController
         _controls.textureMemory.labelFunction = formatMemory;
 
         // All explicitly exported movies
-        var previewMovies :Vector.<MovieMold> =
+        const previewMovies :Vector.<MovieMold> =
             lib.movies.filter(function (movie :MovieMold, ..._) :Boolean {
                 return lib.isExported(movie);
             });

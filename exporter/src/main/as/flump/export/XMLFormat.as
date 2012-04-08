@@ -24,21 +24,19 @@ public class XMLFormat extends Format
 
     override public function publish (out :IDataOutput, lib :XflLibrary, packers :Vector.<Packer>,
         authoredDevice :DeviceType) :void {
-        var xml :XML = <resources md5={lib.md5}/>;
-        var prefix :String = lib.location + "/";
+        const xml :XML = <resources md5={lib.md5}/>;
+        const prefix :String = lib.location + "/";
         for each (var movie :MovieMold in lib.publishedMovies) {
             var movieXml :XML = movie.toXML();
             movieXml.@authoredDevice = authoredDevice.name();
             movieXml.@name = prefix + movieXml.@name;
             movieXml.@frameRate=lib.frameRate;
             for each (var kf :XML in movieXml..kf) {
-                if (XmlUtil.hasAttr(kf, "ref")) {
-                    kf.@ref = prefix + kf.@ref;
-                }
+                if (XmlUtil.hasAttr(kf, "ref")) kf.@ref = prefix + kf.@ref;
             }
             xml.appendChild(movieXml);
         }
-        var groupsXml :XML = <textureGroups/>;
+        const groupsXml :XML = <textureGroups/>;
         xml.appendChild(groupsXml);
         for each (var packer :Packer in packers) {
             var groupXml :XML = <textureGroup target={packer.targetDevice}/>;
@@ -47,9 +45,7 @@ public class XMLFormat extends Format
                 groupXml.appendChild(atlas.toMold().toXML());
             }
         }
-        for each (var texture :XML in groupsXml..texture) {
-            texture.@name = prefix + texture.@name;
-        }
+        for each (var texture :XML in groupsXml..texture) texture.@name = prefix + texture.@name;
         out.writeUTFBytes(xml.toString());
     }
 }

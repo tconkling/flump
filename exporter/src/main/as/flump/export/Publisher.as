@@ -58,9 +58,7 @@ public class Publisher
         }
 
         for each (var packer :Packer in packers) {
-            for each (var atlas :Atlas in packer.atlases) {
-                atlas.publish(_exportDir);
-            }
+            for each (var atlas :Atlas in packer.atlases) atlas.publish(_exportDir);
         }
         for each (var format :Format in _formats) {
             var out :FileStream = new FileStream();

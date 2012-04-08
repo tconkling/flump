@@ -162,9 +162,7 @@ public class Movie extends Sprite
             if (wrapped) {
                 fireLabels(oldFrame + 1, _frames - 1);
                 fireLabels(0, _frame);
-            } else {
-                fireLabels(oldFrame + 1, _frame);
-            }
+            } else fireLabels(oldFrame + 1, _frame);
         }
         _goingToFrame = false;
         if (_pendingFrame != NO_FRAME) {

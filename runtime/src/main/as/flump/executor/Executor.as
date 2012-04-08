@@ -153,9 +153,9 @@ public class Executor
     protected var _maxSimultaneous :int;
     protected var _shutdown :Boolean;
     protected var _terminated :Boolean;
-    protected var _running :Vector.<Future> = new Vector.<Future>();
     protected var _toRun :Vector.<ToRun> = new Vector.<ToRun>();
-    protected var _timer :Timer = new Timer(1);
+    protected const _running :Vector.<Future> = new Vector.<Future>();
+    protected const _timer :Timer = new Timer(1);
 }
 }
 import flump.executor.Future;

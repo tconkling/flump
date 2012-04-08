@@ -85,31 +85,15 @@ public class KeyframeMold
 
         if (ref != null) {
             xml.@ref = ref;
-            if (x != 0 || y != 0) {
-                xml.@loc = "" + x + "," + y;
-            }
-            if (scaleX != 1 || scaleY != 1) {
-                xml.@scale = "" + scaleX + "," + scaleY;
-            }
-            if (rotation != 0) {
-                xml.@rotation = rotation;
-            }
-            if (pivotX != 0 || pivotY != 0) {
-                xml.@pivot = "" + pivotX + "," + pivotY;
-            }
-            if (alpha != 1) {
-                xml.@alpha = alpha;
-            }
-            if (!visible) {
-                xml.@visible = visible;
-            }
-            if (ease != 0) {
-                xml.@ease = ease;
-            }
+            if (x != 0 || y != 0) xml.@loc = "" + x + "," + y;
+            if (scaleX != 1 || scaleY != 1) xml.@scale = "" + scaleX + "," + scaleY;
+            if (rotation != 0) xml.@rotation = rotation;
+            if (pivotX != 0 || pivotY != 0) xml.@pivot = "" + pivotX + "," + pivotY;
+            if (alpha != 1) xml.@alpha = alpha;
+            if (!visible) xml.@visible = visible;
+            if (ease != 0) xml.@ease = ease;
         }
-        if (label != null) {
-            xml.@label = label;
-        }
+        if (label != null) xml.@label = label;
         return xml;
     }
 

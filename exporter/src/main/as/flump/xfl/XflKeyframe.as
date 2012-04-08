@@ -17,7 +17,7 @@ public class XflKeyframe
     public static function parse (lib :XflLibrary, baseLocation :String, xml :XML,
         flipbook :Boolean) :KeyframeMold {
 
-        var kf :KeyframeMold = new KeyframeMold();
+        const kf :KeyframeMold = new KeyframeMold();
         kf.index = XmlUtil.getIntAttr(xml, "index");
         const location :String = baseLocation + ":" + kf.index;
         kf.duration = XmlUtil.getNumberAttr(xml, "duration", 1);
@@ -72,8 +72,8 @@ public class XflKeyframe
             kf.scaleX = p.x;
             kf.scaleY = p.y;
 
-            var skewX :Number = Math.atan(rewound.c);
-            var skewY :Number = Math.atan(rewound.b);
+            const skewX :Number = Math.atan(rewound.c);
+            const skewY :Number = Math.atan(rewound.b);
             if (Math.abs(skewX) > 0.0001 || Math.abs(skewY) > 0.0001) {
                 lib.addError(location, ParseError.WARN, "Skewing is not supported");
             }
@@ -87,7 +87,7 @@ public class XflKeyframe
                 kf.pivotY = XmlUtil.getNumberAttr(pivotXml, "y", 0);
 
                 // Translate to the pivot point
-                var orig :Matrix = matrix.clone();
+                const orig :Matrix = matrix.clone();
                 matrix.identity();
                 matrix.translate(kf.pivotX, kf.pivotY);
                 matrix.concat(orig);
@@ -100,7 +100,7 @@ public class XflKeyframe
 
         // Read the alpha
         if (symbolXml.color != null) {
-            var colorXml :XML = symbolXml.color.Color[0];
+            const colorXml :XML = symbolXml.color.Color[0];
             if (colorXml != null) {
                 kf.alpha = XmlUtil.getNumberAttr(colorXml, "alphaMultiplier", 1);
             }

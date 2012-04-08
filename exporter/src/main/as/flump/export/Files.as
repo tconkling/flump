@@ -54,14 +54,12 @@ public class Files
         });
     }
 
-    public static function hasExtension (file :File, ext :String) :Boolean
-    {
+    public static function hasExtension (file :File, ext :String) :Boolean {
         return !file.isHidden && StringUtil.endsWith(file.nativePath, "."+ext);
     }
 
-    public static function getExtension (file :File) :String
-    {
-        var path :String = file.nativePath;
+    public static function getExtension (file :File) :String {
+        const path :String = file.nativePath;
         return path.substr(path.lastIndexOf(".") + 1).toLowerCase();
     }
 }

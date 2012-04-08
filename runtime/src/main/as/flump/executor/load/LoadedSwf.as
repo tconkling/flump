@@ -28,9 +28,7 @@ public class LoadedSwf
         return _loader.contentLoaderInfo.applicationDomain;
     }
 
-    public function get displayRoot () :DisplayObject {
-        return _loader.content;
-    }
+    public function get displayRoot () :DisplayObject { return _loader.content; }
 
     public function unload () :void {
         try {

@@ -31,7 +31,7 @@ public class SwfTexture
         height :int, scale :Number = 1) :BitmapData {
 
         const bd :BitmapData = new BitmapData(width, height, true, 0x00);
-        var m :Matrix = new Matrix();
+        const m :Matrix = new Matrix();
         m.scale(scale, scale);
         bd.draw(target, m, null, null, null, true);
         return bd;
@@ -43,7 +43,7 @@ public class SwfTexture
         const klass :Class = Class(lib.swf.getSymbol(movie.id));
         const clip :MovieClip = MovieClip(new klass());
         clip.gotoAndStop(frame + 1);
-        var name :String = movie.id + "_flipbook_" + frame;
+        const name :String = movie.id + "_flipbook_" + frame;
         return new SwfTexture(null, name, clip, scale);
     }
 
@@ -64,25 +64,25 @@ public class SwfTexture
 
         offset = getOffset(_disp, scale);
 
-        var size :Point = getSize(_disp, scale);
+        const size :Point = getSize(_disp, scale);
         w = size.x;
         h = size.y;
         a = w * h;
     }
 
     public function toBitmapData () :BitmapData {
-        var holder :Sprite = new Sprite();
+        const holder :Sprite = new Sprite();
 
         if (scale != 1) {
             // render at normal size first, then scale to get the
             // benefit of bitmap smoothing. BitmapData.draw smoothing only works
             // when the source is itself a BitmapData object.
-            var fullsizeOffset :Point = getOffset(_disp, 1);
-            var fullSize :Point = getSize(_disp, 1);
+            const fullsizeOffset :Point = getOffset(_disp, 1);
+            const fullSize :Point = getSize(_disp, 1);
             _disp.x = -fullsizeOffset.x;
             _disp.y = -fullsizeOffset.y;
             holder.addChild(_disp);
-            var bmd :BitmapData = renderToBitmapData(holder, fullSize.x, fullSize.y, 1);
+            const bmd :BitmapData = renderToBitmapData(holder, fullSize.x, fullSize.y, 1);
             return renderToBitmapData(bmd, w, h, scale);
 
         } else {
@@ -93,22 +93,20 @@ public class SwfTexture
         }
     }
 
-    public function toString () :String {
-        return "a " + a + " w " + w + " h " + h;
-    }
+    public function toString () :String { return "a " + a + " w " + w + " h " + h; }
 
     protected static function getSize (disp :DisplayObject, scale :Number) :Point {
-        var bounds :Rectangle = getBounds(disp, scale);
+        const bounds :Rectangle = getBounds(disp, scale);
         return new Point(Math.ceil(bounds.width), Math.ceil(bounds.height));
     }
 
     protected static function getOffset (disp :DisplayObject, scale :Number) :Point {
-        var bounds :Rectangle = getBounds(disp, scale);
+        const bounds :Rectangle = getBounds(disp, scale);
         return new Point(bounds.x, bounds.y);
     }
 
     protected static function getBounds (disp :DisplayObject, scale :Number) :Rectangle {
-        var oldScale :Number = disp.scaleX;
+        const oldScale :Number = disp.scaleX;
         disp.scaleX = disp.scaleY = scale;
         const holder :Sprite = new Sprite();
         holder.addChild(disp);
