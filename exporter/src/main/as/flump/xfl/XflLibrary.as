@@ -66,12 +66,18 @@ public class XflLibrary extends LibraryElement
                 for each (var kf :KeyframeMold in layer.keyframes) {
                     if (kf.libraryItem != null) {
                         var item :Object = _libraryItems[kf.libraryItem];
-                        if (item.symbol == null) {
-                            // This unexported movie was referenced, generate a symbol name for it
-                            item.symbol = IMPLICIT_PREFIX + item.libraryItem;
-                            _symbols[item.symbol] = item;
+                        if (item == null) {
+                            addError(kf, ParseError.CRIT,
+                                "unrecognized library item '" + kf.libraryItem + "'");
+                        } else {
+                            if (item.symbol == null) {
+                                // This unexported movie was referenced,
+                                // generate a symbol name for it
+                                item.symbol = IMPLICIT_PREFIX + item.libraryItem;
+                                _symbols[item.symbol] = item;
+                            }
+                            kf.symbol = item.symbol;
                         }
-                        kf.symbol = item.symbol;
                     }
                 }
             }
