@@ -108,7 +108,7 @@ public class XflLoader
             log.debug("Parsing for library", "file", file.nativePath, "isSprite", isSprite,
                 "md5", md5);
             try {
-                if (isSprite) _library.textures.push(new XflTexture(_library.location, xml, md5));
+                if (isSprite) _library.textures.push(new XflTexture(_library, _library.location, xml, md5));
                 else _library.movies.push(XflMovie.parse(_library, xml, md5));
             } catch (e :Error) {
                 var type :String = isSprite ? "sprite" : "movie";

@@ -3,12 +3,12 @@
 
 package flump.xfl {
 
+import com.threerings.util.XmlUtil;
+
 import flump.display.Movie;
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
 import flump.mold.MovieMold;
-
-import com.threerings.util.XmlUtil;
 
 public class XflMovie
 {
@@ -20,6 +20,12 @@ public class XflMovie
         movie.location = lib.location + ":" + movie.libraryItem;
         movie.md5 = md5;
         movie.symbol = XmlUtil.getStringAttr(xml, "linkageClassName", null);
+
+        if (movie.symbol != null && movie.symbol != movie.libraryItem) {
+            lib.addError(movie, ParseError.CRIT,
+                "export name doesn't match library name (" +
+                movie.symbol + ", " + movie.libraryItem + ")");
+        }
 
         const layerEls :XMLList = xml.timeline.DOMTimeline[0].layers.DOMLayer;
         if (XmlUtil.getStringAttr(layerEls[0], "name") == "flipbook") {
