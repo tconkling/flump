@@ -3,7 +3,9 @@
 
 package flump.mold {
 
-public class MovieMold extends Mold
+import flump.LibraryElement;
+
+public class MovieMold extends LibraryElement
 {
     public var libraryItem :String;
     public var symbol :String;

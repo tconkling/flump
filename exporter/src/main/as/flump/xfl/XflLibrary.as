@@ -5,15 +5,15 @@ package flump.xfl {
 
 import flash.utils.Dictionary;
 
+import flump.LibraryElement;
 import flump.executor.load.LoadedSwf;
 import flump.export.Atlas;
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
 import flump.mold.LibraryMold;
-import flump.mold.Mold;
 import flump.mold.MovieMold;
 
-public class XflLibrary extends Mold
+public class XflLibrary extends LibraryElement
 {
     // When an exported movie contains an unexported movie, it gets assigned a generated symbol name
     // with this prefix.
@@ -90,7 +90,7 @@ public class XflLibrary extends Mold
         return getErrors(ParseError.CRIT).length == 0;
     }
 
-    public function addError(mold :Mold, severity :String, message :String, e :Object=null) :void {
+    public function addError(mold :LibraryElement, severity :String, message :String, e :Object=null) :void {
         _errors.push(new ParseError(mold.location, severity, message, e));
     }
 

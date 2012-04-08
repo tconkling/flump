@@ -3,7 +3,9 @@
 
 package flump.mold {
 
-public class LayerMold extends Mold
+import flump.LibraryElement;
+
+public class LayerMold extends LibraryElement
 {
     public var name :String;
     public var keyframes :Vector.<KeyframeMold> = new Vector.<KeyframeMold>();

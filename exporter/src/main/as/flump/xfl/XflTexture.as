@@ -3,11 +3,11 @@
 
 package flump.xfl {
 
+import flump.LibraryElement;
+
 import com.threerings.util.XmlUtil;
 
-import flump.mold.Mold;
-
-public class XflTexture extends Mold
+public class XflTexture extends LibraryElement
 {
     public var libraryItem :String;
     public var symbol :String;

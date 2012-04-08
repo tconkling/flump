@@ -1,9 +1,9 @@
 //
 // Flump - Copyright 2012 Three Rings Design
 
-package flump.mold {
+package flump {
 
-public class Mold
+public class LibraryElement
 {
     public var location :String;
 }
