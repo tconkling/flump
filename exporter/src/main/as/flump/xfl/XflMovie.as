@@ -3,12 +3,12 @@
 
 package flump.xfl {
 
-import com.threerings.util.XmlUtil;
-
 import flump.display.Movie;
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
 import flump.mold.MovieMold;
+
+import com.threerings.util.XmlUtil;
 
 public class XflMovie
 {
