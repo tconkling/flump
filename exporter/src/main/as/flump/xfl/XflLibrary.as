@@ -90,8 +90,8 @@ public class XflLibrary extends LibraryElement
         return getErrors(ParseError.CRIT).length == 0;
     }
 
-    public function addError(mold :LibraryElement, severity :String, message :String, e :Object=null) :void {
-        _errors.push(new ParseError(mold.location, severity, message, e));
+    public function addError(element :LibraryElement, severity :String, message :String, e :Object=null) :void {
+        _errors.push(new ParseError(element.location, severity, message, e));
     }
 
     public function toMold (atlases :Vector.<Atlas>) :LibraryMold {
