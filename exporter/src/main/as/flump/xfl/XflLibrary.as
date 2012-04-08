@@ -5,7 +5,6 @@ package flump.xfl {
 
 import flash.utils.Dictionary;
 
-import flump.LibraryElement;
 import flump.executor.load.LoadedSwf;
 import flump.export.Atlas;
 import flump.mold.KeyframeMold;
@@ -18,7 +17,7 @@ import com.threerings.util.Maps;
 import com.threerings.util.Set;
 import com.threerings.util.Sets;
 
-public class XflLibrary extends LibraryElement
+public class XflLibrary
 {
     /**
      * When an exported movie contains an unexported movie, it gets assigned a generated symbol
@@ -32,6 +31,8 @@ public class XflLibrary extends LibraryElement
 
     // The MD5 of the published library SWF
     public var md5 :String;
+
+    public var location :String;
 
     public const movies :Vector.<MovieMold> = new Vector.<MovieMold>();
     public const textures :Vector.<XflTexture> = new Vector.<XflTexture>();
@@ -69,7 +70,7 @@ public class XflLibrary extends LibraryElement
                 kf.ref = _libraryNameToId.get(kf.ref);
                 var item :Object = _ids[kf.ref];
                 if (item == null) {
-                    addError(kf, ParseError.CRIT,
+                    addTopLevelError(ParseError.CRIT,
                             "unrecognized library item '" + kf.ref + "'");
                 } else if (item is MovieMold) addToPublished(MovieMold(item));
             }
@@ -94,8 +95,12 @@ public class XflLibrary extends LibraryElement
 
     public function get valid () :Boolean { return getErrors(ParseError.CRIT).length == 0; }
 
-    public function addError(element :LibraryElement, severity :String, message :String, e :Object=null) :void {
-        _errors.push(new ParseError(element.location, severity, message, e));
+    public function addTopLevelError(severity :String, message :String, e :Object=null) :void {
+        addError(location, severity, message, e);
+    }
+
+    public function addError(location :String, severity :String, message :String, e :Object=null) :void {
+        _errors.push(new ParseError(location, severity, message, e));
     }
 
     public function toMold (atlases :Vector.<Atlas>) :LibraryMold {

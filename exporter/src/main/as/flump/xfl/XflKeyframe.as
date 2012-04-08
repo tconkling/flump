@@ -19,7 +19,7 @@ public class XflKeyframe
 
         var kf :KeyframeMold = new KeyframeMold();
         kf.index = XmlUtil.getIntAttr(xml, "index");
-        kf.location = baseLocation + ":" + kf.index;
+        const location :String = baseLocation + ":" + kf.index;
         kf.duration = XmlUtil.getNumberAttr(xml, "duration", 1);
         kf.label = XmlUtil.getStringAttr(xml, "name", null);
         kf.ease = XmlUtil.getNumberAttr(xml, "acceleration", 0) / 100;
@@ -29,18 +29,18 @@ public class XflKeyframe
         for each (var frameEl :XML in xml.elements.elements()) {
             if (frameEl.name().localName == "DOMSymbolInstance") {
                 if (symbolXml != null)  {
-                    lib.addError(kf, ParseError.CRIT, "There can be only one symbol instance at " +
+                    lib.addError(location, ParseError.CRIT, "There can be only one symbol instance at " +
                         "a time in a keyframe.");
                 } else symbolXml = frameEl;
             } else {
-                lib.addError(kf, ParseError.CRIT, "Non-symbols may not be in movie layers");
+                lib.addError(location, ParseError.CRIT, "Non-symbols may not be in movie layers");
             }
         }
 
         if (symbolXml == null) return kf; // Purely labelled frame
 
         if (XmlUtil.getBooleanAttr(xml, "hasCustomEase", false)) {
-            lib.addError(kf, ParseError.WARN, "Custom easing is not supported");
+            lib.addError(location, ParseError.WARN, "Custom easing is not supported");
         }
 
         // Fill this in with the library name for now. XflLibrary.finishLoading will swap in the
@@ -75,7 +75,7 @@ public class XflKeyframe
             var skewX :Number = Math.atan(rewound.c);
             var skewY :Number = Math.atan(rewound.b);
             if (Math.abs(skewX) > 0.0001 || Math.abs(skewY) > 0.0001) {
-                lib.addError(kf, ParseError.WARN, "Skewing is not supported");
+                lib.addError(location, ParseError.WARN, "Skewing is not supported");
             }
         }
 

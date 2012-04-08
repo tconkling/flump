@@ -3,9 +3,7 @@
 
 package flump.mold {
 
-import flump.LibraryElement;
-
-public class MovieMold extends LibraryElement
+public class MovieMold
 {
     public var id :String;
     public var layers :Vector.<LayerMold> = new Vector.<LayerMold>();

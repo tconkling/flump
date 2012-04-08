@@ -2,9 +2,7 @@
 // Flump - Copyright 2012 Three Rings Design
 package flump.mold {
 
-import flump.LibraryElement;
-
-public class KeyframeMold extends LibraryElement
+public class KeyframeMold
 {
     public var index :int;
 

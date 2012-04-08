@@ -19,14 +19,14 @@ public class XflMovie
         const name :String = XmlUtil.getStringAttr(xml, "name")
         const symbol :String = XmlUtil.getStringAttr(xml, "linkageClassName", null);
         movie.id = lib.createId(movie, name, symbol);
-        movie.location = lib.location + ":" + movie.id;
+        const location :String = lib.location + ":" + movie.id;
         movie.md5 = md5;
 
         const layerEls :XMLList = xml.timeline.DOMTimeline[0].layers.DOMLayer;
         if (XmlUtil.getStringAttr(layerEls[0], "name") == "flipbook") {
-            movie.layers.push(XflLayer.parse(lib, movie.location, layerEls[0], true));
+            movie.layers.push(XflLayer.parse(lib, location, layerEls[0], true));
             if (symbol == null) {
-                lib.addError(movie, ParseError.CRIT, "Flipbook movie '" + movie.id + "' not exported");
+                lib.addError(location, ParseError.CRIT, "Flipbook movie '" + movie.id + "' not exported");
             }
             for each (var kf :KeyframeMold in movie.layers[0].keyframes) {
                 kf.ref = movie.id + "_flipbook_" + kf.index;
@@ -35,7 +35,7 @@ public class XflMovie
         } else {
             for each (var layerEl :XML in layerEls) {
                 if (XmlUtil.getStringAttr(layerEl, "layerType", "") != "guide") {
-                    movie.layers.unshift(XflLayer.parse(lib, movie.location, layerEl, false));
+                    movie.layers.unshift(XflLayer.parse(lib, location, layerEl, false));
                 }
             }
         }

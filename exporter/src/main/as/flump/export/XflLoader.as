@@ -42,13 +42,13 @@ public class XflLoader
             const loadSwf :Future = new SwfLoader().loadFromBytes(file.data, swfExecutor);
             loadSwf.succeeded.add(function (swf :LoadedSwf) :void { _library.swf = swf; });
             loadSwf.failed.add(function (error :Object) :void {
-                _library.addError(_library, ParseError.CRIT, "Unable to load " + swfFile.nativePath, error);
+                _library.addTopLevelError(ParseError.CRIT, "Unable to load " + swfFile.nativePath, error);
             });
 
             swfExecutor.shutdown();
         });
         loadSwfFile.failed.add(function (error :Object) :void {
-            _library.addError(_library, ParseError.CRIT, "Unable to read " + swfFile.nativePath, error);
+            _library.addTopLevelError(ParseError.CRIT, "Unable to read " + swfFile.nativePath, error);
             swfExecutor.shutdown();
         });
 
@@ -83,7 +83,7 @@ public class XflLoader
             _loader.shutdown();
         });
         loadDomFile.failed.add(function (error :Object) :void {
-            _library.addError(_library, ParseError.CRIT, "Unable to read " + domFile.nativePath,
+            _library.addTopLevelError(ParseError.CRIT, "Unable to read " + domFile.nativePath,
                 error);
             _loader.shutdown();
         });
@@ -94,12 +94,11 @@ public class XflLoader
         loadLibraryFile.succeeded.add(function (file :File) :void {
             const xml :XML = bytesToXML(file.data);
             if (xml.name().localName != "DOMSymbolItem") {
-                _library.addError(_library, ParseError.DEBUG,
+                _library.addTopLevelError(ParseError.DEBUG,
                     "Skipping file since its root element isn't DOMSymbolItem");
                 return;
             } else if (XmlUtil.getStringAttr(xml, "symbolType", "") == "graphic") {
-                _library.addError(_library, ParseError.DEBUG,
-                    "Skipping file because symbolType=graphic");
+                _library.addTopLevelError(ParseError.DEBUG, "Skipping file because symbolType=graphic");
                 return;
             }
 
@@ -112,13 +111,13 @@ public class XflLoader
                 else _library.movies.push(XflMovie.parse(_library, xml, md5));
             } catch (e :Error) {
                 var type :String = isSprite ? "sprite" : "movie";
-                _library.addError(_library, ParseError.CRIT,
+                _library.addTopLevelError(ParseError.CRIT,
                     "Unable to parse " + type + " in " + file.nativePath, e);
                 log.error("Unable to parse " + file.nativePath, e);
             }
         });
         loadLibraryFile.failed.add(function (error :Object) :void {
-            _library.addError(_library, ParseError.CRIT, "Unable to read " + file.nativePath, error);
+            _library.addTopLevelError(ParseError.CRIT, "Unable to read " + file.nativePath, error);
         });
     }
 
