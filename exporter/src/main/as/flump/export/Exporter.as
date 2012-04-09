@@ -118,7 +118,7 @@ public class Exporter
         if (root == null) return;
         _rootLen = root.nativePath.length + 1;
         if (_docFinder != null) _docFinder.shutdownNow();
-        _docFinder = new Executor(2);
+        _docFinder = new Executor(1);
         findFlashDocuments(root, _docFinder, true);
         _win.reload.enabled = true;
     }
