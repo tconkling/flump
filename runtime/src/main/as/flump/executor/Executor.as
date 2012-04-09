@@ -77,7 +77,7 @@ public class Executor
      */
     public function submit (f :Function) :Future {
         if (_shutdown) throw new Error("Submission to a shutdown executor!");
-        const future :Future = new Future(onCompleted);
+        const future :VisibleFuture = new VisibleFuture(onCompleted);
         _toRun.push(new ToRun(future, f));
         // Don't run immediately; let listeners hook onto the future
         _timer.start();
@@ -91,7 +91,7 @@ public class Executor
             const willRun :ToRun = _toRun.shift();
             _running.push(willRun.future);// Fill in running first so onCompleted can remove it
             try {
-                if (willRun.f.length == 1) willRun.f(new Finisher(willRun.future.onSuccess, willRun.future.onFailure));
+                if (willRun.f.length == 1) willRun.f(willRun.future);
                 else willRun.f(willRun.future.onSuccess, willRun.future.onFailure);
             } catch (e :Error) {
                 willRun.future.onFailure(e);// This invokes onCompleted on this class
@@ -159,12 +159,13 @@ public class Executor
 }
 }
 import flump.executor.Future;
+import flump.executor.VisibleFuture;
 
 class ToRun {
-    public var future :Future;
+    public var future :VisibleFuture;
     public var f :Function;
 
-    public function ToRun (future :Future, f :Function) {
+    public function ToRun (future :VisibleFuture, f :Function) {
         this.future = future;
         this.f = f;
     }

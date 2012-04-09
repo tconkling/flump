@@ -15,6 +15,8 @@ public class StarlingResources
 {
     public static const LIBRARY_LOCATION :String = "library.json";
     public static const MD5_LOCATION :String = "md5";
+    public static const VERSION_LOCATION :String = "version";
+    public static const VERSION :String = "0";
 
     public static function loadBytes (bytes :ByteArray, executor :Executor=null) :Future {
         return (executor || new Executor()).submit(new Loader(bytes).load);
@@ -77,6 +79,7 @@ import deng.fzip.FZipFile;
 import flump.display.StarlingResources;
 import flump.executor.Executor;
 import flump.executor.Future;
+import flump.executor.VisibleFuture;
 import flump.executor.load.ImageLoader;
 import flump.executor.load.LoadedImage;
 import flump.mold.AtlasMold;
@@ -92,52 +95,50 @@ class Loader
         _toLoad = toLoad;
     }
 
-    public function load(onSuccess :Function, onFailure :Function) :void {
-        _onFailure = onFailure;
-        _onSuccess = onSuccess;
+    public function load(future :VisibleFuture) :void {
+        _future = future;
 
-        _zip.addEventListener(Event.COMPLETE, onZipLoadingComplete);
-        _zip.addEventListener(FZipErrorEvent.PARSE_ERROR, fail);
-        _zip.addEventListener(FZipEvent.FILE_LOADED, onFileLoaded);
+        _zip.addEventListener(Event.COMPLETE, _future.monitoredCallback(onZipLoadingComplete));
+        _zip.addEventListener(FZipErrorEvent.PARSE_ERROR, _future.fail);
+        _zip.addEventListener(FZipEvent.FILE_LOADED, _future.monitoredCallback(onFileLoaded));
 
         if (_toLoad is String) _zip.load(new URLRequest(String(_toLoad)));
         else _zip.loadBytes(ByteArray(_toLoad));
     }
 
-    protected function fail(e :Error) :void {
-        _failed = true;
-        _onFailure(e);
-    }
-
     protected function onFileLoaded (e :FZipEvent) :void {
-        if (_failed) return;
         const loaded :FZipFile = _zip.removeFileAt(_zip.getFileCount() - 1);
         const name :String = loaded.filename;
         if (name == StarlingResources.LIBRARY_LOCATION) {
             const jsonString :String = loaded.content.readUTFBytes(loaded.content.length);
             _lib = LibraryMold.fromJSON(JSON.parse(jsonString));
-        } else if (name == StarlingResources.MD5_LOCATION ) { // Nothing to verify
         } else if (name.indexOf('.png', name.length - 4) != -1) {
             // TODO - specify density?
             _pngBytes[name.replace("@2x.png", ".png")] = loaded.content;
-        } else { trace("Unknown file in zip '" + name + "'. Ignoring."); }
+        } else if (name == StarlingResources.VERSION_LOCATION) {
+            const zipVersion :String = loaded.content.readUTFBytes(loaded.content.length)
+            if (zipVersion != StarlingResources.VERSION) {
+                throw new Error("Zip is version " + zipVersion + " but the code needs " + StarlingResources.VERSION);
+            }
+            _versionChecked = true;
+        } else if (name == StarlingResources.MD5_LOCATION ) { // Nothing to verify
+        } else trace("Unknown file in zip '" + name + "'. Ignoring.");
     }
 
     protected function onZipLoadingComplete (..._) :void {
         _zip = null;
-        if (_failed) return;
+        if (_lib == null) throw new Error(StarlingResources.LIBRARY_LOCATION + " missing from zip");
+        if (!_versionChecked) throw new Error(StarlingResources.VERSION_LOCATION + " missing from zip");
         const loader :ImageLoader = new ImageLoader();
-        _pngLoaders.terminated.add(onPngLoadingComplete);
+        _pngLoaders.terminated.add(_future.monitoredCallback(onPngLoadingComplete));
         for each (var atlas :AtlasMold in _lib.atlases) loadAtlas(loader, atlas);
         _pngLoaders.shutdown();
     }
 
     protected function loadAtlas (loader :ImageLoader, atlas :AtlasMold) :void {
-        if (_failed) return;
         const pngBytes :* = _pngBytes[atlas.file];
         if (pngBytes === undefined) {
-            onPngLoadingFailed(new Error("Expected an atlas '" + atlas.file + "', but it wasn't in the zip"));
-            return;
+            throw new Error("Expected an atlas '" + atlas.file + "', but it wasn't in the zip");
         }
         const atlasFuture :Future = loader.loadFromBytes(pngBytes, _pngLoaders);
         atlasFuture.failed.add(onPngLoadingFailed);
@@ -154,7 +155,6 @@ class Loader
     }
 
     protected function onPngLoadingComplete (..._) :void {
-        if (_failed) return;
         for each (var movie :MovieMold in _lib.movies) {
             movie.fillLabels();
             var creator :MovieCreator = new MovieCreator();
@@ -162,18 +162,18 @@ class Loader
             creator.mold = movie;
             _creators[movie.id] = creator;
         }
-        _onSuccess(new StarlingResources(_creators));
+        _future.succeed(new StarlingResources(_creators));
     }
 
     protected function onPngLoadingFailed (e :*) :void {
-        fail(e);
+        if (_future.isComplete) return;
+        _future.fail(e);
         _pngLoaders.shutdownNow();
     }
 
     protected var _toLoad :Object;
-    protected var _onFailure :Function;
-    protected var _onSuccess :Function;
-    protected var _failed :Boolean;
+    protected var _future :VisibleFuture;
+    protected var _versionChecked :Boolean;
 
     protected var _zip :FZip = new FZip();
     protected var _lib :LibraryMold;

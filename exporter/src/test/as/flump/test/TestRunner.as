@@ -7,8 +7,8 @@ import flash.desktop.NativeApplication;
 import flash.filesystem.File;
 
 import flump.executor.Executor;
-import flump.executor.Finisher;
 import flump.executor.Future;
+import flump.executor.VisibleFuture;
 
 import starling.display.Sprite;
 
@@ -40,7 +40,7 @@ public class TestRunner extends Sprite
     }
 
     public function run (name :String, f :Function) :void {
-        runAsync(name, function (finisher :Finisher) :void { finisher.succeedAfter(f); });
+        runAsync(name, function (future :VisibleFuture) :void { future.succeedAfter(f); });
     }
 
     public function runAsync (name :String, f :Function) :void { _runs.put(_exec.submit(f), name); }

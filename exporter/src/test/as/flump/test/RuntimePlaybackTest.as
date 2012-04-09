@@ -8,7 +8,7 @@ import flash.utils.Timer;
 
 import flump.display.Movie;
 import flump.display.StarlingResources;
-import flump.executor.Finisher;
+import flump.executor.VisibleFuture;
 
 import com.threerings.util.F;
 
@@ -28,7 +28,7 @@ public class RuntimePlaybackTest
         _res = res;
     }
 
-    protected function setup (finisher :Finisher) :void {
+    protected function setup (finisher :VisibleFuture) :void {
         _finisher = finisher;
         _movie = _res.loadMovie("nesteddance");
         assert(_movie.frame == 0, "Frame starts at 0");
@@ -57,7 +57,7 @@ public class RuntimePlaybackTest
         assertThrows(F.callback(_movie.goto, "nonexistent label"), "Went to nonexistent label");
     }
 
-    public function playWhenAdded (finisher :Finisher) :void {
+    public function playWhenAdded (finisher :VisibleFuture) :void {
         setup(finisher);
         delayForAtLeastOneFrame(checkAdvanced);
     }
@@ -73,7 +73,7 @@ public class RuntimePlaybackTest
         _finisher.succeed();
     }
 
-    public function playOnce (finisher :Finisher) :void {
+    public function playOnce (finisher :VisibleFuture) :void {
         setup(finisher);
         _movie.goto(0).play();
         delayForOnePlaythrough(checkPlayOnce);
@@ -87,7 +87,7 @@ public class RuntimePlaybackTest
         _finisher.succeed();
     }
 
-    public function pauseWhileRemoved (finisher :Finisher) :void {
+    public function pauseWhileRemoved (finisher :VisibleFuture) :void {
         setup(finisher);
         delayForAtLeastOneFrame(checkAdvancedToRemove);
     }
@@ -105,7 +105,7 @@ public class RuntimePlaybackTest
         delayForOnePlaythrough(checkAllLabelsFired);
     }
 
-    public function stopPlay (finisher :Finisher) :void {
+    public function stopPlay (finisher :VisibleFuture) :void {
         setup(finisher);
         _movie.stop();
         delayForAtLeastOneFrame(checkNotAdvancedWhileStopped);
@@ -125,7 +125,7 @@ public class RuntimePlaybackTest
         _finisher.succeed();
     }
 
-    public function playStopLoop (finisher :Finisher) :void {
+    public function playStopLoop (finisher :VisibleFuture) :void {
         setup(finisher);
         _movie.goto(10).play().stop().loop();
         assert(_movie.frame == 10, "Play stop or loop changed the frame");
@@ -165,7 +165,7 @@ public class RuntimePlaybackTest
         _finisher.monitor(then);
     }
 
-    protected var _finisher :Finisher;
+    protected var _finisher :VisibleFuture;
     protected var _movie :Movie;
     protected var _runner :TestRunner;
     protected var _res :StarlingResources;

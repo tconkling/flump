@@ -42,6 +42,8 @@ public class StarlingFormat extends Format
             function (b :ByteArray) :void { b.writeUTFBytes(lib.toJSONString(packers[0].atlases)); });
         addToZip(StarlingResources.MD5_LOCATION,
             function (b :ByteArray) :void { b.writeUTFBytes(lib.md5); });
+        addToZip(StarlingResources.VERSION_LOCATION,
+            function (b :ByteArray) :void { b.writeUTFBytes(StarlingResources.VERSION); });
 
         zip.serialize(out, /*includeAdler32=*/true);
     }

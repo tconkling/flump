@@ -7,8 +7,8 @@ import flash.filesystem.File;
 
 import flump.display.Movie;
 import flump.display.StarlingResources;
-import flump.executor.Finisher;
 import flump.executor.Future;
+import flump.executor.VisibleFuture;
 
 import starling.core.Starling;
 
@@ -17,7 +17,7 @@ import com.threerings.util.F;
 public class StarlingResourcesTest
 {
     public function StarlingResourcesTest (runner :TestRunner, zipFile :File) {
-        runner.runAsync("Load Starling Resources", function (finisher :Finisher) :void {
+        runner.runAsync("Load Starling Resources", function (finisher :VisibleFuture) :void {
             const loader :Future = StarlingResources.loadURL(zipFile.url);
             loader.succeeded.add(function (res :StarlingResources) :void {
                 finisher.succeedAfter(F.callback(checkResources, res));
