@@ -54,7 +54,7 @@ public class XflLibrary
 
     public function get publishedMovies () :Vector.<MovieMold> {
         const result :Vector.<MovieMold> = new Vector.<MovieMold>();
-        for each (var movie :MovieMold in _toPublish.toArray) result.push(movie);
+        for each (var movie :MovieMold in _toPublish.toArray()) result.push(movie);
         return result;
     }
 
