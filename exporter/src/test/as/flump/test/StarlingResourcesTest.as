@@ -36,6 +36,31 @@ public class StarlingResourcesTest
             assertThrows(F.callback(res.loadMovie, "no movie with this id "));
             RuntimePlaybackTest.addTests(runner, res);
         }
+        checkBadResourcesFail(runner, NO_VERSION, "no version");
+        checkBadResourcesFail(runner, WRONG_VERSION, "wrong version");
+        checkBadResourcesFail(runner, MALFORMED_JSON, "malformed json");
+        checkBadResourcesFail(runner, MISSING_ATLAS, "missing atlas");
     }
+
+    protected function checkBadResourcesFail (runner :TestRunner, badResources :Class, reason :String) :void {
+        runner.runAsync("Fail loading resources with " + reason,
+            function (future :VisibleFuture) :void {
+                const loader :Future = StarlingResources.loadBytes(new badResources());
+                loader.succeeded.add(F.callback(future.fail, "Shouldn't load resources with " + reason));
+                loader.failed.add(future.succeed);
+        });
+    }
+
+    [Embed(source="wrong_version.zip", mimeType="application/octet-stream")]
+    private static const WRONG_VERSION :Class;
+
+    [Embed(source="malformed_json.zip", mimeType="application/octet-stream")]
+    private static const MALFORMED_JSON :Class;
+
+    [Embed(source="no_version.zip", mimeType="application/octet-stream")]
+    private static const NO_VERSION :Class;
+
+    [Embed(source="missing_atlas.zip", mimeType="application/octet-stream")]
+    private static const MISSING_ATLAS :Class;
 }
 }

@@ -122,7 +122,7 @@ class Loader
             }
             _versionChecked = true;
         } else if (name == StarlingResources.MD5_LOCATION ) { // Nothing to verify
-        } else trace("Unknown file in zip '" + name + "'. Ignoring.");
+        } else {} // ignore unknown files
     }
 
     protected function onZipLoadingComplete (..._) :void {
