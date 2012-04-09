@@ -5,6 +5,7 @@ package flump.mold {
 
 import flump.display.Movie;
 
+/** @private */
 public class MovieMold
 {
     public var id :String;

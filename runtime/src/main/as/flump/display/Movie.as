@@ -12,6 +12,20 @@ import starling.display.DisplayObject;
 import starling.display.Sprite;
 import starling.events.Event;
 
+/**
+ * A movie created from flump-exported data. It has children corresponding to the layers in the
+ * movie in Flash, in the same order and with the same names. It fills in those children
+ * initially with the textures or movie of the symbol on that exported layer. After the initial
+ * population, it only applies the keyframe-based transformations to the child at the index
+ * corresponding to the layer. This means it's safe to swap in other DisplayObjects at those
+ * positions to have them animated in place of the initial child.
+ *
+ * <p>When the movie is added to the stage, it advances its playhead with the frame ticks if
+ * isPlaying is true. While it's not on the stage, its playhead doesn't move regardless of the state
+ * of isPlaying.</p>
+ *
+ * @see StarlingResources StarlingResources to create instances of Movie.
+ */
 public class Movie extends Sprite
 {
     /** A label fired by all movies when entering their first frame. */
@@ -20,9 +34,10 @@ public class Movie extends Sprite
     /** A label fired by all movies when entering their last frame. */
     public static const LAST_FRAME :String = "flump.movie.LAST_FRAME";
 
-    /** Fires whenever the a label is passed in playing. */
+    /** Fires the label string whenever it's passed in playing. */
     public const labelPassed :Signal = new Signal(String);
 
+    /** @private */
     public function Movie (src :MovieMold, frameRate :Number, idToDisplayObject :Function) {
         name = src.id;
         _labels = src.labels;
@@ -46,10 +61,13 @@ public class Movie extends Sprite
         addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
     }
 
+    /** The frame being displayed. */
     public function get frame () :int { return _frame; }
 
+    /** The number of frames in the movie. */
     public function get frames () :int { return _frames; }
 
+    /** If the movie is playing currently. */
     public function get isPlaying () :Boolean { return _playing; }
 
     /** Starts playing if not already doing so, and continues to do so indefinitely.  */
@@ -64,6 +82,13 @@ public class Movie extends Sprite
      * If there are labels at the given position, they're fired as part of the goto, even if the
      * current frame is equal to the destination. Labels between the current frame and the
      * destination frame are not fired.
+     *
+     * @param position the int frame or String label to goto.
+     *
+     * @return this movie for chaining
+     *
+     * @throws Error if position isn't an int or String, or if it is a String and that String isn't
+     * a label on this movie
      */
     public function goto (position :Object) :Movie {
         const frame :int = extractFrame(position);
@@ -80,6 +105,13 @@ public class Movie extends Sprite
    /**
     * Starts playing if not already doing so, and continues to do so to the given stop label or
     * frame.
+    *
+    * @param position to int frame or String label to stop at
+    *
+    * @return this movie for chaining
+    *
+    * @throws Error if position isn't an int or String, or if it is a String and that String isn't
+    * a label on this movie.
     */
    public function playTo (position :Object) :Movie {
        _stopFrame = extractFrame(position);
@@ -93,6 +125,7 @@ public class Movie extends Sprite
         return this;
     }
 
+    /** @private */
     protected function extractFrame (position :Object) :int {
         if (position is int) return int(position);
         if (!(position is String)) throw new Error("Movie position must be an int frame or String label");
@@ -103,6 +136,7 @@ public class Movie extends Sprite
         throw new Error("No such label '" + label + "'");
     }
 
+    /** @private */
     protected function advanceTime (dt :Number) :void {
         if (!_playing) return;
 
@@ -127,6 +161,7 @@ public class Movie extends Sprite
         updateFrame(newFrame, false, overDuration);
     }
 
+    /** @private */
     protected function updateFrame (newFrame :int, fromSkip :Boolean, overDuration :Boolean) :void {
         if (newFrame >= _frames) {
             throw new Error("Asked to go to frame " + newFrame + " past the last frame, " +
@@ -173,6 +208,7 @@ public class Movie extends Sprite
 
     }
 
+    /** @private */
     protected function fireLabels (startFrame :int, endFrame :int) :void {
         for (var ii :int = startFrame; ii <= endFrame; ii++) {
             if (_labels[ii] == null) continue;
@@ -180,19 +216,31 @@ public class Movie extends Sprite
         }
     }
 
+    /** @private */
     protected function addedToStage (..._) :void { Starling.juggler.add(_ticker); }
 
+    /** @private */
     protected function removedFromStage (..._) :void { Starling.juggler.remove(_ticker); }
 
+    /** @private */
     protected var _goingToFrame :Boolean;
+    /** @private */
     protected var _pendingFrame :int = NO_FRAME;
+    /** @private */
     protected var _frame :int = NO_FRAME, _stopFrame :int = NO_FRAME;
+    /** @private */
     protected var _playing :Boolean = true;
+    /** @private */
     protected var _playTime :Number, _duration :Number;
+    /** @private */
     protected var _layers :Vector.<Layer>;
+    /** @private */
     protected var _ticker :Ticker;
+    /** @private */
     protected var _frames :int;
+    /** @private */
     protected var _frameRate :Number;
+    /** @private */
     protected var _labels :Vector.<Vector.<String>>;
 
     private static const NO_FRAME :int = -1;

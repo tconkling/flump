@@ -5,6 +5,7 @@ package flump.executor.load {
 
 import flash.display.Loader;
 
+/** @private */
 public class SwfLoader extends BaseLoader
 {
     public function useCurrentDomain () :SwfLoader {

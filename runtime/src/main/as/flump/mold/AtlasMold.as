@@ -3,6 +3,7 @@
 
 package flump.mold {
 
+/** @private */
 public class AtlasMold
 {
     public var file :String;

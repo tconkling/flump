@@ -3,6 +3,7 @@
 
 package flump.mold {
 
+/** @private */
 public class LayerMold
 {
     public var name :String;

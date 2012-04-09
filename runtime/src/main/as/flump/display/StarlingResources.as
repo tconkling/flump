@@ -11,37 +11,92 @@ import flump.executor.Future;
 
 import starling.display.DisplayObject;
 
+/**
+ * Parses movies and textures out of zip files created by the flump exporter and creates instances
+ * of Movie for them.
+ */
 public class StarlingResources
 {
+    /** @private */
     public static const LIBRARY_LOCATION :String = "library.json";
+    /** @private */
     public static const MD5_LOCATION :String = "md5";
+    /** @private */
     public static const VERSION_LOCATION :String = "version";
+
+    /**
+     * @private
+     * The version produced and parsable by this version of the code. The version in a resources
+     * zip must equal the version compiled into the parsing code for parsing to succeed.
+     */
     public static const VERSION :String = "0";
 
+    /**
+     * Loads a StarlingResources from the zip in the given bytes.
+     *
+     * @param bytes The bytes containing the zip
+     * @param executor The executor on which the loading should run. If not specified, it'll run on
+     * a new single-use executor.
+     *
+     * @return a Future to use to track the success or failure of loading the resources out of the
+     * bytes. If the loading succeeds, the Future's onSuccess will fire with an instance of
+     * StarlingResources. If it fails, the Future's onFail will fire with the Error that caused the
+     * loading failure.
+     */
     public static function loadBytes (bytes :ByteArray, executor :Executor=null) :Future {
         return (executor || new Executor()).submit(new Loader(bytes).load);
     }
 
+    /**
+     * Loads a StarlingResources from the zip at the given url.
+     *
+     * @param bytes The url where the zip can be found
+     * @param executor The executor on which the loading should run. If not specified, it'll run on
+     * a new single-use executor.
+     *
+     * @return a Future to use to track the success or failure of loading the resources from the
+     * url. If the loading succeeds, the Future's onSuccess will fire with an instance of
+     * StarlingResources. If it fails, the Future's onFail will fire with the Error that caused the
+     * loading failure.
+     */
     public static function loadURL (url :String, executor :Executor=null) :Future {
         return (executor || new Executor()).submit(new Loader(url).load);
     }
 
+    /** @private */
     public function StarlingResources (creators :Dictionary) {
         _creators = creators;
     }
 
-    public function loadMovie (name :String) :Movie { return Movie(idToDisplayObject(name)); }
+    /**
+     * Creates a movie for the given symbol.
+     *
+     * @param symbol the symbol name of the movie to be created
+     *
+     * @return a Movie instance for the symbol
+     *
+     * @throws Error if there is no such symbol in these resources, or if the symbol isn't a Movie.
+     */
+    public function createMovie (symbol :String) :Movie { return Movie(idToDisplayObject(symbol)); }
 
-    public function loadTexture (name :String) :DisplayObject {
-        const disp :DisplayObject = DisplayObject(idToDisplayObject(name));
+   /**
+    * Creates a texture for the given symbol.
+    *
+    * @param symbol the symbol name of the texture to be created
+    *
+    * @return a DisplayObject instance for the symbol
+    *
+    * @throws Error if there is no such symbol in these resources, or if the symbol isn't a texture.
+    */
+    public function createTexture (symbol :String) :DisplayObject {
+        const disp :DisplayObject = DisplayObject(idToDisplayObject(symbol));
         // TODO - add loadDisplayObject to load either if the user doesn't care?
-        if (disp is Movie) {
-            throw new Error(name + " is a movie, not a texture");
-        }
+        if (disp is Movie) throw new Error(symbol + " is a movie, not a texture");
         return disp;
     }
 
-    public function get movieNames () :Vector.<String> {
+    /** The symbols of all movies in the resources.  */
+    public function get movieSymbols () :Vector.<String> {
         const names :Vector.<String> = new Vector.<String>();
         for (var creatorName :String in _creators) {
             if (_creators[creatorName] is MovieCreator) names.push(creatorName);
@@ -49,7 +104,8 @@ public class StarlingResources
         return names;
     }
 
-    public function get textureNames () :Vector.<String> {
+    /** The symbols of all textures in the resources.  */
+    public function get textureSymbols () :Vector.<String> {
         const names :Vector.<String> = new Vector.<String>();
         for (var creatorName :String in _creators) {
             if (_creators[creatorName] is TextureCreator) names.push(creatorName);
@@ -57,12 +113,14 @@ public class StarlingResources
         return names;
     }
 
+    /** @private */
     protected function idToDisplayObject (name :String) :DisplayObject {
         var creator :* = _creators[name];
         if (creator === undefined) throw new Error("No such id '" + name + "'");
         return creator.create(idToDisplayObject);
     }
 
+    /** @private */
     protected var _creators :Dictionary;
 }
 }

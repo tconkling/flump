@@ -3,6 +3,7 @@
 
 package flump.executor {
 
+/** @private */
 public class VisibleFuture extends Future
 {
     public function VisibleFuture (onCompletion :Function=null) {

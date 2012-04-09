@@ -30,7 +30,7 @@ public class RuntimePlaybackTest
 
     protected function setup (finisher :VisibleFuture) :void {
         _finisher = finisher;
-        _movie = _res.loadMovie("nesteddance");
+        _movie = _res.createMovie("nesteddance");
         assert(_movie.frame == 0, "Frame starts at 0");
         assert(_movie.isPlaying, "Movie starts out playing");
         _runner.addChild(_movie);
@@ -38,7 +38,7 @@ public class RuntimePlaybackTest
     }
 
     public function gotoFrameAndLabel () :void {
-        _movie = _res.loadMovie("nesteddance");
+        _movie = _res.createMovie("nesteddance");
         _movie.labelPassed.add(_labelsPassed.push);
         _movie.goto("timepassed");
         assert(_movie.frame == 9);

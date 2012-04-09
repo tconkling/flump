@@ -11,15 +11,38 @@
     <delete dir="${deploy.dir}"/>
   </target>
 
-  <target name="swc" depends="-init-ooo" description="Builds the library (.swc file)">
+  <target name="prepare" depends="-init-ooo">
     <mkdir dir="${deploy.dir}"/>
     <mavendep pom="pom.xml" pathProp="aslib.path"/>
     <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.5"/>
+  </target>
+
+  <target name="swc" depends="prepare" description="Builds the library (.swc file)">
     <compc srcdir="${asrc.dir}" libpath="${aslib.path}"
       dest="${deploy.dir}/${ant.project.name}.swc">
       <arg value="-swf-version=13"/>
     </compc>
   </target>
+
+  <target name="asdoc" depends="prepare" description="Builds the documentation">
+    <mkdir dir="${deploy.dir}/asdocs"/>
+    <asdoc srcdir="${asrc.dir}" libpath="${aslib.path}" destdir="${deploy.dir}/asdocs">
+      <arg value="-window-title"/>
+      <arg value="Flump Documentation"/>
+      <arg value="-main-title"/>
+      <arg value="Flump Documentation"/>
+      <arg value="-package"/>
+      <arg value="flump.display"/>
+      <arg value="Loads and draws flump content"/>
+      <arg value="-package"/>
+      <arg value="flump.executor"/>
+      <arg value="Runs asynchronous tasks"/>
+      <arg value="-package"/>
+      <arg value="flump.executor.load"/>
+      <arg value="Loads swfs and images asynchronously"/>
+    </asdoc>
+  </target>
+
   <target name="maven-deploy" depends="swc"
     description="Deploys build artifacts to a Maven repository.">
     <mavendeploy file="${deploy.dir}/${ant.project.name}.swc" pom="pom.xml" srcdir="${asrc.dir}"/>

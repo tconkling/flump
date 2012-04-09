@@ -7,6 +7,7 @@ import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Loader;
 
+/** @private */
 public class LoadedImage
 {
     public function LoadedImage (loader :Loader) {

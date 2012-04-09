@@ -25,15 +25,15 @@ public class StarlingResourcesTest
             loader.failed.add(finisher.fail);
         });
         function checkResources (res :StarlingResources) :void {
-            assert(res.movieNames.length == 2, "There should be 2 items in movieNames");
-            assert(res.movieNames.indexOf("nesteddance") != -1, "nesteddance should be in movies");
-            assert(res.movieNames.indexOf("squaredance") != -1, "squaredance should be in movies");
-            const movie :Movie = res.loadMovie("nesteddance");
-            assert(res.loadTexture("redsquare") != null);
+            assert(res.movieSymbols.length == 2, "There should be 2 items in movieNames");
+            assert(res.movieSymbols.indexOf("nesteddance") != -1, "nesteddance should be in movies");
+            assert(res.movieSymbols.indexOf("squaredance") != -1, "squaredance should be in movies");
+            const movie :Movie = res.createMovie("nesteddance");
+            assert(res.createTexture("redsquare") != null);
             assert(movie.name == "nesteddance", "Movies should be named after their mold name");
-            assertThrows(F.callback(res.loadTexture, "nesteddance"), "Loaded movie as texture");
-            assertThrows(F.callback(res.loadMovie, "redsquare"), "Loaded texture as movie");
-            assertThrows(F.callback(res.loadMovie, "no movie with this id "));
+            assertThrows(F.callback(res.createTexture, "nesteddance"), "Loaded movie as texture");
+            assertThrows(F.callback(res.createMovie, "redsquare"), "Loaded texture as movie");
+            assertThrows(F.callback(res.createMovie, "no movie with this id "));
             RuntimePlaybackTest.addTests(runner, res);
         }
         checkBadResourcesFail(runner, NO_VERSION, "no version");

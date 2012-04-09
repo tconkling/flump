@@ -15,6 +15,7 @@ import flash.utils.ByteArray;
 import flump.executor.Executor;
 import flump.executor.Future;
 
+/** @private */
 public class BaseLoader
 {
    public function loadFromBytes (bytes :ByteArray, exec :Executor = null) :Future {

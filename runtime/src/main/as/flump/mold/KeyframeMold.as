@@ -2,6 +2,7 @@
 // Flump - Copyright 2012 Three Rings Design
 package flump.mold {
 
+/** @private */
 public class KeyframeMold
 {
     public var index :int;

@@ -5,6 +5,7 @@ package flump.executor.load {
 
 import flash.display.Loader;
 
+/** @private */
 public class ImageLoader extends BaseLoader
 {
     override protected function handleSuccess (onSuccess :Function, loader :Loader) :void {

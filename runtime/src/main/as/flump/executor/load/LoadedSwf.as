@@ -7,6 +7,7 @@ import flash.display.DisplayObject;
 import flash.display.Loader;
 import flash.system.ApplicationDomain;
 
+/** @private */
 public class LoadedSwf
 {
     public function LoadedSwf (loader :Loader) {

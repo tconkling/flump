@@ -3,6 +3,7 @@
 
 package flump.mold {
 
+/** @private */
 public class LibraryMold
 {
     // The frame rate of movies in this library

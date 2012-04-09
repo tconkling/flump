@@ -8,6 +8,11 @@ import flash.utils.Timer;
 
 import org.osflash.signals.Signal;
 
+/**
+ * Manages the simultaneous execution of multiple asynchronous tasks. Handles notifying on
+ * completion, limiting the number of simultaneous tasks, and notifying the completion of a set of
+ * tasks.
+ */
 public class Executor
 {
     /** Dispatched when the all jobs have been completed in a shutdown executor. */
@@ -22,12 +27,20 @@ public class Executor
     /** Dispatched every time a submitted job completes, whether it succeeds or fails. */
     public const completed :Signal = new Signal(Future);
 
+    /**
+     * Creates an executor for running tasks.
+     *
+     * @param maxSimultaneous the number of tasks to run at the same time. Defaults to all tasks at
+     * once. If specified, if more than maxSimultaneous tasks are submitted, later tasks are run as
+     * space permits in the order of submission.
+     */
     public function Executor (maxSimultaneous :int = 0) :void {
         _timer.addEventListener(TimerEvent.TIMER, handleTimer);
         _maxSimultaneous = maxSimultaneous;
     }
 
     /**
+     * @private
      * Called by Future directly when it's done. It uses this instead of dispatching the completed
      * signal as that allows the completed signal to completely dispatch before Executor checks for
      * termination and possibly dispatches that.
@@ -62,18 +75,18 @@ public class Executor
     /**
      * Submits the given function for execution. It should take two arguments: a Function to call if
      * it succeeds, and a function to call if it fails. When called, it should execute an operation
-     * asynchronously and call one of the two functions.<p>
+     * asynchronously and call one of the two functions.
      *
-     * If the asynchronous operation returns a result, it may be passed to the success function. It
+     * <p>If the asynchronous operation returns a result, it may be passed to the success function. It
      * will then be available in the result field of the Future. If success doesn't produce a
-     * result, the success function may be called with no arguments.<p>
+     * result, the success function may be called with no arguments.</p>
      *
-     * The failure function must be called with an argument. An error event, a stack trace, or an
+     * <p>The failure function must be called with an argument. An error event, a stack trace, or an
      * error message are all acceptable options. When failure is called, the argument will be
-     * available in the result field of the Future.<p>
+     * available in the result field of the Future.</p>
      *
-     * If maxSimultaneous functions are running in the Executor, additional submissions are started
-     * in the order of submission as running functions complete.
+     * <p>If maxSimultaneous functions are running in the Executor, additional submissions are started
+     * in the order of submission as running functions complete.</p>
      */
     public function submit (f :Function) :Future {
         if (_shutdown) throw new Error("Submission to a shutdown executor!");
@@ -84,6 +97,7 @@ public class Executor
         return future;
     }
 
+    /** @private */
     protected function runIfAvailable () :void {
         // This while must correctly terminate if something else modifies _toRun or _running in the
         // middle of the loop
@@ -138,23 +152,31 @@ public class Executor
         return cancelled;
     }
 
+    /** @private */
     protected function terminateIfNecessary () :void {
         if (_terminated || !isIdle) return;
         _terminated = true;
         terminated.dispatch(this);
     }
 
+    /** @private */
     protected function handleTimer (event :TimerEvent) :void {
         runIfAvailable();
         if (_toRun.length == 0) _timer.stop();
     }
 
 
+    /** @private */
     protected var _maxSimultaneous :int;
+    /** @private */
     protected var _shutdown :Boolean;
+    /** @private */
     protected var _terminated :Boolean;
+    /** @private */
     protected var _toRun :Vector.<ToRun> = new Vector.<ToRun>();
+    /** @private */
     protected const _running :Vector.<Future> = new Vector.<Future>();
+    /** @private */
     protected const _timer :Timer = new Timer(1);
 }
 }

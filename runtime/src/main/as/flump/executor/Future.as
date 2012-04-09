@@ -5,8 +5,12 @@ package flump.executor {
 
 import org.osflash.signals.Signal;
 
+/**
+ * The result of a pending or completed asynchronous task.
+ */
 public class Future
 {
+    /** @private */
     public function Future (onCompleted :Function=null) {
         _onCompleted = onCompleted;
     }
@@ -52,6 +56,7 @@ public class Future
         dispatchCompletion();
     }
 
+    /** @private */
     protected function dispatchCompletion () :void {
         if (_onCompletion) _onCompletion.dispatch(this);
         if (_onCompleted != null) _onCompleted(this);
@@ -73,16 +78,25 @@ public class Future
      */
     public function get result () :* { return _result; }
 
+    /** @private */
     protected var _cancelled :Boolean
+    /** @private */
     protected var _failed :Boolean
+    /** @private */
     protected var _succeeded :Boolean;
+    /** @private */
     protected var _result :Object = undefined;
 
     // All Future signals are created lazily
+    /** @private */
     protected var _onSuccess :Signal;
+    /** @private */
     protected var _onFailure :Signal;
+    /** @private */
     protected var _onCancel :Signal;
+    /** @private */
     protected var _onCompletion :Signal;
+    /** @private */
     protected var _onCompleted :Function;
 }
 }

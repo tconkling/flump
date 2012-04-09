@@ -6,6 +6,7 @@ package flump.mold {
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
+/** @private */
 public class AtlasTextureMold
 {
     public var symbol :String;
