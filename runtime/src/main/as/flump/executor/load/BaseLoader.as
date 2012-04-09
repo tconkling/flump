@@ -40,7 +40,7 @@ public class BaseLoader
     protected function handleSuccess (onSuccess :Function, loader :Loader) :void {}
 
     protected function submitLoader (exec :Executor, loadExecer :Function) :Future {
-        if (exec == null) exec = new Executor();
+        if (exec == null) exec = new Executor(1);
         const context :LoaderContext = new LoaderContext();
         context.allowCodeImport = true;
         if (_useSubDomain) {

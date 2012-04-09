@@ -44,7 +44,7 @@ public class StarlingResources
      * loading failure.
      */
     public static function loadBytes (bytes :ByteArray, executor :Executor=null) :Future {
-        return (executor || new Executor()).submit(new Loader(bytes).load);
+        return (executor || new Executor(1)).submit(new Loader(bytes).load);
     }
 
     /**
@@ -60,7 +60,7 @@ public class StarlingResources
      * loading failure.
      */
     public static function loadURL (url :String, executor :Executor=null) :Future {
-        return (executor || new Executor()).submit(new Loader(url).load);
+        return (executor || new Executor(1)).submit(new Loader(url).load);
     }
 
     /** @private */
@@ -238,7 +238,7 @@ class Loader
 
     protected const _creators :Dictionary = new Dictionary();//<name, TextureCreator/MovieCreator>
     protected const _pngBytes :Dictionary = new Dictionary();//<String name, ByteArray>
-    protected const _pngLoaders :Executor = new Executor();
+    protected const _pngLoaders :Executor = new Executor(1);
 }
 import flash.geom.Point;
 

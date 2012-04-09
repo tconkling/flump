@@ -29,37 +29,30 @@ public class XflLoader
     public function load (name :String, file :File) :Future {
         log.info("Loading xfl", "path", file.nativePath, "name", name);
         _library = new XflLibrary(name);
-        listLibrary(file);
 
-        const swfExecutor :Executor = new Executor();
         const future :VisibleFuture = new VisibleFuture();
 
         const swfFile :File = new File(file.nativePath + ".swf");
-        const loadSwfFile :Future = Files.load(swfFile, swfExecutor);
+        const loadSwfFile :Future = Files.load(swfFile, _loader);
         loadSwfFile.succeeded.add(function (file :File) :void {
             _library.md5 = MD5.hashBytes(file.data);
 
-            const loadSwf :Future = new SwfLoader().loadFromBytes(file.data, swfExecutor);
+            const loadSwf :Future = new SwfLoader().loadFromBytes(file.data, _loader);
             loadSwf.succeeded.add(function (swf :LoadedSwf) :void { _library.swf = swf; });
             loadSwf.failed.add(function (error :Object) :void {
                 _library.addTopLevelError(ParseError.CRIT, "Unable to load " + swfFile.nativePath, error);
             });
-
-            swfExecutor.shutdown();
         });
         loadSwfFile.failed.add(function (error :Object) :void {
             _library.addTopLevelError(ParseError.CRIT, "Unable to read " + swfFile.nativePath, error);
-            swfExecutor.shutdown();
         });
 
-        const maybeSucceed :Function = function (..._) :void {
-            if (swfExecutor.isTerminated && _loader.isTerminated) {
-                _library.finishLoading();
-                future.succeed(_library);
-            }
-        };
-        _loader.terminated.add(maybeSucceed);
-        swfExecutor.terminated.add(maybeSucceed);
+        _loader.terminated.add(function (..._) :void {
+            _library.finishLoading();
+            future.succeed(_library);
+        });
+
+        listLibrary(file);
 
         return future;
     }
@@ -121,7 +114,7 @@ public class XflLoader
         });
     }
 
-    protected const _loader :Executor = new Executor();
+    protected const _loader :Executor = new Executor(1);
 
     protected var _library :XflLibrary;
 

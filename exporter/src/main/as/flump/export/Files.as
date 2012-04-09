@@ -18,7 +18,7 @@ import com.threerings.util.StringUtil;
 public class Files
 {
     public static function load (file :File, exec :Executor=null) :Future {
-        if (!exec) exec = new Executor();
+        if (!exec) exec = new Executor(1);
         return exec.submit(function (onSuccess :Function, onError :Function) :void {
             // Check for non-existence specifically. It'll fire an IO_ERROR, but that error just
             // says "Error #2038", which isn't very helpful.
