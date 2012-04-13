@@ -1,0 +1,26 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="bluesquare" itemID="4f063dfb-00000264" linkageExportForAS="true" linkageBaseClass="flash.display.Sprite" linkageClassName="bluesquare" lastModified="1328121377" isSpriteSubclass="true">
+  <timeline>
+    <DOMTimeline name="bluesquare" currentFrame="45">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="46" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#0000FF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!3420 3420|0 3420!0 3420|0 0!0 0|3420 0!3420 0|3420 3420"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
