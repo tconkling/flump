@@ -13,6 +13,8 @@ public final class DeviceType extends Enum
     public static const IPAD :DeviceType = new DeviceType("IPAD", "iPad", "", 1024, 768);
     public static const IPAD_RETINA :DeviceType = new DeviceType("IPAD_RETINA", "iPad Retina",
         "", 2048, 1536);
+    public static const NOD_TEMP :DeviceType = new DeviceType("NOD_TEMP", "Nod-temp", "", 960*2.67,
+        640*2.67);
 
     finishedEnumerating(DeviceType);
 
