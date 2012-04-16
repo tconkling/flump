@@ -128,7 +128,8 @@ public class Exporter
             _previewWindow = new PreviewWindow();
             _previewControls = new PreviewControlsWindow();
             _previewWindow.started = function (container :Sprite) :void {
-                _previewController = new PreviewController(lib, container, _previewControls);
+                _previewController = new PreviewController(lib, container, _previewWindow,
+                    _previewControls);
             }
 
             _previewWindow.open();

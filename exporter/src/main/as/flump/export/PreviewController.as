@@ -3,6 +3,8 @@
 
 package flump.export {
 
+import flash.geom.Rectangle;
+
 import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;
@@ -16,8 +18,9 @@ import starling.display.Sprite;
 public class PreviewController
 {
     public function PreviewController (lib :XflLibrary, container :Sprite,
-            controls :PreviewControlsWindow) {
+            preview :PreviewWindow, controls :PreviewControlsWindow) {
         _container = container;
+        _preview = preview;
         _controls = controls;
         this.lib = lib;
     }
@@ -91,15 +94,16 @@ public class PreviewController
 
     protected function displayLibraryItem (name :String) :void {
         while (_container.numChildren > 0) _container.removeChildAt(0);
-        const display :DisplayObject = _creator.loadId(name);
-        // TODO - get the size from the container sprite?
-        display.x = 320 - display.width/2;
-        display.y = 480 - display.height/2;
+        var display :DisplayObject = _creator.loadId(name);
+        var bounds :Rectangle = display.getBounds(display);
+        display.x = ((_preview.width - bounds.width) * 0.5) - bounds.left;
+        display.y = ((_preview.height - bounds.height) * 0.5) - bounds.top;
         _container.addChild(display);
     }
 
     protected var _container :Sprite;
     protected var _controls :PreviewControlsWindow;
+    protected var _preview :PreviewWindow;
     protected var _creator :DisplayCreator;
 }
 }
