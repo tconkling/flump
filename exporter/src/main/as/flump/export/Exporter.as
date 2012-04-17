@@ -172,6 +172,9 @@ public class Exporter
                 }
             }
             for each (file in files) {
+                if (StringUtil.startsWith(file.name, ".", "RECOVER_")) {
+                    continue; // Ignore hidden VCS directories, and recovered backups created by Flash
+                }
                 if (file.isDirectory) findFlashDocuments(file, exec);
                 else if (Files.hasExtension(file, "fla")) addFlashDocument(file);
             }
