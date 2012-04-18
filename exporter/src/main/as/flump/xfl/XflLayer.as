@@ -38,6 +38,8 @@ public class XflLayer
         for each (frameEl in xml.frames.DOMFrame) {
             if (ii >= layer.keyframes.length) break;
 
+            kf = layer.keyframes[ii];
+
             if (XmlUtil.hasAttr(frameEl, "motionTweenRotateTimes") &&
                 XmlUtil.hasAttr(frameEl, "motionTweenRotate")) {
                 var thisRotation :Number =
@@ -45,10 +47,11 @@ public class XflLayer
                 if (XmlUtil.getStringAttr(frameEl, "motionTweenRotate") == "clockwise") {
                     thisRotation *= -1;
                 }
+                // inverted scales change the direction of rotation
+                thisRotation *= sign(kf.scaleX) * sign(kf.scaleY);
                 additionalRotation += thisRotation;
             }
 
-            kf = layer.keyframes[ii];
             kf.rotation += additionalRotation;
 
             ii++;
@@ -69,6 +72,10 @@ public class XflLayer
     protected static function round (n :Number, places :int = 4) :Number {
         const shift :int = Math.pow(10, places);
         return Math.round(n * shift) / shift;
+    }
+
+    protected static function sign (n :Number) :Number {
+        return (n > 0 ? 1 : (n < 0 ? -1 : 0));
     }
 
 }
