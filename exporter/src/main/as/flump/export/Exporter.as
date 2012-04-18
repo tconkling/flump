@@ -27,6 +27,7 @@ import flump.xfl.XflLibrary;
 import flump.xfl.XflMovie;
 
 import mx.collections.ArrayCollection;
+import mx.events.PropertyChangeEvent;
 
 import spark.components.DataGrid;
 import spark.components.DropDownList;
@@ -71,19 +72,33 @@ public class Exporter
             _settings.data[AUTHORED_RESOLUTION] = selectedType.name();
         });
 
-        function updateExportEnabled (..._) :void {
+        function updatePreviewAndExport (..._) :void {
             _win.export.enabled = _exportChooser.dir != null && _libraries.selectionLength > 0 &&
-              _libraries.selectedItems.some(function (status :DocStatus, ..._) :Boolean {
-                return status.isValid;
+                _libraries.selectedItems.some(function (status :DocStatus, ..._) :Boolean {
+                    return status.isValid;
             });
+
+            var status :DocStatus = _libraries.selectedItem as DocStatus;
+            _win.preview.enabled = (status != null && status.isValid);
         }
+
+        var curSelection :DocStatus = null;
         _libraries.addEventListener(GridSelectionEvent.SELECTION_CHANGE, function (..._) :void {
             log.info("Changed", "selected", _libraries.selectedIndices);
-            updateExportEnabled();
-            _win.preview.enabled = _libraries.selectedItem.isValid;
+            updatePreviewAndExport();
+
+            if (curSelection != null) {
+                curSelection.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, updatePreviewAndExport);
+            }
+            var newSelection :DocStatus = _libraries.selectedItem as DocStatus;
+            if (newSelection != null) {
+                newSelection.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, updatePreviewAndExport);
+            }
+            curSelection = newSelection;
         });
         _win.reload.addEventListener(MouseEvent.CLICK, function (..._) :void {
             setImport(_importChooser.dir);
+            updatePreviewAndExport();
         });
         _win.export.addEventListener(MouseEvent.CLICK, function (..._) :void {
             for each (var status :DocStatus in _libraries.selectedItems) {
@@ -99,7 +114,7 @@ public class Exporter
         setImport(_importChooser.dir);
         _exportChooser =
             new DirChooser(_settings, "EXPORT_ROOT", _win.exportRoot, _win.browseExport);
-        _exportChooser.changed.add(updateExportEnabled);
+        _exportChooser.changed.add(updatePreviewAndExport);
         function updatePublisher (..._) :void {
             if (_exportChooser.dir == null) _publisher = null;
             else {
