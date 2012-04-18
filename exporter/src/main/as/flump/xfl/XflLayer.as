@@ -49,7 +49,7 @@ public class XflLayer
             }
 
             kf = layer.keyframes[ii];
-            if (additionalRotation != 0) trace("!!!!!!! Adding some additional rotation: " + additionalRotation);
+            if (additionalRotation != 0) trace(baseLocation + "!!!!!!! Adding some additional rotation: " + additionalRotation);
             kf.rotate(additionalRotation);
 
             ii++;

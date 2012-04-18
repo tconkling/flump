@@ -4,6 +4,7 @@
 package flump {
 
 import flash.geom.Matrix;
+import flash.geom.Point;
 
 public class MatrixUtil
 {
@@ -41,7 +42,12 @@ public class MatrixUtil
         }
     }
 
-    public static function skewX (m :Matrix) :Number { return Math.atan2(-m.c, m.d); }
+    // public static function skewX (m :Matrix) :Number { return Math.atan2(-m.c, m.d); }
+    public static function skewX (m :Matrix) :Number {
+        // var p :Point = m.deltaTransformPoint(new Point(0, 1));
+        // return Math.atan2(p.y, p.x) - Math.PI/2;
+        return Math.atan2(-m.c, m.d);
+    }
 
     public static function setSkewX (m :Matrix, skewX :Number) :void {
         const scaleY :Number = MatrixUtil.scaleY(m);
@@ -49,7 +55,11 @@ public class MatrixUtil
         m.d = scaleY * Math.cos(skewX);
     }
 
-    public static function skewY (m :Matrix) :Number { return Math.atan2(m.b, m.a); }
+    public static function skewY (m :Matrix) :Number {
+        // var p :Point = m.deltaTransformPoint(new Point(1, 0));
+        // return Math.atan2(p.y, p.x);
+        return Math.atan2(m.b, m.a);
+    }
 
     public static function setSkewY (m :Matrix, skewY :Number) :void {
         const scaleX :Number = MatrixUtil.scaleX(m);
@@ -58,7 +68,9 @@ public class MatrixUtil
     }
 
     public static function rotation (m :Matrix) :Number {
-        return (m.a == 0) ? 0 : Math.atan(m.b / m.a);
+        return skewY(m);
+        // var p :Point = m.transformPoint(new Point(1, 0));
+        // return Math.atan2(p.y, p.x);
     }
 
     public static function setRotation (m :Matrix, rotation :Number) :void {
