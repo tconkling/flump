@@ -21,7 +21,7 @@ public class KeyframeMold
 
     /** Exploded values from matrix */
     public var x :Number = 0.0, y :Number = 0.0, scaleX :Number = 1.0, scaleY :Number = 1.0,
-        rotation :Number = 0.0;
+        skewX :Number = 0.0, skewY :Number = 0.0;
 
     /** Transformation point */
     public var pivotX :Number = 0.0, pivotY :Number = 0.0;
@@ -32,6 +32,9 @@ public class KeyframeMold
 
     public var ease :Number = 0;
 
+    public function get rotation () :Number { return skewX; }
+    // public function set rotation (angle :Number) :void { skewX = skewY = angle; }
+
     public function toJSON (_:*) :Object {
         var json :Object = {
             index: index,
@@ -41,7 +44,7 @@ public class KeyframeMold
             json.ref = ref;
             if (x != 0 || y != 0) json.loc = [x, y];
             if (scaleX != 1 || scaleY != 1) json.scale = [scaleX, scaleY];
-            if (rotation != 0) json.rotation = rotation;
+            if (skewX != 0 || skewY != 0) json.skew = [skewX, skewY];
             if (pivotX != 0 || pivotY != 0) json.pivot = [pivotX, pivotY];
             if (alpha != 1) json.alpha = alpha;
             if (!visible) json.visible = visible;
@@ -49,6 +52,12 @@ public class KeyframeMold
         }
         if (label != null) json.label = label;
         return json;
+    }
+
+    public function rotate (delta :Number) :void
+    {
+        skewX += delta;
+        skewY += delta;
     }
 
     protected static function extractFields(o :Object, destObj :Object, source :String, dest1 :String, dest2 :String) :void {
@@ -71,7 +80,7 @@ public class KeyframeMold
         extractField(o, mold, "ref");
         extractFields(o, mold, "loc", "x", "y");
         extractFields(o, mold, "scale", "scaleX", "scaleY");
-        extractField(o, mold, "rotation");
+        extractFields(o, mold, "skew", "skewX", "skewY");
         extractFields(o, mold, "pivot", "pivotX", "pivotY");
         extractField(o, mold, "alpha");
         extractField(o, mold, "visible");
@@ -88,7 +97,7 @@ public class KeyframeMold
             xml.@ref = ref;
             if (x != 0 || y != 0) xml.@loc = "" + x + "," + y;
             if (scaleX != 1 || scaleY != 1) xml.@scale = "" + scaleX + "," + scaleY;
-            if (rotation != 0) xml.@rotation = rotation;
+            if (skewX != 0 || skewY != 0) xml.@skew = "" + skewX + "," + skewY;
             if (pivotX != 0 || pivotY != 0) xml.@pivot = "" + pivotX + "," + pivotY;
             if (alpha != 1) xml.@alpha = alpha;
             if (!visible) xml.@visible = visible;

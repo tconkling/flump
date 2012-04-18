@@ -7,6 +7,7 @@ import flash.geom.Matrix;
 import flash.geom.Point;
 
 import flump.mold.KeyframeMold;
+import flump.MatrixUtil;
 
 import com.threerings.util.XmlUtil;
 
@@ -62,21 +63,55 @@ public class XflKeyframe
             var rewound :Matrix = matrix.clone();
             rewound.tx = rewound.ty = 0;
 
-            var p :Point = rewound.transformPoint(new Point(1, 0));
-            kf.rotation = Math.atan2(p.y, p.x);
+            // var p :Point = rewound.transformPoint(new Point(0, 1));
+            // var rotation :Number = Math.atan2(p.y, p.x);
 
-            // Back out of rotation
-            rewound.rotate(-kf.rotation);
+            // rewound = new Matrix();
+            // rewound.rotate(-rotation);
+            // rewound.concat(matrix);
 
-            p = rewound.transformPoint(new Point(1, 1));
+            // var p0 :Point = rewound.transformPoint(new Point(0, 0));
+            // var p1 :Point = rewound.transformPoint(new Point(1, 1));
+            // kf.scaleX = p1.x - p0.x;
+            // kf.scaleY = p1.x - p0.x;
+            // kf.skewX = p1.x - 1;
+            // kf.skewY = p1.y - 1;
+
+            // var p :Point = rewound.transformPoint(new Point(0, 1));
+            // // var rotation :Number = Math.atan2(p.y, p.x);
+            // kf.skewX = Math.atan2(p.y, p.x) - Math.PI/2;
+
+            // p = rewound.transformPoint(new Point(1, 0));
+            // kf.skewY = Math.atan2(p.y, p.x);
+
+            // // Back out of rotation
+            // rewound.rotate(-kf.skewY);
+
+            // p = rewound.transformPoint(new Point(1, 1));
+            // kf.scaleX = p.x;
+            // kf.scaleY = p.y;
+
+            var rotation :Number = MatrixUtil.rotation(matrix);
+            kf.skewX = MatrixUtil.skewX(rewound);
+            kf.skewY = MatrixUtil.skewY(rewound);
+
+            // Back out of skew/rotation
+            var skewMatrix :Matrix = new Matrix();
+            skewMatrix.a = Math.cos(kf.skewY);
+            skewMatrix.b = Math.sin(kf.skewY);
+            skewMatrix.c = -Math.sin(kf.skewX);
+            skewMatrix.d = Math.cos(kf.skewX);
+            skewMatrix.invert();
+            MatrixUtil.prepend(rewound, skewMatrix);
+
+            // rewound.rotate(-rotation);
+            // kf.scaleX = MatrixUtil.scaleX(rewound);
+            // kf.scaleY = MatrixUtil.scaleY(rewound);
+            var p :Point = rewound.transformPoint(new Point(1, 1));
             kf.scaleX = p.x;
             kf.scaleY = p.y;
-
-            const skewX :Number = Math.atan(rewound.c);
-            const skewY :Number = Math.atan(rewound.b);
-            if (Math.abs(skewX) > 0.0001 || Math.abs(skewY) > 0.0001) {
-                lib.addError(location, ParseError.WARN, "Skewing is not supported");
-            }
+            // kf.scaleX = 1;
+            // kf.scaleY = 1;
         }
 
         // Read the pivot point
@@ -97,6 +132,11 @@ public class XflKeyframe
         // Now that the matrix and pivot point have been read, apply translation
         kf.x = matrix.tx;
         kf.y = matrix.ty;
+
+        trace(location + " translate: " + kf.x + ", "  + kf.y);
+        trace(location + " skew: " + kf.skewX + ", " + kf.skewY);
+        trace(location + " scale: " + kf.scaleX + ", " + kf.scaleY);
+        trace();
 
         // Read the alpha
         if (symbolXml.color != null) {

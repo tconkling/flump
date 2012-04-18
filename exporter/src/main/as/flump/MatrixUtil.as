@@ -68,6 +68,12 @@ public class MatrixUtil
         MatrixUtil.setSkewY(m, rotation);
     }
 
+    public static function prepend (m :Matrix, transform :Matrix) :void {
+        var tmp :Matrix = transform.clone();
+        tmp.concat(m);
+        m.copyFrom(tmp);
+    }
+
     protected static function sign (value :Number) :Number {
         return (value < 0) ? -1 : (value > 0) ? 1 : 0;
     }

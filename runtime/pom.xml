@@ -21,7 +21,7 @@
     <dependency>
       <groupId>org.starling-framework</groupId>
       <artifactId>starling</artifactId>
-      <version>46f31516</version>
+      <version>ooo-1.0-SNAPSHOT</version>
       <type>swc</type>
     </dependency>
     <dependency>

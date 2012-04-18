@@ -27,8 +27,8 @@ public class XflLayer
         for (var ii :int = 0; ii < layer.keyframes.length - 1; ++ii) {
             var kf :KeyframeMold = layer.keyframes[ii];
             var nextKf :KeyframeMold = layer.keyframes[ii+1];
-            if (kf.rotation + Math.PI < nextKf.rotation) nextKf.rotation -= Math.PI * 2;
-            else if (kf.rotation - Math.PI > nextKf.rotation) nextKf.rotation += Math.PI * 2;
+            if (kf.rotation + Math.PI < nextKf.rotation) nextKf.rotate(-Math.PI * 2);
+            else if (kf.rotation - Math.PI > nextKf.rotation) nextKf.rotate(Math.PI * 2);
         }
 
         // handle "motionTweenRotate", which applies additional rotations to the next
@@ -49,7 +49,8 @@ public class XflLayer
             }
 
             kf = layer.keyframes[ii];
-            kf.rotation += additionalRotation;
+            if (additionalRotation != 0) trace("!!!!!!! Adding some additional rotation: " + additionalRotation);
+            kf.rotate(additionalRotation);
 
             ii++;
         }
@@ -60,7 +61,8 @@ public class XflLayer
             kf.y = round(kf.y);
             kf.scaleX = round(kf.scaleX);
             kf.scaleY = round(kf.scaleY);
-            kf.rotation = round(kf.rotation);
+            kf.skewX = round(kf.skewX);
+            kf.skewY = round(kf.skewY);
         }
 
         return layer;
@@ -70,6 +72,5 @@ public class XflLayer
         const shift :int = Math.pow(10, places);
         return Math.round(n * shift) / shift;
     }
-
 }
 }
