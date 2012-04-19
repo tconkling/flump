@@ -5,6 +5,9 @@ package flump.export {
 
 import flash.filesystem.File;
 
+import deng.fzip.FZip;
+import deng.fzip.FZipFile;
+
 import flump.executor.Executor;
 import flump.executor.Future;
 import flump.executor.VisibleFuture;
@@ -14,14 +17,14 @@ import flump.xfl.XflLibrary;
 import com.threerings.util.F;
 import com.threerings.util.Log;
 
-public class XflLoader
+public class FlaLoader
 {
     public function load (name :String, file :File) :Future {
-        log.info("Loading xfl", "path", file.nativePath, "name", name);
+        log.info("Loading fla", "path", file.nativePath, "name", name);
 
         const future :VisibleFuture = new VisibleFuture();
         _library = new XflLibrary(name);
-        _library.loadSWF(file.nativePath + ".swf").completed.add(function () :void {
+        _library.loadSWF(Files.replaceExtension(file, "swf")).completed.add(function () :void {
             // Since listLibrary shuts down the executor, wait for the swf to load first
             listLibrary(file);
         });
@@ -34,30 +37,23 @@ public class XflLoader
     }
 
     protected function listLibrary (file :File) :void {
-        const domFile :File = file.resolvePath("DOMDocument.xml");
-        const loadDomFile :Future = Files.load(domFile, _loader);
-        loadDomFile.succeeded.add(function (domFile :File) :void {
+        const loadZip :Future = Files.load(file, _loader);
+        loadZip.succeeded.add(function (file :File) :void {
+            const zip :FZip = new FZip();
+            zip.loadBytes(file.data);
+
+            const domFile :FZipFile = zip.getFileByName("DOMDocument.xml");
             const symbolPaths :Vector.<String> = _library.parseDocumentFile(
-                domFile.data, domFile.nativePath);
+                domFile.content, domFile.filename);
             for each (var path :String in symbolPaths) {
-                parseLibraryFile(file.resolvePath(path));
+                var symbolFile :FZipFile = zip.getFileByName(path);
+                _library.parseLibraryFile(symbolFile.content, path);
             }
             _loader.shutdown();
         });
-        loadDomFile.failed.add(function (error :Object) :void {
-            _library.addTopLevelError(ParseError.CRIT, "Unable to read " + domFile.nativePath,
-                error);
-            _loader.shutdown();
-        });
-    }
-
-    protected function parseLibraryFile (file :File) :void {
-        const loadLibraryFile :Future = Files.load(file, _loader);
-        loadLibraryFile.succeeded.add(function (file :File) :void {
-            _library.parseLibraryFile(file.data, file.nativePath);
-        });
-        loadLibraryFile.failed.add(function (error :Object) :void {
+        loadZip.failed.add(function (error :Object) :void {
             _library.addTopLevelError(ParseError.CRIT, "Unable to read " + file.nativePath, error);
+            _loader.shutdown();
         });
     }
 
@@ -65,6 +61,6 @@ public class XflLoader
 
     protected var _library :XflLibrary;
 
-    private static const log :Log = Log.getLog(XflLoader);
+    private static const log :Log = Log.getLog(FlaLoader);
 }
 }

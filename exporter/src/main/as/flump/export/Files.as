@@ -62,5 +62,10 @@ public class Files
         const path :String = file.nativePath;
         return path.substr(path.lastIndexOf(".") + 1).toLowerCase();
     }
+
+    public static function replaceExtension (file :File, ext :String) :String {
+        const path :String = file.nativePath;
+        return path.substr(0, path.lastIndexOf(".") + 1) + ext;
+    }
 }
 }

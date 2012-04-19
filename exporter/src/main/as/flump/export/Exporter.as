@@ -14,9 +14,6 @@ import flash.net.SharedObject;
 
 import com.adobe.crypto.MD5;
 
-import deng.fzip.FZip;
-import deng.fzip.FZipFile;
-
 import flump.bytesToXML;
 import flump.display.Movie;
 import flump.executor.Executor;
@@ -182,7 +179,7 @@ public class Exporter
                         _errors.dataProvider.addItem(new ParseError(base.nativePath,
                             ParseError.CRIT, "The import directory can't be an XFL directory, did you mean " +
                             base.parent.nativePath + "?"));
-                    } else addFlashDocument(file.parent);
+                    } else addFlashDocument(file);
                     return;
                 }
             }
@@ -191,15 +188,9 @@ public class Exporter
                     continue; // Ignore hidden VCS directories, and recovered backups created by Flash
                 }
                 if (file.isDirectory) findFlashDocuments(file, exec);
-                else if (Files.hasExtension(file, "fla")) addFlashDocument(file);
+                else addFlashDocument(file);
             }
         });
-    }
-
-    protected function addFlashDocument (file :File) :void {
-        const status :DocStatus = new DocStatus(file, _rootLen, Ternary.UNKNOWN, Ternary.UNKNOWN, null);
-        _libraries.dataProvider.addItem(status);
-        loadFlashDocument(status);
     }
 
     protected function exportFlashDocument (status :DocStatus) :void {
@@ -213,50 +204,36 @@ public class Exporter
         status.updateModified(Ternary.FALSE);
     }
 
-    protected function loadFlashDocument (status :DocStatus) :void {
-        if (Files.hasExtension(status.file, "xfl")) status.file = status.file.parent;
-        if (status.file.isDirectory) {
-            const name :String = status.file.nativePath
-                .substring(_rootLen).replace(File.separator, "/");
-            const load :Future = new XflLoader().load(name, status.file);
-            load.succeeded.add(function (lib :XflLibrary) :void {
-                status.lib = lib;
-                status.updateModified(Ternary.of(_publisher == null || _publisher.modified(lib)));
-                for each (var err :ParseError in lib.getErrors()) _errors.dataProvider.addItem(err);
-                status.updateValid(Ternary.of(lib.valid));
-            });
-            load.failed.add(function (e :Error) :void {
-                trace("Failed to load " + status.file.nativePath + ":" + e);
-                status.updateValid(Ternary.FALSE);
-                throw e;
-            });
-        } else loadFla(status.file);
-    }
+    protected function addFlashDocument (file :File) :void {
+        var name :String = file.nativePath.substring(_rootLen).replace(File.separator, "/");
+        var load :Future;
+        switch (Files.getExtension(file)) {
+        case "xfl":
+            name = name.substr(0, name.lastIndexOf("/"));
+            load = new XflLoader().load(name, file.parent);
+            break;
+        case "fla":
+            name = name.substr(0, name.lastIndexOf("."));
+            load = new FlaLoader().load(name, file);
+            break;
+        default:
+            // Unsupported file type, ignore
+            return;
+        }
 
-    protected function loadFla (file :File) :void {
-        log.info("fla support not implemented", "path", file.nativePath);
-        return;
-        Files.load(file).succeeded.add(function (file :File) :void {
-            const zip :FZip = new FZip();
-            zip.loadBytes(file.data);
-            const files :Array = [];
-            for (var ii :int = 0; ii < zip.getFileCount(); ii++) files.push(zip.getFileAt(ii));
-            const xmls :Array = F.filter(files, function (fz :FZipFile) :Boolean {
-                return StringUtil.endsWith(fz.filename, ".xml");
-            });
-            const movies :Array = F.filter(xmls, function (fz :FZipFile) :Boolean {
-                return StringUtil.startsWith(fz.filename, "LIBRARY/Animations/");
-            });
-            const textures :Array = F.filter(xmls, function (fz :FZipFile) :Boolean {
-                return StringUtil.startsWith(fz.filename, "LIBRARY/Textures/");
-            });
-            function toFn (fz :FZipFile) :String { return fz.filename };
-            log.info("Loaded", "bytes", file.data.length, "movies", F.map(movies, toFn),
-                "textures", F.map(textures, toFn));
-            for each (var fz :FZipFile in movies) {
-                XflMovie.parse(null, bytesToXML(fz.content), MD5.hashBytes(fz.content));
-            }
-            NA.exit(0);
+        const status :DocStatus = new DocStatus(name, _rootLen, Ternary.UNKNOWN, Ternary.UNKNOWN, null);
+        _libraries.dataProvider.addItem(status);
+
+        load.succeeded.add(function (lib :XflLibrary) :void {
+            status.lib = lib;
+            status.updateModified(Ternary.of(_publisher == null || _publisher.modified(lib)));
+            for each (var err :ParseError in lib.getErrors()) _errors.dataProvider.addItem(err);
+            status.updateValid(Ternary.of(lib.valid));
+        });
+        load.failed.add(function (error :Error) :void {
+            trace("Failed to load " + file.nativePath + ": " + error);
+            status.updateValid(Ternary.FALSE);
+            throw error;
         });
     }
 
@@ -299,13 +276,11 @@ class DocStatus extends EventDispatcher implements IPropertyChangeNotifier {
     public var path :String;
     public var modified :String;
     public var valid :String = QUESTION;
-    public var file :File;
     public var lib :XflLibrary;
 
-    public function DocStatus (file :File, rootLen :int, modified :Ternary, valid :Ternary, lib :XflLibrary) {
-        this.file = file;
+    public function DocStatus (path :String, rootLen :int, modified :Ternary, valid :Ternary, lib :XflLibrary) {
         this.lib = lib;
-        path = file.nativePath.substring(rootLen);
+        this.path = path;
         _uid = path;
 
         updateModified(modified);

@@ -3,10 +3,20 @@
 
 package flump.xfl {
 
+import flash.filesystem.File;
+import flash.utils.ByteArray;
 import flash.utils.Dictionary;
 
+import com.adobe.crypto.MD5;
+
+import flump.bytesToXML;
+import flump.executor.Executor;
+import flump.executor.Future;
+import flump.executor.VisibleFuture;
 import flump.executor.load.LoadedSwf;
+import flump.executor.load.SwfLoader;
 import flump.export.Atlas;
+import flump.export.Files;
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
 import flump.mold.LibraryMold;
@@ -16,9 +26,13 @@ import com.threerings.util.Map;
 import com.threerings.util.Maps;
 import com.threerings.util.Set;
 import com.threerings.util.Sets;
+import com.threerings.util.XmlUtil;
+import com.threerings.util.Log;
 
 public class XflLibrary
 {
+    use namespace xflns;
+
     /**
      * When an exported movie contains an unexported movie, it gets assigned a generated symbol
      * name with this prefix.
@@ -99,7 +113,7 @@ public class XflLibrary
         addError(location, severity, message, e);
     }
 
-    public function addError(location :String, severity :String, message :String, e :Object=null) :void {
+    public function addError (location :String, severity :String, message :String, e :Object=null) :void {
         _errors.push(new ParseError(location, severity, message, e));
     }
 
@@ -116,6 +130,69 @@ public class XflLibrary
         return mold;
     }
 
+    public function loadSWF (path :String) :Future {
+        const onComplete :VisibleFuture = new VisibleFuture();
+
+        const swfFile :File = new File(path);
+        const loadSwfFile :Future = Files.load(swfFile);
+        loadSwfFile.succeeded.add(function (file :File) :void {
+            md5 = MD5.hashBytes(file.data);
+
+            const loadSwf :Future = new SwfLoader().loadFromBytes(file.data);
+            loadSwf.succeeded.add(function (loadedSwf :LoadedSwf) :void {
+                swf = loadedSwf;
+            });
+            loadSwf.failed.add(function (error :Object) :void {
+                addTopLevelError(ParseError.CRIT, "Unable to load " + path, error);
+            });
+            loadSwf.completed.add(onComplete.succeed);
+        });
+        loadSwfFile.failed.add(function (error :Object) :void {
+            addTopLevelError(ParseError.CRIT, "Unable to read " + swfFile.nativePath, error);
+            onComplete.fail(error);
+        });
+
+        return onComplete;
+    }
+
+    /**
+     * @returns A list of paths to symbols in this library.
+     */
+    public function parseDocumentFile (fileData :ByteArray, path :String) :Vector.<String> {
+        const xml :XML = bytesToXML(fileData);
+        frameRate = XmlUtil.getNumberAttr(xml, "frameRate", 24);
+
+        const paths :Vector.<String> = new Vector.<String>();
+        for each (var symbolXmlPath :XML in xml.symbols.Include) {
+            paths.push("LIBRARY/" + XmlUtil.getStringAttr(symbolXmlPath, "href"));
+        }
+        return paths;
+    }
+
+    public function parseLibraryFile (fileData :ByteArray, path :String) :void {
+        const xml :XML = bytesToXML(fileData);
+        if (xml.name().localName != "DOMSymbolItem") {
+            addTopLevelError(ParseError.DEBUG,
+                "Skipping file since its root element isn't DOMSymbolItem");
+            return;
+        } else if (XmlUtil.getStringAttr(xml, "symbolType", "") == "graphic") {
+            addTopLevelError(ParseError.DEBUG, "Skipping file because symbolType=graphic");
+            return;
+        }
+
+        const isSprite :Boolean = XmlUtil.getBooleanAttr(xml, "isSpriteSubclass", false);
+        const md5 :String = MD5.hashBytes(fileData);
+        log.debug("Parsing for library", "file", path, "isSprite", isSprite, "md5", md5);
+        try {
+            if (isSprite) textures.push(new XflTexture(this, location, xml, md5));
+            else movies.push(XflMovie.parse(this, xml, md5));
+        } catch (e :Error) {
+            var type :String = isSprite ? "sprite" : "movie";
+            addTopLevelError(ParseError.CRIT, "Unable to parse " + type + " in " + path, e);
+            log.error("Unable to parse " + path, e);
+        }
+    }
+
     /** Object to symbol name for all exported textures and movies in the library */
     protected const _moldToSymbol :Map = Maps.newMapOf(Object);
 
@@ -129,5 +206,7 @@ public class XflLibrary
     protected const _ids :Dictionary = new Dictionary();
 
     protected const _errors :Vector.<ParseError> = new Vector.<ParseError>;
+
+    private static const log :Log = Log.getLog(XflLibrary);
 }
 }
