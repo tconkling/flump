@@ -3,12 +3,12 @@
 
 package flump.xfl {
 
+import com.threerings.util.XmlUtil;
+
 import flash.geom.Matrix;
 import flash.geom.Point;
 
 import flump.mold.KeyframeMold;
-
-import com.threerings.util.XmlUtil;
 
 public class XflKeyframe
 {
@@ -38,6 +38,10 @@ public class XflKeyframe
         }
 
         if (symbolXml == null) return kf; // Purely labelled frame
+
+        if (XmlUtil.getBooleanAttr(xml, "motionTweenOrientToPath", false)) {
+            lib.addError(location, ParseError.CRIT, "motion paths are not supported");
+        }
 
         if (XmlUtil.getBooleanAttr(xml, "hasCustomEase", false)) {
             lib.addError(location, ParseError.WARN, "Custom easing is not supported");
