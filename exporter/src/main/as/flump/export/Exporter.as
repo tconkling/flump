@@ -155,6 +155,9 @@ public class Exporter
             _previewWindow.nativeWindow.visible = true;
             _previewControls.nativeWindow.visible = true;
         }
+
+        _previewWindow.orderToFront();
+        _previewControls.orderToFront();
     }
 
     // Causes a window to be hidden, rather than closed, when its close box is clicked
