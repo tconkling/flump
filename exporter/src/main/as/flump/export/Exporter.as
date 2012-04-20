@@ -208,7 +208,8 @@ public class Exporter
     }
 
     protected function addFlashDocument (file :File) :void {
-        var name :String = file.nativePath.substring(_rootLen).replace(File.separator, "/");
+        var name :String = file.nativePath.substring(_rootLen).replace(
+            new RegExp("\\" + File.separator, "g"), "/");
         var load :Future;
         switch (Files.getExtension(file)) {
         case "xfl":
