@@ -1,5 +1,5 @@
 <s:Window xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:mx="library://ns.adobe.com/flex/mx"
-  xmlns:s="library://ns.adobe.com/flex/spark" creationComplete="init();" alpha="0" renderMode="direct" width="640" height="960">
+  xmlns:s="library://ns.adobe.com/flex/spark" creationComplete="init();" alpha="0" renderMode="direct" width="480" height="720">
   <!-- I'd like to use visible="false" on the window and then set visible to true in init to hide
        the move to the top-left. If I do that, the window appears in the proper location and then
        disappears.  -->
