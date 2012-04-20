@@ -42,6 +42,7 @@ public class XflLibrary
     public var swf :LoadedSwf;
 
     public var frameRate :Number;
+    public var backgroundColor :int;
 
     // The MD5 of the published library SWF
     public var md5 :String;
@@ -161,6 +162,9 @@ public class XflLibrary
     public function parseDocumentFile (fileData :ByteArray, path :String) :Vector.<String> {
         const xml :XML = bytesToXML(fileData);
         frameRate = XmlUtil.getNumberAttr(xml, "frameRate", 24);
+
+        const hex :String = XmlUtil.getStringAttr(xml, "backgroundColor", "#ffffff");
+        backgroundColor = parseInt(hex.substr(1), 16);
 
         const paths :Vector.<String> = new Vector.<String>();
         for each (var symbolXmlPath :XML in xml.symbols.Include) {

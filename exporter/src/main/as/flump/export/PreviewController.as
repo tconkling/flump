@@ -94,6 +94,8 @@ public class PreviewController
             // Grumble, wish setting the index above would fire the listener
             displayLibraryItem(previewMovies[0].id);
         }
+
+        Starling.current.stage.color = lib.backgroundColor;
     }
 
     protected function displayLibraryItem (name :String) :void {
