@@ -5,6 +5,8 @@
        disappears.  -->
    <fx:Script>
         <![CDATA[
+        import flash.events.Event;
+        import flash.geom.Rectangle;
         import starling.core.Starling;
 
         public var started :Function;
@@ -17,6 +19,14 @@
           _starling.juggler.delayCall(function() :void { started(_starling.stage.getChildAt(0)) },
             0);
           _starling.start();
+
+          nativeWindow.stage.addEventListener(Event.RESIZE, function (..._) :void {
+            var w :int = nativeWindow.stage.stageWidth;
+            var h :int = nativeWindow.stage.stageHeight;
+            _starling.viewPort = new Rectangle(0, 0, w, h);
+            _starling.stage.stageWidth = w;
+            _starling.stage.stageHeight = h;
+          });
         }
 
         protected var _starling :Starling;

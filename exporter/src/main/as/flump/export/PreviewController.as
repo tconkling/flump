@@ -3,6 +3,7 @@
 
 package flump.export {
 
+import flash.events.Event;
 import flash.geom.Rectangle;
 
 import flump.mold.MovieMold;
@@ -12,6 +13,7 @@ import flump.xfl.XflTexture;
 import spark.events.GridSelectionEvent;
 import spark.formatters.NumberFormatter;
 
+import starling.core.Starling;
 import starling.display.DisplayObject;
 import starling.display.Sprite;
 
@@ -23,6 +25,8 @@ public class PreviewController
         _preview = preview;
         _controls = controls;
         this.lib = lib;
+
+        Starling.current.stage.addEventListener(Event.RESIZE, onResize);
     }
 
     public function set lib (lib :XflLibrary) :void {
@@ -94,13 +98,18 @@ public class PreviewController
 
     protected function displayLibraryItem (name :String) :void {
         while (_container.numChildren > 0) _container.removeChildAt(0);
-        var display :DisplayObject = _creator.loadId(name);
-        var bounds :Rectangle = display.getBounds(display);
-        display.x = ((_preview.width - bounds.width) * 0.5) - bounds.left;
-        display.y = ((_preview.height - bounds.height) * 0.5) - bounds.top;
-        _container.addChild(display);
+        _previewSprite = _creator.loadId(name);
+        _container.addChild(_previewSprite);
+        onResize();
     }
 
+    protected function onResize (..._) :void {
+        var bounds :Rectangle = _previewSprite.getBounds(_previewSprite);
+        _previewSprite.x = ((_preview.width - bounds.width) * 0.5) - bounds.left;
+        _previewSprite.y = ((_preview.height - bounds.height) * 0.5) - bounds.top;
+    }
+
+    protected var _previewSprite :DisplayObject;
     protected var _container :Sprite;
     protected var _controls :PreviewControlsWindow;
     protected var _preview :PreviewWindow;
