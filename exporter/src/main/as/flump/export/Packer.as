@@ -38,7 +38,7 @@ public class Packer
                 var unpacked :SwfTexture = _unpacked[ii];
 
                 if (unpacked.w > MAX_SIZE || unpacked.h > MAX_SIZE) {
-                    throw new Error("Too large to fit in an atlas");
+                    throw new Error("Too large to fit in an atlas: " + unpacked.w + ", " + unpacked.h + " " + unpacked.symbol);
                 }
 
                 for each (var atlas :Atlas in atlases) {
@@ -89,6 +89,6 @@ public class Packer
     protected const _unpacked :Vector.<SwfTexture> = new Vector.<SwfTexture>();
 
     // Maximum width or height of a texture atlas
-    private static const MAX_SIZE :int = 1024;
+    private static const MAX_SIZE :int = 2048;
 }
 }
