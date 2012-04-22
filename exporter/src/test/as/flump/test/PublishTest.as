@@ -5,7 +5,7 @@ package flump.test {
 
 import flash.filesystem.File;
 
-import flump.export.DeviceType;
+import flump.export.ExportConf;
 import flump.export.Format;
 import flump.export.JSONFormat;
 import flump.export.Publisher;
@@ -17,24 +17,25 @@ public class PublishTest
 {
     public function PublishTest (runner :TestRunner, lib :XflLibrary) {
         _lib = lib;
-        runner.run("Publish XML", makePublishTest("xml", new XMLFormat()));
-        runner.run("Publish JSON", makePublishTest("json", new JSONFormat()));
-        runner.run("Publish Starling", makePublishTest("starling", new StarlingFormat(),
+        runner.run("Publish XML", makePublishTest("xml", XMLFormat));
+        runner.run("Publish JSON", makePublishTest("json", JSONFormat));
+        runner.run("Publish Starling", makePublishTest("starling", StarlingFormat,
             function (output :File) :void {  new StarlingResourcesTest(runner, output); }));
     }
 
-    protected function makePublishTest (type :String, format :Format, postPublish :Function=null) :Function {
+    protected function makePublishTest (type :String, formatClass :Class, postPublish :Function=null) :Function {
         return function () :void {
             const exportDir :File = TestRunner.dist.resolvePath("test/publish" + type);
             if (exportDir.exists) exportDir.deleteDirectory(/*deleteDirectoryContents=*/true);
             exportDir.createDirectory();
-            const pub :Publisher = new Publisher(exportDir, format);
+            const conf :ExportConf = new ExportConf();
+            conf.directory = "starling";
+            conf.format = formatClass;
+            const pub :Publisher = new Publisher(exportDir, conf);
             assert(pub.modified(_lib), "Lack of output should indicate modified");
-            pub.publish(_lib, DeviceType.IPHONE);
-            const metaFile :File = exportDir.resolvePath(_lib.location + "/" + format.metaFilename);
-            assert(metaFile.exists, "Output wasn't created");
+            pub.publish(_lib);
             assert(!pub.modified(_lib), "Shouldn't be modified after publishing");
-            if (postPublish != null) postPublish(metaFile);
+            if (postPublish != null) postPublish(conf.create(exportDir, _lib).outputFile);
         }
     }
 

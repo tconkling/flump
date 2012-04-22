@@ -8,6 +8,9 @@ import flash.events.Event;
 import flash.events.FileListEvent;
 import flash.events.IOErrorEvent;
 import flash.filesystem.File;
+import flash.filesystem.FileMode;
+import flash.filesystem.FileStream;
+import flash.utils.ByteArray;
 
 import flump.executor.Executor;
 import flump.executor.Future;
@@ -54,8 +57,24 @@ public class Files
         });
     }
 
+    public static function read (file :File) :ByteArray {
+        var stream :FileStream = new FileStream();
+        stream.open(file, FileMode.READ);
+        var bytes :ByteArray = new ByteArray();
+        stream.readBytes(bytes);
+        stream.close();
+        return bytes;
+    }
+
+    public static function write (file :File, writer :Function) :void {
+        const out :FileStream = new FileStream();
+        out.open(file, FileMode.WRITE);
+        writer(out);
+        out.close();
+    }
+
     public static function hasExtension (file :File, ext :String) :Boolean {
-        return !file.isHidden && StringUtil.endsWith(file.nativePath, "."+ext);
+        return !file.isHidden && StringUtil.endsWith(file.nativePath, "." + ext);
     }
 
     public static function getExtension (file :File) :String {

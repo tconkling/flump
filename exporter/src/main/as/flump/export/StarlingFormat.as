@@ -3,6 +3,7 @@
 
 package flump.export {
 
+import flash.filesystem.File;
 import flash.utils.ByteArray;
 import flash.utils.IDataOutput;
 
@@ -14,19 +15,28 @@ import flump.xfl.XflLibrary;
 
 public class StarlingFormat extends Format
 {
-    public function StarlingFormat () {
-        super("resources-starling.zip");
+    public var outputFile :File;
+
+    public function StarlingFormat (destDir :File, lib :XflLibrary, conf :ExportConf) {
+        super(destDir, lib, conf);
+        if (conf.directory != null) {
+            outputFile = _destDir.resolvePath(conf.directory + "/" + lib.location + ".zip");
+        } else {
+            outputFile = _destDir.resolvePath(lib.location + ".zip");
+        }
     }
 
-    override public function extractMd5 (metadata :ByteArray) :String {
+    override public function get modified () :Boolean {
+        if (!outputFile.exists) return true;
+
         const zip :FZip = new FZip();
-        zip.loadBytes(metadata);
+        zip.loadBytes(Files.read(outputFile));
         const md5File :FZipFile = zip.getFileByName("md5");
-        return md5File.content.readUTFBytes(md5File.content.length);
+        const md5 :String = md5File.content.readUTFBytes(md5File.content.length);
+        return md5 != _lib.md5;
     }
 
-    override public function publish(out :IDataOutput, lib :XflLibrary, packers :Vector.<Packer>,
-        authoredDevice :DeviceType) :void {
+    override public function publish() :void {
         const zip :FZip = new FZip();
 
         function addToZip(name :String, contentWriter :Function) :void {
@@ -35,17 +45,23 @@ public class StarlingFormat extends Format
             zip.addFile(name, bytes);
         }
 
-        for each (var atlas :Atlas in packers[0].atlases) {
-            addToZip(atlas.fileName, function (b :ByteArray) :void { atlas.writePNG(b); });
+        const packer :Packer = new Packer(_lib, _conf.scale);
+
+        for each (var atlas :Atlas in packer.atlases) {
+            addToZip(atlas.filename, function (b :ByteArray) :void { atlas.writePNG(b); });
         }
-        addToZip(StarlingResources.LIBRARY_LOCATION,
-            function (b :ByteArray) :void { b.writeUTFBytes(lib.toJSONString(packers[0].atlases)); });
+        addToZip(StarlingResources.LIBRARY_LOCATION, function (b :ByteArray) :void {
+            b.writeUTFBytes(_lib.toJSONString(packer.atlases, _conf.scale));
+        });
         addToZip(StarlingResources.MD5_LOCATION,
-            function (b :ByteArray) :void { b.writeUTFBytes(lib.md5); });
+            function (b :ByteArray) :void { b.writeUTFBytes(_lib.md5); });
         addToZip(StarlingResources.VERSION_LOCATION,
             function (b :ByteArray) :void { b.writeUTFBytes(StarlingResources.VERSION); });
 
-        zip.serialize(out, /*includeAdler32=*/true);
+        Files.write(outputFile, function (out :IDataOutput) :void {
+            zip.serialize(out, /*includeAdler32=*/true);
+        });
     }
+
 }
 }

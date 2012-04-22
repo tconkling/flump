@@ -66,7 +66,7 @@ public class PreviewController
         }
         _controls.totalValue.text = formatMemory({memory: totalUsage});
 
-        const packer :Packer = new Packer(DeviceType.IPHONE, DeviceType.IPHONE, lib)
+        const packer :Packer = new Packer(lib);
         var atlasSize :Number = 0;
         var atlasUsed :Number = 0;
         for each (var atlas :Atlas in packer.atlases) {

@@ -10,7 +10,6 @@ import flash.utils.Dictionary;
 import com.adobe.crypto.MD5;
 
 import flump.bytesToXML;
-import flump.executor.Executor;
 import flump.executor.Future;
 import flump.executor.VisibleFuture;
 import flump.executor.load.LoadedSwf;
@@ -22,12 +21,12 @@ import flump.mold.LayerMold;
 import flump.mold.LibraryMold;
 import flump.mold.MovieMold;
 
+import com.threerings.util.Log;
 import com.threerings.util.Map;
 import com.threerings.util.Maps;
 import com.threerings.util.Set;
 import com.threerings.util.Sets;
 import com.threerings.util.XmlUtil;
-import com.threerings.util.Log;
 
 public class XflLibrary
 {
@@ -118,15 +117,17 @@ public class XflLibrary
         _errors.push(new ParseError(location, severity, message, e));
     }
 
-    public function toJSONString (atlases :Vector.<Atlas>, pretty :Boolean=false) :String {
-        return JSON.stringify(toMold(atlases), null, pretty ? "  " : null);
+    public function toJSONString (atlases :Vector.<Atlas>, scale :Number, pretty :Boolean=false) :String {
+        return JSON.stringify(toMold(atlases, scale), null, pretty ? "  " : null);
     }
 
-    public function toMold (atlases :Vector.<Atlas>) :LibraryMold {
+    public function toMold (atlases :Vector.<Atlas>, scale :Number) :LibraryMold {
         const mold :LibraryMold = new LibraryMold();
         mold.frameRate = frameRate;
         mold.md5 = md5;
-        mold.movies = movies;
+        mold.movies = publishedMovies.map(function (movie :MovieMold, ..._) :MovieMold {
+            return movie.scale(scale);
+        });
         for each (var atlas :Atlas in atlases) mold.atlases.push(atlas.toMold());
         return mold;
     }

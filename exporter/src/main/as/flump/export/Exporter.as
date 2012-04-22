@@ -12,16 +12,11 @@ import flash.events.MouseEvent;
 import flash.filesystem.File;
 import flash.net.SharedObject;
 
-import com.adobe.crypto.MD5;
-
-import flump.bytesToXML;
-import flump.display.Movie;
 import flump.executor.Executor;
 import flump.executor.Future;
 import flump.export.Ternary;
 import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;
-import flump.xfl.XflMovie;
 
 import mx.collections.ArrayCollection;
 import mx.events.PropertyChangeEvent;
@@ -115,8 +110,9 @@ public class Exporter
         function updatePublisher (..._) :void {
             if (_exportChooser.dir == null) _publisher = null;
             else {
-                _publisher =
-                    new Publisher(_exportChooser.dir, new XMLFormat(), new JSONFormat(), new StarlingFormat());
+                const conf :ExportConf = new ExportConf();
+                conf.format = StarlingFormat;
+                _publisher = new Publisher(_exportChooser.dir, conf);
             }
         };
         _exportChooser.changed.add(updatePublisher);
@@ -201,7 +197,7 @@ public class Exporter
         const prevQuality :String = stage.quality;
 
         stage.quality = StageQuality.BEST;
-        _publisher.publish(status.lib, DeviceSelection(_authoredResolution.selectedItem).type);
+        _publisher.publish(status.lib);
 
         stage.quality = prevQuality;
         status.updateModified(Ternary.FALSE);
@@ -268,7 +264,6 @@ class DeviceSelection {
     }
 }
 import flash.events.EventDispatcher;
-import flash.filesystem.File;
 
 import flump.export.Ternary;
 import flump.xfl.XflLibrary;

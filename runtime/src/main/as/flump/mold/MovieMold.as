@@ -39,6 +39,19 @@ public class MovieMold
         }
     }
 
+    public function scale (scale :Number) :MovieMold {
+        const clone :MovieMold = fromJSON(JSON.parse(JSON.stringify(this)));
+        for each (var layer :LayerMold in clone.layers) {
+            for each (var kf :KeyframeMold in layer.keyframes) {
+                kf.x *= scale;
+                kf.y *= scale;
+                kf.pivotX *= scale;
+                kf.pivotY *= scale;
+            }
+        }
+        return clone;
+    }
+
     public function toJSON (_:*) :Object {
         const json :Object = {
             id: id,
