@@ -19,8 +19,8 @@ public class StarlingFormat extends Format
 
     public function StarlingFormat (destDir :File, lib :XflLibrary, conf :ExportConf) {
         super(destDir, lib, conf);
-        if (conf.directory != null) {
-            outputFile = _destDir.resolvePath(conf.directory + "/" + lib.location + ".zip");
+        if (conf.name != null) {
+            outputFile = _destDir.resolvePath(conf.name + "/" + lib.location + ".zip");
         } else {
             outputFile = _destDir.resolvePath(lib.location + ".zip");
         }

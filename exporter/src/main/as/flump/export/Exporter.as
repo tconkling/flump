@@ -4,6 +4,8 @@
 package flump.export {
 
 import flash.desktop.NativeApplication;
+import flash.display.NativeMenu;
+import flash.display.NativeMenuItem;
 import flash.display.NativeWindow;
 import flash.display.Stage;
 import flash.display.StageQuality;
@@ -11,6 +13,7 @@ import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.filesystem.File;
 import flash.net.SharedObject;
+import flash.utils.IDataOutput;
 
 import flump.executor.Executor;
 import flump.executor.Future;
@@ -18,7 +21,6 @@ import flump.export.Ternary;
 import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;
 
-import mx.collections.ArrayCollection;
 import mx.events.PropertyChangeEvent;
 
 import spark.components.DataGrid;
@@ -37,32 +39,11 @@ public class Exporter
 {
     public static const NA :NativeApplication = NativeApplication.nativeApplication;
 
-    protected static const IMPORT_ROOT :String = "IMPORT_ROOT";
-    protected static const AUTHORED_RESOLUTION :String = "AUTHORED_RESOLUTION";
-
     public function Exporter (win :ExporterWindow) {
         Log.setLevel("", Log.INFO);
         _win = win;
         _errors = _win.errors;
         _libraries = _win.libraries;
-
-        _authoredResolution = _win.authoredResolutionPopup;
-        _authoredResolution.dataProvider = new ArrayCollection(DeviceType.values().map(
-            function (type :DeviceType, ..._) :Object {
-                return new DeviceSelection(type);
-            }));
-        var initialSelection :DeviceType = null;
-        if (_settings.data.hasOwnProperty(AUTHORED_RESOLUTION)) {
-            try {
-                initialSelection = DeviceType.valueOf(_settings.data[AUTHORED_RESOLUTION]);
-            } catch (e :Error) {}
-        }
-        if (initialSelection == null) initialSelection = DeviceType.IPHONE_RETINA;
-        _authoredResolution.selectedIndex = DeviceType.values().indexOf(initialSelection);
-        _authoredResolution.addEventListener(Event.CHANGE, function (..._) :void {
-            var selectedType :DeviceType = DeviceSelection(_authoredResolution.selectedItem).type;
-            _settings.data[AUTHORED_RESOLUTION] = selectedType.name();
-        });
 
         function updatePreviewAndExport (..._) :void {
             _win.export.enabled = _exportChooser.dir != null && _libraries.selectionLength > 0 &&
@@ -70,8 +51,61 @@ public class Exporter
                     return status.isValid;
             });
 
+
             var status :DocStatus = _libraries.selectedItem as DocStatus;
-            _win.preview.enabled = (status != null && status.isValid);
+            _win.preview.enabled = status != null && status.isValid;
+
+            if (_exportChooser.dir == null) return;
+            _conf.exportDir = _confFile.parent.getRelativePath(_exportChooser.dir, /*useDotDot=*/true);
+        }
+
+        var fileMenuItem :NativeMenuItem;
+        if (NativeApplication.supportsMenu) {
+            // Grab the existing menu on macs. Use an index to get it as it's not going to be
+            // 'File' in all languages
+            fileMenuItem = NA.menu.getItemAt(1);
+            // Add a separator before the existing close command
+            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Sep", /*separator=*/true), 0);
+        } else {
+            _win.nativeWindow.menu = new NativeMenu();
+            fileMenuItem = _win.nativeWindow.menu.addSubmenu(new NativeMenu(), "File");
+        }
+        // Add save and save as by index to work with the existing items on Mac
+        const saveMenuItem :NativeMenuItem =
+            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save"), 0);
+        saveMenuItem.keyEquivalent = "s";
+        function saveConf (..._) :void {
+            Files.write(_confFile, function (out :IDataOutput) :void {
+                out.writeUTFBytes(JSON.stringify(_conf, null, /*space=*/2));
+            });
+        };
+        saveMenuItem.addEventListener(Event.SELECT, saveConf);
+
+        const saveAsMenuItem :NativeMenuItem =
+            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save As"), 1);
+        saveAsMenuItem.keyEquivalent = "S";
+        saveAsMenuItem.addEventListener(Event.SELECT, function (..._) :void {
+            _confFile.addEventListener(Event.SELECT, function (..._) :void {
+                trace("Conf file is now " + _confFile.nativePath);
+                _settings.data["CONF_FILE"] = _confFile.nativePath;
+                _settings.flush();
+                saveConf();
+            });
+            _confFile.browseForSave("Save Flump Configuration");
+        });
+
+        if (_settings.data.hasOwnProperty("CONF_FILE")) {
+            _confFile = new File(_settings.data["CONF_FILE"]);
+        } else _confFile = File.applicationStorageDirectory.resolvePath("default.flump");
+        log.info("Loading conf", "file", _confFile.nativePath, "exists", _confFile.exists);
+        if (_confFile.exists) {
+            try {
+                _conf = FlumpConf.fromJSON(JSONFormat.readJSON(_confFile));
+            } catch (e :Error) {
+                log.warning("Unable to parse conf", e);
+                _errors.dataProvider.addItem(new ParseError(_confFile.nativePath,
+                    ParseError.CRIT, "Unable to read configuration"));
+            }
         }
 
         var curSelection :DocStatus = null;
@@ -101,19 +135,15 @@ public class Exporter
             showPreviewWindow(_libraries.selectedItem.lib);
         });
         _importChooser =
-            new DirChooser(_settings, "IMPORT_ROOT", _win.importRoot, _win.browseImport);
+            new DirChooser(_confFile.parent.resolvePath(_conf.importDir), _win.importRoot, _win.browseImport);
         _importChooser.changed.add(setImport);
         setImport(_importChooser.dir);
         _exportChooser =
-            new DirChooser(_settings, "EXPORT_ROOT", _win.exportRoot, _win.browseExport);
+            new DirChooser(_confFile.parent.resolvePath(_conf.exportDir), _win.exportRoot, _win.browseExport);
         _exportChooser.changed.add(updatePreviewAndExport);
         function updatePublisher (..._) :void {
-            if (_exportChooser.dir == null) _publisher = null;
-            else {
-                const conf :ExportConf = new ExportConf();
-                conf.format = StarlingFormat;
-                _publisher = new Publisher(_exportChooser.dir, conf);
-            }
+            if (_exportChooser.dir == null || _conf.exports.length == 0) _publisher = null;
+            else _publisher = new Publisher(_exportChooser.dir, _conf.exports);
         };
         _exportChooser.changed.add(updatePublisher);
         updatePublisher();
@@ -124,6 +154,7 @@ public class Exporter
         _libraries.dataProvider.removeAll();
         _errors.dataProvider.removeAll();
         if (root == null) return;
+        _conf.importDir = _confFile.parent.getRelativePath(root, /*useDotDot=*/true);
         _rootLen = root.nativePath.length + 1;
         if (_docFinder != null) _docFinder.shutdownNow();
         _docFinder = new Executor(1);
@@ -247,22 +278,14 @@ public class Exporter
     protected var _exportChooser :DirChooser;
     protected var _importChooser :DirChooser;
     protected var _authoredResolution :DropDownList;
+    protected var _conf :FlumpConf = new FlumpConf();
+    protected var _confFile :File;
     protected const _settings :SharedObject = SharedObject.getLocal("flump/Exporter");
 
     private static const log :Log = Log.getLog(Exporter);
 }
 }
-import flump.export.DeviceType;
 
-class DeviceSelection {
-    public var type :DeviceType;
-    public function DeviceSelection (type :DeviceType) {
-        this.type = type;
-    }
-    public function toString () :String {
-        return type.displayName + " (" + type.resWidth + "x" + type.resHeight + ")";
-    }
-}
 import flash.events.EventDispatcher;
 
 import flump.export.Ternary;

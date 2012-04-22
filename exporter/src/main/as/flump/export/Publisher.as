@@ -11,10 +11,9 @@ import com.threerings.util.Log;
 
 public class Publisher
 {
-    public function Publisher(exportDir :File, export :ExportConf, ...exports) {
+    public function Publisher(exportDir :File, exports :Vector.<ExportConf>) {
         _exportDir = exportDir;
-        _confs.push(export);
-        for each (export in exports) _confs.push(export);
+        for each (var export :ExportConf in exports) _confs.push(export);
     }
 
     public function modified (lib :XflLibrary) :Boolean {

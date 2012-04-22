@@ -11,16 +11,20 @@ import flump.xfl.XflLibrary;
 
 public class JSONFormat extends Format
 {
+    public static function readJSON (file :File) :Object {
+        const bytes :ByteArray = Files.read(file);
+        return JSON.parse(bytes.readUTFBytes(bytes.length))
+    }
+
     public function JSONFormat (destDir :File, lib :XflLibrary, conf :ExportConf) {
         super(destDir, lib, conf);
-        _prefix = conf.directory + "/" + lib.location;
+        _prefix = conf.name + "/" + lib.location;
         _metaFile =  _destDir.resolvePath(_prefix + "/resources.json");
     }
 
     override public function get modified () :Boolean {
         if (!_metaFile.exists) return true;
-        const metadata :ByteArray = Files.read(_metaFile);
-        return JSON.parse(metadata.readUTFBytes(metadata.length)).md5 != _lib.md5;
+        return readJSON(_metaFile).md5 != _lib.md5;
     }
 
     override public function publish () :void {

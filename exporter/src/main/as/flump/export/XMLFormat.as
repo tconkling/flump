@@ -16,8 +16,8 @@ public class XMLFormat extends Format
 {
     public function XMLFormat (destDir :File, lib :XflLibrary, conf :ExportConf) {
         super(destDir, lib, conf);
-        _prefix = conf.directory + "/" + lib.location;
-        _metaFile =  _destDir.resolvePath(_prefix + "/resources.xml");
+        _prefix = conf.name + "/" + lib.location + "/";
+        _metaFile =  _destDir.resolvePath(_prefix + "resources.xml");
     }
 
     override public function get modified () :Boolean {
