@@ -63,7 +63,7 @@ public class TestRunner extends Sprite
         if (_exec.isIdle) _exec.shutdown();
     }
 
-    protected const _exec :Executor = new Executor(/*maxSimultaneous=*/1);
+    protected const _exec :Executor = new Executor();
     protected const _runs :Map = Maps.newMapOf(Future);//String name
 
     protected const _passed :Vector.<String> = new Vector.<String>();

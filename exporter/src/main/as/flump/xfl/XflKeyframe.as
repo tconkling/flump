@@ -40,6 +40,10 @@ public class XflKeyframe
 
         if (symbolXml == null) return kf; // Purely labelled frame
 
+        if (XmlUtil.getBooleanAttr(xml, "motionTweenOrientToPath", false)) {
+            lib.addError(location, ParseError.WARN, "motion paths are not supported");
+        }
+
         if (XmlUtil.getBooleanAttr(xml, "hasCustomEase", false)) {
             lib.addError(location, ParseError.WARN, "Custom easing is not supported");
         }

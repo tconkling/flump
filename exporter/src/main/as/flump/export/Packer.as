@@ -17,43 +17,33 @@ public class Packer
 {
     public const atlases :Vector.<Atlas> = new Vector.<Atlas>();
 
-    public function Packer (target :DeviceType, authored :DeviceType, lib :XflLibrary) {
-        _target = target;
-        _lib = lib;
-        const scale :Number = target.resWidth / authored.resWidth;
-        for each (var tex :XflTexture in _lib.textures) {
-            _unpacked.push(SwfTexture.fromTexture(_lib.swf, tex, scale));
+    public function Packer (lib :XflLibrary, scale :Number=1.0, prefix :String="", suffix :String="") {
+        for each (var tex :XflTexture in lib.textures) {
+            _unpacked.push(SwfTexture.fromTexture(lib.swf, tex, scale));
         }
-        for each (var movie :MovieMold in _lib.movies) {
+        for each (var movie :MovieMold in lib.movies) {
             if (!movie.flipbook) continue;
             for each (var kf :KeyframeMold in movie.layers[0].keyframes) {
                 _unpacked.push(SwfTexture.fromFlipbook(lib, movie, kf.index, scale));
             }
         }
         _unpacked.sort(Comparators.createReverse(Comparators.createFields(["a", "w", "h"])));
-        pack();
-    }
-
-    public function get targetDevice () :DeviceType { return _target; }
-
-    protected function pack () :void {
         while (_unpacked.length > 0) {
             // Add a new atlas
             const size :Point = findOptimalSize();
-            atlases.push(new Atlas(_lib.location + "/atlas" + atlases.length,
-                _target, size.x, size.y));
+            atlases.push(new Atlas(prefix + "atlas" + atlases.length + suffix, size.x, size.y));
 
             // Try to pack each texture into any atlas
             for (var ii :int = 0; ii < _unpacked.length; ++ii) {
-                var tex :SwfTexture = _unpacked[ii];
+                var unpacked :SwfTexture = _unpacked[ii];
 
-                if (tex.w > MAX_SIZE || tex.h > MAX_SIZE) {
-                    throw new Error("Too large to fit in an atlas");
+                if (unpacked.w > MAX_SIZE || unpacked.h > MAX_SIZE) {
+                    throw new Error("Too large to fit in an atlas: " + unpacked.w + ", " + unpacked.h + " " + unpacked.symbol);
                 }
 
                 for each (var atlas :Atlas in atlases) {
                     // TODO(bruno): Support rotated textures?
-                    if (atlas.place(tex)) {
+                    if (atlas.place(unpacked)) {
                         _unpacked.splice(ii--, 1);
                         break;
                     }
@@ -98,10 +88,7 @@ public class Packer
 
     protected const _unpacked :Vector.<SwfTexture> = new Vector.<SwfTexture>();
 
-    protected var _target :DeviceType;
-    protected var _lib :XflLibrary;
-
     // Maximum width or height of a texture atlas
-    private static const MAX_SIZE :int = 1024;
+    private static const MAX_SIZE :int = 2048;
 }
 }

@@ -6,7 +6,6 @@ package flump.export {
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.filesystem.File;
-import flash.net.SharedObject;
 
 import org.osflash.signals.Signal;
 
@@ -19,17 +18,15 @@ public class DirChooser
 {
     public const changed :Signal = new Signal(File);
 
-    public function DirChooser (settings :SharedObject, settingKey :String, selector :Label, button :Button)
+    public function DirChooser (initial :File, selector :Label, button :Button)
     {
         function setDir (root :File) :void {
             if (_dir == root.nativePath) return;
             _dir = root.nativePath;
-            settings.data[settingKey] = _dir;
-            settings.flush();
             selector.text = _dir;
             changed.dispatch(root);
         }
-        if (settings.data.hasOwnProperty(settingKey)) setDir(new File(settings.data[settingKey]));
+        if (initial != null && initial.exists) setDir(initial);
         else selector.text = "Unset";
         button.addEventListener(MouseEvent.CLICK, function (..._) :void {
             // Use a new File object to browse on as browseForDirectory modifies the object it uses

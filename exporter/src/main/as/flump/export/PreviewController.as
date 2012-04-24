@@ -3,6 +3,9 @@
 
 package flump.export {
 
+import flash.events.Event;
+import flash.geom.Rectangle;
+
 import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;
@@ -10,16 +13,20 @@ import flump.xfl.XflTexture;
 import spark.events.GridSelectionEvent;
 import spark.formatters.NumberFormatter;
 
+import starling.core.Starling;
 import starling.display.DisplayObject;
 import starling.display.Sprite;
 
 public class PreviewController
 {
     public function PreviewController (lib :XflLibrary, container :Sprite,
-            controls :PreviewControlsWindow) {
+            preview :PreviewWindow, controls :PreviewControlsWindow) {
         _container = container;
+        _preview = preview;
         _controls = controls;
         this.lib = lib;
+
+        Starling.current.stage.addEventListener(Event.RESIZE, onResize);
     }
 
     public function set lib (lib :XflLibrary) :void {
@@ -59,7 +66,7 @@ public class PreviewController
         }
         _controls.totalValue.text = formatMemory({memory: totalUsage});
 
-        const packer :Packer = new Packer(DeviceType.IPHONE, DeviceType.IPHONE, lib)
+        const packer :Packer = new Packer(lib);
         var atlasSize :Number = 0;
         var atlasUsed :Number = 0;
         for each (var atlas :Atlas in packer.atlases) {
@@ -87,19 +94,27 @@ public class PreviewController
             // Grumble, wish setting the index above would fire the listener
             displayLibraryItem(previewMovies[0].id);
         }
+
+        Starling.current.stage.color = lib.backgroundColor;
     }
 
     protected function displayLibraryItem (name :String) :void {
         while (_container.numChildren > 0) _container.removeChildAt(0);
-        const display :DisplayObject = _creator.loadId(name);
-        // TODO - get the size from the container sprite?
-        display.x = 320 - display.width/2;
-        display.y = 480 - display.height/2;
-        _container.addChild(display);
+        _previewSprite = _creator.loadId(name);
+        _container.addChild(_previewSprite);
+        onResize();
     }
 
+    protected function onResize (..._) :void {
+        var bounds :Rectangle = _previewSprite.getBounds(_previewSprite);
+        _previewSprite.x = ((_preview.width - bounds.width) * 0.5) - bounds.left;
+        _previewSprite.y = ((_preview.height - bounds.height) * 0.5) - bounds.top;
+    }
+
+    protected var _previewSprite :DisplayObject;
     protected var _container :Sprite;
     protected var _controls :PreviewControlsWindow;
+    protected var _preview :PreviewWindow;
     protected var _creator :DisplayCreator;
 }
 }

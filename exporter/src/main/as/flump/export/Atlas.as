@@ -6,9 +6,6 @@ package flump.export {
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Sprite;
-import flash.filesystem.File;
-import flash.filesystem.FileMode;
-import flash.filesystem.FileStream;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.utils.IDataOutput;
@@ -25,11 +22,9 @@ public class Atlas
     public static const PADDING :int = 1;
 
     public var name :String;
-    public var targetDevice :DeviceType;
 
-    public function Atlas (name :String, targetDevice :DeviceType, w :int, h :int) {
+    public function Atlas (name :String, w :int, h :int) {
         this.name = name;
-        this.targetDevice = targetDevice;
 
         _root = new Node(0, 0, w, h);
     }
@@ -43,6 +38,8 @@ public class Atlas
     }
 
     public function get area () :int { return _root.bounds.width * _root.bounds.height; }
+
+    public function get filename () :String { return name + ".png"; }
 
     public function get used () :int {
         var used :int = 0;
@@ -62,15 +59,6 @@ public class Atlas
         const bd :BitmapData =
             SwfTexture.renderToBitmapData(constructed, _root.bounds.width, _root.bounds.height);
         bytes.writeBytes(PNGEncoder.encode(bd));
-    }
-
-    public function get fileName () :String { return name + targetDevice.extension + ".png"; }
-
-    public function publish (dir :File) :void {
-        const fs :FileStream = new FileStream();
-        fs.open(dir.resolvePath(fileName), FileMode.WRITE);
-        writePNG(fs);
-        fs.close();
     }
 
     public function toMold () :AtlasMold {

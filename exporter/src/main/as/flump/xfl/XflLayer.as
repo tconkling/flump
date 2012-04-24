@@ -22,37 +22,48 @@ public class XflLayer
         }
         if (layer.keyframes.length == 0) lib.addError(location, ParseError.INFO, "No keyframes on layer");
 
-        // normalize rotations, so that we always rotate the shortest distance between
-        // two angles (we don't want to rotate more than Math.PI)
+        var additionalRotation :Number = 0;
+        var domFrames :XMLList = xml.frames.DOMFrame;
         for (var ii :int = 0; ii < layer.keyframes.length - 1; ++ii) {
             var kf :KeyframeMold = layer.keyframes[ii];
             var nextKf :KeyframeMold = layer.keyframes[ii+1];
-            if (kf.rotation + Math.PI < nextKf.rotation) nextKf.rotate(-Math.PI * 2);
-            else if (kf.rotation - Math.PI > nextKf.rotation) nextKf.rotate(Math.PI * 2);
-        }
+            frameEl = domFrames[ii];
 
-        // handle "motionTweenRotate", which applies additional rotations to the next
-        // keyframe
-        ii = 1;
-        var additionalRotation :Number = 0;
-        for each (frameEl in xml.frames.DOMFrame) {
-            if (ii >= layer.keyframes.length) break;
+            var motionTweenRotate :String =
+                XmlUtil.getStringAttr(frameEl, "motionTweenRotate", "none");
 
-            if (XmlUtil.hasAttr(frameEl, "motionTweenRotateTimes") &&
-                XmlUtil.hasAttr(frameEl, "motionTweenRotate")) {
-                var thisRotation :Number =
-                    XmlUtil.getNumberAttr(frameEl, "motionTweenRotateTimes") * Math.PI * 2;
-                if (XmlUtil.getStringAttr(frameEl, "motionTweenRotate") == "clockwise") {
-                    thisRotation *= -1;
+            // normalize rotations, so that we always rotate the shortest distance between
+            // two angles (we don't want to rotate more than Math.PI)
+            if (kf.rotation + Math.PI < nextKf.rotation) {
+                nextKf.rotate(-Math.PI * 2);
+            } else if (kf.rotation - Math.PI > nextKf.rotation) {
+                nextKf.rotate(Math.PI * 2);
+            }
+
+            // If a direction is specified, take it into account
+            if (motionTweenRotate != "none") {
+                var direction :Number = (motionTweenRotate == "clockwise" ? -1 : 1);
+                // negative scales affect rotation direction
+                direction *= sign(nextKf.scaleX) * sign(nextKf.scaleY);
+
+                while (direction < 0 && kf.rotation < nextKf.rotation) {
+                    nextKf.rotate(-Math.PI * 2);
                 }
+                while (direction > 0 && kf.rotation > nextKf.rotation) {
+                    nextKf.rotate(Math.PI * 2);
+                }
+
+                // additional rotations specified?
+                var motionTweenRotateTimes :Number =
+                    XmlUtil.getNumberAttr(frameEl, "motionTweenRotateTimes", 0);
+                var thisRotation :Number = motionTweenRotateTimes * Math.PI * 2 * direction;
                 additionalRotation += thisRotation;
             }
 
-            kf = layer.keyframes[ii];
-            if (additionalRotation != 0) trace(baseLocation + "!!!!!!! Adding some additional rotation: " + additionalRotation);
-            kf.rotate(additionalRotation);
-
-            ii++;
+//             kf = layer.keyframes[ii];
+//             if (additionalRotation != 0) trace(baseLocation + "!!!!!!! Adding some additional rotation: " + additionalRotation);
+//             kf.rotate(additionalRotation);
+            nextKf.rotate(additionalRotation);
         }
 
         // round our keyframe values
@@ -71,6 +82,10 @@ public class XflLayer
     protected static function round (n :Number, places :int = 4) :Number {
         const shift :int = Math.pow(10, places);
         return Math.round(n * shift) / shift;
+    }
+
+    protected static function sign (n :Number) :Number {
+        return (n > 0 ? 1 : (n < 0 ? -1 : 0));
     }
 }
 }

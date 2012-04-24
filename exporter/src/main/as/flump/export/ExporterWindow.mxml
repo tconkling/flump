@@ -49,9 +49,8 @@
           <s:FormItem>
             <s:Spacer width="10" height="10"/>
           </s:FormItem>
-        <s:FormItem width="500" label="Authored Resolution">
+        <s:FormItem width="500">
           <s:HGroup>
-            <s:DropDownList id="authoredResolutionPopup" width="200"></s:DropDownList>
             <s:Button id="preview" label="Preview" enabled="false"/>
             <s:Button id="export" label="Export" enabled="false"/>
           </s:HGroup>

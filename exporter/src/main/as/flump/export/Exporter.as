@@ -4,6 +4,8 @@
 package flump.export {
 
 import flash.desktop.NativeApplication;
+import flash.display.NativeMenu;
+import flash.display.NativeMenuItem;
 import flash.display.NativeWindow;
 import flash.display.Stage;
 import flash.display.StageQuality;
@@ -11,22 +13,15 @@ import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.filesystem.File;
 import flash.net.SharedObject;
+import flash.utils.IDataOutput;
 
-import com.adobe.crypto.MD5;
-
-import deng.fzip.FZip;
-import deng.fzip.FZipFile;
-
-import flump.bytesToXML;
-import flump.display.Movie;
 import flump.executor.Executor;
 import flump.executor.Future;
 import flump.export.Ternary;
 import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;
-import flump.xfl.XflMovie;
 
-import mx.collections.ArrayCollection;
+import mx.events.PropertyChangeEvent;
 
 import spark.components.DataGrid;
 import spark.components.DropDownList;
@@ -44,46 +39,92 @@ public class Exporter
 {
     public static const NA :NativeApplication = NativeApplication.nativeApplication;
 
-    protected static const IMPORT_ROOT :String = "IMPORT_ROOT";
-    protected static const AUTHORED_RESOLUTION :String = "AUTHORED_RESOLUTION";
-
     public function Exporter (win :ExporterWindow) {
         Log.setLevel("", Log.INFO);
         _win = win;
         _errors = _win.errors;
         _libraries = _win.libraries;
 
-        _authoredResolution = _win.authoredResolutionPopup;
-        _authoredResolution.dataProvider = new ArrayCollection(DeviceType.values().map(
-            function (type :DeviceType, ..._) :Object {
-                return new DeviceSelection(type);
-            }));
-        var initialSelection :DeviceType = null;
-        if (_settings.data.hasOwnProperty(AUTHORED_RESOLUTION)) {
-            try {
-                initialSelection = DeviceType.valueOf(_settings.data[AUTHORED_RESOLUTION]);
-            } catch (e :Error) {}
+        function updatePreviewAndExport (..._) :void {
+            _win.export.enabled = _exportChooser.dir != null && _libraries.selectionLength > 0 &&
+                _libraries.selectedItems.some(function (status :DocStatus, ..._) :Boolean {
+                    return status.isValid;
+            });
+
+
+            var status :DocStatus = _libraries.selectedItem as DocStatus;
+            _win.preview.enabled = status != null && status.isValid;
+
+            if (_exportChooser.dir == null) return;
+            _conf.exportDir = _confFile.parent.getRelativePath(_exportChooser.dir, /*useDotDot=*/true);
         }
-        if (initialSelection == null) initialSelection = DeviceType.IPHONE_RETINA;
-        _authoredResolution.selectedIndex = DeviceType.values().indexOf(initialSelection);
-        _authoredResolution.addEventListener(Event.CHANGE, function (..._) :void {
-            var selectedType :DeviceType = DeviceSelection(_authoredResolution.selectedItem).type;
-            _settings.data[AUTHORED_RESOLUTION] = selectedType.name();
+
+        var fileMenuItem :NativeMenuItem;
+        if (NativeApplication.supportsMenu) {
+            // Grab the existing menu on macs. Use an index to get it as it's not going to be
+            // 'File' in all languages
+            fileMenuItem = NA.menu.getItemAt(1);
+            // Add a separator before the existing close command
+            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Sep", /*separator=*/true), 0);
+        } else {
+            _win.nativeWindow.menu = new NativeMenu();
+            fileMenuItem = _win.nativeWindow.menu.addSubmenu(new NativeMenu(), "File");
+        }
+        // Add save and save as by index to work with the existing items on Mac
+        const saveMenuItem :NativeMenuItem =
+            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save"), 0);
+        saveMenuItem.keyEquivalent = "s";
+        function saveConf (..._) :void {
+            Files.write(_confFile, function (out :IDataOutput) :void {
+                out.writeUTFBytes(JSON.stringify(_conf, null, /*space=*/2));
+            });
+        };
+        saveMenuItem.addEventListener(Event.SELECT, saveConf);
+
+        const saveAsMenuItem :NativeMenuItem =
+            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save As"), 1);
+        saveAsMenuItem.keyEquivalent = "S";
+        saveAsMenuItem.addEventListener(Event.SELECT, function (..._) :void {
+            _confFile.addEventListener(Event.SELECT, function (..._) :void {
+                trace("Conf file is now " + _confFile.nativePath);
+                _settings.data["CONF_FILE"] = _confFile.nativePath;
+                _settings.flush();
+                saveConf();
+            });
+            _confFile.browseForSave("Save Flump Configuration");
         });
 
-        function updateExportEnabled (..._) :void {
-            _win.export.enabled = _exportChooser.dir != null && _libraries.selectionLength > 0 &&
-              _libraries.selectedItems.some(function (status :DocStatus, ..._) :Boolean {
-                return status.isValid;
-            });
+        if (_settings.data.hasOwnProperty("CONF_FILE")) {
+            _confFile = new File(_settings.data["CONF_FILE"]);
+        } else _confFile = File.applicationStorageDirectory.resolvePath("default.flump");
+        log.info("Loading conf", "file", _confFile.nativePath, "exists", _confFile.exists);
+        if (_confFile.exists) {
+            try {
+                _conf = FlumpConf.fromJSON(JSONFormat.readJSON(_confFile));
+            } catch (e :Error) {
+                log.warning("Unable to parse conf", e);
+                _errors.dataProvider.addItem(new ParseError(_confFile.nativePath,
+                    ParseError.CRIT, "Unable to read configuration"));
+            }
         }
+
+        var curSelection :DocStatus = null;
         _libraries.addEventListener(GridSelectionEvent.SELECTION_CHANGE, function (..._) :void {
             log.info("Changed", "selected", _libraries.selectedIndices);
-            updateExportEnabled();
-            _win.preview.enabled = _libraries.selectedItem.isValid;
+            updatePreviewAndExport();
+
+            if (curSelection != null) {
+                curSelection.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, updatePreviewAndExport);
+            }
+            var newSelection :DocStatus = _libraries.selectedItem as DocStatus;
+            if (newSelection != null) {
+                newSelection.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, updatePreviewAndExport);
+            }
+            curSelection = newSelection;
         });
         _win.reload.addEventListener(MouseEvent.CLICK, function (..._) :void {
             setImport(_importChooser.dir);
+            updatePreviewAndExport();
         });
         _win.export.addEventListener(MouseEvent.CLICK, function (..._) :void {
             for each (var status :DocStatus in _libraries.selectedItems) {
@@ -94,18 +135,15 @@ public class Exporter
             showPreviewWindow(_libraries.selectedItem.lib);
         });
         _importChooser =
-            new DirChooser(_settings, "IMPORT_ROOT", _win.importRoot, _win.browseImport);
+            new DirChooser(_confFile.parent.resolvePath(_conf.importDir), _win.importRoot, _win.browseImport);
         _importChooser.changed.add(setImport);
         setImport(_importChooser.dir);
         _exportChooser =
-            new DirChooser(_settings, "EXPORT_ROOT", _win.exportRoot, _win.browseExport);
-        _exportChooser.changed.add(updateExportEnabled);
+            new DirChooser(_confFile.parent.resolvePath(_conf.exportDir), _win.exportRoot, _win.browseExport);
+        _exportChooser.changed.add(updatePreviewAndExport);
         function updatePublisher (..._) :void {
-            if (_exportChooser.dir == null) _publisher = null;
-            else {
-                _publisher =
-                    new Publisher(_exportChooser.dir, new XMLFormat(), new JSONFormat(), new StarlingFormat());
-            }
+            if (_exportChooser.dir == null || _conf.exports.length == 0) _publisher = null;
+            else _publisher = new Publisher(_exportChooser.dir, _conf.exports);
         };
         _exportChooser.changed.add(updatePublisher);
         updatePublisher();
@@ -116,9 +154,10 @@ public class Exporter
         _libraries.dataProvider.removeAll();
         _errors.dataProvider.removeAll();
         if (root == null) return;
+        _conf.importDir = _confFile.parent.getRelativePath(root, /*useDotDot=*/true);
         _rootLen = root.nativePath.length + 1;
         if (_docFinder != null) _docFinder.shutdownNow();
-        _docFinder = new Executor(1);
+        _docFinder = new Executor();
         findFlashDocuments(root, _docFinder, true);
         _win.reload.enabled = true;
     }
@@ -128,7 +167,8 @@ public class Exporter
             _previewWindow = new PreviewWindow();
             _previewControls = new PreviewControlsWindow();
             _previewWindow.started = function (container :Sprite) :void {
-                _previewController = new PreviewController(lib, container, _previewControls);
+                _previewController = new PreviewController(lib, container, _previewWindow,
+                    _previewControls);
             }
 
             _previewWindow.open();
@@ -142,6 +182,9 @@ public class Exporter
             _previewWindow.nativeWindow.visible = true;
             _previewControls.nativeWindow.visible = true;
         }
+
+        _previewWindow.orderToFront();
+        _previewControls.orderToFront();
     }
 
     // Causes a window to be hidden, rather than closed, when its close box is clicked
@@ -166,7 +209,7 @@ public class Exporter
                         _errors.dataProvider.addItem(new ParseError(base.nativePath,
                             ParseError.CRIT, "The import directory can't be an XFL directory, did you mean " +
                             base.parent.nativePath + "?"));
-                    } else addFlashDocument(file.parent);
+                    } else addFlashDocument(file);
                     return;
                 }
             }
@@ -175,15 +218,9 @@ public class Exporter
                     continue; // Ignore hidden VCS directories, and recovered backups created by Flash
                 }
                 if (file.isDirectory) findFlashDocuments(file, exec);
-                else if (Files.hasExtension(file, "fla")) addFlashDocument(file);
+                else addFlashDocument(file);
             }
         });
-    }
-
-    protected function addFlashDocument (file :File) :void {
-        const status :DocStatus = new DocStatus(file, _rootLen, Ternary.UNKNOWN, Ternary.UNKNOWN, null);
-        _libraries.dataProvider.addItem(status);
-        loadFlashDocument(status);
     }
 
     protected function exportFlashDocument (status :DocStatus) :void {
@@ -191,56 +228,43 @@ public class Exporter
         const prevQuality :String = stage.quality;
 
         stage.quality = StageQuality.BEST;
-        _publisher.publish(status.lib, DeviceSelection(_authoredResolution.selectedItem).type);
+        _publisher.publish(status.lib);
 
         stage.quality = prevQuality;
         status.updateModified(Ternary.FALSE);
     }
 
-    protected function loadFlashDocument (status :DocStatus) :void {
-        if (Files.hasExtension(status.file, "xfl")) status.file = status.file.parent;
-        if (status.file.isDirectory) {
-            const name :String = status.file.nativePath
-                .substring(_rootLen).replace(File.separator, "/");
-            const load :Future = new XflLoader().load(name, status.file);
-            load.succeeded.add(function (lib :XflLibrary) :void {
-                status.lib = lib;
-                status.updateModified(Ternary.of(_publisher == null || _publisher.modified(lib)));
-                for each (var err :ParseError in lib.getErrors()) _errors.dataProvider.addItem(err);
-                status.updateValid(Ternary.of(lib.valid));
-            });
-            load.failed.add(function (e :Error) :void {
-                trace("Failed to load " + status.file.nativePath + ":" + e);
-                status.updateValid(Ternary.FALSE);
-                throw e;
-            });
-        } else loadFla(status.file);
-    }
+    protected function addFlashDocument (file :File) :void {
+        var name :String = file.nativePath.substring(_rootLen).replace(
+            new RegExp("\\" + File.separator, "g"), "/");
+        var load :Future;
+        switch (Files.getExtension(file)) {
+        case "xfl":
+            name = name.substr(0, name.lastIndexOf("/"));
+            load = new XflLoader().load(name, file.parent);
+            break;
+        case "fla":
+            name = name.substr(0, name.lastIndexOf("."));
+            load = new FlaLoader().load(name, file);
+            break;
+        default:
+            // Unsupported file type, ignore
+            return;
+        }
 
-    protected function loadFla (file :File) :void {
-        log.info("fla support not implemented", "path", file.nativePath);
-        return;
-        Files.load(file).succeeded.add(function (file :File) :void {
-            const zip :FZip = new FZip();
-            zip.loadBytes(file.data);
-            const files :Array = [];
-            for (var ii :int = 0; ii < zip.getFileCount(); ii++) files.push(zip.getFileAt(ii));
-            const xmls :Array = F.filter(files, function (fz :FZipFile) :Boolean {
-                return StringUtil.endsWith(fz.filename, ".xml");
-            });
-            const movies :Array = F.filter(xmls, function (fz :FZipFile) :Boolean {
-                return StringUtil.startsWith(fz.filename, "LIBRARY/Animations/");
-            });
-            const textures :Array = F.filter(xmls, function (fz :FZipFile) :Boolean {
-                return StringUtil.startsWith(fz.filename, "LIBRARY/Textures/");
-            });
-            function toFn (fz :FZipFile) :String { return fz.filename };
-            log.info("Loaded", "bytes", file.data.length, "movies", F.map(movies, toFn),
-                "textures", F.map(textures, toFn));
-            for each (var fz :FZipFile in movies) {
-                XflMovie.parse(null, bytesToXML(fz.content), MD5.hashBytes(fz.content));
-            }
-            NA.exit(0);
+        const status :DocStatus = new DocStatus(name, _rootLen, Ternary.UNKNOWN, Ternary.UNKNOWN, null);
+        _libraries.dataProvider.addItem(status);
+
+        load.succeeded.add(function (lib :XflLibrary) :void {
+            status.lib = lib;
+            status.updateModified(Ternary.of(_publisher == null || _publisher.modified(lib)));
+            for each (var err :ParseError in lib.getErrors()) _errors.dataProvider.addItem(err);
+            status.updateValid(Ternary.of(lib.valid));
+        });
+        load.failed.add(function (error :Error) :void {
+            trace("Failed to load " + file.nativePath + ": " + error);
+            status.updateValid(Ternary.FALSE);
+            throw error;
         });
     }
 
@@ -254,24 +278,15 @@ public class Exporter
     protected var _exportChooser :DirChooser;
     protected var _importChooser :DirChooser;
     protected var _authoredResolution :DropDownList;
+    protected var _conf :FlumpConf = new FlumpConf();
+    protected var _confFile :File;
     protected const _settings :SharedObject = SharedObject.getLocal("flump/Exporter");
 
     private static const log :Log = Log.getLog(Exporter);
 }
 }
-import flump.export.DeviceType;
 
-class DeviceSelection {
-    public var type :DeviceType;
-    public function DeviceSelection (type :DeviceType) {
-        this.type = type;
-    }
-    public function toString () :String {
-        return type.displayName + " (" + type.resWidth + "x" + type.resHeight + ")";
-    }
-}
 import flash.events.EventDispatcher;
-import flash.filesystem.File;
 
 import flump.export.Ternary;
 import flump.xfl.XflLibrary;
@@ -283,13 +298,11 @@ class DocStatus extends EventDispatcher implements IPropertyChangeNotifier {
     public var path :String;
     public var modified :String;
     public var valid :String = QUESTION;
-    public var file :File;
     public var lib :XflLibrary;
 
-    public function DocStatus (file :File, rootLen :int, modified :Ternary, valid :Ternary, lib :XflLibrary) {
-        this.file = file;
+    public function DocStatus (path :String, rootLen :int, modified :Ternary, valid :Ternary, lib :XflLibrary) {
         this.lib = lib;
-        path = file.nativePath.substring(rootLen);
+        this.path = path;
         _uid = path;
 
         updateModified(modified);
