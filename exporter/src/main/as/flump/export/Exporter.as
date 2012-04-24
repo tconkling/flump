@@ -157,7 +157,7 @@ public class Exporter
         _conf.importDir = _confFile.parent.getRelativePath(root, /*useDotDot=*/true);
         _rootLen = root.nativePath.length + 1;
         if (_docFinder != null) _docFinder.shutdownNow();
-        _docFinder = new Executor(1);
+        _docFinder = new Executor();
         findFlashDocuments(root, _docFinder, true);
         _win.reload.enabled = true;
     }

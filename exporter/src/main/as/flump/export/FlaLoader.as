@@ -58,7 +58,7 @@ public class FlaLoader
         });
     }
 
-    protected const _loader :Executor = new Executor(1);
+    protected const _loader :Executor = new Executor();
 
     protected var _library :XflLibrary;
 
