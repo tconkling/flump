@@ -86,8 +86,8 @@ public class SwfTexture
             return renderToBitmapData(bmd, w, h, scale);
 
         } else {
-            _disp.x = getOffset(_disp, scale).x;
-            _disp.y = getOffset(_disp, scale).y;
+            _disp.x = -getOffset(_disp, scale).x;
+            _disp.y = -getOffset(_disp, scale).y;
             holder.addChild(_disp);
             return renderToBitmapData(holder, w, h, scale);
         }
