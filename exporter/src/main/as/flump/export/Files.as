@@ -29,9 +29,16 @@ public class Files
                 onError(new Error(file.nativePath + " doesn't exist to load"));
                 return;
             }
-            file.addEventListener(Event.COMPLETE, F.callback(onSuccess, file));
-            file.addEventListener(IOErrorEvent.IO_ERROR, onError);
-            file.load();
+
+            var stream :FileStream = new FileStream();
+            stream.addEventListener(Event.COMPLETE, function (_:*) :void {
+                var data :ByteArray = new ByteArray();
+                stream.readBytes(data);
+                stream.close();
+                onSuccess(data);
+            });
+            stream.addEventListener(IOErrorEvent.IO_ERROR, onError);
+            stream.openAsync(file, "read");
         });
     }
 

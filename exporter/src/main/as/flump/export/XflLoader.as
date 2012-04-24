@@ -4,6 +4,7 @@
 package flump.export {
 
 import flash.filesystem.File;
+import flash.utils.ByteArray;
 
 import flump.executor.Executor;
 import flump.executor.Future;
@@ -36,9 +37,9 @@ public class XflLoader
     protected function listLibrary (file :File) :void {
         const domFile :File = file.resolvePath("DOMDocument.xml");
         const loadDomFile :Future = Files.load(domFile, _loader);
-        loadDomFile.succeeded.add(function (domFile :File) :void {
+        loadDomFile.succeeded.add(function (data :ByteArray) :void {
             const symbolPaths :Vector.<String> = _library.parseDocumentFile(
-                domFile.data, domFile.nativePath);
+                data, domFile.nativePath);
             for each (var path :String in symbolPaths) {
                 parseLibraryFile(file.resolvePath(path));
             }
@@ -53,8 +54,8 @@ public class XflLoader
 
     protected function parseLibraryFile (file :File) :void {
         const loadLibraryFile :Future = Files.load(file, _loader);
-        loadLibraryFile.succeeded.add(function (file :File) :void {
-            _library.parseLibraryFile(file.data, file.nativePath);
+        loadLibraryFile.succeeded.add(function (data :ByteArray) :void {
+            _library.parseLibraryFile(data, file.nativePath);
         });
         loadLibraryFile.failed.add(function (error :Object) :void {
             _library.addTopLevelError(ParseError.CRIT, "Unable to read " + file.nativePath, error);

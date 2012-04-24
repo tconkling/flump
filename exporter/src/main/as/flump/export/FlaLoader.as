@@ -4,6 +4,7 @@
 package flump.export {
 
 import flash.filesystem.File;
+import flash.utils.ByteArray;
 
 import deng.fzip.FZip;
 import deng.fzip.FZipFile;
@@ -38,9 +39,9 @@ public class FlaLoader
 
     protected function listLibrary (file :File) :void {
         const loadZip :Future = Files.load(file, _loader);
-        loadZip.succeeded.add(function (file :File) :void {
+        loadZip.succeeded.add(function (data :ByteArray) :void {
             const zip :FZip = new FZip();
-            zip.loadBytes(file.data);
+            zip.loadBytes(data);
 
             const domFile :FZipFile = zip.getFileByName("DOMDocument.xml");
             const symbolPaths :Vector.<String> = _library.parseDocumentFile(

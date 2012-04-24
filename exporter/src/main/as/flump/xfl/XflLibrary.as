@@ -51,7 +51,7 @@ public class XflLibrary
     public const movies :Vector.<MovieMold> = new Vector.<MovieMold>();
     public const textures :Vector.<XflTexture> = new Vector.<XflTexture>();
 
-    public function XflLibrary(location :String) {
+    public function XflLibrary (location :String) {
         this.location = location;
     }
 
@@ -109,7 +109,7 @@ public class XflLibrary
 
     public function get valid () :Boolean { return getErrors(ParseError.CRIT).length == 0; }
 
-    public function addTopLevelError(severity :String, message :String, e :Object=null) :void {
+    public function addTopLevelError (severity :String, message :String, e :Object=null) :void {
         addError(location, severity, message, e);
     }
 
@@ -137,10 +137,10 @@ public class XflLibrary
 
         const swfFile :File = new File(path);
         const loadSwfFile :Future = Files.load(swfFile);
-        loadSwfFile.succeeded.add(function (file :File) :void {
-            md5 = MD5.hashBytes(file.data);
+        loadSwfFile.succeeded.add(function (data :ByteArray) :void {
+            md5 = MD5.hashBytes(data);
 
-            const loadSwf :Future = new SwfLoader().loadFromBytes(file.data);
+            const loadSwf :Future = new SwfLoader().loadFromBytes(data);
             loadSwf.succeeded.add(function (loadedSwf :LoadedSwf) :void {
                 swf = loadedSwf;
             });
