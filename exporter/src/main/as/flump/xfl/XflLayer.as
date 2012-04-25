@@ -32,12 +32,17 @@ public class XflLayer
             var motionTweenRotate :String =
                 XmlUtil.getStringAttr(frameEl, "motionTweenRotate", "none");
 
-            // normalize rotations, so that we always rotate the shortest distance between
-            // two angles (we don't want to rotate more than Math.PI)
-            if (kf.rotation + Math.PI < nextKf.rotation) {
-                nextKf.rotate(-Math.PI * 2);
-            } else if (kf.rotation - Math.PI > nextKf.rotation) {
-                nextKf.rotate(Math.PI * 2);
+            // normalize skews, so that we always skew the shortest distance between
+            // two angles (we don't want to skew more than Math.PI)
+            if (kf.skewX + Math.PI < nextKf.skewX) {
+                nextKf.skewX += -Math.PI * 2;
+            } else if (kf.skewX - Math.PI > nextKf.skewX) {
+                nextKf.skewX += Math.PI * 2;
+            }
+            if (kf.skewY + Math.PI < nextKf.skewY) {
+                nextKf.skewY += -Math.PI * 2;
+            } else if (kf.skewY - Math.PI > nextKf.skewY) {
+                nextKf.skewY += Math.PI * 2;
             }
 
             // If a direction is specified, take it into account
@@ -46,11 +51,17 @@ public class XflLayer
                 // negative scales affect rotation direction
                 direction *= sign(nextKf.scaleX) * sign(nextKf.scaleY);
 
-                while (direction < 0 && kf.rotation < nextKf.rotation) {
-                    nextKf.rotate(-Math.PI * 2);
+                while (direction < 0 && kf.skewX < nextKf.skewX) {
+                    nextKf.skewX += -Math.PI * 2;
                 }
-                while (direction > 0 && kf.rotation > nextKf.rotation) {
-                    nextKf.rotate(Math.PI * 2);
+                while (direction > 0 && kf.skewX > nextKf.skewX) {
+                    nextKf.skewX += Math.PI * 2;
+                }
+                while (direction < 0 && kf.skewY < nextKf.skewY) {
+                    nextKf.skewY += -Math.PI * 2;
+                }
+                while (direction > 0 && kf.skewY > nextKf.skewY) {
+                    nextKf.skewY += Math.PI * 2;
                 }
 
                 // additional rotations specified?
@@ -60,9 +71,6 @@ public class XflLayer
                 additionalRotation += thisRotation;
             }
 
-//             kf = layer.keyframes[ii];
-//             if (additionalRotation != 0) trace(baseLocation + "!!!!!!! Adding some additional rotation: " + additionalRotation);
-//             kf.rotate(additionalRotation);
             nextKf.rotate(additionalRotation);
         }
 

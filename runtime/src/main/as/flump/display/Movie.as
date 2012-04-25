@@ -344,9 +344,6 @@ class Layer {
         layer.pivotX = kf.pivotX;
         layer.pivotY = kf.pivotY;
         layer.visible = kf.visible;
-
-        trace("Skew: " + layer.skewX + "," + layer.skewY);
-        trace(kf.skewX + ", " + kf.skewY);
     }
 }
 

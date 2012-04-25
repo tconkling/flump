@@ -9,7 +9,7 @@ import flash.geom.Point;
 public class MatrixUtil
 {
     public static function scaleX (m :Matrix) :Number {
-        return sign(m.a) * Math.sqrt(m.a * m.a + m.b * m.b);
+        return Math.sqrt(m.a * m.a + m.b * m.b);
     }
 
     public static function setScaleX (m :Matrix, scaleX :Number) :void {
@@ -26,7 +26,7 @@ public class MatrixUtil
     }
 
     public static function scaleY (m :Matrix) :Number {
-        return sign(m.d) * Math.sqrt(m.c * m.c + m.d * m.d);
+        return Math.sqrt(m.c * m.c + m.d * m.d);
     }
 
     public static function setScaleY (m :Matrix, scaleY :Number) :void {
@@ -42,12 +42,7 @@ public class MatrixUtil
         }
     }
 
-    // public static function skewX (m :Matrix) :Number { return Math.atan2(-m.c, m.d); }
-    public static function skewX (m :Matrix) :Number {
-        // var p :Point = m.deltaTransformPoint(new Point(0, 1));
-        // return Math.atan2(p.y, p.x) - Math.PI/2;
-        return Math.atan2(-m.c, m.d);
-    }
+    public static function skewX (m :Matrix) :Number { return Math.atan2(-m.c, m.d); }
 
     public static function setSkewX (m :Matrix, skewX :Number) :void {
         const scaleY :Number = MatrixUtil.scaleY(m);
@@ -55,11 +50,7 @@ public class MatrixUtil
         m.d = scaleY * Math.cos(skewX);
     }
 
-    public static function skewY (m :Matrix) :Number {
-        // var p :Point = m.deltaTransformPoint(new Point(1, 0));
-        // return Math.atan2(p.y, p.x);
-        return Math.atan2(m.b, m.a);
-    }
+    public static function skewY (m :Matrix) :Number { return Math.atan2(m.b, m.a); }
 
     public static function setSkewY (m :Matrix, skewY :Number) :void {
         const scaleX :Number = MatrixUtil.scaleX(m);
@@ -69,8 +60,6 @@ public class MatrixUtil
 
     public static function rotation (m :Matrix) :Number {
         return skewY(m);
-        // var p :Point = m.transformPoint(new Point(1, 0));
-        // return Math.atan2(p.y, p.x);
     }
 
     public static function setRotation (m :Matrix, rotation :Number) :void {
@@ -84,10 +73,6 @@ public class MatrixUtil
         var tmp :Matrix = transform.clone();
         tmp.concat(m);
         m.copyFrom(tmp);
-    }
-
-    protected static function sign (value :Number) :Number {
-        return (value < 0) ? -1 : (value > 0) ? 1 : 0;
     }
 }
 }
