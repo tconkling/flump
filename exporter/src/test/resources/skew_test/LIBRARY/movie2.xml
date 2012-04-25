@@ -1,0 +1,36 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="movie2" itemID="4f86b97c-000002dc" linkageExportForAS="true" linkageClassName="movie2" lastModified="1334701873" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="movie2" currentFrame="35">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="35" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1" centerPoint3DX="-23.65" centerPoint3DY="12.35">
+                  <matrix>
+                    <Matrix c="-0.529922485351563" d="0.848052978515625" tx="-26.95" ty="7.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.45" y="5.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1" centerPoint3DX="-23.65" centerPoint3DY="12.35">
+                  <matrix>
+                    <Matrix c="0.731353759765625" d="0.681991577148438" tx="-34.45" ty="8.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.4" y="6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

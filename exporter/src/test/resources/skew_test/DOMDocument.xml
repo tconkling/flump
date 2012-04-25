@@ -1,0 +1,27 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" currentTimeline="1" xflVersion="2.1" creatorInfo="Adobe Flash Professional CS5.5" platform="Windows" versionInfo="Saved by Adobe Flash Windows 11.5 build 325" majorVersion="11" minorVersion="5" buildNumber="325" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false">
+     <symbols>
+          <Include href="movie.xml" itemID="4f6ad6c6-000001e5" lastModified="1334229383"/>
+          <Include href="movie2.xml" itemID="4f86b97c-000002dc" lastModified="1334701873"/>
+          <Include href="movie3.xml" itemID="4f8def31-000001d7" lastModified="1334702638"/>
+          <Include href="Symbol 1.xml" itemID="4f6ad610-000001df" lastModified="1334702048"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="Scene 1">
+               <layers>
+                    <DOMLayer name="Layer 1" color="#4FFF4F" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <PrinterSettings/>
+     <publishHistory>
+          <PublishItem publishSize="2787" publishTime="1334702047"/>
+          <PublishItem publishSize="2626" publishTime="1334701956"/>
+          <PublishItem publishSize="1806" publishTime="1334288232"/>
+     </publishHistory>
+</DOMDocument>
