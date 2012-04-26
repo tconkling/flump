@@ -8,7 +8,7 @@
   <repositories>
     <repository>
       <id>ooo-external</id>
-      <url>http://ooo-maven.googlecode.com/hg/repository</url>
+      <url>http://ahduros-ooo-maven.googlecode.com/hg/repository</url>
     </repository>
   </repositories>
   <dependencies>
