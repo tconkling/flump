@@ -47,18 +47,18 @@ public class XflLayer
 
             // If a direction is specified, take it into account
             if (motionTweenRotate != "none") {
-                var direction :Number = (motionTweenRotate == "clockwise" ? -1 : 1);
+                var direction :Number = (motionTweenRotate == "clockwise" ? 1 : -1);
                 // negative scales affect rotation direction
                 direction *= sign(nextKf.scaleX) * sign(nextKf.scaleY);
 
                 while (direction < 0 && kf.skewX < nextKf.skewX) {
-                    nextKf.skewX += -Math.PI * 2;
+                    nextKf.skewX -= Math.PI * 2;
                 }
                 while (direction > 0 && kf.skewX > nextKf.skewX) {
                     nextKf.skewX += Math.PI * 2;
                 }
                 while (direction < 0 && kf.skewY < nextKf.skewY) {
-                    nextKf.skewY += -Math.PI * 2;
+                    nextKf.skewY -= Math.PI * 2;
                 }
                 while (direction > 0 && kf.skewY > nextKf.skewY) {
                     nextKf.skewY += Math.PI * 2;
