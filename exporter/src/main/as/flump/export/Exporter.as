@@ -21,6 +21,8 @@ import flump.export.Ternary;
 import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;
 
+import mx.collections.ArrayList;
+import mx.events.CollectionEvent;
 import mx.events.PropertyChangeEvent;
 
 import spark.components.DataGrid;
@@ -82,7 +84,7 @@ public class Exporter
         saveMenuItem.addEventListener(Event.SELECT, saveConf);
 
         const saveAsMenuItem :NativeMenuItem =
-            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save As"), 1);
+            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save As..."), 1);
         saveAsMenuItem.keyEquivalent = "S";
         saveAsMenuItem.addEventListener(Event.SELECT, function (..._) :void {
             _confFile.addEventListener(Event.SELECT, function (..._) :void {
@@ -143,9 +145,43 @@ public class Exporter
         _exportChooser.changed.add(updatePreviewAndExport);
         function updatePublisher (..._) :void {
             if (_exportChooser.dir == null || _conf.exports.length == 0) _publisher = null;
-            else _publisher = new Publisher(_exportChooser.dir, _conf.exports);
+            else _publisher = new Publisher(_exportChooser.dir, Vector.<ExportConf>(_conf.exports));
+
+            var names :Array = [];
+            for each (var export :ExportConf in _conf.exports) names.push(export.name);
+            _win.formatOverview.text = names.join(", ");
         };
         _exportChooser.changed.add(updatePublisher);
+
+        var editFormats :EditFormatsWindow;
+        _win.editFormats.addEventListener(MouseEvent.CLICK, function (..._) :void {
+            if (editFormats == null || editFormats.closed) {
+                editFormats = new EditFormatsWindow();
+                editFormats.open();
+            } else editFormats.orderToFront();
+
+            var dataProvider :ArrayList = new ArrayList(_conf.exports);
+            dataProvider.addEventListener(CollectionEvent.COLLECTION_CHANGE, updatePublisher);
+
+            editFormats.exports.dataProvider = dataProvider;
+            editFormats.buttonAdd.addEventListener(MouseEvent.CLICK, function (..._) :void {
+                var export :ExportConf = new ExportConf();
+                export.name = "format" + (_conf.exports.length+1);
+                if (_conf.exports.length > 0) {
+                    export.format = _conf.exports[0].format;
+                }
+                dataProvider.addItem(export);
+            });
+            editFormats.exports.addEventListener(GridSelectionEvent.SELECTION_CHANGE, function (..._) :void {
+                editFormats.buttonRemove.enabled = (editFormats.exports.selectedItem != null);
+            });
+            editFormats.buttonRemove.addEventListener(MouseEvent.CLICK, function (..._) :void {
+                for each (var export :ExportConf in editFormats.exports.selectedItems) {
+                    dataProvider.removeItem(export);
+                }
+            });
+        });
+
         updatePublisher();
         _win.addEventListener(Event.CLOSE, function (..._) :void { NA.exit(0); });
     }

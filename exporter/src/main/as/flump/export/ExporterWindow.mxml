@@ -46,9 +46,15 @@
             <s:Button id="browseExport" width="40" label="..."/>
           </s:HGroup>
         </s:FormItem>
-          <s:FormItem>
-            <s:Spacer width="10" height="10"/>
-          </s:FormItem>
+        <s:FormItem label="Formats" width="500">
+          <s:HGroup>
+            <s:Label id="formatOverview" width="305"/>
+            <s:Button id="editFormats" width="40" label="..."/>
+          </s:HGroup>
+        </s:FormItem>
+        <s:FormItem>
+          <s:Spacer width="10" height="10"/>
+        </s:FormItem>
         <s:FormItem width="500">
           <s:HGroup>
             <s:Button id="preview" label="Preview" enabled="false"/>

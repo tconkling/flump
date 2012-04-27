@@ -1,0 +1,34 @@
+<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:mx="library://ns.adobe.com/flex/mx"
+  xmlns:s="library://ns.adobe.com/flex/spark" width="400" height="300">
+  <s:layout>
+    <s:VerticalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10"/>
+  </s:layout>
+  <s:DataGrid id="exports" width="100%" height="100%" editable="true" selectionMode="multipleRows">
+    <s:columns>
+      <s:ArrayList>
+        <s:GridColumn dataField="name" headerText="Name"/>
+        <s:GridColumn dataField="scale" headerText="Scale"/>
+        <s:GridColumn dataField="format" headerText="Type">
+          <s:itemEditor>
+            <fx:Component>
+              <s:ComboBoxGridItemEditor>
+                <s:dataProvider>
+                  <s:ArrayList>
+                    <fx:String>JSON</fx:String>
+                    <fx:String>Starling</fx:String>
+                    <fx:String>XML</fx:String>
+                  </s:ArrayList>
+                </s:dataProvider>
+              </s:ComboBoxGridItemEditor>
+            </fx:Component>
+          </s:itemEditor>
+        </s:GridColumn>
+      </s:ArrayList>
+    </s:columns>
+    <mx:ArrayCollection/>
+  </s:DataGrid>
+  <s:HGroup>
+    <s:Button id="buttonAdd" label="Add" />
+    <s:Button id="buttonRemove" label="Remove" enabled="false" />
+  </s:HGroup>
+</s:Window>
