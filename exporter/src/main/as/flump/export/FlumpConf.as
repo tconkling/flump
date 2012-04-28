@@ -7,8 +7,8 @@ import flump.mold.require;
 
 public class FlumpConf
 {
-    public var exportDir :String = "export";
-    public var importDir :String = "import";
+    public var exportDir :String;
+    public var importDir :String;
 
     public var exports :Array = [ new ExportConf() ];
 

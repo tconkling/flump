@@ -10,9 +10,9 @@ import flump.xfl.XflLibrary;
 
 public class ExportConf
 {
-    public var name :String;
+    public var name :String = "main";
     public var scale :Number = 1;
-    public var format :String = "starling";
+    public var format :String = "Starling";
 
     public function create (exportDir :File, lib :XflLibrary) :Format {
         var formatClass :Class;

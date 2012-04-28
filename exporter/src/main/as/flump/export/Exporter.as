@@ -72,42 +72,86 @@ public class Exporter
             _win.nativeWindow.menu = new NativeMenu();
             fileMenuItem = _win.nativeWindow.menu.addSubmenu(new NativeMenu(), "File");
         }
+
         // Add save and save as by index to work with the existing items on Mac
+        // Mac menus have an existing "Close" item, so everything we add should go ahead of that
+        var newMenuItem :NativeMenuItem = fileMenuItem.submenu.addItemAt(new NativeMenuItem("New"), 0);
+        newMenuItem.keyEquivalent = "n";
+        newMenuItem.addEventListener(Event.SELECT, function (..._) :void {
+            _confFile = null;
+            _conf = new FlumpConf();
+            updatePublisher();
+        });
+        var openMenuItem :NativeMenuItem =
+            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Open..."), 1);
+        openMenuItem.keyEquivalent = "o";
+        openMenuItem.addEventListener(Event.SELECT, function (..._) :void {
+            var file :File = new File();
+            file.addEventListener(Event.SELECT, function (..._) :void {
+                _confFile = file;
+                openConf();
+                updatePublisher();
+            });
+            file.browseForOpen("Open Flump Configuration");
+        });
+        fileMenuItem.submenu.addItemAt(new NativeMenuItem("Sep", /*separator=*/true), 2);
+
         const saveMenuItem :NativeMenuItem =
-            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save"), 0);
+            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save"), 3);
         saveMenuItem.keyEquivalent = "s";
-        function saveConf (..._) :void {
+        function saveConf () :void {
             Files.write(_confFile, function (out :IDataOutput) :void {
+                // Set directories relative to where this file is being saved. Fall back to absolute
+                // paths if relative paths aren't possible.
+                if (_importChooser.dir != null) {
+                    _conf.importDir = _confFile.parent.getRelativePath(_importChooser.dir, /*useDotDot=*/true);
+                    if (_conf.importDir == null) _conf.importDir = _importChooser.dir.nativePath;
+                }
+
+                if (_exportChooser.dir != null) {
+                    _conf.exportDir = _confFile.parent.getRelativePath(_exportChooser.dir, /*useDotDot=*/true);
+                    if (_conf.exportDir == null) _conf.exportDir = _exportChooser.dir.nativePath;
+                }
+
                 out.writeUTFBytes(JSON.stringify(_conf, null, /*space=*/2));
             });
         };
-        saveMenuItem.addEventListener(Event.SELECT, saveConf);
-
-        const saveAsMenuItem :NativeMenuItem =
-            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save As..."), 1);
-        saveAsMenuItem.keyEquivalent = "S";
-        saveAsMenuItem.addEventListener(Event.SELECT, function (..._) :void {
-            _confFile.addEventListener(Event.SELECT, function (..._) :void {
+        function saveAs (..._) :void {
+            var file :File = new File();
+            file.addEventListener(Event.SELECT, function (..._) :void {
+                _confFile = file;
                 trace("Conf file is now " + _confFile.nativePath);
                 _settings.data["CONF_FILE"] = _confFile.nativePath;
                 _settings.flush();
                 saveConf();
             });
-            _confFile.browseForSave("Save Flump Configuration");
+            file.browseForSave("Save Flump Configuration");
+        };
+        saveMenuItem.addEventListener(Event.SELECT, function (..._) :void {
+            if (_confFile == null) saveAs();
+            else saveConf();
         });
+
+        function openConf () :void {
+            if (_confFile.exists) {
+                try {
+                    _conf = FlumpConf.fromJSON(JSONFormat.readJSON(_confFile));
+                } catch (e :Error) {
+                    log.warning("Unable to parse conf", e);
+                    _errors.dataProvider.addItem(new ParseError(_confFile.nativePath,
+                        ParseError.CRIT, "Unable to read configuration"));
+                }
+            } else _confFile = null;
+        };
+
+        const saveAsMenuItem :NativeMenuItem =
+            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save As..."), 4);
+        saveAsMenuItem.keyEquivalent = "S";
+        saveAsMenuItem.addEventListener(Event.SELECT, saveAs);
 
         if (_settings.data.hasOwnProperty("CONF_FILE")) {
             _confFile = new File(_settings.data["CONF_FILE"]);
-        } else _confFile = File.applicationStorageDirectory.resolvePath("default.flump");
-        log.info("Loading conf", "file", _confFile.nativePath, "exists", _confFile.exists);
-        if (_confFile.exists) {
-            try {
-                _conf = FlumpConf.fromJSON(JSONFormat.readJSON(_confFile));
-            } catch (e :Error) {
-                log.warning("Unable to parse conf", e);
-                _errors.dataProvider.addItem(new ParseError(_confFile.nativePath,
-                    ParseError.CRIT, "Unable to read configuration"));
-            }
+            openConf();
         }
 
         var curSelection :DocStatus = null;
@@ -136,20 +180,25 @@ public class Exporter
         _win.preview.addEventListener(MouseEvent.CLICK, function (..._) :void {
             showPreviewWindow(_libraries.selectedItem.lib);
         });
-        _importChooser =
-            new DirChooser(_confFile.parent.resolvePath(_conf.importDir), _win.importRoot, _win.browseImport);
+        _importChooser = new DirChooser(null, _win.importRoot, _win.browseImport);
         _importChooser.changed.add(setImport);
         setImport(_importChooser.dir);
-        _exportChooser =
-            new DirChooser(_confFile.parent.resolvePath(_conf.exportDir), _win.exportRoot, _win.browseExport);
+        _exportChooser = new DirChooser(null, _win.exportRoot, _win.browseExport);
         _exportChooser.changed.add(updatePreviewAndExport);
         function updatePublisher (..._) :void {
+            if (_confFile != null) {
+                _importChooser.dir = (_conf.importDir != null) ? _confFile.parent.resolvePath(_conf.importDir) : null;
+                _exportChooser.dir = (_conf.exportDir != null) ? _confFile.parent.resolvePath(_conf.exportDir) : null;
+            } else {
+                _importChooser.dir = null;
+                _exportChooser.dir = null;
+            }
             if (_exportChooser.dir == null || _conf.exports.length == 0) _publisher = null;
             else _publisher = new Publisher(_exportChooser.dir, Vector.<ExportConf>(_conf.exports));
 
-            var names :Array = [];
-            for each (var export :ExportConf in _conf.exports) names.push(export.name);
-            _win.formatOverview.text = names.join(", ");
+            var formatNames :Array = [];
+            for each (var export :ExportConf in _conf.exports) formatNames.push(export.name);
+            _win.formatOverview.text = formatNames.join(", ");
         };
         _exportChooser.changed.add(updatePublisher);
 
@@ -190,7 +239,6 @@ public class Exporter
         _libraries.dataProvider.removeAll();
         _errors.dataProvider.removeAll();
         if (root == null) return;
-        _conf.importDir = _confFile.parent.getRelativePath(root, /*useDotDot=*/true);
         _rootLen = root.nativePath.length + 1;
         if (_docFinder != null) _docFinder.shutdownNow();
         _docFinder = new Executor();
