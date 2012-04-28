@@ -133,15 +133,15 @@ public class Exporter
         });
 
         function openConf () :void {
-            if (_confFile.exists) {
-                try {
-                    _conf = FlumpConf.fromJSON(JSONFormat.readJSON(_confFile));
-                } catch (e :Error) {
-                    log.warning("Unable to parse conf", e);
-                    _errors.dataProvider.addItem(new ParseError(_confFile.nativePath,
-                        ParseError.CRIT, "Unable to read configuration"));
-                }
-            } else _confFile = null;
+            try {
+                _conf = FlumpConf.fromJSON(JSONFormat.readJSON(_confFile));
+                _win.title = _confFile.name;
+            } catch (e :Error) {
+                log.warning("Unable to parse conf", e);
+                _errors.dataProvider.addItem(new ParseError(_confFile.nativePath,
+                    ParseError.CRIT, "Unable to read configuration"));
+                _confFile = null;
+            }
         };
 
         const saveAsMenuItem :NativeMenuItem =
