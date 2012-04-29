@@ -31,11 +31,11 @@ import spark.components.List;
 import spark.components.Window;
 import spark.events.GridSelectionEvent;
 
-import starling.display.Sprite;
-
 import com.threerings.util.F;
 import com.threerings.util.Log;
 import com.threerings.util.StringUtil;
+
+import starling.display.Sprite;
 
 public class Exporter
 {
@@ -136,6 +136,8 @@ public class Exporter
             try {
                 _conf = FlumpConf.fromJSON(JSONFormat.readJSON(_confFile));
                 _win.title = _confFile.name;
+                var dir :String = _confFile.parent.nativePath + File.separator + _conf.importDir;
+                setImport(new File(dir));
             } catch (e :Error) {
                 log.warning("Unable to parse conf", e);
                 _errors.dataProvider.addItem(new ParseError(_confFile.nativePath,
