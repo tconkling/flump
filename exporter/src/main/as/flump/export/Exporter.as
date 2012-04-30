@@ -12,6 +12,7 @@ import flash.display.StageQuality;
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.filesystem.File;
+import flash.net.FileFilter;
 import flash.net.SharedObject;
 import flash.utils.IDataOutput;
 
@@ -93,7 +94,8 @@ public class Exporter
                 updatePublisher();
                 updateWindowTitle(false);
             });
-            file.browseForOpen("Open Flump Configuration");
+            file.browseForOpen("Open Flump Configuration", [
+                new FileFilter("Flump config (*.json)", "*.json") ]);
         });
         fileMenuItem.submenu.addItemAt(new NativeMenuItem("Sep", /*separator=*/true), 2);
 
@@ -121,6 +123,11 @@ public class Exporter
         function saveAs (..._) :void {
             var file :File = new File();
             file.addEventListener(Event.SELECT, function (..._) :void {
+                // Ensure the filename ends with .json
+                if (!StringUtil.endsWith(file.name.toLowerCase(), ".json")) {
+                    file = file.parent.resolvePath(file.name + ".json");
+                }
+
                 _confFile = file;
                 trace("Conf file is now " + _confFile.nativePath);
                 _settings.data["CONF_FILE"] = _confFile.nativePath;
@@ -135,7 +142,7 @@ public class Exporter
         });
 
         function updateWindowTitle (modified :Boolean) :void {
-            var name :String = (_confFile != null) ? _confFile.name : "Untitled";
+            var name :String = (_confFile != null) ? _confFile.name.replace(/\.json$/i, "") : "Untitled";
             if (modified) name += "*";
             _win.title = name;
         };
