@@ -53,7 +53,6 @@ public class Exporter
                     return status.isValid;
             });
 
-
             var status :DocStatus = _libraries.selectedItem as DocStatus;
             _win.preview.enabled = status != null && status.isValid;
 
@@ -92,6 +91,7 @@ public class Exporter
                 _confFile = file;
                 openConf();
                 updatePublisher();
+                updateWindowTitle(false);
             });
             file.browseForOpen("Open Flump Configuration");
         });
@@ -115,6 +115,7 @@ public class Exporter
                 }
 
                 out.writeUTFBytes(JSON.stringify(_conf, null, /*space=*/2));
+                updateWindowTitle(false);
             });
         };
         function saveAs (..._) :void {
@@ -133,10 +134,15 @@ public class Exporter
             else saveConf();
         });
 
+        function updateWindowTitle (modified :Boolean) :void {
+            var name :String = (_confFile != null) ? _confFile.name : "Untitled";
+            if (modified) name += "*";
+            _win.title = name;
+        };
+
         function openConf () :void {
             try {
                 _conf = FlumpConf.fromJSON(JSONFormat.readJSON(_confFile));
-                _win.title = _confFile.name;
                 var dir :String = _confFile.parent.resolvePath(_conf.importDir).nativePath;
                 setImport(new File(dir));
             } catch (e :Error) {
@@ -188,6 +194,9 @@ public class Exporter
         _exportChooser = new DirChooser(null, _win.exportRoot, _win.browseExport);
         _exportChooser.changed.add(updatePreviewAndExport);
 
+        _importChooser.changed.add(F.callback(updateWindowTitle, true));
+        _exportChooser.changed.add(F.callback(updateWindowTitle, true));
+
         function updatePublisher (..._) :void {
             if (_confFile != null) {
                 _importChooser.dir = (_conf.importDir != null) ? _confFile.parent.resolvePath(_conf.importDir) : null;
@@ -202,6 +211,8 @@ public class Exporter
             var formatNames :Array = [];
             for each (var export :ExportConf in _conf.exports) formatNames.push(export.name);
             _win.formatOverview.text = formatNames.join(", ");
+
+            updateWindowTitle(true);
         };
 
         var editFormats :EditFormatsWindow;
@@ -234,6 +245,7 @@ public class Exporter
         });
 
         updatePublisher();
+        updateWindowTitle(false);
         _win.addEventListener(Event.CLOSE, function (..._) :void { NA.exit(0); });
     }
 
