@@ -80,6 +80,7 @@ public class Exporter
         newMenuItem.addEventListener(Event.SELECT, function (..._) :void {
             _confFile = null;
             _conf = new FlumpConf();
+            setImport(null);
             updatePublisher();
         });
         var openMenuItem :NativeMenuItem =
