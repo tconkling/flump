@@ -136,7 +136,7 @@ public class Exporter
             try {
                 _conf = FlumpConf.fromJSON(JSONFormat.readJSON(_confFile));
                 _win.title = _confFile.name;
-                var dir :String = _confFile.parent.nativePath + File.separator + _conf.importDir;
+                var dir :String = _confFile.parent.resolvePath(_conf.importDir).nativePath;
                 setImport(new File(dir));
             } catch (e :Error) {
                 log.warning("Unable to parse conf", e);
