@@ -186,6 +186,7 @@ public class Exporter
         _importChooser.changed.add(setImport);
         _exportChooser = new DirChooser(null, _win.exportRoot, _win.browseExport);
         _exportChooser.changed.add(updatePreviewAndExport);
+
         function updatePublisher (..._) :void {
             if (_confFile != null) {
                 _importChooser.dir = (_conf.importDir != null) ? _confFile.parent.resolvePath(_conf.importDir) : null;
@@ -201,7 +202,6 @@ public class Exporter
             for each (var export :ExportConf in _conf.exports) formatNames.push(export.name);
             _win.formatOverview.text = formatNames.join(", ");
         };
-        _exportChooser.changed.add(updatePublisher);
 
         var editFormats :EditFormatsWindow;
         _win.editFormats.addEventListener(MouseEvent.CLICK, function (..._) :void {
