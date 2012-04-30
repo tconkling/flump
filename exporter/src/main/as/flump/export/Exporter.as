@@ -184,7 +184,6 @@ public class Exporter
         });
         _importChooser = new DirChooser(null, _win.importRoot, _win.browseImport);
         _importChooser.changed.add(setImport);
-        setImport(_importChooser.dir);
         _exportChooser = new DirChooser(null, _win.exportRoot, _win.browseExport);
         _exportChooser.changed.add(updatePreviewAndExport);
         function updatePublisher (..._) :void {
