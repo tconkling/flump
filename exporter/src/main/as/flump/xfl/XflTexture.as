@@ -5,6 +5,9 @@ package flump.xfl {
 
 import com.threerings.util.XmlUtil;
 
+import flump.SwfTexture;
+import flump.executor.load.LoadedSwf;
+
 public class XflTexture
 {
     public var symbol :String;
@@ -16,6 +19,12 @@ public class XflTexture
         this.md5 = md5;
         symbol = XmlUtil.getStringAttr(xml, "linkageClassName");
         lib.createId(this, XmlUtil.getStringAttr(xml, "name"), symbol);
+    }
+
+    public function isValid (swf :LoadedSwf) :Boolean
+    {
+        var swfTex :SwfTexture = SwfTexture.fromTexture(swf, this);
+        return (swfTex.w > 0 && swfTex.h > 0);
     }
 }
 }

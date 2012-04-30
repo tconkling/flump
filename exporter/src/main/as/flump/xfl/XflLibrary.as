@@ -189,8 +189,11 @@ public class XflLibrary
         const md5 :String = MD5.hashBytes(fileData);
         log.debug("Parsing for library", "file", path, "isSprite", isSprite, "md5", md5);
         try {
-            if (isSprite) textures.push(new XflTexture(this, location, xml, md5));
-            else movies.push(XflMovie.parse(this, xml, md5));
+            if (isSprite) {
+                var texture :XflTexture = new XflTexture(this, location, xml, md5);
+                if (texture.isValid(swf)) textures.push(texture);
+                else addError(location + ":" + texture.symbol, ParseError.CRIT, "Sprite is empty");
+            } else movies.push(XflMovie.parse(this, xml, md5));
         } catch (e :Error) {
             var type :String = isSprite ? "sprite" : "movie";
             addTopLevelError(ParseError.CRIT, "Unable to parse " + type + " in " + path, e);
