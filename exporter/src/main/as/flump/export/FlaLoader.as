@@ -35,7 +35,7 @@ public class FlaLoader
             // Since listLibrary shuts down the executor, wait for the swf to load first
             listLibrary(file);
         });
-        loadSWF.failed.add(_loader.shutdown);
+        loadSWF.failed.add(F.adapt(_loader.shutdown));
 
         return future;
     }
