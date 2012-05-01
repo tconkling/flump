@@ -402,7 +402,7 @@ import mx.events.PropertyChangeEvent;
 class DocStatus extends EventDispatcher implements IPropertyChangeNotifier {
     public var path :String;
     public var modified :String;
-    public var valid :String = QUESTION;
+    public var valid :String = PENDING;
     public var lib :XflLibrary;
 
     public function DocStatus (path :String, rootLen :int, modified :Ternary, valid :Ternary, lib :XflLibrary) {
@@ -416,19 +416,19 @@ class DocStatus extends EventDispatcher implements IPropertyChangeNotifier {
 
     public function updateValid (newValid :Ternary) :void {
         changeField("valid", function (..._) :void {
-            if (newValid == Ternary.TRUE) valid = CHECK;
-            else if (newValid == Ternary.FALSE) valid = FROWN;
-            else valid = QUESTION;
+            if (newValid == Ternary.TRUE) valid = OK;
+            else if (newValid == Ternary.FALSE) valid = ERROR;
+            else valid = PENDING;
         });
     }
 
-    public function get isValid () :Boolean { return valid == CHECK; }
+    public function get isValid () :Boolean { return valid == OK; }
 
     public function updateModified (newModified :Ternary) :void {
         changeField("modified", function (..._) :void {
-            if (newModified == Ternary.TRUE) modified = CHECK;
+            if (newModified == Ternary.TRUE) modified = OK;
             else if (newModified == Ternary.FALSE) modified = " ";
-            else modified = QUESTION;
+            else modified = PENDING;
         });
     }
 
@@ -444,7 +444,7 @@ class DocStatus extends EventDispatcher implements IPropertyChangeNotifier {
 
     protected var _uid :String;
 
-    protected static const QUESTION :String = "?";
-    protected static const FROWN :String = "☹";
-    protected static const CHECK :String = "✓";
+    protected static const PENDING :String = "...";
+    protected static const ERROR :String = "ERROR";
+    protected static const OK :String = "Ok";
 }
