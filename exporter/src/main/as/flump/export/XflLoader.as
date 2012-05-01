@@ -27,11 +27,12 @@ public class XflLoader
             future.succeed(_library);
         });
 
-        var loadSWF :Future = _library.loadSWF(file.nativePath + ".swf", _loader);
+        var loadSWF :Future = _library.loadSWF(file.nativePath + ".swf");
         loadSWF.succeeded.add(function () :void {
             // Since listLibrary shuts down the executor, wait for the swf to load first
             listLibrary(file);
         });
+        loadSWF.failed.add(_loader.shutdown);
 
         return future;
     }
