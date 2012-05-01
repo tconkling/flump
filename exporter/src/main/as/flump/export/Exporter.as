@@ -32,11 +32,11 @@ import spark.components.List;
 import spark.components.Window;
 import spark.events.GridSelectionEvent;
 
+import starling.display.Sprite;
+
 import com.threerings.util.F;
 import com.threerings.util.Log;
 import com.threerings.util.StringUtil;
-
-import starling.display.Sprite;
 
 public class Exporter
 {

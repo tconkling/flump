@@ -5,8 +5,8 @@ package flump.xfl {
 
 import flash.geom.Matrix;
 
-import flump.mold.KeyframeMold;
 import flump.MatrixUtil;
+import flump.mold.KeyframeMold;
 
 import com.threerings.util.XmlUtil;
 
