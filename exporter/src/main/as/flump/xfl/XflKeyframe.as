@@ -5,9 +5,9 @@ package flump.xfl {
 
 import flash.geom.Matrix;
 
-import flump.MatrixUtil;
 import flump.mold.KeyframeMold;
 
+import com.threerings.util.MatrixUtil;
 import com.threerings.util.XmlUtil;
 
 public class XflKeyframe
