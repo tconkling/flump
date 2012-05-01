@@ -35,8 +35,8 @@
         <s:FormItem label="Import Directory" width="500">
           <s:HGroup>
             <!-- Explicitly set the width to make it line up with the export form -->
-            <s:Label id="importRoot" width="240"/>
-            <s:Button id="reload" label="Reload" width="60" enabled="false"/>
+            <s:Label id="importRoot" width="220"/>
+            <s:Button id="reload" label="Reload" width="80" enabled="false"/>
             <s:Button id="browseImport" width="40" label="..."/>
           </s:HGroup>
         </s:FormItem>
