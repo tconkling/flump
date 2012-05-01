@@ -30,7 +30,7 @@ public class FlaLoader
             future.succeed(_library);
         });
 
-        var loadSWF :Future = _library.loadSWF(file.nativePath + ".swf");
+        var loadSWF :Future = _library.loadSWF(Files.replaceExtension(file, "swf"));
         loadSWF.succeeded.add(function () :void {
             // Since listLibrary shuts down the executor, wait for the swf to load first
             listLibrary(file);
