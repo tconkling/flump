@@ -10,10 +10,11 @@ import flash.utils.Dictionary;
 import com.adobe.crypto.MD5;
 
 import flump.bytesToXML;
+import flump.executor.Executor;
 import flump.executor.Future;
-import flump.executor.VisibleFuture;
 import flump.executor.load.LoadedSwf;
 import flump.executor.load.SwfLoader;
+import flump.executor.VisibleFuture;
 import flump.export.Atlas;
 import flump.export.Files;
 import flump.mold.KeyframeMold;
@@ -132,11 +133,11 @@ public class XflLibrary
         return mold;
     }
 
-    public function loadSWF (path :String) :Future {
+    public function loadSWF (path :String, loader :Executor=null) :Future {
         const onComplete :VisibleFuture = new VisibleFuture();
 
         const swfFile :File = new File(path);
-        const loadSwfFile :Future = Files.load(swfFile);
+        const loadSwfFile :Future = Files.load(swfFile, loader);
         loadSwfFile.succeeded.add(function (data :ByteArray) :void {
             md5 = MD5.hashBytes(data);
 

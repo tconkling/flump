@@ -22,13 +22,15 @@ public class XflLoader
 
         const future :VisibleFuture = new VisibleFuture();
         _library = new XflLibrary(name);
-        _library.loadSWF(file.nativePath + ".swf").completed.add(function () :void {
-            // Since listLibrary shuts down the executor, wait for the swf to load first
-            listLibrary(file);
-        });
         _loader.terminated.add(function (..._) :void {
             _library.finishLoading();
             future.succeed(_library);
+        });
+
+        var loadSWF :Future = _library.loadSWF(file.nativePath + ".swf", _loader);
+        loadSWF.succeeded.add(function () :void {
+            // Since listLibrary shuts down the executor, wait for the swf to load first
+            listLibrary(file);
         });
 
         return future;
