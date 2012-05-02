@@ -14,6 +14,10 @@ public class ExportConf
     public var scale :Number = 1;
     public var format :String = "Starling";
 
+    public function get description () :String {
+        return name + " (" + scale.toFixed(2) + "/" + format + ")";
+    }
+
     public function create (exportDir :File, lib :XflLibrary) :Format {
         var formatClass :Class;
         switch (format.toLowerCase()) {

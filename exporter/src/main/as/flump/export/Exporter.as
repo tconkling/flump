@@ -216,7 +216,7 @@ public class Exporter
             else _publisher = new Publisher(_exportChooser.dir, Vector.<ExportConf>(_conf.exports));
 
             var formatNames :Array = [];
-            for each (var export :ExportConf in _conf.exports) formatNames.push(export.name);
+            for each (var export :ExportConf in _conf.exports) formatNames.push(export.description);
             _win.formatOverview.text = formatNames.join(", ");
 
             updateWindowTitle(true);
