@@ -90,6 +90,7 @@ public class Exporter
             var file :File = new File();
             file.addEventListener(Event.SELECT, function (..._) :void {
                 _confFile = file;
+                saveConfFilePath();
                 openConf();
                 updatePublisher();
                 updateWindowTitle(false);
@@ -129,9 +130,7 @@ public class Exporter
                 }
 
                 _confFile = file;
-                trace("Conf file is now " + _confFile.nativePath);
-                _settings.data["CONF_FILE"] = _confFile.nativePath;
-                _settings.flush();
+                saveConfFilePath();
                 saveConf();
             });
             file.browseForSave("Save Flump Configuration");
@@ -165,8 +164,8 @@ public class Exporter
         saveAsMenuItem.keyEquivalent = "S";
         saveAsMenuItem.addEventListener(Event.SELECT, saveAs);
 
-        if (_settings.data.hasOwnProperty("CONF_FILE")) {
-            _confFile = new File(_settings.data["CONF_FILE"]);
+        if (_settings.data.hasOwnProperty(CONF_FILE_KEY)) {
+            _confFile = new File(_settings.data[CONF_FILE_KEY]);
             openConf();
         }
 
@@ -254,6 +253,12 @@ public class Exporter
         updatePublisher();
         updateWindowTitle(false);
         _win.addEventListener(Event.CLOSE, function (..._) :void { NA.exit(0); });
+    }
+
+    protected function saveConfFilePath () :void {
+        trace("Conf file is now " + _confFile.nativePath);
+        _settings.data[CONF_FILE_KEY] = _confFile.nativePath;
+        _settings.flush();
     }
 
     protected function setImport (root :File) :void {
@@ -388,6 +393,8 @@ public class Exporter
     protected const _settings :SharedObject = SharedObject.getLocal("flump/Exporter");
 
     private static const log :Log = Log.getLog(Exporter);
+
+    protected static const CONF_FILE_KEY :String = "CONF_FILE";
 }
 }
 
