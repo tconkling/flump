@@ -58,7 +58,7 @@ public class Exporter
             _win.preview.enabled = status != null && status.isValid;
 
             if (_exportChooser.dir == null) return;
-            _conf.exportDir = _confFile.parent.getRelativePath(_exportChooser.dir, /*useDotDot=*/true);
+            _conf.exportDir = _confFile == null ? _exportChooser.dir.nativePath : _confFile.parent.getRelativePath(_exportChooser.dir, /*useDotDot=*/true);
         }
 
         var fileMenuItem :NativeMenuItem;
