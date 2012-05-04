@@ -81,7 +81,7 @@ public class Exporter
             _confFile = null;
             _conf = new FlumpConf();
             setImport(null);
-            updatePublisher();
+            updateFromConf();
         });
         var openMenuItem :NativeMenuItem =
             fileMenuItem.submenu.addItemAt(new NativeMenuItem("Open..."), 1);
@@ -92,7 +92,7 @@ public class Exporter
                 _confFile = file;
                 saveConfFilePath();
                 openConf();
-                updatePublisher();
+                updateFromConf();
                 updateWindowTitle(false);
             });
             file.browseForOpen("Open Flump Configuration", [
@@ -203,7 +203,7 @@ public class Exporter
         _importChooser.changed.add(F.callback(updateWindowTitle, true));
         _exportChooser.changed.add(F.callback(updateWindowTitle, true));
 
-        function updatePublisher (..._) :void {
+        function updateFromConf (..._) :void {
             if (_confFile != null) {
                 _importChooser.dir = (_conf.importDir != null) ? _confFile.parent.resolvePath(_conf.importDir) : null;
                 _exportChooser.dir = (_conf.exportDir != null) ? _confFile.parent.resolvePath(_conf.exportDir) : null;
@@ -211,8 +211,6 @@ public class Exporter
                 _importChooser.dir = null;
                 _exportChooser.dir = null;
             }
-            if (_exportChooser.dir == null || _conf.exports.length == 0) _publisher = null;
-            else _publisher = new Publisher(_exportChooser.dir, Vector.<ExportConf>(_conf.exports));
 
             var formatNames :Array = [];
             for each (var export :ExportConf in _conf.exports) formatNames.push(export.description);
@@ -229,7 +227,7 @@ public class Exporter
             } else editFormats.orderToFront();
 
             var dataProvider :ArrayList = new ArrayList(_conf.exports);
-            dataProvider.addEventListener(CollectionEvent.COLLECTION_CHANGE, updatePublisher);
+            dataProvider.addEventListener(CollectionEvent.COLLECTION_CHANGE, updateFromConf);
 
             editFormats.exports.dataProvider = dataProvider;
             editFormats.buttonAdd.addEventListener(MouseEvent.CLICK, function (..._) :void {
@@ -250,9 +248,14 @@ public class Exporter
             });
         });
 
-        updatePublisher();
+        updateFromConf();
         updateWindowTitle(false);
         _win.addEventListener(Event.CLOSE, function (..._) :void { NA.exit(0); });
+    }
+
+    protected function get publisher () :Publisher {
+        if (_exportChooser.dir == null || _conf.exports.length == 0) return null;
+        return new Publisher(_exportChooser.dir, Vector.<ExportConf>(_conf.exports));
     }
 
     protected function saveConfFilePath () :void {
@@ -338,7 +341,7 @@ public class Exporter
         const prevQuality :String = stage.quality;
 
         stage.quality = StageQuality.BEST;
-        _publisher.publish(status.lib);
+        publisher.publish(status.lib);
 
         stage.quality = prevQuality;
         status.updateModified(Ternary.FALSE);
@@ -367,7 +370,7 @@ public class Exporter
 
         load.succeeded.add(function (lib :XflLibrary) :void {
             status.lib = lib;
-            status.updateModified(Ternary.of(_publisher == null || _publisher.modified(lib)));
+            status.updateModified(Ternary.of(publisher == null || publisher.modified(lib)));
             for each (var err :ParseError in lib.getErrors()) _errors.dataProvider.addItem(err);
             status.updateValid(Ternary.of(lib.valid));
         });
@@ -380,7 +383,6 @@ public class Exporter
 
     protected var _rootLen :int;
 
-    protected var _publisher :Publisher;
     protected var _docFinder :Executor;
     protected var _win :ExporterWindow;
     protected var _libraries :DataGrid;
