@@ -7,4 +7,10 @@
     <renderMode>direct</renderMode>
     <content>flump-exporter.swf</content>
   </initialWindow>
+  <icon>
+    <image16x16>icons/icon_16.png</image16x16>
+    <image32x32>icons/icon_32.png</image32x32>
+    <image48x48>icons/icon_48.png</image48x48>
+    <image128x128>icons/icon_128.png</image128x128>
+  </icon>
 </application>

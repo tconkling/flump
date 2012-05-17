@@ -2,6 +2,7 @@
 <project name="flump-exporter" default="swf" basedir=".">
   <property name="asrc.dir" location="src/main/as"/>
   <property name="deploy.dir" location="dist"/>
+  <property name="icons.dir" location="icons"/>
   <property name="keystore" location="etc/${ant.project.name}.pfx"/>
   <property name="PASSWORD" value="pass"/>
 
@@ -48,7 +49,26 @@
   </target>
 
   <target name="package" depends="swf" description="Builds the .air package">
-    <packageair keystore="${keystore}" password="${PASSWORD}" deploydir="${deploy.dir}"
-      descriptor="etc/airdesc.xml"/>
+    <sequential>
+      <requireflex/>
+      <java jar="${flexsdk.dir}/lib/adt.jar" fork="true" failonerror="true">
+        <arg value="-package"/>
+        <arg value="-storetype"/>
+        <arg value="pkcs12"/>
+        <arg value="-keystore"/>
+        <arg value="${keystore}"/>
+        <arg value="-storepass"/>
+        <arg value="${PASSWORD}"/>
+        <arg value="${deploy.dir}/${ant.project.name}.air"/>
+        <arg value="etc/airdesc.xml"/>
+        <arg value="${icons.dir}/icon_16.png"/>
+        <arg value="${icons.dir}/icon_32.png"/>
+        <arg value="${icons.dir}/icon_48.png"/>
+        <arg value="${icons.dir}/icon_128.png"/>
+        <arg value="-C"/>
+        <arg value="${deploy.dir}"/>
+        <arg value="${ant.project.name}.swf"/>
+      </java>
+    </sequential>
   </target>
 </project>
