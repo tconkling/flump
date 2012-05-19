@@ -1,0 +1,12 @@
+{
+  "importDir": "resources",
+  "exports": [
+    {
+      "name": "XML",
+      "scale": 1,
+      "format": "XML",
+      "description": "XML (1.00/XML)"
+    }
+  ],
+  "exportDir": "export"
+}
