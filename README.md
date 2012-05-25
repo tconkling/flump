@@ -9,7 +9,7 @@ and more expressive animations on mobile platforms.
 # Creating a movie for Flump
 
 1. [Download and install](https://github.com/downloads/threerings/flump/flump-exporter.air) the .air app
-2. Create a document in Flash Professional saved as `.xfl`
+2. Create a document in Flash Professional saved as `.fla` (or `.xfl`)
 3. Create a new item in the library and draw a shape in its canvas
 4. Right-click on the item, select its properties, mark it as exported for ActionScript, and change
    its base class to `flash.display.Sprite`
@@ -17,14 +17,14 @@ and more expressive animations on mobile platforms.
 6. Add additional frames in the second item, and create a classic tween moving the first item around
    in those frames.
 7. Save the file and publish it as a swf.
-8. Open the Flump .air app and change its import directory to the directory containing the `.xfl` and
-   `.swf` files. The `.xfl` file should appear in the list of source files.
-9. Select the `.xfl` file and click 'Preview'. The tween you created in step 6 should start playing
+8. Open the Flump .air app and change its import directory to the directory containing the `.fla` and
+   `.swf` files. The `.fla` file should appear in the list of source files.
+9. Select the `.fla` file and click 'Preview'. The tween you created in step 6 should start playing
    back in a preview window.
 
 # Details of Flump's conversion
 
-This walks through Flump's process when it exports a single .xfl/.swf file combo.
+This walks through Flump's process when it exports a single .fla/.swf file combo.
 
 ### Texture creation
 
@@ -45,6 +45,10 @@ For animations that only contain a few frames, a flipbook may be more appropriat
 add a new item to the library and name the first layer in the created item `flipbook`. When
 exporting, flump will create a bitmap for each keyframe in the flipbook layer. In playback, flump
 will display those bitmaps at the same timing.
+
+### Compatibility
+
+Flump works with Flash CS 5, 5.5, and 6
 
 # Bugs
 
