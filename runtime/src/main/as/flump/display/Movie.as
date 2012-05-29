@@ -43,7 +43,6 @@ public class Movie extends Sprite
         _labels = src.labels;
         _frameRate = frameRate;
         _ticker = new Ticker(advanceTime);
-        const flipbook :Boolean = src.flipbook;
         if (src.flipbook) {
             _layers = new Vector.<Layer>(1, true);
             _layers[0] = new Layer(this, src.layers[0], idToDisplayObject, /*flipbook=*/true);
