@@ -5,6 +5,7 @@
   <property name="icons.dir" location="icons"/>
   <property name="keystore" location="etc/${ant.project.name}.pfx"/>
   <property name="PASSWORD" value="pass"/>
+  <property name="tsa" value="https://timestamp.geotrust.com/tsa"/>
 
   <property name="ooo-build.vers" value="2.5"/>
   <ant antfile="../etc/bootstrap.xml"/>
@@ -14,21 +15,22 @@
     <delete dir="${deploy.dir}"/>
   </target>
 
-  <target name="flexserver" depends="-init-ooo">
-    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.5"/>
+  <target name="prepare" depends="-init-ooo">
+    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.6"/>
+  </target>
+
+  <target name="flexserver" depends="prepare">
     <flexserver/>
   </target>
 
-  <target name="genairkeystore" depends="-init-ooo" description="Regenerates the signing certificate. You shouldn't have to run this.">
+  <target name="genairkeystore" depends="prepare" description="Regenerates the signing certificate. You shouldn't have to run this.">
     <fail unless="PASSWORD" message="Define the cert password with -DPASSWORD=pass to generate a cert"/>
-    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.5"/>
     <genairkeystore keystore="${keystore}" password="${PASSWORD}" orgname="Three Rings Design"/>
   </target>
 
-  <target name="test" depends="-init-ooo" description="Builds the test swf">
+  <target name="test" depends="prepare" description="Builds the test swf">
     <mkdir dir="${deploy.dir}"/>
     <mavendep pom="pom.xml" pathProp="aslib.path"/>
-    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.5"/>
     <amxmlc srcdir="src/test/as" libpath="${aslib.path}" id="flump-test"
       dest="${deploy.dir}/flump-test.swf" static-lrsl="true"
       main="flump/test/Bootstrap.as">
@@ -37,10 +39,9 @@
     </amxmlc>
   </target>
 
-  <target name="swf" depends="-init-ooo" description="Builds the swf">
+  <target name="swf" depends="prepare" description="Builds the swf">
     <mkdir dir="${deploy.dir}"/>
     <mavendep pom="pom.xml" pathProp="aslib.path"/>
-    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.5"/>
     <amxmlc srcdir="${asrc.dir}" libpath="${aslib.path}"
       dest="${deploy.dir}/${ant.project.name}.swf" static-lrsl="true"
       main="flump/export/ExporterWindow.mxml">
@@ -59,6 +60,8 @@
         <arg value="${keystore}"/>
         <arg value="-storepass"/>
         <arg value="${PASSWORD}"/>
+        <arg value="-tsa"/>
+        <arg value="${tsa}"/>
         <arg value="${deploy.dir}/${ant.project.name}.air"/>
         <arg value="etc/airdesc.xml"/>
         <arg value="${icons.dir}/icon_16.png"/>
