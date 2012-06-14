@@ -19,7 +19,7 @@ public class JSONFormat extends Format
     public function JSONFormat (destDir :File, lib :XflLibrary, conf :ExportConf) {
         super(destDir, lib, conf);
         _prefix = conf.name + "/" + lib.location;
-        _metaFile =  _destDir.resolvePath(_prefix + "/resources.json");
+        _metaFile =  _destDir.resolvePath(_prefix + "/library.json");
     }
 
     override public function get modified () :Boolean {
