@@ -33,7 +33,7 @@ public class JSONFormat extends Format
         if (libExportDir.exists) libExportDir.deleteDirectory(/*deteDirectoryContents=*/true);
         libExportDir.createDirectory();
 
-        const packer :Packer = new Packer(_lib, _conf.scale, _prefix);
+        const packer :Packer = new Packer(_lib, _conf.scale);
         for each (var atlas :Atlas in packer.atlases) {
             Files.write(_destDir.resolvePath(atlas.filename), atlas.writePNG);
         }
