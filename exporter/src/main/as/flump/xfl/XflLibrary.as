@@ -168,10 +168,22 @@ public class XflLibrary
         const hex :String = XmlUtil.getStringAttr(xml, "backgroundColor", "#ffffff");
         backgroundColor = parseInt(hex.substr(1), 16);
 
-        const paths :Vector.<String> = new Vector.<String>();
-        for each (var symbolXmlPath :XML in xml.symbols.Include) {
-            paths.push("LIBRARY/" + XmlUtil.getStringAttr(symbolXmlPath, "href"));
+        if (xml.media != null) {
+            for each (var bitmap :XML in xml.media.DOMBitmapItem) {
+                if (XmlUtil.getBooleanAttr(bitmap, "linkageExportForAS", false)) {
+                    var md5 :String = MD5.hash(bitmap.toString());
+                    textures.push(new XflTexture(this, location, bitmap, md5));
+                }
+            }
         }
+
+        const paths :Vector.<String> = new Vector.<String>();
+        if (xml.symbols != null) {
+            for each (var symbolXmlPath :XML in xml.symbols.Include) {
+                paths.push("LIBRARY/" + XmlUtil.getStringAttr(symbolXmlPath, "href"));
+            }
+        }
+
         return paths;
     }
 

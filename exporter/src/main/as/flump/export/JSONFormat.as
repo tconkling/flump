@@ -35,7 +35,7 @@ public class JSONFormat extends Format
 
         const packer :Packer = new Packer(_lib, _conf.scale);
         for each (var atlas :Atlas in packer.atlases) {
-            Files.write(_destDir.resolvePath(atlas.filename), atlas.writePNG);
+            Files.write(libExportDir.resolvePath(atlas.filename), atlas.writePNG);
         }
         const json :String = _lib.toJSONString(packer.atlases, _conf.scale);
         Files.write(_metaFile, function (out :IDataOutput) :void {  out.writeUTFBytes(json); });

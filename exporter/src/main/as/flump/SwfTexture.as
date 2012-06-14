@@ -3,6 +3,7 @@
 
 package flump {
 
+import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.DisplayObject;
 import flash.display.IBitmapDrawable;
@@ -51,8 +52,10 @@ public class SwfTexture
         scale :Number = 1) :SwfTexture {
 
         const klass :Class = Class(swf.getSymbol(tex.symbol));
-        const image :Sprite = Sprite(new klass());
-        return new SwfTexture(tex.md5, tex.symbol, image, scale);
+        const instance :Object = new klass();
+        const disp :DisplayObject = (instance is BitmapData) ?
+            new Bitmap(BitmapData(instance)) : DisplayObject(instance);
+        return new SwfTexture(tex.md5, tex.symbol, disp, scale);
     }
 
     public function SwfTexture (md5 :String, symbol :String, disp :DisplayObject, scale :Number) {

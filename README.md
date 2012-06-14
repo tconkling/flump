@@ -29,8 +29,8 @@ This walks through Flump's process when it exports a single .fla/.swf file combo
 ### Texture creation
 
 For each item in the document's library that is exported for ActionScript and extends
-`flash.display.Sprite`, Flump creates a texture. To do so, it instantiates the library's exported
-symbol from the `.swf` file and renders it to a bitmap.
+`flash.display.Sprite` or `flash.display.BitmapData`, Flump creates a texture. To do so, it
+instantiates the library's exported symbol from the `.swf` file and renders it to a bitmap.
 
 All of the created bitmaps for a Flash document are packed into texture atlases, and xml is
 generated to map between a texture's symbol and its location in the bitmap.
