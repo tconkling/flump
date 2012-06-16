@@ -10,6 +10,7 @@ import flash.display.NativeWindow;
 import flash.display.Stage;
 import flash.display.StageQuality;
 import flash.events.Event;
+import flash.events.InvokeEvent;
 import flash.events.MouseEvent;
 import flash.filesystem.File;
 import flash.net.FileFilter;
@@ -73,6 +74,14 @@ public class Exporter
             fileMenuItem = _win.nativeWindow.menu.addSubmenu(new NativeMenu(), "File");
         }
 
+        function open (file :File) :void {
+            _confFile = file;
+            saveConfFilePath();
+            openConf();
+            updateFromConf();
+            updateWindowTitle(false);
+        };
+
         // Add save and save as by index to work with the existing items on Mac
         // Mac menus have an existing "Close" item, so everything we add should go ahead of that
         var newMenuItem :NativeMenuItem = fileMenuItem.submenu.addItemAt(new NativeMenuItem("New"), 0);
@@ -89,16 +98,18 @@ public class Exporter
         openMenuItem.addEventListener(Event.SELECT, function (..._) :void {
             var file :File = new File();
             file.addEventListener(Event.SELECT, function (..._) :void {
-                _confFile = file;
-                saveConfFilePath();
-                openConf();
-                updateFromConf();
-                updateWindowTitle(false);
+                open(file);
             });
-            file.browseForOpen("Open Flump Configuration", [
-                new FileFilter("Flump config (*.json)", "*.json") ]);
+            file.browseForOpen("Open Flump Project", [
+                new FileFilter("Flump project (*.flump)", "*.flump") ]);
         });
         fileMenuItem.submenu.addItemAt(new NativeMenuItem("Sep", /*separator=*/true), 2);
+
+        NA.addEventListener(InvokeEvent.INVOKE, function (event :InvokeEvent) :void {
+            if (event.arguments.length > 0) {
+                open(new File(event.arguments[0]));
+            }
+        });
 
         const saveMenuItem :NativeMenuItem =
             fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save"), 3);
@@ -124,9 +135,9 @@ public class Exporter
         function saveAs (..._) :void {
             var file :File = new File();
             file.addEventListener(Event.SELECT, function (..._) :void {
-                // Ensure the filename ends with .json
-                if (!StringUtil.endsWith(file.name.toLowerCase(), ".json")) {
-                    file = file.parent.resolvePath(file.name + ".json");
+                // Ensure the filename ends with .flump
+                if (!StringUtil.endsWith(file.name.toLowerCase(), ".flump")) {
+                    file = file.parent.resolvePath(file.name + ".flump");
                 }
 
                 _confFile = file;
@@ -141,7 +152,7 @@ public class Exporter
         });
 
         function updateWindowTitle (modified :Boolean) :void {
-            var name :String = (_confFile != null) ? _confFile.name.replace(/\.json$/i, "") : "Untitled";
+            var name :String = (_confFile != null) ? _confFile.name.replace(/\.flump$/i, "") : "Untitled";
             if (modified) name += "*";
             _win.title = name;
         };
