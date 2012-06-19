@@ -4,6 +4,7 @@
 package flump.export {
 
 import flash.geom.Point;
+import flash.utils.getTimer;
 
 import flump.SwfTexture;
 import flump.mold.KeyframeMold;
@@ -12,6 +13,7 @@ import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;
 
 import com.threerings.util.Comparators;
+import com.threerings.util.Log;
 
 public class Packer
 {
@@ -28,6 +30,8 @@ public class Packer
             }
         }
         _unpacked.sort(Comparators.createReverse(Comparators.createFields(["a", "w", "h"])));
+
+        var start :int = flash.utils.getTimer();
         while (_unpacked.length > 0) {
             // Add a new atlas
             const size :Point = findOptimalSize();
@@ -50,6 +54,9 @@ public class Packer
                 }
             }
         }
+
+        var totalTime :int = flash.utils.getTimer() - start;
+        log.info("Finished packing", "scale", scale, "time", totalTime / 1000);
     }
 
     // Estimate the optimal size for the next atlas
@@ -90,5 +97,7 @@ public class Packer
 
     // Maximum width or height of a texture atlas
     private static const MAX_SIZE :int = 2048;
+
+    private static const log :Log = Log.getLog(Packer);
 }
 }
