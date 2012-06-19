@@ -48,9 +48,8 @@ public class XflLoader
             }
             _loader.shutdown();
         });
-        loadDomFile.failed.add(function (error :Object) :void {
-            _library.addTopLevelError(ParseError.CRIT, "Unable to read " + domFile.nativePath,
-                error);
+        loadDomFile.failed.add(function (error :Error) :void {
+            _library.addTopLevelError(ParseError.CRIT, error.message, error);
             _loader.shutdown();
         });
     }
@@ -60,8 +59,8 @@ public class XflLoader
         loadLibraryFile.succeeded.add(function (data :ByteArray) :void {
             _library.parseLibraryFile(data, file.nativePath);
         });
-        loadLibraryFile.failed.add(function (error :Object) :void {
-            _library.addTopLevelError(ParseError.CRIT, "Unable to read " + file.nativePath, error);
+        loadLibraryFile.failed.add(function (error :Error) :void {
+            _library.addTopLevelError(ParseError.CRIT, error.message, error);
         });
     }
 

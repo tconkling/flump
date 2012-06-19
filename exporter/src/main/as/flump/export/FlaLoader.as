@@ -55,8 +55,8 @@ public class FlaLoader
             }
             _loader.shutdown();
         });
-        loadZip.failed.add(function (error :Object) :void {
-            _library.addTopLevelError(ParseError.CRIT, "Unable to read " + file.nativePath, error);
+        loadZip.failed.add(function (error :Error) :void {
+            _library.addTopLevelError(ParseError.CRIT, error.message, error);
             _loader.shutdown();
         });
     }

@@ -145,13 +145,13 @@ public class XflLibrary
             loadSwf.succeeded.add(function (loadedSwf :LoadedSwf) :void {
                 swf = loadedSwf;
             });
-            loadSwf.failed.add(function (error :Object) :void {
-                addTopLevelError(ParseError.CRIT, "Unable to load " + path, error);
+            loadSwf.failed.add(function (error :Error) :void {
+                addTopLevelError(ParseError.CRIT, error.message, error);
             });
             loadSwf.completed.add(onComplete.succeed);
         });
-        loadSwfFile.failed.add(function (error :Object) :void {
-            addTopLevelError(ParseError.CRIT, "Unable to read " + swfFile.nativePath, error);
+        loadSwfFile.failed.add(function (error :Error) :void {
+            addTopLevelError(ParseError.CRIT, error.message, error);
             onComplete.fail(error);
         });
 
