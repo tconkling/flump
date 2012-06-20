@@ -39,6 +39,11 @@ public class XflMovie
             }
         }
         movie.fillLabels();
+
+        if (movie.layers.length == 0) {
+            lib.addError(location, ParseError.CRIT, "Movies must have at least one layer");
+        }
+
         return movie;
     }
 }
