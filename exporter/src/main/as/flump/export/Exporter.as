@@ -157,6 +157,11 @@ public class Exporter
             _win.title = name;
         };
 
+        function reloadNow () :void {
+            setImport(_importChooser.dir);
+            updatePreviewAndExport();
+        }
+
         function openConf () :void {
             try {
                 _conf = FlumpConf.fromJSON(JSONFormat.readJSON(_confFile));
@@ -194,10 +199,7 @@ public class Exporter
             }
             curSelection = newSelection;
         });
-        _win.reload.addEventListener(MouseEvent.CLICK, function (..._) :void {
-            setImport(_importChooser.dir);
-            updatePreviewAndExport();
-        });
+        _win.reload.addEventListener(MouseEvent.CLICK, F.callback(reloadNow));
         _win.export.addEventListener(MouseEvent.CLICK, function (..._) :void {
             for each (var status :DocStatus in _libraries.selectedItems) {
                 exportFlashDocument(status);
@@ -209,7 +211,7 @@ public class Exporter
         _importChooser = new DirChooser(null, _win.importRoot, _win.browseImport);
         _importChooser.changed.add(setImport);
         _exportChooser = new DirChooser(null, _win.exportRoot, _win.browseExport);
-        _exportChooser.changed.add(updatePreviewAndExport);
+        _exportChooser.changed.add(reloadNow);
 
         _importChooser.changed.add(F.callback(updateWindowTitle, true));
         _exportChooser.changed.add(F.callback(updateWindowTitle, true));
