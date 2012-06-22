@@ -76,8 +76,8 @@ public class SwfTexture
     public function toBitmapData () :BitmapData {
         const holder :Sprite = new Sprite();
 
-        if (scale < 1) {
-            // for downlscaling, render at normal size first, then scale to get the
+        if (scale != 1) {
+            // for down or up-scaling, render at normal size first, then scale to get the
             // benefit of bitmap smoothing. BitmapData.draw smoothing only works
             // when the source is itself a BitmapData object.
             const fullsizeOffset :Point = getOffset(_disp, 1);
