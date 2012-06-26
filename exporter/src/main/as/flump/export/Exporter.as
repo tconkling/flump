@@ -84,7 +84,7 @@ public class Exporter
 
         // Add save and save as by index to work with the existing items on Mac
         // Mac menus have an existing "Close" item, so everything we add should go ahead of that
-        var newMenuItem :NativeMenuItem = fileMenuItem.submenu.addItemAt(new NativeMenuItem("New"), 0);
+        var newMenuItem :NativeMenuItem = fileMenuItem.submenu.addItemAt(new NativeMenuItem("New Project"), 0);
         newMenuItem.keyEquivalent = "n";
         newMenuItem.addEventListener(Event.SELECT, function (..._) :void {
             _confFile = null;
@@ -93,7 +93,7 @@ public class Exporter
             updateFromConf();
         });
         var openMenuItem :NativeMenuItem =
-            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Open..."), 1);
+            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Open Project..."), 1);
         openMenuItem.keyEquivalent = "o";
         openMenuItem.addEventListener(Event.SELECT, function (..._) :void {
             var file :File = new File();
@@ -112,7 +112,7 @@ public class Exporter
         });
 
         const saveMenuItem :NativeMenuItem =
-            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save"), 3);
+            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save Project"), 3);
         saveMenuItem.keyEquivalent = "s";
         function saveConf () :void {
             Files.write(_confFile, function (out :IDataOutput) :void {
@@ -152,7 +152,7 @@ public class Exporter
         });
 
         function updateWindowTitle (modified :Boolean) :void {
-            var name :String = (_confFile != null) ? _confFile.name.replace(/\.flump$/i, "") : "Untitled";
+            var name :String = (_confFile != null) ? _confFile.name.replace(/\.flump$/i, "") : "Untitled Project";
             if (modified) name += "*";
             _win.title = name;
         };
@@ -176,7 +176,7 @@ public class Exporter
         };
 
         const saveAsMenuItem :NativeMenuItem =
-            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save As..."), 4);
+            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save Project As..."), 4);
         saveAsMenuItem.keyEquivalent = "S";
         saveAsMenuItem.addEventListener(Event.SELECT, saveAs);
 
