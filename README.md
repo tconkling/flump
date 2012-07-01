@@ -12,8 +12,8 @@ and more expressive animations on mobile platforms.
 1. [Download and install](https://github.com/downloads/threerings/flump/flump-exporter.air) the flump .air app
 2. Create a document in Flash Professional saved as `.fla` (or `.xfl`)
 3. Create a new item in the library and draw a shape in its canvas
-4. Right-click on the item, select its properties, mark it as exported for ActionScript, and change
-   its base class to `flash.display.Sprite`
+4. Right-click on the item, select its properties, tick the **Export for ActionScript** and **Export in frame 1** 
+   checkboxes and change its base class to `flash.display.Sprite`
 5. Create a second item in the library, and drag the first into it.
 6. Add additional frames in the second item, and create a classic tween moving the first item around
    in those frames.
