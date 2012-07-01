@@ -203,6 +203,14 @@ public class XflLibrary
         log.debug("Parsing for library", "file", path, "isSprite", isSprite, "md5", md5);
         try {
             if (isSprite) {
+                // if "export in first frame" is not set, we won't be able to load the texture
+                // from the swf.
+                // TODO: remove this restriction by loading the entire swf before reading textures?
+                if (!XmlUtil.getBooleanAttr(xml, "linkageExportInFirstFrame", true)) {
+                    addError(location + ":" + XmlUtil.getStringAttr(xml, "linkageClassName"),
+                        ParseError.CRIT, "\"Export in frame 1\" must be set");
+                    return;
+                }
                 var texture :XflTexture = new XflTexture(this, location, xml, md5);
                 if (texture.isValid(swf)) textures.push(texture);
                 else addError(location + ":" + texture.symbol, ParseError.CRIT, "Sprite is empty");
