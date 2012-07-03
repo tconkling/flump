@@ -25,9 +25,6 @@ public class SwfTexture
     public var w :int, h :int, a :int;
     public var scale :Number;
 
-    // The MD5 of the symbol XML in the library, or null if there is no associated symbol
-    public var md5 :String;
-
     public static function renderToBitmapData (target :IBitmapDrawable, width :int,
         height :int, scale :Number = 1) :BitmapData {
 
@@ -45,7 +42,7 @@ public class SwfTexture
         const clip :MovieClip = MovieClip(new klass());
         clip.gotoAndStop(frame + 1);
         const name :String = movie.id + "_flipbook_" + frame;
-        return new SwfTexture(null, name, clip, scale);
+        return new SwfTexture(name, clip, scale);
     }
 
     public static function fromTexture (swf :LoadedSwf, tex :XflTexture,
@@ -55,12 +52,10 @@ public class SwfTexture
         const instance :Object = new klass();
         const disp :DisplayObject = (instance is BitmapData) ?
             new Bitmap(BitmapData(instance)) : DisplayObject(instance);
-        return new SwfTexture(tex.md5, tex.symbol, disp, scale);
+        return new SwfTexture(tex.symbol, disp, scale);
     }
 
-    public function SwfTexture (md5 :String, symbol :String, disp :DisplayObject, scale :Number) {
-
-        this.md5 = md5;
+    public function SwfTexture (symbol :String, disp :DisplayObject, scale :Number) {
         this.symbol = symbol;
         this.scale = scale;
         _disp = disp;

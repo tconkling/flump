@@ -171,8 +171,7 @@ public class XflLibrary
         if (xml.media != null) {
             for each (var bitmap :XML in xml.media.DOMBitmapItem) {
                 if (XmlUtil.getBooleanAttr(bitmap, "linkageExportForAS", false)) {
-                    var md5 :String = MD5.hash(bitmap.toString());
-                    textures.push(new XflTexture(this, location, bitmap, md5));
+                    textures.push(new XflTexture(this, location, bitmap));
                 }
             }
         }
@@ -199,8 +198,7 @@ public class XflLibrary
         }
 
         const isSprite :Boolean = XmlUtil.getBooleanAttr(xml, "isSpriteSubclass", false);
-        const md5 :String = MD5.hashBytes(fileData);
-        log.debug("Parsing for library", "file", path, "isSprite", isSprite, "md5", md5);
+        log.debug("Parsing for library", "file", path, "isSprite", isSprite);
         try {
             if (isSprite) {
                 // if "export in first frame" is not set, we won't be able to load the texture
@@ -211,10 +209,10 @@ public class XflLibrary
                         ParseError.CRIT, "\"Export in frame 1\" must be set");
                     return;
                 }
-                var texture :XflTexture = new XflTexture(this, location, xml, md5);
+                var texture :XflTexture = new XflTexture(this, location, xml);
                 if (texture.isValid(swf)) textures.push(texture);
                 else addError(location + ":" + texture.symbol, ParseError.CRIT, "Sprite is empty");
-            } else movies.push(XflMovie.parse(this, xml, md5));
+            } else movies.push(XflMovie.parse(this, xml));
         } catch (e :Error) {
             var type :String = isSprite ? "sprite" : "movie";
             addTopLevelError(ParseError.CRIT, "Unable to parse " + type + " in " + path, e);

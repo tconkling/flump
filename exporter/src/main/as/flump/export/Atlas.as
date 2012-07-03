@@ -65,7 +65,6 @@ public class Atlas
             texMold.symbol = tex.symbol;
             texMold.bounds = new Rectangle(node.bounds.x, node.bounds.y, tex.w, tex.h);
             texMold.offset = new Point(tex.offset.x, tex.offset.y);
-            texMold.md5 = tex.md5;
             mold.textures.push(texMold);
         });
         return mold;

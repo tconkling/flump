@@ -13,13 +13,12 @@ public class XflMovie
 {
     use namespace xflns;
 
-    public static function parse (lib :XflLibrary, xml :XML, md5 :String) :MovieMold {
+    public static function parse (lib :XflLibrary, xml :XML) :MovieMold {
         const movie :MovieMold = new MovieMold();
         const name :String = XmlUtil.getStringAttr(xml, "name")
         const symbol :String = XmlUtil.getStringAttr(xml, "linkageClassName", null);
         movie.id = lib.createId(movie, name, symbol);
         const location :String = lib.location + ":" + movie.id;
-        movie.md5 = md5;
 
         const layerEls :XMLList = xml.timeline.DOMTimeline[0].layers.DOMLayer;
         if (XmlUtil.getStringAttr(layerEls[0], "name") == "flipbook") {
