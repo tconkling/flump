@@ -42,13 +42,13 @@ public class KeyframeMold
         };
         if (ref != null) {
             json.ref = ref;
-            if (x != 0 || y != 0) json.loc = [x, y];
-            if (scaleX != 1 || scaleY != 1) json.scale = [scaleX, scaleY];
-            if (skewX != 0 || skewY != 0) json.skew = [skewX, skewY];
-            if (pivotX != 0 || pivotY != 0) json.pivot = [pivotX, pivotY];
-            if (alpha != 1) json.alpha = alpha;
+            if (x != 0 || y != 0) json.loc = [round(x), round(y)];
+            if (scaleX != 1 || scaleY != 1) json.scale = [round(scaleX), round(scaleY)];
+            if (skewX != 0 || skewY != 0) json.skew = [round(skewX), round(skewY)];
+            if (pivotX != 0 || pivotY != 0) json.pivot = [round(pivotX), round(pivotY)];
+            if (alpha != 1) json.alpha = round(alpha);
             if (!visible) json.visible = visible;
-            if (ease != 0) json.ease = ease;
+            if (ease != 0) json.ease = round(ease);
         }
         if (label != null) json.label = label;
         return json;
@@ -89,22 +89,25 @@ public class KeyframeMold
         return mold
     }
 
-    public function toXML () :XML
-    {
+    public function toXML () :XML {
         var xml :XML = <kf duration={duration}/>;
-
         if (ref != null) {
             xml.@ref = ref;
-            if (x != 0 || y != 0) xml.@loc = "" + x + "," + y;
-            if (scaleX != 1 || scaleY != 1) xml.@scale = "" + scaleX + "," + scaleY;
-            if (skewX != 0 || skewY != 0) xml.@skew = "" + skewX + "," + skewY;
-            if (pivotX != 0 || pivotY != 0) xml.@pivot = "" + pivotX + "," + pivotY;
-            if (alpha != 1) xml.@alpha = alpha;
+            if (x != 0 || y != 0) xml.@loc = "" + round(x) + "," + round(y);
+            if (scaleX != 1 || scaleY != 1) xml.@scale = "" + round(scaleX) + "," + round(scaleY);
+            if (skewX != 0 || skewY != 0) xml.@skew = "" + round(skewX) + "," + round(skewY);
+            if (pivotX != 0 || pivotY != 0) xml.@pivot = "" + round(pivotX) + "," + round(pivotY);
+            if (alpha != 1) xml.@alpha = round(alpha);
             if (!visible) xml.@visible = visible;
-            if (ease != 0) xml.@ease = ease;
+            if (ease != 0) xml.@ease = round(ease);
         }
         if (label != null) xml.@label = label;
         return xml;
+    }
+
+    protected static function round (n :Number, places :int = 4) :Number {
+        const shift :int = Math.pow(10, places);
+        return Math.round(n * shift) / shift;
     }
 
 }

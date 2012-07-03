@@ -74,22 +74,7 @@ public class XflLayer
             nextKf.rotate(additionalRotation);
         }
 
-        // round our keyframe values
-        for each (kf in layer.keyframes) {
-            kf.x = round(kf.x);
-            kf.y = round(kf.y);
-            kf.scaleX = round(kf.scaleX);
-            kf.scaleY = round(kf.scaleY);
-            kf.skewX = round(kf.skewX);
-            kf.skewY = round(kf.skewY);
-        }
-
         return layer;
-    }
-
-    protected static function round (n :Number, places :int = 4) :Number {
-        const shift :int = Math.pow(10, places);
-        return Math.round(n * shift) / shift;
     }
 
     protected static function sign (n :Number) :Number {
