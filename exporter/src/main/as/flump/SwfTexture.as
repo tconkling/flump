@@ -25,14 +25,48 @@ public class SwfTexture
     public var w :int, h :int, a :int;
     public var scale :Number;
 
-    public static function renderToBitmapData (target :IBitmapDrawable, width :int,
-        height :int, scale :Number = 1) :BitmapData {
+    public static function renderToBitmapData (src :IBitmapDrawable, w :int, h :int, scale :Number = 1,
+        multipassScaleThreshold :Number = 0.5) :BitmapData {
 
-        const bd :BitmapData = new BitmapData(width, height, true, 0x00);
-        const m :Matrix = new Matrix();
-        m.scale(scale, scale);
-        bd.draw(target, m, null, null, null, true);
-        return bd;
+        function srcBounds () :Rectangle {
+            if (src is BitmapData) {
+                return new Rectangle(0, 0, BitmapData(src).width, BitmapData(src).height);
+            } else if (src is DisplayObject) {
+                return DisplayObject(src).getBounds(DisplayObject(src));
+            } else {
+                throw new ArgumentError("src must be a a BitmapData or a DisplayObject");
+            }
+        }
+
+        var bounds :Rectangle = srcBounds();
+
+        if (scale != 1 && !(src is BitmapData)) {
+            // for down or up-scaling, render at normal size first, then scale to get the
+            // benefit of bitmap smoothing. BitmapData.draw smoothing only works
+            // when the source is itself a BitmapData object.
+            src = renderToBitmapData(src, Math.ceil(bounds.width), Math.ceil(bounds.height), 1);
+            bounds = srcBounds();
+        }
+
+        // Don't downscale by more than 50% at a time - this causes Flash's
+        // downsampling algorithm to produce really poor results
+        var targetScale :Number = scale;
+        var targetW :Number = bounds.width;
+        var targetH :Number = bounds.height;
+        while (targetScale < multipassScaleThreshold) {
+            targetW *= multipassScaleThreshold;
+            targetH *= multipassScaleThreshold;
+            src = renderToBitmapData(src, Math.ceil(targetW), Math.ceil(targetH), multipassScaleThreshold);
+            targetScale /= multipassScaleThreshold;
+        }
+        bounds = srcBounds();
+
+        var bmd :BitmapData = new BitmapData(w, h, true, 0x00);
+        var m :Matrix = new Matrix();
+        m.translate(-bounds.x, -bounds.y);
+        m.scale(targetScale, targetScale);
+        bmd.draw(src, m, null, null, null, true);
+        return bmd;
     }
 
     public static function fromFlipbook (lib :XflLibrary, movie :MovieMold, frame :int,
@@ -69,26 +103,7 @@ public class SwfTexture
     }
 
     public function toBitmapData () :BitmapData {
-        const holder :Sprite = new Sprite();
-
-        if (scale != 1) {
-            // for down or up-scaling, render at normal size first, then scale to get the
-            // benefit of bitmap smoothing. BitmapData.draw smoothing only works
-            // when the source is itself a BitmapData object.
-            const fullsizeOffset :Point = getOffset(_disp, 1);
-            const fullSize :Point = getSize(_disp, 1);
-            _disp.x = -fullsizeOffset.x;
-            _disp.y = -fullsizeOffset.y;
-            holder.addChild(_disp);
-            const bmd :BitmapData = renderToBitmapData(holder, fullSize.x, fullSize.y, 1);
-            return renderToBitmapData(bmd, w, h, scale);
-
-        } else {
-            _disp.x = -getOffset(_disp, scale).x;
-            _disp.y = -getOffset(_disp, scale).y;
-            holder.addChild(_disp);
-            return renderToBitmapData(holder, w, h, scale);
-        }
+        return renderToBitmapData(_disp, w, h, scale);
     }
 
     public function toString () :String { return "a " + a + " w " + w + " h " + h; }
