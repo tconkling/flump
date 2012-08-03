@@ -80,7 +80,7 @@ public class Atlas
         }
 
         var found :Boolean = false;
-        for (var yy :int = 0; yy < _height - h && !found; ++yy) {
+        for (var yy :int = 0; yy <= _height - h && !found; ++yy) {
             for (var xx :int = 0; xx <= _width - w; ++xx) {
                 // if our right-most pixel is masked, jump ahead by that much
                 if (maskAt(xx + w - 1, yy)) {
