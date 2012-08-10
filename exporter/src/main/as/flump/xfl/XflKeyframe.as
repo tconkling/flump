@@ -24,7 +24,13 @@ public class XflKeyframe
         kf.label = XmlUtil.getStringAttr(xml, "name", null);
         kf.ease = XmlUtil.getNumberAttr(xml, "acceleration", 0) / 100;
 
-        if (flipbook) return kf;
+        if (flipbook) {
+            if (xml.elements.elements().length() == 0) {
+                lib.addError(location, ParseError.CRIT, "Empty frames are not allowed in flipbooks");
+            }
+            return kf;
+        }
+
         var symbolXml :XML;
         for each (var frameEl :XML in xml.elements.elements()) {
             if (frameEl.name().localName == "DOMSymbolInstance") {
