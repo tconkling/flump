@@ -5,17 +5,45 @@ package flump.xfl {
 
 import flump.display.Movie;
 import flump.mold.KeyframeMold;
+import flump.mold.LayerMold;
 import flump.mold.MovieMold;
 
+import com.threerings.util.Set;
+import com.threerings.util.Sets;
 import com.threerings.util.XmlUtil;
 
 public class XflMovie
 {
     use namespace xflns;
 
+    /** Returns true if the given movie symbol is marked for "Export for ActionScript" */
+    public static function isExported (xml :XML) :Boolean {
+        return XmlUtil.hasAttr(xml, "linkageClassName");
+    }
+
+    /** Returns the library name of the given movie */
+    public static function getName (xml :XML) :String {
+        return XmlUtil.getStringAttr(xml, "name");
+    }
+
+    /** Return a Set of all the symbols this movie references. */
+    public static function getSymbolNames (mold :MovieMold) :Set {
+        var names :Set = Sets.newSetOf(String);
+        for each (var layer :LayerMold in mold.layers) {
+            if (!layer.flipbook) {
+                for each (var kf :KeyframeMold in layer.keyframes) {
+                    if (kf.ref != null) {
+                        names.add(kf.ref);
+                    }
+                }
+            }
+        }
+        return names;
+    }
+
     public static function parse (lib :XflLibrary, xml :XML) :MovieMold {
         const movie :MovieMold = new MovieMold();
-        const name :String = XmlUtil.getStringAttr(xml, "name")
+        const name :String = getName(xml);
         const symbol :String = XmlUtil.getStringAttr(xml, "linkageClassName", null);
         movie.id = lib.createId(movie, name, symbol);
         const location :String = lib.location + ":" + movie.id;

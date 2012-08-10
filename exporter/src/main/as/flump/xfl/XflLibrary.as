@@ -74,7 +74,24 @@ public class XflLibrary
     }
 
     public function finishLoading () :void {
-        for each (var movie :MovieMold in movies) if (isExported(movie)) addToPublished(movie);
+        var movie :MovieMold = null;
+
+        // Parse all un-exported movies that are referenced by the exported movies.
+        for (var ii :int = 0; ii < movies.length; ++ii) {
+            movie = movies[ii];
+            for each (var symbolName :String in XflMovie.getSymbolNames(movie).toArray()) {
+                var xml :XML = _unexportedMovies.remove(symbolName);
+                if (xml != null) {
+                    parseMovie(xml);
+                }
+            }
+        }
+
+        for each (movie in movies) {
+            if (isExported(movie)) {
+                addToPublished(movie);
+            }
+        }
     }
 
     protected function addToPublished (movie :MovieMold) :void {
@@ -210,15 +227,35 @@ public class XflLibrary
                     return;
                 }
                 var texture :XflTexture = new XflTexture(this, location, xml);
-                if (texture.isValid(swf)) textures.push(texture);
-                else addError(location + ":" + texture.symbol, ParseError.CRIT, "Sprite is empty");
-            } else movies.push(XflMovie.parse(this, xml));
+                if (texture.isValid(swf)) {
+                    textures.push(texture);
+                } else {
+                    addError(location + ":" + texture.symbol, ParseError.CRIT, "Sprite is empty");
+                }
+
+            } else {
+                // It's a movie. If it's exported, we parse it now.
+                // Else, we save it for possible parsing later.
+                // (Un-exported movies that are not referenced will not be published.)
+                if (XflMovie.isExported(xml)) {
+                    parseMovie(xml);
+                } else {
+                    _unexportedMovies.put(XflMovie.getName(xml), xml);
+                }
+            }
         } catch (e :Error) {
             var type :String = isSprite ? "sprite" : "movie";
             addTopLevelError(ParseError.CRIT, "Unable to parse " + type + " in " + path, e);
             log.error("Unable to parse " + path, e);
         }
     }
+
+    protected function parseMovie (xml :XML) :void {
+        movies.push(XflMovie.parse(this, xml));
+    }
+
+    /** Library name to XML for movies in the XFL that are not marked for export */
+    protected const _unexportedMovies :Map = Maps.newMapOf(String);
 
     /** Object to symbol name for all exported textures and movies in the library */
     protected const _moldToSymbol :Map = Maps.newMapOf(Object);
