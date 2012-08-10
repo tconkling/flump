@@ -32,9 +32,7 @@ public class XflMovie
         for each (var layer :LayerMold in mold.layers) {
             if (!layer.flipbook) {
                 for each (var kf :KeyframeMold in layer.keyframes) {
-                    if (kf.ref != null) {
-                        names.add(kf.ref);
-                    }
+                    if (kf.ref != null) names.add(kf.ref);
                 }
             }
         }
@@ -56,7 +54,6 @@ public class XflMovie
             }
             for each (var kf :KeyframeMold in movie.layers[0].keyframes) {
                 kf.ref = movie.id + "_flipbook_" + kf.index;
-
             }
         } else {
             for each (var layerEl :XML in layerEls) {

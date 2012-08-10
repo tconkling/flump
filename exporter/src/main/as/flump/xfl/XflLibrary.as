@@ -81,17 +81,11 @@ public class XflLibrary
             movie = movies[ii];
             for each (var symbolName :String in XflMovie.getSymbolNames(movie).toArray()) {
                 var xml :XML = _unexportedMovies.remove(symbolName);
-                if (xml != null) {
-                    parseMovie(xml);
-                }
+                if (xml != null) parseMovie(xml);
             }
         }
 
-        for each (movie in movies) {
-            if (isExported(movie)) {
-                addToPublished(movie);
-            }
-        }
+        for each (movie in movies) if (isExported(movie)) addToPublished(movie);
     }
 
     protected function addToPublished (movie :MovieMold) :void {
@@ -227,21 +221,15 @@ public class XflLibrary
                     return;
                 }
                 var texture :XflTexture = new XflTexture(this, location, xml);
-                if (texture.isValid(swf)) {
-                    textures.push(texture);
-                } else {
-                    addError(location + ":" + texture.symbol, ParseError.CRIT, "Sprite is empty");
-                }
+                if (texture.isValid(swf)) textures.push(texture);
+                else addError(location + ":" + texture.symbol, ParseError.CRIT, "Sprite is empty");
 
             } else {
                 // It's a movie. If it's exported, we parse it now.
                 // Else, we save it for possible parsing later.
                 // (Un-exported movies that are not referenced will not be published.)
-                if (XflMovie.isExported(xml)) {
-                    parseMovie(xml);
-                } else {
-                    _unexportedMovies.put(XflMovie.getName(xml), xml);
-                }
+                if (XflMovie.isExported(xml)) parseMovie(xml);
+                else _unexportedMovies.put(XflMovie.getName(xml), xml);
             }
         } catch (e :Error) {
             var type :String = isSprite ? "sprite" : "movie";
