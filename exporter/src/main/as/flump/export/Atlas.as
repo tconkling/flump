@@ -21,7 +21,7 @@ import com.threerings.util.Arrays;
 public class Atlas
 {
     // The empty border size around the right and bottom edges of each texture, to prevent bleeding
-    public static const PADDING :int = 1;
+    public static const PADDING :int = 2;
 
     public var name :String;
 
