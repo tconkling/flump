@@ -18,7 +18,7 @@ public class ExportConf
         return name + " (" + scale.toFixed(2) + "/" + format + ")";
     }
 
-    public function create (exportDir :File, lib :XflLibrary) :Format {
+    public function create (exportDir :File, lib :XflLibrary, maxSize :int) :Format {
         var formatClass :Class;
         switch (format.toLowerCase()) {
             case "json": formatClass = JSONFormat; break;
@@ -26,7 +26,7 @@ public class ExportConf
             case "xml": formatClass = XMLFormat; break;
             default: throw new Error("Unknown format '" + format + "'");
         }
-        return new formatClass(exportDir, lib, this);
+        return new formatClass(exportDir, lib, this, maxSize);
     }
 
     public static function fromJSON (o :Object) :ExportConf {

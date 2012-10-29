@@ -31,7 +31,9 @@ public class PublishTest
             const conf :ExportConf = new ExportConf();
             conf.directory = "starling";
             conf.format = formatClass;
-            const pub :Publisher = new Publisher(exportDir, conf);
+            const flump :FlumpConf = new FlumpConf();
+            flump.exports = [conf];
+            const pub :Publisher = new Publisher(exportDir, flump);
             assert(pub.modified(_lib), "Lack of output should indicate modified");
             pub.publish(_lib);
             assert(!pub.modified(_lib), "Shouldn't be modified after publishing");

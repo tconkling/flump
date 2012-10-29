@@ -268,7 +268,7 @@ public class Exporter
 
     protected function get publisher () :Publisher {
         if (_exportChooser.dir == null || _conf.exports.length == 0) return null;
-        return new Publisher(_exportChooser.dir, Vector.<ExportConf>(_conf.exports));
+        return new Publisher(_exportChooser.dir, _conf);
     }
 
     protected function saveConfFilePath () :void {

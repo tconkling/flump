@@ -17,8 +17,8 @@ public class StarlingFormat extends Format
 {
     public var outputFile :File;
 
-    public function StarlingFormat (destDir :File, lib :XflLibrary, conf :ExportConf) {
-        super(destDir, lib, conf);
+    public function StarlingFormat (destDir :File, lib :XflLibrary, conf :ExportConf, maxSize :int) {
+        super(destDir, lib, conf, maxSize);
         if (conf.name != null) {
             outputFile = _destDir.resolvePath(conf.name + "/" + lib.location + ".zip");
         } else {
@@ -45,7 +45,7 @@ public class StarlingFormat extends Format
             zip.addFile(name, bytes);
         }
 
-        const packer :Packer = new Packer(_lib, _conf.scale);
+        const packer :Packer = new Packer(_lib, _conf.scale, _maxSize);
 
         for each (var atlas :Atlas in packer.atlases) {
             addToZip(atlas.filename, function (b :ByteArray) :void { atlas.writePNG(b); });

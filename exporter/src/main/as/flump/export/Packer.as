@@ -19,7 +19,9 @@ public class Packer
 {
     public const atlases :Vector.<Atlas> = new Vector.<Atlas>();
 
-    public function Packer (lib :XflLibrary, scale :Number=1.0, prefix :String="", suffix :String="") {
+    public function Packer (lib :XflLibrary, scale :Number=1.0, maxSize :int=2048, prefix :String="", suffix :String="") {
+        _maxSize = maxSize;
+
         for each (var tex :XflTexture in lib.textures) {
             _unpacked.push(SwfTexture.fromTexture(lib.swf, tex, scale));
         }
@@ -41,7 +43,7 @@ public class Packer
             for (var ii :int = 0; ii < _unpacked.length; ++ii) {
                 var unpacked :SwfTexture = _unpacked[ii];
 
-                if (unpacked.w > MAX_SIZE || unpacked.h > MAX_SIZE) {
+                if (unpacked.w > _maxSize || unpacked.h > _maxSize) {
                     throw new Error("Too large to fit in an atlas: " + unpacked.w + ", " + unpacked.h + " " + unpacked.symbol);
                 }
 
@@ -81,8 +83,8 @@ public class Packer
             else size.y *= 2;
         }
 
-        size.x = Math.min(size.x, MAX_SIZE);
-        size.y = Math.min(size.y, MAX_SIZE);
+        size.x = Math.min(size.x, _maxSize);
+        size.y = Math.min(size.y, _maxSize);
 
         return size;
     }
@@ -94,9 +96,7 @@ public class Packer
     }
 
     protected const _unpacked :Vector.<SwfTexture> = new Vector.<SwfTexture>();
-
-    // Maximum width or height of a texture atlas
-    private static const MAX_SIZE :int = 2048;
+    protected var _maxSize :int;
 
     private static const log :Log = Log.getLog(Packer);
 }

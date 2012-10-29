@@ -14,8 +14,8 @@ import com.threerings.util.XmlUtil;
 
 public class XMLFormat extends Format
 {
-    public function XMLFormat (destDir :File, lib :XflLibrary, conf :ExportConf) {
-        super(destDir, lib, conf);
+    public function XMLFormat (destDir :File, lib :XflLibrary, conf :ExportConf, maxSize :int) {
+        super(destDir, lib, conf, maxSize);
         _prefix = conf.name + "/" + lib.location + "/";
         _metaFile =  _destDir.resolvePath(_prefix + "resources.xml");
     }
@@ -31,8 +31,8 @@ public class XMLFormat extends Format
         libExportDir.createDirectory();
 
         const packers :Vector.<Packer> = new <Packer>[
-            new Packer(_lib, _conf.scale, _prefix),
-            new Packer(_lib, _conf.scale * 2, _prefix, "@2x"),
+            new Packer(_lib, _conf.scale, _maxSize, _prefix),
+            new Packer(_lib, _conf.scale * 2, _maxSize, _prefix, "@2x"),
         ];
 
         for each (var packer :Packer in packers) {
