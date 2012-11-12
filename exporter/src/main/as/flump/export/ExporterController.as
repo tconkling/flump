@@ -46,21 +46,82 @@ public class ExporterController
     public function ExporterController (win :ExporterWindow) {
         Log.setLevel("", Log.INFO);
         _win = win;
-        _errors = _win.errors;
-        _libraries = _win.libraries;
+        _errorsGrid = _win.errors;
+        _librariesGrid = _win.libraries;
 
-        function updatePreviewAndExport (..._) :void {
-            _win.export.enabled = _exportChooser.dir != null && _libraries.selectionLength > 0 &&
-                _libraries.selectedItems.some(function (status :DocStatus, ..._) :Boolean {
-                    return status.isValid;
-            });
 
-            var status :DocStatus = _libraries.selectedItem as DocStatus;
-            _win.preview.enabled = status != null && status.isValid;
 
-            if (_exportChooser.dir == null) return;
-            _conf.exportDir = _confFile == null ? _exportChooser.dir.nativePath : _confFile.parent.getRelativePath(_exportChooser.dir, /*useDotDot=*/true);
+        if (_settings.data.hasOwnProperty(CONF_FILE_KEY)) {
+            _confFile = new File(_settings.data[CONF_FILE_KEY]);
+            openConf();
         }
+
+        var curSelection :DocStatus = null;
+        _librariesGrid.addEventListener(GridSelectionEvent.SELECTION_CHANGE, function (..._) :void {
+            log.info("Changed", "selected", _librariesGrid.selectedIndices);
+            updatePreviewAndExport();
+
+            if (curSelection != null) {
+                curSelection.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, updatePreviewAndExport);
+            }
+            var newSelection :DocStatus = _librariesGrid.selectedItem as DocStatus;
+            if (newSelection != null) {
+                newSelection.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, updatePreviewAndExport);
+            }
+            curSelection = newSelection;
+        });
+        _win.reload.addEventListener(MouseEvent.CLICK, F.callback(reloadNow));
+        _win.export.addEventListener(MouseEvent.CLICK, function (..._) :void {
+            for each (var status :DocStatus in _librariesGrid.selectedItems) {
+                exportFlashDocument(status);
+            }
+        });
+        _win.preview.addEventListener(MouseEvent.CLICK, function (..._) :void {
+            showPreviewWindow(_librariesGrid.selectedItem.lib);
+        });
+        _importChooser = new DirChooser(null, _win.importRoot, _win.browseImport);
+        _importChooser.changed.add(setImport);
+        _exportChooser = new DirChooser(null, _win.exportRoot, _win.browseExport);
+        _exportChooser.changed.add(reloadNow);
+
+        _importChooser.changed.add(F.callback(updateWindowTitle, true));
+        _exportChooser.changed.add(F.callback(updateWindowTitle, true));
+
+        var editFormats :EditFormatsWindow;
+        _win.editFormats.addEventListener(MouseEvent.CLICK, function (..._) :void {
+            if (editFormats == null || editFormats.closed) {
+                editFormats = new EditFormatsWindow();
+                editFormats.open();
+            } else editFormats.orderToFront();
+
+            var dataProvider :ArrayList = new ArrayList(_conf.exports);
+            dataProvider.addEventListener(CollectionEvent.COLLECTION_CHANGE, updateFromConf);
+
+            editFormats.exports.dataProvider = dataProvider;
+            editFormats.buttonAdd.addEventListener(MouseEvent.CLICK, function (..._) :void {
+                var export :ExportConf = new ExportConf();
+                export.name = "format" + (_conf.exports.length+1);
+                if (_conf.exports.length > 0) {
+                    export.format = _conf.exports[0].format;
+                }
+                dataProvider.addItem(export);
+            });
+            editFormats.exports.addEventListener(GridSelectionEvent.SELECTION_CHANGE, function (..._) :void {
+                editFormats.buttonRemove.enabled = (editFormats.exports.selectedItem != null);
+            });
+            editFormats.buttonRemove.addEventListener(MouseEvent.CLICK, function (..._) :void {
+                for each (var export :ExportConf in editFormats.exports.selectedItems) {
+                    dataProvider.removeItem(export);
+                }
+            });
+        });
+
+        updateFromConf();
+        updateWindowTitle(false);
+        _win.addEventListener(Event.CLOSE, function (..._) :void { NA.exit(0); });
+    }
+
+    protected function setupMenus () :void {
 
         var fileMenuItem :NativeMenuItem;
         if (NativeApplication.supportsMenu) {
@@ -74,14 +135,6 @@ public class ExporterController
             fileMenuItem = _win.nativeWindow.menu.addSubmenu(new NativeMenu(), "File");
         }
 
-        function open (file :File) :void {
-            _confFile = file;
-            saveConfFilePath();
-            openConf();
-            updateFromConf();
-            updateWindowTitle(false);
-        };
-
         // Add save and save as by index to work with the existing items on Mac
         // Mac menus have an existing "Close" item, so everything we add should go ahead of that
         var newMenuItem :NativeMenuItem = fileMenuItem.submenu.addItemAt(new NativeMenuItem("New Project"), 0);
@@ -92,6 +145,7 @@ public class ExporterController
             setImport(null);
             updateFromConf();
         });
+
         var openMenuItem :NativeMenuItem =
             fileMenuItem.submenu.addItemAt(new NativeMenuItem("Open Project..."), 1);
         openMenuItem.keyEquivalent = "o";
@@ -151,119 +205,71 @@ public class ExporterController
             else saveConf();
         });
 
-        function updateWindowTitle (modified :Boolean) :void {
-            var name :String = (_confFile != null) ? _confFile.name.replace(/\.flump$/i, "") : "Untitled Project";
-            if (modified) name += "*";
-            _win.title = name;
-        };
-
-        function reloadNow () :void {
-            setImport(_importChooser.dir);
-            updatePreviewAndExport();
-        }
-
-        function openConf () :void {
-            try {
-                _conf = FlumpConf.fromJSON(JSONFormat.readJSON(_confFile));
-                var dir :String = _confFile.parent.resolvePath(_conf.importDir).nativePath;
-                setImport(new File(dir));
-            } catch (e :Error) {
-                log.warning("Unable to parse conf", e);
-                _errors.dataProvider.addItem(new ParseError(_confFile.nativePath,
-                    ParseError.CRIT, "Unable to read configuration"));
-                _confFile = null;
-            }
-        };
-
         const saveAsMenuItem :NativeMenuItem =
             fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save Project As..."), 4);
         saveAsMenuItem.keyEquivalent = "S";
         saveAsMenuItem.addEventListener(Event.SELECT, saveAs);
+    }
 
-        if (_settings.data.hasOwnProperty(CONF_FILE_KEY)) {
-            _confFile = new File(_settings.data[CONF_FILE_KEY]);
-            openConf();
+    protected function updateWindowTitle (modified :Boolean) :void {
+        var name :String = (_confFile != null) ? _confFile.name.replace(/\.flump$/i, "") : "Untitled Project";
+        if (modified) name += "*";
+        _win.title = name;
+    }
+
+    protected function openConf () :void {
+        try {
+            _conf = FlumpConf.fromJSON(JSONFormat.readJSON(_confFile));
+            var dir :String = _confFile.parent.resolvePath(_conf.importDir).nativePath;
+            setImport(new File(dir));
+        } catch (e :Error) {
+            log.warning("Unable to parse conf", e);
+            _errorsGrid.dataProvider.addItem(new ParseError(_confFile.nativePath,
+                ParseError.CRIT, "Unable to read configuration"));
+            _confFile = null;
         }
+    }
 
-        var curSelection :DocStatus = null;
-        _libraries.addEventListener(GridSelectionEvent.SELECTION_CHANGE, function (..._) :void {
-            log.info("Changed", "selected", _libraries.selectedIndices);
-            updatePreviewAndExport();
-
-            if (curSelection != null) {
-                curSelection.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, updatePreviewAndExport);
-            }
-            var newSelection :DocStatus = _libraries.selectedItem as DocStatus;
-            if (newSelection != null) {
-                newSelection.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, updatePreviewAndExport);
-            }
-            curSelection = newSelection;
-        });
-        _win.reload.addEventListener(MouseEvent.CLICK, F.callback(reloadNow));
-        _win.export.addEventListener(MouseEvent.CLICK, function (..._) :void {
-            for each (var status :DocStatus in _libraries.selectedItems) {
-                exportFlashDocument(status);
-            }
-        });
-        _win.preview.addEventListener(MouseEvent.CLICK, function (..._) :void {
-            showPreviewWindow(_libraries.selectedItem.lib);
-        });
-        _importChooser = new DirChooser(null, _win.importRoot, _win.browseImport);
-        _importChooser.changed.add(setImport);
-        _exportChooser = new DirChooser(null, _win.exportRoot, _win.browseExport);
-        _exportChooser.changed.add(reloadNow);
-
-        _importChooser.changed.add(F.callback(updateWindowTitle, true));
-        _exportChooser.changed.add(F.callback(updateWindowTitle, true));
-
-        function updateFromConf (..._) :void {
-            if (_confFile != null) {
-                _importChooser.dir = (_conf.importDir != null) ? _confFile.parent.resolvePath(_conf.importDir) : null;
-                _exportChooser.dir = (_conf.exportDir != null) ? _confFile.parent.resolvePath(_conf.exportDir) : null;
-            } else {
-                _importChooser.dir = null;
-                _exportChooser.dir = null;
-            }
-
-            var formatNames :Array = [];
-            for each (var export :ExportConf in _conf.exports) formatNames.push(export.description);
-            _win.formatOverview.text = formatNames.join(", ");
-
-            updateWindowTitle(true);
-        };
-
-        var editFormats :EditFormatsWindow;
-        _win.editFormats.addEventListener(MouseEvent.CLICK, function (..._) :void {
-            if (editFormats == null || editFormats.closed) {
-                editFormats = new EditFormatsWindow();
-                editFormats.open();
-            } else editFormats.orderToFront();
-
-            var dataProvider :ArrayList = new ArrayList(_conf.exports);
-            dataProvider.addEventListener(CollectionEvent.COLLECTION_CHANGE, updateFromConf);
-
-            editFormats.exports.dataProvider = dataProvider;
-            editFormats.buttonAdd.addEventListener(MouseEvent.CLICK, function (..._) :void {
-                var export :ExportConf = new ExportConf();
-                export.name = "format" + (_conf.exports.length+1);
-                if (_conf.exports.length > 0) {
-                    export.format = _conf.exports[0].format;
-                }
-                dataProvider.addItem(export);
-            });
-            editFormats.exports.addEventListener(GridSelectionEvent.SELECTION_CHANGE, function (..._) :void {
-                editFormats.buttonRemove.enabled = (editFormats.exports.selectedItem != null);
-            });
-            editFormats.buttonRemove.addEventListener(MouseEvent.CLICK, function (..._) :void {
-                for each (var export :ExportConf in editFormats.exports.selectedItems) {
-                    dataProvider.removeItem(export);
-                }
-            });
-        });
-
+    protected function open (file :File) :void {
+        _confFile = file;
+        saveConfFilePath();
+        openConf();
         updateFromConf();
         updateWindowTitle(false);
-        _win.addEventListener(Event.CLOSE, function (..._) :void { NA.exit(0); });
+    }
+
+    protected function reloadNow () :void {
+        setImport(_importChooser.dir);
+        updatePreviewAndExport();
+    }
+
+    protected function updateFromConf (..._) :void {
+        if (_confFile != null) {
+            _importChooser.dir = (_conf.importDir != null) ? _confFile.parent.resolvePath(_conf.importDir) : null;
+            _exportChooser.dir = (_conf.exportDir != null) ? _confFile.parent.resolvePath(_conf.exportDir) : null;
+        } else {
+            _importChooser.dir = null;
+            _exportChooser.dir = null;
+        }
+
+        var formatNames :Array = [];
+        for each (var export :ExportConf in _conf.exports) formatNames.push(export.description);
+        _win.formatOverview.text = formatNames.join(", ");
+
+        updateWindowTitle(true);
+    }
+
+    protected function updatePreviewAndExport (..._) :void {
+        _win.export.enabled = _exportChooser.dir != null && _librariesGrid.selectionLength > 0 &&
+            _librariesGrid.selectedItems.some(function (status :DocStatus, ..._) :Boolean {
+                return status.isValid;
+            });
+
+        var status :DocStatus = _librariesGrid.selectedItem as DocStatus;
+        _win.preview.enabled = status != null && status.isValid;
+
+        if (_exportChooser.dir == null) return;
+        _conf.exportDir = _confFile == null ? _exportChooser.dir.nativePath : _confFile.parent.getRelativePath(_exportChooser.dir, /*useDotDot=*/true);
     }
 
     protected function get publisher () :Publisher {
@@ -278,8 +284,8 @@ public class ExporterController
     }
 
     protected function setImport (root :File) :void {
-        _libraries.dataProvider.removeAll();
-        _errors.dataProvider.removeAll();
+        _librariesGrid.dataProvider.removeAll();
+        _errorsGrid.dataProvider.removeAll();
         if (root == null) return;
         _rootLen = root.nativePath.length + 1;
         if (_docFinder != null) _docFinder.shutdownNow();
@@ -332,7 +338,7 @@ public class ExporterController
             for each (var file :File in files) {
                 if (Files.hasExtension(file, "xfl")) {
                     if (ignoreXflAtBase) {
-                        _errors.dataProvider.addItem(new ParseError(base.nativePath,
+                        _errorsGrid.dataProvider.addItem(new ParseError(base.nativePath,
                             ParseError.CRIT, "The import directory can't be an XFL directory, did you mean " +
                             base.parent.nativePath + "?"));
                     } else addFlashDocument(file);
@@ -379,12 +385,12 @@ public class ExporterController
         }
 
         const status :DocStatus = new DocStatus(name, _rootLen, Ternary.UNKNOWN, Ternary.UNKNOWN, null);
-        _libraries.dataProvider.addItem(status);
+        _librariesGrid.dataProvider.addItem(status);
 
         load.succeeded.add(function (lib :XflLibrary) :void {
             status.lib = lib;
             status.updateModified(Ternary.of(publisher == null || publisher.modified(lib)));
-            for each (var err :ParseError in lib.getErrors()) _errors.dataProvider.addItem(err);
+            for each (var err :ParseError in lib.getErrors()) _errorsGrid.dataProvider.addItem(err);
             status.updateValid(Ternary.of(lib.valid));
         });
         load.failed.add(function (error :Error) :void {
@@ -398,13 +404,14 @@ public class ExporterController
 
     protected var _docFinder :Executor;
     protected var _win :ExporterWindow;
-    protected var _libraries :DataGrid;
-    protected var _errors :DataGrid;
+    protected var _librariesGrid :DataGrid;
+    protected var _errorsGrid :DataGrid;
     protected var _exportChooser :DirChooser;
     protected var _importChooser :DirChooser;
     protected var _authoredResolution :DropDownList;
     protected var _conf :FlumpConf = new FlumpConf();
     protected var _confFile :File;
+
     protected const _settings :SharedObject = SharedObject.getLocal("flump/Exporter");
 
     private static const log :Log = Log.getLog(ExporterController);
