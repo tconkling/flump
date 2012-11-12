@@ -14,7 +14,6 @@ import flash.events.InvokeEvent;
 import flash.events.MouseEvent;
 import flash.filesystem.File;
 import flash.net.FileFilter;
-import flash.net.SharedObject;
 import flash.utils.IDataOutput;
 
 import flump.executor.Executor;
@@ -49,10 +48,8 @@ public class ExporterController
         _errorsGrid = _win.errors;
         _librariesGrid = _win.libraries;
 
-
-
-        if (_settings.data.hasOwnProperty(CONF_FILE_KEY)) {
-            _confFile = new File(_settings.data[CONF_FILE_KEY]);
+        if (FlumpSettings.hasConfigFilePath) {
+            _confFile = new File(FlumpSettings.configFilePath);
             openConf();
         }
 
@@ -279,8 +276,7 @@ public class ExporterController
 
     protected function saveConfFilePath () :void {
         trace("Conf file is now " + _confFile.nativePath);
-        _settings.data[CONF_FILE_KEY] = _confFile.nativePath;
-        _settings.flush();
+        FlumpSettings.configFilePath = _confFile.nativePath;
     }
 
     protected function setImport (root :File) :void {
@@ -412,11 +408,7 @@ public class ExporterController
     protected var _conf :FlumpConf = new FlumpConf();
     protected var _confFile :File;
 
-    protected const _settings :SharedObject = SharedObject.getLocal("flump/Exporter");
-
     private static const log :Log = Log.getLog(ExporterController);
-
-    protected static const CONF_FILE_KEY :String = "CONF_FILE";
 }
 }
 
