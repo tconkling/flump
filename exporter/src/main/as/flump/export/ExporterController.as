@@ -3,6 +3,10 @@
 
 package flump.export {
 
+import com.threerings.util.F;
+import com.threerings.util.Log;
+import com.threerings.util.StringUtil;
+
 import flash.desktop.NativeApplication;
 import flash.display.NativeMenu;
 import flash.display.NativeMenuItem;
@@ -18,25 +22,16 @@ import flash.utils.IDataOutput;
 
 import flump.executor.Executor;
 import flump.executor.Future;
-import flump.export.Ternary;
 import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;
 
-import mx.collections.ArrayList;
-import mx.events.CollectionEvent;
 import mx.events.PropertyChangeEvent;
 
 import spark.components.DataGrid;
 import spark.components.DropDownList;
-import spark.components.List;
-import spark.components.Window;
 import spark.events.GridSelectionEvent;
 
 import starling.display.Sprite;
-
-import com.threerings.util.F;
-import com.threerings.util.Log;
-import com.threerings.util.StringUtil;
 
 public class ExporterController
 {
@@ -84,33 +79,14 @@ public class ExporterController
         _importChooser.changed.add(F.callback(updateWindowTitle, true));
         _exportChooser.changed.add(F.callback(updateWindowTitle, true));
 
-        var editFormats :EditFormatsWindow;
+        var editFormatsController :EditFormatsController = null;
         _win.editFormats.addEventListener(MouseEvent.CLICK, function (..._) :void {
-            if (editFormats == null || editFormats.closed) {
-                editFormats = new EditFormatsWindow();
-                editFormats.open();
-            } else editFormats.orderToFront();
-
-            var dataProvider :ArrayList = new ArrayList(_conf.exports);
-            dataProvider.addEventListener(CollectionEvent.COLLECTION_CHANGE, updateFromConf);
-
-            editFormats.exports.dataProvider = dataProvider;
-            editFormats.buttonAdd.addEventListener(MouseEvent.CLICK, function (..._) :void {
-                var export :ExportConf = new ExportConf();
-                export.name = "format" + (_conf.exports.length+1);
-                if (_conf.exports.length > 0) {
-                    export.format = _conf.exports[0].format;
-                }
-                dataProvider.addItem(export);
-            });
-            editFormats.exports.addEventListener(GridSelectionEvent.SELECTION_CHANGE, function (..._) :void {
-                editFormats.buttonRemove.enabled = (editFormats.exports.selectedItem != null);
-            });
-            editFormats.buttonRemove.addEventListener(MouseEvent.CLICK, function (..._) :void {
-                for each (var export :ExportConf in editFormats.exports.selectedItems) {
-                    dataProvider.removeItem(export);
-                }
-            });
+            if (editFormatsController == null || editFormatsController.closed) {
+                editFormatsController = new EditFormatsController(_conf);
+                editFormatsController.formatsChanged.add(updateFromConf);
+            } else {
+                editFormatsController.show();
+            }
         });
 
         updateFromConf();
