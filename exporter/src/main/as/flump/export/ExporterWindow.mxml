@@ -9,10 +9,10 @@
   <fx:Script>
     <![CDATA[
     private function init () :void {
-      _exporter = new Exporter(this);
+      _exporter = new ExporterController(this);
     }
 
-    protected var _exporter :Exporter;
+    protected var _exporter :ExporterController;
     ]]>
   </fx:Script>
   <s:HGroup>

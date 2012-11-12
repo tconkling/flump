@@ -39,11 +39,11 @@ import com.threerings.util.F;
 import com.threerings.util.Log;
 import com.threerings.util.StringUtil;
 
-public class Exporter
+public class ExporterController
 {
     public static const NA :NativeApplication = NativeApplication.nativeApplication;
 
-    public function Exporter (win :ExporterWindow) {
+    public function ExporterController (win :ExporterWindow) {
         Log.setLevel("", Log.INFO);
         _win = win;
         _errors = _win.errors;
@@ -407,7 +407,7 @@ public class Exporter
     protected var _confFile :File;
     protected const _settings :SharedObject = SharedObject.getLocal("flump/Exporter");
 
-    private static const log :Log = Log.getLog(Exporter);
+    private static const log :Log = Log.getLog(ExporterController);
 
     protected static const CONF_FILE_KEY :String = "CONF_FILE";
 }
