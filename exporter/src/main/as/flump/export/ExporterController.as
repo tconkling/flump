@@ -3,6 +3,10 @@
 
 package flump.export {
 
+import com.threerings.util.F;
+import com.threerings.util.Log;
+import com.threerings.util.StringUtil;
+
 import flash.desktop.NativeApplication;
 import flash.display.NativeMenu;
 import flash.display.NativeMenuItem;
@@ -24,14 +28,9 @@ import flump.xfl.XflLibrary;
 import mx.events.PropertyChangeEvent;
 
 import spark.components.DataGrid;
-import spark.components.DropDownList;
 import spark.events.GridSelectionEvent;
 
 import starling.display.Sprite;
-
-import com.threerings.util.F;
-import com.threerings.util.Log;
-import com.threerings.util.StringUtil;
 
 public class ExporterController
 {
@@ -255,14 +254,19 @@ public class ExporterController
         FlumpSettings.configFilePath = _confFile.nativePath;
     }
 
-    protected function setImportDirectory (root :File) :void {
+    protected function setImportDirectory (dir :File) :void {
+        _importDirectory = dir;
         _flashDocsGrid.dataProvider.removeAll();
         _errorsGrid.dataProvider.removeAll();
-        if (root == null) return;
-        _rootLen = root.nativePath.length + 1;
-        if (_docFinder != null) _docFinder.shutdownNow();
+        if (dir == null) {
+            return;
+
+        }
+        if (_docFinder != null) {
+            _docFinder.shutdownNow();
+        }
         _docFinder = new Executor();
-        findFlashDocuments(root, _docFinder, true);
+        findFlashDocuments(dir, _docFinder, true);
         _win.reload.enabled = true;
     }
 
@@ -299,8 +303,7 @@ public class ExporterController
         });
     }
 
-    protected function findFlashDocuments (base :File, exec :Executor,
-        ignoreXflAtBase :Boolean = false) :void {
+    protected function findFlashDocuments (base :File, exec :Executor, ignoreXflAtBase :Boolean = false) :void {
         Files.list(base, exec).succeeded.add(function (files :Array) :void {
             if (exec.isShutdown) return;
             for each (var file :File in files) {
@@ -335,8 +338,10 @@ public class ExporterController
     }
 
     protected function addFlashDocument (file :File) :void {
-        var name :String = file.nativePath.substring(_rootLen).replace(
+        var importPathLen :int = _importDirectory.nativePath.length + 1;
+        var name :String = file.nativePath.substring(importPathLen).replace(
             new RegExp("\\" + File.separator, "g"), "/");
+
         var load :Future;
         switch (Files.getExtension(file)) {
         case "xfl":
@@ -352,7 +357,7 @@ public class ExporterController
             return;
         }
 
-        const status :DocStatus = new DocStatus(name, _rootLen, Ternary.UNKNOWN, Ternary.UNKNOWN, null);
+        const status :DocStatus = new DocStatus(name, Ternary.UNKNOWN, Ternary.UNKNOWN, null);
         _flashDocsGrid.dataProvider.addItem(status);
 
         load.succeeded.add(function (lib :XflLibrary) :void {
@@ -368,7 +373,7 @@ public class ExporterController
         });
     }
 
-    protected var _rootLen :int;
+    protected var _importDirectory :File;
 
     protected var _docFinder :Executor;
     protected var _win :ExporterWindow;
@@ -376,7 +381,6 @@ public class ExporterController
     protected var _errorsGrid :DataGrid;
     protected var _exportChooser :DirChooser;
     protected var _importChooser :DirChooser;
-    protected var _authoredResolution :DropDownList;
     protected var _conf :FlumpConf = new FlumpConf();
     protected var _confFile :File;
 
@@ -402,7 +406,7 @@ class DocStatus extends EventDispatcher implements IPropertyChangeNotifier {
     public var valid :String = PENDING;
     public var lib :XflLibrary;
 
-    public function DocStatus (path :String, rootLen :int, modified :Ternary, valid :Ternary, lib :XflLibrary) {
+    public function DocStatus (path :String, modified :Ternary, valid :Ternary, lib :XflLibrary) {
         this.lib = lib;
         this.path = path;
         _uid = path;
