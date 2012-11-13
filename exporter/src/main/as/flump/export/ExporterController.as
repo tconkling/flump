@@ -36,14 +36,14 @@ public class ExporterController
 {
     public static const NA :NativeApplication = NativeApplication.nativeApplication;
 
-    public function ExporterController (win :ExporterWindow) {
+    public function ExporterController (win :ExporterWindow, configFile :File = null) {
         Log.setLevel("", Log.INFO);
         _win = win;
         _errorsGrid = _win.errors;
         _flashDocsGrid = _win.libraries;
 
-        if (FlumpSettings.hasConfigFilePath) {
-            _confFile = new File(FlumpSettings.configFilePath);
+        _confFile = configFile;
+        if (_confFile != null) {
             openConf();
         }
 

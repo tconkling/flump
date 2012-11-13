@@ -9,7 +9,8 @@
   <fx:Script>
     <![CDATA[
     private function init () :void {
-      _exporter = new ExporterController(this);
+      _exporter = new ExporterController(this,
+          FlumpSettings.hasConfigFilePath ? new File(FlumpSettings.configFilePath) : null);
     }
 
     protected var _exporter :ExporterController;
