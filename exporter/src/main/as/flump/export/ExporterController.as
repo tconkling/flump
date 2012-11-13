@@ -82,13 +82,13 @@ public class ExporterController
         _win.editFormats.addEventListener(MouseEvent.CLICK, function (..._) :void {
             if (editFormatsController == null || editFormatsController.closed) {
                 editFormatsController = new EditFormatsController(_conf);
-                editFormatsController.formatsChanged.add(updateFromConf);
+                editFormatsController.formatsChanged.add(updateUiFromConf);
             } else {
                 editFormatsController.show();
             }
         });
 
-        updateFromConf();
+        updateUiFromConf();
         updateWindowTitle(false);
         _win.addEventListener(Event.CLOSE, function (..._) :void { NA.exit(0); });
     }
@@ -115,7 +115,7 @@ public class ExporterController
             _confFile = null;
             _conf = new FlumpConf();
             setImportDirectory(null);
-            updateFromConf();
+            updateUiFromConf();
         });
 
         var openMenuItem :NativeMenuItem =
@@ -206,7 +206,7 @@ public class ExporterController
         _confFile = file;
         saveConfFilePath();
         openConf();
-        updateFromConf();
+        updateUiFromConf();
         updateWindowTitle(false);
     }
 
@@ -215,7 +215,7 @@ public class ExporterController
         updatePreviewAndExport();
     }
 
-    protected function updateFromConf (..._) :void {
+    protected function updateUiFromConf (..._) :void {
         if (_confFile != null) {
             _importChooser.dir = (_conf.importDir != null) ? _confFile.parent.resolvePath(_conf.importDir) : null;
             _exportChooser.dir = (_conf.exportDir != null) ? _confFile.parent.resolvePath(_conf.exportDir) : null;
