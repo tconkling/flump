@@ -244,7 +244,7 @@ public class ExporterController
         _conf.exportDir = _confFile == null ? _exportChooser.dir.nativePath : _confFile.parent.getRelativePath(_exportChooser.dir, /*useDotDot=*/true);
     }
 
-    protected function get publisher () :Publisher {
+    protected function createPublisher () :Publisher {
         if (_exportChooser.dir == null || _conf.exports.length == 0) return null;
         return new Publisher(_exportChooser.dir, _conf);
     }
@@ -331,7 +331,7 @@ public class ExporterController
         const prevQuality :String = stage.quality;
 
         stage.quality = StageQuality.BEST;
-        this.publisher.publish(status.lib);
+        createPublisher().publish(status.lib);
 
         stage.quality = prevQuality;
         status.updateModified(Ternary.FALSE);
@@ -361,8 +361,9 @@ public class ExporterController
         _flashDocsGrid.dataProvider.addItem(status);
 
         load.succeeded.add(function (lib :XflLibrary) :void {
+            var pub :Publisher = createPublisher();
             status.lib = lib;
-            status.updateModified(Ternary.of(publisher == null || publisher.modified(lib)));
+            status.updateModified(Ternary.of(pub == null || pub.modified(lib)));
             for each (var err :ParseError in lib.getErrors()) _errorsGrid.dataProvider.addItem(err);
             status.updateValid(Ternary.of(lib.valid));
         });
