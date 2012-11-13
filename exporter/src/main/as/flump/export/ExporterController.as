@@ -94,7 +94,6 @@ public class ExporterController
     }
 
     protected function setupMenus () :void {
-
         var fileMenuItem :NativeMenuItem;
         if (NativeApplication.supportsMenu) {
             // Grab the existing menu on macs. Use an index to get it as it's not going to be
@@ -140,47 +139,15 @@ public class ExporterController
         const saveMenuItem :NativeMenuItem =
             fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save Project"), 3);
         saveMenuItem.keyEquivalent = "s";
-        function saveConf () :void {
-            Files.write(_confFile, function (out :IDataOutput) :void {
-                // Set directories relative to where this file is being saved. Fall back to absolute
-                // paths if relative paths aren't possible.
-                if (_importChooser.dir != null) {
-                    _conf.importDir = _confFile.parent.getRelativePath(_importChooser.dir, /*useDotDot=*/true);
-                    if (_conf.importDir == null) _conf.importDir = _importChooser.dir.nativePath;
-                }
-
-                if (_exportChooser.dir != null) {
-                    _conf.exportDir = _confFile.parent.getRelativePath(_exportChooser.dir, /*useDotDot=*/true);
-                    if (_conf.exportDir == null) _conf.exportDir = _exportChooser.dir.nativePath;
-                }
-
-                out.writeUTFBytes(JSON.stringify(_conf, null, /*space=*/2));
-                updateWindowTitle(false);
-            });
-        };
-        function saveAs (..._) :void {
-            var file :File = new File();
-            file.addEventListener(Event.SELECT, function (..._) :void {
-                // Ensure the filename ends with .flump
-                if (!StringUtil.endsWith(file.name.toLowerCase(), ".flump")) {
-                    file = file.parent.resolvePath(file.name + ".flump");
-                }
-
-                _confFile = file;
-                saveConfFilePath();
-                saveConf();
-            });
-            file.browseForSave("Save Flump Configuration");
-        };
         saveMenuItem.addEventListener(Event.SELECT, function (..._) :void {
-            if (_confFile == null) saveAs();
+            if (_confFile == null) saveConfAs();
             else saveConf();
         });
 
         const saveAsMenuItem :NativeMenuItem =
             fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save Project As..."), 4);
         saveAsMenuItem.keyEquivalent = "S";
-        saveAsMenuItem.addEventListener(Event.SELECT, saveAs);
+        saveAsMenuItem.addEventListener(Event.SELECT, saveConfAs);
     }
 
     protected function updateWindowTitle (modified :Boolean) :void {
@@ -201,6 +168,40 @@ public class ExporterController
             _confFile = null;
         }
     }
+
+    protected function saveConf () :void {
+        Files.write(_confFile, function (out :IDataOutput) :void {
+            // Set directories relative to where this file is being saved. Fall back to absolute
+            // paths if relative paths aren't possible.
+            if (_importChooser.dir != null) {
+                _conf.importDir = _confFile.parent.getRelativePath(_importChooser.dir, /*useDotDot=*/true);
+                if (_conf.importDir == null) _conf.importDir = _importChooser.dir.nativePath;
+            }
+
+            if (_exportChooser.dir != null) {
+                _conf.exportDir = _confFile.parent.getRelativePath(_exportChooser.dir, /*useDotDot=*/true);
+                if (_conf.exportDir == null) _conf.exportDir = _exportChooser.dir.nativePath;
+            }
+
+            out.writeUTFBytes(JSON.stringify(_conf, null, /*space=*/2));
+            updateWindowTitle(false);
+        });
+    }
+
+    protected function saveConfAs (..._) :void {
+        var file :File = new File();
+        file.addEventListener(Event.SELECT, function (..._) :void {
+            // Ensure the filename ends with .flump
+            if (!StringUtil.endsWith(file.name.toLowerCase(), ".flump")) {
+                file = file.parent.resolvePath(file.name + ".flump");
+            }
+
+            _confFile = file;
+            saveConfFilePath();
+            saveConf();
+        });
+        file.browseForSave("Save Flump Configuration");
+    };
 
     protected function open (file :File) :void {
         _confFile = file;
