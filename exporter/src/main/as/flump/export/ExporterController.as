@@ -3,10 +3,6 @@
 
 package flump.export {
 
-import com.threerings.util.F;
-import com.threerings.util.Log;
-import com.threerings.util.StringUtil;
-
 import flash.desktop.NativeApplication;
 import flash.display.NativeMenu;
 import flash.display.NativeMenuItem;
@@ -33,6 +29,10 @@ import spark.events.GridSelectionEvent;
 
 import starling.display.Sprite;
 
+import com.threerings.util.F;
+import com.threerings.util.Log;
+import com.threerings.util.StringUtil;
+
 public class ExporterController
 {
     public static const NA :NativeApplication = NativeApplication.nativeApplication;
@@ -41,7 +41,7 @@ public class ExporterController
         Log.setLevel("", Log.INFO);
         _win = win;
         _errorsGrid = _win.errors;
-        _librariesGrid = _win.libraries;
+        _flashDocsGrid = _win.libraries;
 
         if (FlumpSettings.hasConfigFilePath) {
             _confFile = new File(FlumpSettings.configFilePath);
@@ -49,14 +49,14 @@ public class ExporterController
         }
 
         var curSelection :DocStatus = null;
-        _librariesGrid.addEventListener(GridSelectionEvent.SELECTION_CHANGE, function (..._) :void {
-            log.info("Changed", "selected", _librariesGrid.selectedIndices);
+        _flashDocsGrid.addEventListener(GridSelectionEvent.SELECTION_CHANGE, function (..._) :void {
+            log.info("Changed", "selected", _flashDocsGrid.selectedIndices);
             updatePreviewAndExport();
 
             if (curSelection != null) {
                 curSelection.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, updatePreviewAndExport);
             }
-            var newSelection :DocStatus = _librariesGrid.selectedItem as DocStatus;
+            var newSelection :DocStatus = _flashDocsGrid.selectedItem as DocStatus;
             if (newSelection != null) {
                 newSelection.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, updatePreviewAndExport);
             }
@@ -64,12 +64,12 @@ public class ExporterController
         });
         _win.reload.addEventListener(MouseEvent.CLICK, F.callback(reloadNow));
         _win.export.addEventListener(MouseEvent.CLICK, function (..._) :void {
-            for each (var status :DocStatus in _librariesGrid.selectedItems) {
+            for each (var status :DocStatus in _flashDocsGrid.selectedItems) {
                 exportFlashDocument(status);
             }
         });
         _win.preview.addEventListener(MouseEvent.CLICK, function (..._) :void {
-            showPreviewWindow(_librariesGrid.selectedItem.lib);
+            showPreviewWindow(_flashDocsGrid.selectedItem.lib);
         });
         _importChooser = new DirChooser(null, _win.importRoot, _win.browseImport);
         _importChooser.changed.add(setImport);
@@ -233,12 +233,12 @@ public class ExporterController
     }
 
     protected function updatePreviewAndExport (..._) :void {
-        _win.export.enabled = _exportChooser.dir != null && _librariesGrid.selectionLength > 0 &&
-            _librariesGrid.selectedItems.some(function (status :DocStatus, ..._) :Boolean {
+        _win.export.enabled = _exportChooser.dir != null && _flashDocsGrid.selectionLength > 0 &&
+            _flashDocsGrid.selectedItems.some(function (status :DocStatus, ..._) :Boolean {
                 return status.isValid;
             });
 
-        var status :DocStatus = _librariesGrid.selectedItem as DocStatus;
+        var status :DocStatus = _flashDocsGrid.selectedItem as DocStatus;
         _win.preview.enabled = status != null && status.isValid;
 
         if (_exportChooser.dir == null) return;
@@ -256,7 +256,7 @@ public class ExporterController
     }
 
     protected function setImport (root :File) :void {
-        _librariesGrid.dataProvider.removeAll();
+        _flashDocsGrid.dataProvider.removeAll();
         _errorsGrid.dataProvider.removeAll();
         if (root == null) return;
         _rootLen = root.nativePath.length + 1;
@@ -298,10 +298,6 @@ public class ExporterController
             window.visible = false;
         });
     }
-
-    protected var _previewController :PreviewController;
-    protected var _previewWindow :PreviewWindow;
-    protected var _previewControls :PreviewControlsWindow;
 
     protected function findFlashDocuments (base :File, exec :Executor,
         ignoreXflAtBase :Boolean = false) :void {
@@ -357,7 +353,7 @@ public class ExporterController
         }
 
         const status :DocStatus = new DocStatus(name, _rootLen, Ternary.UNKNOWN, Ternary.UNKNOWN, null);
-        _librariesGrid.dataProvider.addItem(status);
+        _flashDocsGrid.dataProvider.addItem(status);
 
         load.succeeded.add(function (lib :XflLibrary) :void {
             status.lib = lib;
@@ -376,13 +372,17 @@ public class ExporterController
 
     protected var _docFinder :Executor;
     protected var _win :ExporterWindow;
-    protected var _librariesGrid :DataGrid;
+    protected var _flashDocsGrid :DataGrid;
     protected var _errorsGrid :DataGrid;
     protected var _exportChooser :DirChooser;
     protected var _importChooser :DirChooser;
     protected var _authoredResolution :DropDownList;
     protected var _conf :FlumpConf = new FlumpConf();
     protected var _confFile :File;
+
+    protected var _previewController :PreviewController;
+    protected var _previewWindow :PreviewWindow;
+    protected var _previewControls :PreviewControlsWindow;
 
     private static const log :Log = Log.getLog(ExporterController);
 }
