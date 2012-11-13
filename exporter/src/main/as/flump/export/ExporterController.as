@@ -72,7 +72,7 @@ public class ExporterController
             showPreviewWindow(_flashDocsGrid.selectedItem.lib);
         });
         _importChooser = new DirChooser(null, _win.importRoot, _win.browseImport);
-        _importChooser.changed.add(setImport);
+        _importChooser.changed.add(setImportDirectory);
         _exportChooser = new DirChooser(null, _win.exportRoot, _win.browseExport);
         _exportChooser.changed.add(reloadNow);
 
@@ -115,7 +115,7 @@ public class ExporterController
         newMenuItem.addEventListener(Event.SELECT, function (..._) :void {
             _confFile = null;
             _conf = new FlumpConf();
-            setImport(null);
+            setImportDirectory(null);
             updateFromConf();
         });
 
@@ -194,7 +194,7 @@ public class ExporterController
         try {
             _conf = FlumpConf.fromJSON(JSONFormat.readJSON(_confFile));
             var dir :String = _confFile.parent.resolvePath(_conf.importDir).nativePath;
-            setImport(new File(dir));
+            setImportDirectory(new File(dir));
         } catch (e :Error) {
             log.warning("Unable to parse conf", e);
             _errorsGrid.dataProvider.addItem(new ParseError(_confFile.nativePath,
@@ -212,7 +212,7 @@ public class ExporterController
     }
 
     protected function reloadNow () :void {
-        setImport(_importChooser.dir);
+        setImportDirectory(_importChooser.dir);
         updatePreviewAndExport();
     }
 
@@ -255,7 +255,7 @@ public class ExporterController
         FlumpSettings.configFilePath = _confFile.nativePath;
     }
 
-    protected function setImport (root :File) :void {
+    protected function setImportDirectory (root :File) :void {
         _flashDocsGrid.dataProvider.removeAll();
         _errorsGrid.dataProvider.removeAll();
         if (root == null) return;
@@ -328,7 +328,7 @@ public class ExporterController
         const prevQuality :String = stage.quality;
 
         stage.quality = StageQuality.BEST;
-        publisher.publish(status.lib);
+        this.publisher.publish(status.lib);
 
         stage.quality = prevQuality;
         status.updateModified(Ternary.FALSE);
