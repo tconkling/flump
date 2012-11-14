@@ -5,9 +5,11 @@
        disappears.  -->
    <fx:Script>
         <![CDATA[
-        import flash.events.Event;
-        import flash.geom.Rectangle;
-        import starling.core.Starling;
+            import flash.events.Event;
+            import flash.geom.Rectangle;
+
+            import starling.core.Starling;
+            import starling.display.Sprite;
 
         public var started :Function;
 
@@ -15,7 +17,7 @@
           nativeWindow.x = 0;
           nativeWindow.y = 0;
 
-          _starling = new Starling(Preview, nativeWindow.stage)
+          _starling = new Starling(starling.display.Sprite, nativeWindow.stage)
           _starling.juggler.delayCall(function() :void { started(_starling.stage.getChildAt(0)) },
             0);
           _starling.start();
