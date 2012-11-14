@@ -3,6 +3,9 @@
 
 package flump.export {
 
+import com.adobe.images.PNGEncoder;
+import com.threerings.util.Arrays;
+
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Sprite;
@@ -10,13 +13,10 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.utils.IDataOutput;
 
-import com.adobe.images.PNGEncoder;
-
 import flump.SwfTexture;
+import flump.Util;
 import flump.mold.AtlasMold;
 import flump.mold.AtlasTextureMold;
-
-import com.threerings.util.Arrays;
 
 public class Atlas
 {
@@ -51,8 +51,7 @@ public class Atlas
             bm.x = node.bounds.x;
             bm.y = node.bounds.y;
         });
-        const bd :BitmapData =
-            SwfTexture.renderToBitmapData(constructed, _width, _height);
+        const bd :BitmapData = Util.renderToBitmapData(constructed, _width, _height);
         bytes.writeBytes(PNGEncoder.encode(bd));
     }
 

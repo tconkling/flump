@@ -6,7 +6,7 @@ package flump.export {
 import flash.filesystem.File;
 import flash.utils.IDataOutput;
 
-import flump.bytesToXML;
+import flump.Util;
 import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
 
@@ -21,7 +21,7 @@ public class XMLFormat extends Format
     }
 
     override public function get modified () :Boolean {
-        return !_metaFile.exists || bytesToXML(Files.read(_metaFile)).@md5 != _lib.md5;
+        return !_metaFile.exists || Util.bytesToXML(Files.read(_metaFile)).@md5 != _lib.md5;
     }
 
     override public function publish () :void {

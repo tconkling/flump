@@ -9,7 +9,7 @@ import flash.utils.Dictionary;
 
 import com.adobe.crypto.MD5;
 
-import flump.bytesToXML;
+import flump.Util;
 import flump.executor.Executor;
 import flump.executor.Future;
 import flump.executor.VisibleFuture;
@@ -173,7 +173,7 @@ public class XflLibrary
      * @returns A list of paths to symbols in this library.
      */
     public function parseDocumentFile (fileData :ByteArray, path :String) :Vector.<String> {
-        const xml :XML = bytesToXML(fileData);
+        const xml :XML = Util.bytesToXML(fileData);
         frameRate = XmlUtil.getNumberAttr(xml, "frameRate", 24);
 
         const hex :String = XmlUtil.getStringAttr(xml, "backgroundColor", "#ffffff");
@@ -198,7 +198,7 @@ public class XflLibrary
     }
 
     public function parseLibraryFile (fileData :ByteArray, path :String) :void {
-        const xml :XML = bytesToXML(fileData);
+        const xml :XML = Util.bytesToXML(fileData);
         if (xml.name().localName != "DOMSymbolItem") {
             addTopLevelError(ParseError.DEBUG,
                 "Skipping file since its root element isn't DOMSymbolItem");
