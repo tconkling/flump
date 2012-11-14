@@ -58,13 +58,8 @@ public class FlumpApp
     public function openProject (configFile :File = null) :void {
         // This project may already be open.
         for each (var ctrl :ProjectController in _projects) {
-            if (ctrl.configFile == configFile) {
-                ctrl.win.visible = false;
-                if (!ctrl.win.orderToFront()) {
-                    ctrl.win.restore();
-                    ctrl.win.orderToFront();
-                }
-
+            if (ctrl.configFile != null && ctrl.configFile.nativePath == configFile.nativePath) {
+                ctrl.win.activate();
                 return;
             }
         }
