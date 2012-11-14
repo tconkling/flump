@@ -9,11 +9,11 @@
   <fx:Script>
     <![CDATA[
     private function init () :void {
-      _exporter = new ExporterController(this,
+        _controller = new ProjectController(this,
           FlumpSettings.hasConfigFilePath ? new File(FlumpSettings.configFilePath) : null);
     }
 
-    protected var _exporter :ExporterController;
+    protected var _controller :ProjectController;
     ]]>
   </fx:Script>
   <s:HGroup>

@@ -11,7 +11,7 @@ import com.threerings.util.Log;
 
 public class Publisher
 {
-    public function Publisher (exportDir :File, flump :FlumpConf) {
+    public function Publisher (exportDir :File, flump :ProjectConf) {
         _exportDir = exportDir;
         _maxSize = flump.maxSize;
         for each (var export :ExportConf in flump.exports) _confs.push(export);

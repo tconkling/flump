@@ -16,7 +16,7 @@ public class EditFormatsController
 {
     public const formatsChanged :Signal = new Signal();
 
-    public function EditFormatsController (conf :FlumpConf) {
+    public function EditFormatsController (conf :ProjectConf) {
         _win = new EditFormatsWindow();
         _win.open();
 

@@ -5,7 +5,7 @@ package flump.export {
 
 import flump.mold.require;
 
-public class FlumpConf
+public class ProjectConf
 {
     public var exportDir :String;
     public var importDir :String;
@@ -14,8 +14,8 @@ public class FlumpConf
 
     public var exports :Array = [ new ExportConf() ];
 
-    public static function fromJSON (o :Object) :FlumpConf {
-        const conf :FlumpConf = new FlumpConf();
+    public static function fromJSON (o :Object) :ProjectConf {
+        const conf :ProjectConf = new ProjectConf();
         conf.exportDir = require(o, "exportDir");
         conf.importDir = require(o, "importDir");
         if (o.maxSize > 0) conf.maxSize = o.maxSize;

@@ -3,10 +3,6 @@
 
 package flump.export {
 
-import com.threerings.util.F;
-import com.threerings.util.Log;
-import com.threerings.util.StringUtil;
-
 import flash.desktop.NativeApplication;
 import flash.display.NativeMenu;
 import flash.display.NativeMenuItem;
@@ -32,11 +28,15 @@ import spark.events.GridSelectionEvent;
 
 import starling.display.Sprite;
 
-public class ExporterController
+import com.threerings.util.F;
+import com.threerings.util.Log;
+import com.threerings.util.StringUtil;
+
+public class ProjectController
 {
     public static const NA :NativeApplication = NativeApplication.nativeApplication;
 
-    public function ExporterController (win :ExporterWindow, configFile :File = null) {
+    public function ProjectController (win :ProjectWindow, configFile :File = null) {
         Log.setLevel("", Log.INFO);
         _win = win;
         _errorsGrid = _win.errors;
@@ -112,7 +112,7 @@ public class ExporterController
         newMenuItem.keyEquivalent = "n";
         newMenuItem.addEventListener(Event.SELECT, function (..._) :void {
             _confFile = null;
-            _conf = new FlumpConf();
+            _conf = new ProjectConf();
             setImportDirectory(null);
             updateUiFromConf();
         });
@@ -158,7 +158,7 @@ public class ExporterController
 
     protected function openConf () :void {
         try {
-            _conf = FlumpConf.fromJSON(JSONFormat.readJSON(_confFile));
+            _conf = ProjectConf.fromJSON(JSONFormat.readJSON(_confFile));
             var dir :String = _confFile.parent.resolvePath(_conf.importDir).nativePath;
             setImportDirectory(new File(dir));
         } catch (e :Error) {
@@ -378,19 +378,19 @@ public class ExporterController
     protected var _importDirectory :File;
 
     protected var _docFinder :Executor;
-    protected var _win :ExporterWindow;
+    protected var _win :ProjectWindow;
     protected var _flashDocsGrid :DataGrid;
     protected var _errorsGrid :DataGrid;
     protected var _exportChooser :DirChooser;
     protected var _importChooser :DirChooser;
-    protected var _conf :FlumpConf = new FlumpConf();
+    protected var _conf :ProjectConf = new ProjectConf();
     protected var _confFile :File;
 
     protected var _previewController :PreviewController;
     protected var _previewWindow :PreviewWindow;
     protected var _previewControls :PreviewControlsWindow;
 
-    private static const log :Log = Log.getLog(ExporterController);
+    private static const log :Log = Log.getLog(ProjectController);
 }
 }
 
