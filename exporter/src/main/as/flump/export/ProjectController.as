@@ -3,6 +3,10 @@
 
 package flump.export {
 
+import com.threerings.util.F;
+import com.threerings.util.Log;
+import com.threerings.util.StringUtil;
+
 import flash.desktop.NativeApplication;
 import flash.display.NativeMenu;
 import flash.display.NativeMenuItem;
@@ -28,17 +32,15 @@ import spark.events.GridSelectionEvent;
 
 import starling.display.Sprite;
 
-import com.threerings.util.F;
-import com.threerings.util.Log;
-import com.threerings.util.StringUtil;
-
 public class ProjectController
 {
     public static const NA :NativeApplication = NativeApplication.nativeApplication;
 
-    public function ProjectController (win :ProjectWindow, configFile :File = null) {
+    public function ProjectController (configFile :File = null) {
         Log.setLevel("", Log.INFO);
-        _win = win;
+        
+        _win = new ProjectWindow();
+        _win.open();
         _errorsGrid = _win.errors;
         _flashDocsGrid = _win.libraries;
 

@@ -5,17 +5,6 @@
   <s:layout>
     <s:VerticalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10"/>
   </s:layout>
-
-  <fx:Script>
-    <![CDATA[
-    private function init () :void {
-        _controller = new ProjectController(this,
-          FlumpSettings.hasConfigFilePath ? new File(FlumpSettings.configFilePath) : null);
-    }
-
-    protected var _controller :ProjectController;
-    ]]>
-  </fx:Script>
   <s:HGroup>
     <s:DataGrid id="libraries" width="480" height="300">
       <s:typicalItem>
