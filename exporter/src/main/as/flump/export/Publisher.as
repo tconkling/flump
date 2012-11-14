@@ -11,15 +11,15 @@ import com.threerings.util.Log;
 
 public class Publisher
 {
-    public function Publisher (exportDir :File, flump :ProjectConf) {
+    public function Publisher (exportDir :File, project :ProjectConf) {
         _exportDir = exportDir;
-        _maxSize = flump.maxSize;
-        for each (var export :ExportConf in flump.exports) _confs.push(export);
+        _maxSize = project.maxSize;
+        for each (var export :ExportConf in project.exports) _confs.push(export);
     }
 
     public function modified (lib :XflLibrary) :Boolean {
         return instantiate(lib).some(function (export :Format, ..._) :Boolean {
-            return export.modified
+            return export.modified;
         });
     }
 
