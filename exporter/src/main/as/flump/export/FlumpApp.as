@@ -16,6 +16,17 @@ public class FlumpApp
 {
     public static const NA :NativeApplication = NativeApplication.nativeApplication;
 
+    public static function get app () :FlumpApp {
+        return _app;
+    }
+
+    public function FlumpApp () {
+        if (_app != null) {
+            throw new Error("FlumpApp is a singleton");
+        }
+        _app = this;
+    }
+
     public function run () :void {
         Log.setLevel("", Log.INFO);
 
@@ -44,5 +55,7 @@ public class FlumpApp
     }
 
     protected var _projects :Array = [];
+
+    protected static var _app :FlumpApp;
 }
 }

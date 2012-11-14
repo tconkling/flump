@@ -99,7 +99,8 @@ public class ProjectController
 
         updateUiFromConf();
         updateWindowTitle(false);
-        _win.addEventListener(Event.CLOSE, function (..._) :void { NA.exit(0); });
+
+        setupMenus();
     }
 
     protected function setupMenus () :void {
@@ -120,7 +121,7 @@ public class ProjectController
         var newMenuItem :NativeMenuItem = fileMenuItem.submenu.addItemAt(new NativeMenuItem("New Project"), 0);
         newMenuItem.keyEquivalent = "n";
         newMenuItem.addEventListener(Event.SELECT, function (..._) :void {
-            new ProjectController();
+            FlumpApp.app.openProject();
         });
 
         var openMenuItem :NativeMenuItem =
@@ -129,7 +130,7 @@ public class ProjectController
         openMenuItem.addEventListener(Event.SELECT, function (..._) :void {
             var file :File = new File();
             file.addEventListener(Event.SELECT, function (..._) :void {
-                new ProjectController(file);
+                FlumpApp.app.openProject(file);
             });
             file.browseForOpen("Open Flump Project", [
                 new FileFilter("Flump project (*.flump)", "*.flump") ]);
