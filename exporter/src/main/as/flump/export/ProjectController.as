@@ -14,7 +14,6 @@ import flash.display.NativeWindow;
 import flash.display.Stage;
 import flash.display.StageQuality;
 import flash.events.Event;
-import flash.events.InvokeEvent;
 import flash.events.MouseEvent;
 import flash.filesystem.File;
 import flash.net.FileFilter;
@@ -37,8 +36,6 @@ public class ProjectController
     public static const NA :NativeApplication = NativeApplication.nativeApplication;
 
     public function ProjectController (configFile :File = null) {
-        Log.setLevel("", Log.INFO);
-        
         _win = new ProjectWindow();
         _win.open();
         _errorsGrid = _win.errors;
@@ -46,7 +43,17 @@ public class ProjectController
 
         _confFile = configFile;
         if (_confFile != null) {
-            openConf();
+            try {
+                _conf = ProjectConf.fromJSON(JSONFormat.readJSON(_confFile));
+                var dir :String = _confFile.parent.resolvePath(_conf.importDir).nativePath;
+                setImportDirectory(new File(dir));
+            } catch (e :Error) {
+                log.warning("Unable to parse conf", e);
+                _errorsGrid.dataProvider.addItem(new ParseError(_confFile.nativePath,
+                    ParseError.CRIT, "Unable to read configuration"));
+                _confFile = null;
+                _conf = null;
+            }
         }
 
         var curSelection :DocStatus = null;
@@ -113,10 +120,7 @@ public class ProjectController
         var newMenuItem :NativeMenuItem = fileMenuItem.submenu.addItemAt(new NativeMenuItem("New Project"), 0);
         newMenuItem.keyEquivalent = "n";
         newMenuItem.addEventListener(Event.SELECT, function (..._) :void {
-            _confFile = null;
-            _conf = new ProjectConf();
-            setImportDirectory(null);
-            updateUiFromConf();
+            new ProjectController();
         });
 
         var openMenuItem :NativeMenuItem =
@@ -125,18 +129,12 @@ public class ProjectController
         openMenuItem.addEventListener(Event.SELECT, function (..._) :void {
             var file :File = new File();
             file.addEventListener(Event.SELECT, function (..._) :void {
-                open(file);
+                new ProjectController(file);
             });
             file.browseForOpen("Open Flump Project", [
                 new FileFilter("Flump project (*.flump)", "*.flump") ]);
         });
         fileMenuItem.submenu.addItemAt(new NativeMenuItem("Sep", /*separator=*/true), 2);
-
-        NA.addEventListener(InvokeEvent.INVOKE, function (event :InvokeEvent) :void {
-            if (event.arguments.length > 0) {
-                open(new File(event.arguments[0]));
-            }
-        });
 
         const saveMenuItem :NativeMenuItem =
             fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save Project"), 3);
@@ -156,19 +154,6 @@ public class ProjectController
         var name :String = (_confFile != null) ? _confFile.name.replace(/\.flump$/i, "") : "Untitled Project";
         if (modified) name += "*";
         _win.title = name;
-    }
-
-    protected function openConf () :void {
-        try {
-            _conf = ProjectConf.fromJSON(JSONFormat.readJSON(_confFile));
-            var dir :String = _confFile.parent.resolvePath(_conf.importDir).nativePath;
-            setImportDirectory(new File(dir));
-        } catch (e :Error) {
-            log.warning("Unable to parse conf", e);
-            _errorsGrid.dataProvider.addItem(new ParseError(_confFile.nativePath,
-                ParseError.CRIT, "Unable to read configuration"));
-            _confFile = null;
-        }
     }
 
     protected function saveConf () :void {
@@ -204,14 +189,6 @@ public class ProjectController
         });
         file.browseForSave("Save Flump Configuration");
     };
-
-    protected function open (file :File) :void {
-        _confFile = file;
-        saveConfFilePath();
-        openConf();
-        updateUiFromConf();
-        updateWindowTitle(false);
-    }
 
     protected function reloadNow () :void {
         setImportDirectory(_importChooser.dir);
