@@ -27,6 +27,7 @@ import flump.xfl.XflLibrary;
 import mx.events.PropertyChangeEvent;
 
 import spark.components.DataGrid;
+import spark.components.Window;
 import spark.events.GridSelectionEvent;
 
 import starling.display.Sprite;
@@ -101,6 +102,14 @@ public class ProjectController
         updateWindowTitle(false);
 
         setupMenus();
+    }
+
+    public function get configFile () :File {
+        return _confFile;
+    }
+
+    public function get win () :Window {
+        return _win;
     }
 
     protected function setupMenus () :void {

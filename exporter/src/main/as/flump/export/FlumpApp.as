@@ -3,14 +3,19 @@
 
 package flump.export {
 
+import com.threerings.util.Arrays;
+import com.threerings.util.F;
 import com.threerings.util.Log;
 import com.threerings.util.Map;
 import com.threerings.util.Maps;
 
 import flash.desktop.InvokeEventReason;
 import flash.desktop.NativeApplication;
+import flash.events.Event;
 import flash.events.InvokeEvent;
 import flash.filesystem.File;
+
+import spark.components.Window;
 
 public class FlumpApp
 {
@@ -51,7 +56,26 @@ public class FlumpApp
     }
 
     public function openProject (configFile :File = null) :void {
-        _projects.push(new ProjectController(configFile));
+        // This project may already be open.
+        for each (var ctrl :ProjectController in _projects) {
+            if (ctrl.configFile == configFile) {
+                ctrl.win.visible = false;
+                if (!ctrl.win.orderToFront()) {
+                    ctrl.win.restore();
+                    ctrl.win.orderToFront();
+                }
+
+                return;
+            }
+        }
+
+        var controller :ProjectController = new ProjectController(configFile);
+        controller.win.addEventListener(Event.CLOSE, F.callbackOnce(closeProject, controller));
+        _projects.push(controller);
+    }
+
+    protected function closeProject (controller :ProjectController) :void {
+        Arrays.removeFirst(_projects, controller);
     }
 
     protected var _projects :Array = [];
