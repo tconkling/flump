@@ -44,7 +44,7 @@
     <mavendep pom="pom.xml" pathProp="aslib.path"/>
     <amxmlc srcdir="${asrc.dir}" libpath="${aslib.path}"
       dest="${deploy.dir}/${ant.project.name}.swf" static-lrsl="true"
-      main="flump/export/ProjectWindow.mxml">
+      main="Flump.mxml">
       <arg value="-swf-version=13"/>
     </amxmlc>
   </target>

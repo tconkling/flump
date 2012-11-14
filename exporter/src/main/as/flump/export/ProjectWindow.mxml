@@ -1,7 +1,7 @@
-<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009"
   xmlns:s="library://ns.adobe.com/flex/spark"
   xmlns:mx="library://ns.adobe.com/flex/mx"
-  width="1024" height="768" creationComplete="init();">
+  width="1024" height="768">
   <s:layout>
     <s:VerticalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10"/>
   </s:layout>
@@ -80,4 +80,4 @@
     </s:columns>
     <mx:ArrayCollection/>
   </s:DataGrid>
-</s:WindowedApplication>
+</s:Window>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<application xmlns="http://ns.adobe.com/air/application/3.1">
+    <id>flump</id>
+    <filename>Flump</filename>
+    <versionNumber>0.1</versionNumber>
+
+
+    <!-- Settings for the application's initial window. Required. -->
+    <initialWindow>
+        <renderMode>direct</renderMode>
+        <!-- The main SWF or HTML file of the application. Required. -->
+        <!-- Note: In Flash Builder, the SWF reference is set automatically. -->
+        <content>[This value will be overwritten by Flash Builder in the output app.xml]</content>
+        <autoOrients>false</autoOrients>
+        <fullScreen>false</fullScreen>
+        <visible>false</visible>
+    </initialWindow>
+
+</application>
