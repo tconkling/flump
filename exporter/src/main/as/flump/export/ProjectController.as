@@ -10,7 +10,6 @@ import com.threerings.util.StringUtil;
 import flash.desktop.NativeApplication;
 import flash.display.NativeMenu;
 import flash.display.NativeMenuItem;
-import flash.display.NativeWindow;
 import flash.display.Stage;
 import flash.display.StageQuality;
 import flash.events.Event;
@@ -29,8 +28,6 @@ import mx.events.PropertyChangeEvent;
 import spark.components.DataGrid;
 import spark.components.Window;
 import spark.events.GridSelectionEvent;
-
-import starling.display.Sprite;
 
 public class ProjectController
 {
@@ -60,14 +57,16 @@ public class ProjectController
         var curSelection :DocStatus = null;
         _flashDocsGrid.addEventListener(GridSelectionEvent.SELECTION_CHANGE, function (..._) :void {
             log.info("Changed", "selected", _flashDocsGrid.selectedIndices);
-            updatePreviewAndExport();
+            updatePreviewAndExportButtons();
 
             if (curSelection != null) {
-                curSelection.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE, updatePreviewAndExport);
+                curSelection.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE,
+                    updatePreviewAndExportButtons);
             }
             var newSelection :DocStatus = _flashDocsGrid.selectedItem as DocStatus;
             if (newSelection != null) {
-                newSelection.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, updatePreviewAndExport);
+                newSelection.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE,
+                    updatePreviewAndExportButtons);
             }
             curSelection = newSelection;
         });
@@ -78,7 +77,7 @@ public class ProjectController
             }
         });
         _win.preview.addEventListener(MouseEvent.CLICK, function (..._) :void {
-            showPreviewWindow(_flashDocsGrid.selectedItem.lib);
+            FlumpApp.app.showPreviewWindow(_flashDocsGrid.selectedItem.lib);
         });
         _importChooser = new DirChooser(null, _win.importRoot, _win.browseImport);
         _importChooser.changed.add(setImportDirectory);
@@ -202,7 +201,7 @@ public class ProjectController
 
     protected function reloadNow () :void {
         setImportDirectory(_importChooser.dir);
-        updatePreviewAndExport();
+        updatePreviewAndExportButtons();
     }
 
     protected function updateUiFromConf (..._) :void {
@@ -221,7 +220,7 @@ public class ProjectController
         updateWindowTitle(true);
     }
 
-    protected function updatePreviewAndExport (..._) :void {
+    protected function updatePreviewAndExportButtons (..._) :void {
         _win.export.enabled = _exportChooser.dir != null && _flashDocsGrid.selectionLength > 0 &&
             _flashDocsGrid.selectedItems.some(function (status :DocStatus, ..._) :Boolean {
                 return status.isValid;
@@ -258,39 +257,6 @@ public class ProjectController
         _docFinder = new Executor();
         findFlashDocuments(dir, _docFinder, true);
         _win.reload.enabled = true;
-    }
-
-    protected function showPreviewWindow (lib :XflLibrary) :void {
-        if (_previewController == null || _previewWindow.closed || _previewControls.closed) {
-            _previewWindow = new PreviewWindow();
-            _previewControls = new PreviewControlsWindow();
-            _previewWindow.started = function (container :Sprite) :void {
-                _previewController = new PreviewController(lib, container, _previewWindow,
-                    _previewControls);
-            }
-
-            _previewWindow.open();
-            _previewControls.open();
-
-            preventWindowClose(_previewWindow.nativeWindow);
-            preventWindowClose(_previewControls.nativeWindow);
-
-        } else {
-            _previewController.lib = lib;
-            _previewWindow.nativeWindow.visible = true;
-            _previewControls.nativeWindow.visible = true;
-        }
-
-        _previewWindow.orderToFront();
-        _previewControls.orderToFront();
-    }
-
-    // Causes a window to be hidden, rather than closed, when its close box is clicked
-    protected static function preventWindowClose (window :NativeWindow) :void {
-        window.addEventListener(Event.CLOSING, function (e :Event) :void {
-            e.preventDefault();
-            window.visible = false;
-        });
     }
 
     protected function findFlashDocuments (base :File, exec :Executor, ignoreXflAtBase :Boolean = false) :void {
@@ -374,10 +340,6 @@ public class ProjectController
     protected var _importChooser :DirChooser;
     protected var _conf :ProjectConf = new ProjectConf();
     protected var _confFile :File;
-
-    protected var _previewController :PreviewController;
-    protected var _previewWindow :PreviewWindow;
-    protected var _previewControls :PreviewControlsWindow;
 
     private static const log :Log = Log.getLog(ProjectController);
 }

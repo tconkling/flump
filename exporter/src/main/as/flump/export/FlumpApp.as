@@ -11,11 +11,16 @@ import com.threerings.util.Maps;
 
 import flash.desktop.InvokeEventReason;
 import flash.desktop.NativeApplication;
+import flash.display.NativeWindow;
 import flash.events.Event;
 import flash.events.InvokeEvent;
 import flash.filesystem.File;
 
+import flump.xfl.XflLibrary;
+
 import spark.components.Window;
+
+import starling.display.Sprite;
 
 public class FlumpApp
 {
@@ -55,6 +60,31 @@ public class FlumpApp
         });
     }
 
+    public function showPreviewWindow (lib :XflLibrary) :void {
+        if (_previewController == null || _previewWindow.closed || _previewControls.closed) {
+            _previewWindow = new PreviewWindow();
+            _previewControls = new PreviewControlsWindow();
+            _previewWindow.started = function (container :Sprite) :void {
+                _previewController = new PreviewController(lib, container, _previewWindow,
+                    _previewControls);
+            }
+
+            _previewWindow.open();
+            _previewControls.open();
+
+            preventWindowClose(_previewWindow.nativeWindow);
+            preventWindowClose(_previewControls.nativeWindow);
+
+        } else {
+            _previewController.lib = lib;
+            _previewControls.activate();
+            _previewWindow.activate();
+        }
+
+        _previewWindow.orderToFront();
+        _previewControls.orderToFront();
+    }
+
     public function openProject (configFile :File = null) :void {
         // This project may already be open.
         for each (var ctrl :ProjectController in _projects) {
@@ -73,7 +103,19 @@ public class FlumpApp
         Arrays.removeFirst(_projects, controller);
     }
 
+    // Causes a window to be hidden, rather than closed, when its close box is clicked
+    protected static function preventWindowClose (window :NativeWindow) :void {
+        window.addEventListener(Event.CLOSING, function (e :Event) :void {
+            e.preventDefault();
+            window.visible = false;
+        });
+    }
+
     protected var _projects :Array = [];
+
+    protected var _previewController :PreviewController;
+    protected var _previewWindow :PreviewWindow;
+    protected var _previewControls :PreviewControlsWindow;
 
     protected static var _app :FlumpApp;
 }
