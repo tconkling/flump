@@ -95,9 +95,6 @@ public class FlumpApp
             _previewControls.activate();
             _previewWindow.activate();
         }
-
-        _previewWindow.orderToFront();
-        _previewControls.orderToFront();
     }
 
     public function newProject () :ProjectController {
