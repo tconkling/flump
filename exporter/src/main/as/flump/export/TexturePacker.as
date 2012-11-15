@@ -15,11 +15,14 @@ import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;
 
-public class Packer
+/**
+ * Creates texture atlases from an XflLibrary
+ */
+public class TexturePacker
 {
     public const atlases :Vector.<Atlas> = new Vector.<Atlas>();
 
-    public function Packer (lib :XflLibrary, scale :Number = 1.0, maxSize :int = 2048,
+    public function TexturePacker (lib :XflLibrary, scale :Number = 1.0, maxSize :int = 2048,
         prefix :String = "", suffix :String = "") {
 
         _maxSize = maxSize;
@@ -101,7 +104,7 @@ public class Packer
 
     protected const _unpacked :Vector.<SwfTexture> = new Vector.<SwfTexture>();
 
-    private static const log :Log = Log.getLog(Packer);
+    private static const log :Log = Log.getLog(TexturePacker);
 }
 }
 

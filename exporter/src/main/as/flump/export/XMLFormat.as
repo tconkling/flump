@@ -30,12 +30,12 @@ public class XMLFormat extends Format
         if (libExportDir.exists) libExportDir.deleteDirectory(/*deteDirectoryContents=*/true);
         libExportDir.createDirectory();
 
-        const packers :Vector.<Packer> = new <Packer>[
-            new Packer(_lib, _conf.scale, _maxSize, _prefix),
-            new Packer(_lib, _conf.scale * 2, _maxSize, _prefix, "@2x"),
+        const packers :Vector.<TexturePacker> = new <TexturePacker>[
+            new TexturePacker(_lib, _conf.scale, _maxSize, _prefix),
+            new TexturePacker(_lib, _conf.scale * 2, _maxSize, _prefix, "@2x"),
         ];
 
-        for each (var packer :Packer in packers) {
+        for each (var packer :TexturePacker in packers) {
             for each (var atlas :Atlas in packer.atlases) {
                 Files.write(_destDir.resolvePath(atlas.filename), atlas.writePNG);
             }
@@ -55,7 +55,7 @@ public class XMLFormat extends Format
         const groupsXml :XML = <textureGroups/>;
         xml.appendChild(groupsXml);
 
-        function addPacker(packer :Packer, retina :Boolean) :void {
+        function addPacker(packer :TexturePacker, retina :Boolean) :void {
             var groupXml :XML = <textureGroup retina={retina}/>;
             groupsXml.appendChild(groupXml);
             for each (var atlas :Atlas in packer.atlases) {
