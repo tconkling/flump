@@ -11,7 +11,6 @@ import flash.display.StageQuality;
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.filesystem.File;
-import flash.net.FileFilter;
 import flash.utils.IDataOutput;
 
 import flump.executor.Executor;
@@ -154,12 +153,7 @@ public class ProjectController
             fileMenuItem.submenu.addItemAt(new NativeMenuItem("Open Project..."), 1);
         openMenuItem.keyEquivalent = "o";
         openMenuItem.addEventListener(Event.SELECT, function (..._) :void {
-            var file :File = new File();
-            file.addEventListener(Event.SELECT, function (..._) :void {
-                FlumpApp.app.openProject(file);
-            });
-            file.browseForOpen("Open Flump Project", [
-                new FileFilter("Flump project (*.flump)", "*.flump") ]);
+            FlumpApp.app.showOpenProjectDialog();
         });
         fileMenuItem.submenu.addItemAt(new NativeMenuItem("Sep", /*separator=*/true), 2);
 
@@ -211,7 +205,6 @@ public class ProjectController
             }
 
             _confFile = file;
-            saveConfFilePath();
             saveConf();
         });
         file.browseForSave("Save Flump Configuration");
@@ -253,11 +246,6 @@ public class ProjectController
     protected function createPublisher () :Publisher {
         if (_exportChooser.dir == null || _conf.exports.length == 0) return null;
         return new Publisher(_exportChooser.dir, _conf);
-    }
-
-    protected function saveConfFilePath () :void {
-        trace("Conf file is now " + _confFile.nativePath);
-        FlumpSettings.configFilePath = _confFile.nativePath;
     }
 
     protected function setImportDirectory (dir :File) :void {

@@ -1,5 +1,5 @@
 //
-// flump-exporter
+// Flump - Copyright 2012 Three Rings Design
 
 package flump.export {
 
@@ -7,19 +7,23 @@ import flash.net.SharedObject;
 
 public class FlumpSettings
 {
-    public static function get hasConfigFilePath () :Boolean {
+    public static function get projectWindowSettings () :Array {
         load();
-        return _settings.data.hasOwnProperty(CONF_FILE_KEY);
+        var settings :Array = _settings.data[PROJECT_WINDOW_SETTINGS];
+        if (settings == null) {
+            return [];
+        } else {
+            return settings.map(function (obj :Object, ..._) :ProjectWindowSettings {
+                return ProjectWindowSettings.fromObject(obj);
+            });
+        }
+
+        return (settings != null ? settings : []);
     }
 
-    public static function get configFilePath () :String {
+    public static function set projectWindowSettings (settings :Array) :void {
         load();
-        return _settings.data[CONF_FILE_KEY];
-    }
-
-    public static function set configFilePath (path :String) :void {
-        load();
-        _settings.data[CONF_FILE_KEY] = path;
+        _settings.data[PROJECT_WINDOW_SETTINGS] = settings;
         _settings.flush();
     }
 
@@ -31,6 +35,6 @@ public class FlumpSettings
 
     protected static var _settings :SharedObject;
 
-    protected static const CONF_FILE_KEY :String = "CONF_FILE";
+    protected static const PROJECT_WINDOW_SETTINGS :String = "PROJECT_WINDOW_SETTINGS";
 }
 }

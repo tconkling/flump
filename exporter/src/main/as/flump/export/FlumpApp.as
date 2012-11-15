@@ -1,5 +1,5 @@
 //
-// flump-exporter
+// Flump - Copyright 2012 Three Rings Design
 
 package flump.export {
 
@@ -8,6 +8,7 @@ import flash.display.NativeWindow;
 import flash.events.Event;
 import flash.events.InvokeEvent;
 import flash.filesystem.File;
+import flash.net.FileFilter;
 
 import flump.xfl.XflLibrary;
 
@@ -42,18 +43,33 @@ public class FlumpApp
             if (event.arguments.length > 0) {
                 // A project file has been double-clicked. Open it.
                 openProject(new File(event.arguments[0]));
-
-            } else if (!launched) {
-                // The app has been launched directly. Open the last-opened project if
-                // it exists; else open a new project.
-                openProject(FlumpSettings.hasConfigFilePath ?
-                    new File(FlumpSettings.configFilePath) : null);
-            } else if (_projects.length == 0) {
-                // The app has been resumed. We have no open projects; create a new one.
-                openProject();
             }
 
-            launched = true;
+            if (!launched) {
+                launched = true;
+                if (FlumpSettings.projectWindowSettings.length > 0) {
+                    // The app has been launched directly. Open the previously-opened projects.
+                    for each (var pws :ProjectWindowSettings in FlumpSettings.projectWindowSettings) {
+                        var project :ProjectController = openProject(new File(pws.configFilePath));
+                        project.win.nativeWindow.x = pws.windowX;
+                        project.win.nativeWindow.y = pws.windowY;
+                    }
+                } else {
+                    showOpenProjectDialog();
+                }
+            }
+        });
+
+        // When we quit, save the list of currently-open projects
+        NA.addEventListener(Event.EXITING, function (..._) :void {
+            var projectWindowSettings :Array = [];
+            for each (var project :ProjectController in _projects) {
+                if (project.configFile != null) {
+                    projectWindowSettings.push(ProjectWindowSettings.fromProject(project));
+                }
+            }
+
+            FlumpSettings.projectWindowSettings = projectWindowSettings;
         });
     }
 
@@ -82,18 +98,29 @@ public class FlumpApp
         _previewControls.orderToFront();
     }
 
-    public function openProject (configFile :File = null) :void {
+    public function openProject (configFile :File = null) :ProjectController {
         // This project may already be open.
         for each (var ctrl :ProjectController in _projects) {
             if (ctrl.configFile != null && ctrl.configFile.nativePath == configFile.nativePath) {
                 ctrl.win.activate();
-                return;
+                return ctrl;
             }
         }
 
         var controller :ProjectController = new ProjectController(configFile);
         controller.win.addEventListener(Event.CLOSE, F.callbackOnce(closeProject, controller));
         _projects.push(controller);
+
+        return controller;
+    }
+
+    public function showOpenProjectDialog () :void {
+        var file :File = new File();
+        file.addEventListener(Event.SELECT, function (..._) :void {
+            FlumpApp.app.openProject(file);
+        });
+        file.browseForOpen("Open Flump Project", [
+            new FileFilter("Flump project (*.flump)", "*.flump") ]);
     }
 
     protected function closeProject (controller :ProjectController) :void {
