@@ -70,15 +70,32 @@ public class ProjectController
             }
             curSelection = newSelection;
         });
+
+        // Reload
         _win.reload.addEventListener(MouseEvent.CLICK, F.callback(reloadNow));
+
+        // Export
         _win.export.addEventListener(MouseEvent.CLICK, function (..._) :void {
             for each (var status :DocStatus in _flashDocsGrid.selectedItems) {
                 exportFlashDocument(status);
             }
         });
+
+        // Preview
         _win.preview.addEventListener(MouseEvent.CLICK, function (..._) :void {
             FlumpApp.app.showPreviewWindow(_flashDocsGrid.selectedItem.lib);
         });
+
+        // Export All
+        _win.exportAll.addEventListener(MouseEvent.CLICK, function (..._) :void {
+            for each (var status :DocStatus in _flashDocsGrid.dataProvider.toArray()) {
+                if (status.isValid) {
+                    exportFlashDocument(status);
+                }
+            }
+        });
+
+        // Import/Export directories
         _importChooser = new DirChooser(null, _win.importRoot, _win.browseImport);
         _importChooser.changed.add(setImportDirectory);
         _exportChooser = new DirChooser(null, _win.exportRoot, _win.browseExport);
@@ -87,6 +104,7 @@ public class ProjectController
         _importChooser.changed.add(F.callback(updateWindowTitle, true));
         _exportChooser.changed.add(F.callback(updateWindowTitle, true));
 
+        // Edit Formats
         var editFormatsController :EditFormatsController = null;
         _win.editFormats.addEventListener(MouseEvent.CLICK, function (..._) :void {
             if (editFormatsController == null || editFormatsController.closed) {
