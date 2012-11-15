@@ -57,16 +57,16 @@ public class ProjectController
         var curSelection :DocStatus = null;
         _flashDocsGrid.addEventListener(GridSelectionEvent.SELECTION_CHANGE, function (..._) :void {
             log.info("Changed", "selected", _flashDocsGrid.selectedIndices);
-            updatePreviewAndExportButtons();
+            onSelectedItemChanged();
 
             if (curSelection != null) {
                 curSelection.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE,
-                    updatePreviewAndExportButtons);
+                    onSelectedItemChanged);
             }
             var newSelection :DocStatus = _flashDocsGrid.selectedItem as DocStatus;
             if (newSelection != null) {
                 newSelection.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE,
-                    updatePreviewAndExportButtons);
+                    onSelectedItemChanged);
             }
             curSelection = newSelection;
         });
@@ -201,7 +201,7 @@ public class ProjectController
 
     protected function reloadNow () :void {
         setImportDirectory(_importChooser.dir);
-        updatePreviewAndExportButtons();
+        onSelectedItemChanged();
     }
 
     protected function updateUiFromConf (..._) :void {
@@ -220,7 +220,7 @@ public class ProjectController
         updateWindowTitle(true);
     }
 
-    protected function updatePreviewAndExportButtons (..._) :void {
+    protected function onSelectedItemChanged (..._) :void {
         _win.export.enabled = _exportChooser.dir != null && _flashDocsGrid.selectionLength > 0 &&
             _flashDocsGrid.selectedItems.some(function (status :DocStatus, ..._) :Boolean {
                 return status.isValid;
@@ -229,8 +229,7 @@ public class ProjectController
         var status :DocStatus = _flashDocsGrid.selectedItem as DocStatus;
         _win.preview.enabled = status != null && status.isValid;
 
-        if (_exportChooser.dir == null) return;
-        _conf.exportDir = _confFile == null ? _exportChooser.dir.nativePath : _confFile.parent.getRelativePath(_exportChooser.dir, /*useDotDot=*/true);
+        _win.selectedItem.text = (status == null ? "" : status.path);
     }
 
     protected function createPublisher () :Publisher {

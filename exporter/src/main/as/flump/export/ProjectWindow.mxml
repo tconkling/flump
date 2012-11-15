@@ -21,37 +21,41 @@
     </s:DataGrid>
     <!-- Both the Form and the FormItems need widths on them to make the percentage work -->
     <s:VGroup width="50%">
-      <s:Form width="50%">
         <s:FormItem label="Import Directory" width="500">
           <s:HGroup>
             <!-- Explicitly set the width to make it line up with the export form -->
-            <s:Label id="importRoot" width="220"/>
+            <s:Label id="importRoot" width="253"/>
             <s:Button id="reload" label="Reload" width="80" enabled="false"/>
             <s:Button id="browseImport" width="40" label="..."/>
           </s:HGroup>
         </s:FormItem>
         <s:FormItem label="Export Directory" width="500">
           <s:HGroup>
-            <s:Label id="exportRoot" width="305"/>
+            <s:Label id="exportRoot" width="338"/>
             <s:Button id="browseExport" width="40" label="..."/>
           </s:HGroup>
         </s:FormItem>
         <s:FormItem label="Formats" width="500">
           <s:HGroup>
-            <s:Label id="formatOverview" width="305"/>
+            <s:Label id="formatOverview" width="385"/>
             <s:Button id="editFormats" width="40" label="..."/>
+          </s:HGroup>
+        </s:FormItem>
+        <s:FormItem width="500">
+          <s:HGroup horizontalAlign="right" width="479">
+            <s:Button id="exportAll" label="Export All"/>
           </s:HGroup>
         </s:FormItem>
         <s:FormItem>
           <s:Spacer width="10" height="10"/>
         </s:FormItem>
-        <s:FormItem width="500">
-          <s:HGroup>
+        <s:FormItem label="Item" width="500">
+          <s:HGroup width="500" horizontalAlign="left">
+            <s:Label id="selectedItem" width="303"/>
             <s:Button id="preview" label="Preview" enabled="false"/>
             <s:Button id="export" label="Export" enabled="false"/>
           </s:HGroup>
         </s:FormItem>
-      </s:Form>
     </s:VGroup>
   </s:HGroup>
   <s:DataGrid id="errors" width="100%" height="375">
