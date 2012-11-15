@@ -55,7 +55,8 @@ public class FlumpApp
                         project.win.nativeWindow.y = pws.windowY;
                     }
                 } else {
-                    showOpenProjectDialog();
+                    // If we have no previous projects to open, create a new project
+                    newProject();
                 }
             }
         });
