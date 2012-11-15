@@ -3,10 +3,6 @@
 
 package flump.export {
 
-import com.threerings.util.F;
-import com.threerings.util.Log;
-import com.threerings.util.StringUtil;
-
 import flash.desktop.NativeApplication;
 import flash.display.NativeMenu;
 import flash.display.NativeMenuItem;
@@ -28,6 +24,10 @@ import mx.events.PropertyChangeEvent;
 import spark.components.DataGrid;
 import spark.components.Window;
 import spark.events.GridSelectionEvent;
+
+import com.threerings.util.F;
+import com.threerings.util.Log;
+import com.threerings.util.StringUtil;
 
 public class ProjectController
 {

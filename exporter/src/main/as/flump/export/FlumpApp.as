@@ -3,13 +3,6 @@
 
 package flump.export {
 
-import com.threerings.util.Arrays;
-import com.threerings.util.F;
-import com.threerings.util.Log;
-import com.threerings.util.Map;
-import com.threerings.util.Maps;
-
-import flash.desktop.InvokeEventReason;
 import flash.desktop.NativeApplication;
 import flash.display.NativeWindow;
 import flash.events.Event;
@@ -21,6 +14,10 @@ import flump.xfl.XflLibrary;
 import spark.components.Window;
 
 import starling.display.Sprite;
+
+import com.threerings.util.Arrays;
+import com.threerings.util.F;
+import com.threerings.util.Log;
 
 public class FlumpApp
 {

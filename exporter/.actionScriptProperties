@@ -15,7 +15,7 @@
       <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/com/adobe/as3corelib/0.93/as3corelib-0.93.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/com/threerings/aspirin/1.13/aspirin-1.13.swc" sourcepath="" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/org/osflash/signals/fd03bf873/signals-fd03bf873.swc" sourcepath="" useDefaultLinkType="false"/>
-      <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/org/starling-framework/starling/1.2/starling-1.2.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/org/starling-framework/starling/1.0-ooo/starling-1.0-ooo.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>

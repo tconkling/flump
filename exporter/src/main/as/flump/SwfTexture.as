@@ -56,8 +56,9 @@ public class SwfTexture
         a = w * h;
     }
 
-    public function toBitmapData () :BitmapData {
-        return Util.renderToBitmapData(_disp, w, h, scale);
+    public function toBitmapData (borderPadding :int = 0) :BitmapData {
+        const bmd :BitmapData = Util.renderToBitmapData(_disp, w, h, scale);
+        return (borderPadding > 0 ? Util.padBitmapBorder(bmd, borderPadding) : bmd);
     }
 
     public function toString () :String { return "a " + a + " w " + w + " h " + h; }

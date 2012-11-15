@@ -3,9 +3,6 @@
 
 package flump.export {
 
-import com.threerings.util.Comparators;
-import com.threerings.util.Log;
-
 import flash.geom.Point;
 import flash.utils.getTimer;
 
@@ -14,6 +11,10 @@ import flump.mold.KeyframeMold;
 import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;
+
+import com.threerings.util.Comparators;
+import com.threerings.util.Log;
+import com.threerings.util.Preconditions;
 
 /**
  * Creates texture atlases from an XflLibrary
@@ -43,6 +44,7 @@ public class TexturePacker
             // Add a new atlas
             const size :Point = findOptimalSize();
             atlases.push(new AtlasImpl(prefix + "atlas" + atlases.length + suffix, size.x, size.y));
+            var hasEmptyAtlas :Boolean = true;
 
             // Try to pack each texture into any atlas
             for (var ii :int = 0; ii < _unpacked.length; ++ii) {
@@ -55,11 +57,15 @@ public class TexturePacker
                 for each (var atlas :AtlasImpl in atlases) {
                     // TODO(bruno): Support rotated textures?
                     if (atlas.place(unpacked)) {
+                        hasEmptyAtlas = false;
                         _unpacked.splice(ii--, 1);
                         break;
                     }
                 }
             }
+
+            Preconditions.checkState(_unpacked.length == 0 || !hasEmptyAtlas,
+                "Texture won't fit in newly-created atlas?");
         }
 
         var totalTime :int = flash.utils.getTimer() - start;
@@ -73,8 +79,8 @@ public class TexturePacker
         var maxH :int = 0;
 
         for each (var tex :SwfTexture in _unpacked) {
-            const w :int = tex.w + AtlasImpl.PADDING;
-            const h :int = tex.h + AtlasImpl.PADDING;
+            const w :int = tex.w + (BORDER_SIZE * 2);
+            const h :int = tex.h + (BORDER_SIZE * 2);
             area += w * h;
             maxW = Math.max(maxW, w);
             maxH = Math.max(maxH, h);
@@ -108,8 +114,6 @@ public class TexturePacker
 }
 }
 
-import com.adobe.images.PNGEncoder;
-import com.threerings.util.Arrays;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
@@ -118,18 +122,21 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.utils.IDataOutput;
 
+import com.adobe.images.PNGEncoder;
+
 import flump.SwfTexture;
 import flump.Util;
 import flump.export.Atlas;
 import flump.mold.AtlasMold;
 import flump.mold.AtlasTextureMold;
 
+import com.threerings.util.Arrays;
+
+const BORDER_SIZE :int = 2;
+
 class AtlasImpl
     implements Atlas
 {
-    // The empty border size around the right and bottom edges of each texture, to prevent bleeding
-    public static const PADDING :int = 2;
-
     public var name :String;
 
     public function AtlasImpl (name :String, w :int, h :int) {
@@ -145,7 +152,9 @@ class AtlasImpl
 
     public function get used () :int {
         var used :int = 0;
-        _nodes.forEach(function (n :Node, ..._) :void { used += n.bounds.width * n.bounds.height; });
+        _nodes.forEach(function (n :Node, ..._) :void {
+            used += n.paddedBounds.width * n.paddedBounds.height;
+        });
         return used;
     }
 
@@ -153,10 +162,10 @@ class AtlasImpl
         var constructed :Sprite = new Sprite();
         _nodes.forEach(function (node :Node, ..._) :void {
             const tex :SwfTexture = node.texture;
-            const bm :Bitmap = new Bitmap(node.texture.toBitmapData(), "auto", true);
+            const bm :Bitmap = new Bitmap(node.texture.toBitmapData(BORDER_SIZE), "auto", true);
             constructed.addChild(bm);
-            bm.x = node.bounds.x;
-            bm.y = node.bounds.y;
+            bm.x = node.paddedBounds.x;
+            bm.y = node.paddedBounds.y;
         });
         const bd :BitmapData = Util.renderToBitmapData(constructed, _width, _height);
         bytes.writeBytes(PNGEncoder.encode(bd));
@@ -164,7 +173,7 @@ class AtlasImpl
 
     public function toMold () :AtlasMold {
         const mold :AtlasMold = new AtlasMold();
-        mold.file = name + ".png";
+        mold.file = this.filename;
         _nodes.forEach(function (node :Node, ..._) :void {
             const tex :SwfTexture = node.texture;
             const texMold :AtlasTextureMold = new AtlasTextureMold();
@@ -178,8 +187,8 @@ class AtlasImpl
 
     // Try to place a texture in this atlas, return true if it fit
     public function place (tex :SwfTexture) :Boolean {
-        var w :int = tex.w + PADDING;
-        var h :int = tex.h + PADDING;
+        var w :int = tex.w + (BORDER_SIZE * 2);
+        var h :int = tex.h + (BORDER_SIZE * 2);
         if (w > _width || h > _height) {
             return false;
         }
@@ -194,8 +203,10 @@ class AtlasImpl
                 }
 
                 if (!isMasked(xx, yy, w, h)) {
-                    _nodes.push(new Node(xx, yy, tex));
-                    setMasked(xx, yy, w, h);
+                    var node :Node = new Node(xx + BORDER_SIZE, yy + BORDER_SIZE, tex);
+                    _nodes.push(node);
+                    setMasked(node.paddedBounds.x, node.paddedBounds.y,
+                        node.paddedBounds.width, node.paddedBounds.height);
                     found = true;
                     break;
                 }
@@ -244,10 +255,13 @@ class AtlasImpl
 class Node
 {
     public var bounds :Rectangle;
+    public var paddedBounds :Rectangle;
     public var texture :SwfTexture;
 
     public function Node (x :int, y :int, texture :SwfTexture) {
         this.texture = texture;
         this.bounds = new Rectangle(x, y, texture.w, texture.h);
+        this.paddedBounds = new Rectangle(x - BORDER_SIZE, y - BORDER_SIZE,
+            texture.w + (BORDER_SIZE * 2), texture.h + (BORDER_SIZE * 2));
     }
 }
