@@ -120,6 +120,28 @@ public class ProjectController
         setupMenus();
     }
 
+    public function save () :void {
+        if (_confFile == null) {
+            saveAs();
+        } else {
+            saveConf();
+        }
+    }
+
+    public function saveAs () :void {
+        var file :File = new File();
+        file.addEventListener(Event.SELECT, function (..._) :void {
+            // Ensure the filename ends with .flump
+            if (!StringUtil.endsWith(file.name.toLowerCase(), ".flump")) {
+                file = file.parent.resolvePath(file.name + ".flump");
+            }
+
+            _confFile = file;
+            saveConf();
+        });
+        file.browseForSave("Save Flump Configuration");
+    }
+
     public function get configFile () :File {
         return _confFile;
     }
@@ -129,24 +151,20 @@ public class ProjectController
     }
 
     protected function setupMenus () :void {
-        var fileMenuItem :NativeMenuItem;
         if (NativeApplication.supportsMenu) {
-            // Grab the existing menu on macs. Use an index to get it as it's not going to be
-            // 'File' in all languages
-            fileMenuItem = NA.menu.getItemAt(1);
-            // Add a separator before the existing close command
-            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Sep", /*separator=*/true), 0);
-        } else {
-            _win.nativeWindow.menu = new NativeMenu();
-            fileMenuItem = _win.nativeWindow.menu.addSubmenu(new NativeMenu(), "File");
+            // If we're on a Mac, the menus will be set up at the application level.
+            return;
         }
+        
+        var fileMenuItem  :NativeMenuItem = 
+            _win.nativeWindow.menu.addSubmenu(new NativeMenu(), "File");
 
         // Add save and save as by index to work with the existing items on Mac
         // Mac menus have an existing "Close" item, so everything we add should go ahead of that
         var newMenuItem :NativeMenuItem = fileMenuItem.submenu.addItemAt(new NativeMenuItem("New Project"), 0);
         newMenuItem.keyEquivalent = "n";
         newMenuItem.addEventListener(Event.SELECT, function (..._) :void {
-            FlumpApp.app.openProject();
+            FlumpApp.app.newProject();
         });
 
         var openMenuItem :NativeMenuItem =
@@ -160,15 +178,12 @@ public class ProjectController
         const saveMenuItem :NativeMenuItem =
             fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save Project"), 3);
         saveMenuItem.keyEquivalent = "s";
-        saveMenuItem.addEventListener(Event.SELECT, function (..._) :void {
-            if (_confFile == null) saveConfAs();
-            else saveConf();
-        });
+        saveMenuItem.addEventListener(Event.SELECT, F.callback(save));
 
         const saveAsMenuItem :NativeMenuItem =
             fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save Project As..."), 4);
         saveAsMenuItem.keyEquivalent = "S";
-        saveAsMenuItem.addEventListener(Event.SELECT, saveConfAs);
+        saveAsMenuItem.addEventListener(Event.SELECT, F.callback(saveAs));
     }
 
     protected function updateWindowTitle (modified :Boolean) :void {
@@ -195,20 +210,6 @@ public class ProjectController
             updateWindowTitle(false);
         });
     }
-
-    protected function saveConfAs (..._) :void {
-        var file :File = new File();
-        file.addEventListener(Event.SELECT, function (..._) :void {
-            // Ensure the filename ends with .flump
-            if (!StringUtil.endsWith(file.name.toLowerCase(), ".flump")) {
-                file = file.parent.resolvePath(file.name + ".flump");
-            }
-
-            _confFile = file;
-            saveConf();
-        });
-        file.browseForSave("Save Flump Configuration");
-    };
 
     protected function reloadNow () :void {
         setImportDirectory(_importChooser.dir);

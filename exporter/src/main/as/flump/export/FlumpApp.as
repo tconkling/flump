@@ -4,6 +4,8 @@
 package flump.export {
 
 import flash.desktop.NativeApplication;
+import flash.display.NativeMenu;
+import flash.display.NativeMenuItem;
 import flash.display.NativeWindow;
 import flash.events.Event;
 import flash.events.InvokeEvent;
@@ -11,8 +13,6 @@ import flash.filesystem.File;
 import flash.net.FileFilter;
 
 import flump.xfl.XflLibrary;
-
-import spark.components.Window;
 
 import starling.display.Sprite;
 
@@ -71,6 +71,8 @@ public class FlumpApp
 
             FlumpSettings.projectWindowSettings = projectWindowSettings;
         });
+
+        setupGlobalMenus();
     }
 
     public function showPreviewWindow (lib :XflLibrary) :void {
@@ -98,12 +100,18 @@ public class FlumpApp
         _previewControls.orderToFront();
     }
 
-    public function openProject (configFile :File = null) :ProjectController {
+    public function newProject () :ProjectController {
+        return openProject(null);
+    }
+
+    public function openProject (configFile :File) :ProjectController {
         // This project may already be open.
-        for each (var ctrl :ProjectController in _projects) {
-            if (ctrl.configFile != null && ctrl.configFile.nativePath == configFile.nativePath) {
-                ctrl.win.activate();
-                return ctrl;
+        if (configFile != null) {
+            for each (var ctrl :ProjectController in _projects) {
+                if (ctrl.configFile != null && ctrl.configFile.nativePath == configFile.nativePath) {
+                    ctrl.win.activate();
+                    return ctrl;
+                }
             }
         }
 
@@ -125,6 +133,63 @@ public class FlumpApp
 
     protected function closeProject (controller :ProjectController) :void {
         Arrays.removeFirst(_projects, controller);
+    }
+
+    protected function getActiveProject () :ProjectController {
+        for each (var project :ProjectController in _projects) {
+            if (NA.activeWindow == project.win.nativeWindow) {
+                return project;
+            }
+        }
+
+        return null;
+    }
+
+    protected function setupGlobalMenus () :void {
+        if (!NativeApplication.supportsMenu) {
+            return;
+        }
+        // Grab the existing menu on macs. Use an index to get it as it's not going to be
+        // 'File' in all languages
+        var fileMenuItem :NativeMenuItem = NA.menu.getItemAt(1);
+        // Add a separator before the existing close command
+        fileMenuItem.submenu.addItemAt(new NativeMenuItem("Sep", /*separator=*/true), 0);
+
+        // Add save and save as by index to work with the existing items on Mac
+        // Mac menus have an existing "Close" item, so everything we add should go ahead of that
+        var newMenuItem :NativeMenuItem = fileMenuItem.submenu.addItemAt(new NativeMenuItem("New Project"), 0);
+        newMenuItem.keyEquivalent = "n";
+        newMenuItem.addEventListener(Event.SELECT, function (..._) :void {
+            newProject();
+        });
+
+        var openMenuItem :NativeMenuItem =
+            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Open Project..."), 1);
+        openMenuItem.keyEquivalent = "o";
+        openMenuItem.addEventListener(Event.SELECT, function (..._) :void {
+            showOpenProjectDialog();
+        });
+        fileMenuItem.submenu.addItemAt(new NativeMenuItem("Sep", /*separator=*/true), 2);
+
+        const saveMenuItem :NativeMenuItem =
+            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save Project"), 3);
+        saveMenuItem.keyEquivalent = "s";
+        saveMenuItem.addEventListener(Event.SELECT, function (..._) :void {
+            var project :ProjectController = getActiveProject();
+            if (project != null) {
+                project.save();
+            }
+        });
+
+        const saveAsMenuItem :NativeMenuItem =
+            fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save Project As..."), 4);
+        saveAsMenuItem.keyEquivalent = "S";
+        saveAsMenuItem.addEventListener(Event.SELECT, function (..._) :void {
+            var project :ProjectController = getActiveProject();
+            if (project != null) {
+                project.saveAs();
+            }
+        });
     }
 
     // Causes a window to be hidden, rather than closed, when its close box is clicked
