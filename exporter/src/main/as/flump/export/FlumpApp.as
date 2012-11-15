@@ -4,17 +4,13 @@
 package flump.export {
 
 import flash.desktop.NativeApplication;
-import flash.display.NativeMenu;
 import flash.display.NativeMenuItem;
-import flash.display.NativeWindow;
 import flash.events.Event;
 import flash.events.InvokeEvent;
 import flash.filesystem.File;
 import flash.net.FileFilter;
 
 import flump.xfl.XflLibrary;
-
-import starling.display.Sprite;
 
 import com.threerings.util.Arrays;
 import com.threerings.util.F;
@@ -77,25 +73,10 @@ public class FlumpApp
     }
 
     public function showPreviewWindow (lib :XflLibrary) :void {
-        if (_previewController == null || _previewWindow.closed || _previewControls.closed) {
-            _previewWindow = new PreviewWindow();
-            _previewControls = new PreviewControlsWindow();
-            _previewWindow.started = function (container :Sprite) :void {
-                _previewController = new PreviewController(lib, container, _previewWindow,
-                    _previewControls);
-            }
-
-            _previewWindow.open();
-            _previewControls.open();
-
-            preventWindowClose(_previewWindow.nativeWindow);
-            preventWindowClose(_previewControls.nativeWindow);
-
-        } else {
-            _previewController.lib = lib;
-            _previewControls.activate();
-            _previewWindow.activate();
+        if (_previewController == null) {
+            _previewController = new PreviewController();
         }
+        _previewController.show(lib);
     }
 
     public function newProject () :ProjectController {
@@ -190,19 +171,8 @@ public class FlumpApp
         });
     }
 
-    // Causes a window to be hidden, rather than closed, when its close box is clicked
-    protected static function preventWindowClose (window :NativeWindow) :void {
-        window.addEventListener(Event.CLOSING, function (e :Event) :void {
-            e.preventDefault();
-            window.visible = false;
-        });
-    }
-
     protected var _projects :Array = [];
-
     protected var _previewController :PreviewController;
-    protected var _previewWindow :PreviewWindow;
-    protected var _previewControls :PreviewControlsWindow;
 
     protected static var _app :FlumpApp;
 }

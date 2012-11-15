@@ -1,5 +1,12 @@
-<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:mx="library://ns.adobe.com/flex/mx"
-  xmlns:s="library://ns.adobe.com/flex/spark" creationComplete="init();" alpha="0" renderMode="direct" width="480" height="720">
+<s:Window
+    xmlns:fx="http://ns.adobe.com/mxml/2009"
+    xmlns:mx="library://ns.adobe.com/flex/mx"
+    xmlns:s="library://ns.adobe.com/flex/spark"
+    creationComplete="init();"
+    alpha="0"
+    renderMode="direct"
+    width="480" height="720">
+
   <!-- I'd like to use visible="false" on the window and then set visible to true in init to hide
        the move to the top-left. If I do that, the window appears in the proper location and then
        disappears.  -->
@@ -17,7 +24,7 @@
           nativeWindow.x = 0;
           nativeWindow.y = 0;
 
-          _starling = new Starling(starling.display.Sprite, nativeWindow.stage)
+          _starling = new Starling(starling.display.Sprite, nativeWindow.stage);
           _starling.juggler.delayCall(function() :void { started(_starling.stage.getChildAt(0)) },
             0);
           _starling.start();
@@ -28,6 +35,10 @@
             _starling.viewPort = new Rectangle(0, 0, w, h);
             _starling.stage.stageWidth = w;
             _starling.stage.stageHeight = h;
+          });
+
+          addEventListener(Event.CLOSING, function (..._) :void {
+              _starling.dispose();
           });
         }
 
