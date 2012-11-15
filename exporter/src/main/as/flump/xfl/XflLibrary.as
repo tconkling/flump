@@ -3,11 +3,17 @@
 
 package flump.xfl {
 
+import com.adobe.crypto.MD5;
+import com.threerings.util.Log;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
+import com.threerings.util.Set;
+import com.threerings.util.Sets;
+import com.threerings.util.XmlUtil;
+
 import flash.filesystem.File;
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
-
-import com.adobe.crypto.MD5;
 
 import flump.Util;
 import flump.executor.Executor;
@@ -21,13 +27,6 @@ import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
 import flump.mold.LibraryMold;
 import flump.mold.MovieMold;
-
-import com.threerings.util.Log;
-import com.threerings.util.Map;
-import com.threerings.util.Maps;
-import com.threerings.util.Set;
-import com.threerings.util.Sets;
-import com.threerings.util.XmlUtil;
 
 public class XflLibrary
 {

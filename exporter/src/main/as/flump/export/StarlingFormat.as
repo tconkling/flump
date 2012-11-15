@@ -3,12 +3,12 @@
 
 package flump.export {
 
+import deng.fzip.FZip;
+import deng.fzip.FZipFile;
+
 import flash.filesystem.File;
 import flash.utils.ByteArray;
 import flash.utils.IDataOutput;
-
-import deng.fzip.FZip;
-import deng.fzip.FZipFile;
 
 import flump.display.StarlingResources;
 import flump.xfl.XflLibrary;
