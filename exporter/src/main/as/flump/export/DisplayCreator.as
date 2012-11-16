@@ -12,7 +12,6 @@ import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
 import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
-import flump.xfl.XflTexture;
 
 import starling.display.DisplayObject;
 import starling.display.Image;
@@ -40,11 +39,8 @@ public class DisplayCreator
     }
 
     public function instantiateSymbol (id :String) :DisplayObject {
-        const match :Object = FLIPBOOK_TEXTURE.exec(id);
-        if (match != null) return loadTexture(id);
-        const item :* = _lib.get(id);
-        if (item is XflTexture) return loadTexture(XflTexture(item).symbol);
-        else return createMovie(MovieMold(item).id);
+        const imageCreator :ImageCreator = ImageCreator(_imageCreators[id]);
+        return (imageCreator != null ? imageCreator.create() : createMovie(id));
     }
 
     public function getMemoryUsage (id :String, subtex :Dictionary = null) :int {
@@ -112,8 +108,6 @@ public class DisplayCreator
     protected const _maxDrawn :Map = ValueComputingMap.newMapOf(String, calcMaxDrawn);
     protected const _imageCreators :Dictionary = new Dictionary(); //<name, TextureCreator>
     protected var _lib :XflLibrary;
-
-    protected static const FLIPBOOK_TEXTURE :RegExp = /^(.*)_flipbook_(\d+)$/;
 }
 }
 
