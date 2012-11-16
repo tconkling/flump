@@ -13,7 +13,6 @@ public class Publisher
 {
     public function Publisher (exportDir :File, project :ProjectConf) {
         _exportDir = exportDir;
-        _maxSize = project.maxSize;
         for each (var export :ExportConf in project.exports) _confs.push(export);
     }
 
@@ -29,12 +28,11 @@ public class Publisher
 
     protected function instantiate (lib :XflLibrary) :Vector.<Format> {
         const formats :Vector.<Format> = new Vector.<Format>();
-        for each (var conf :ExportConf in _confs) formats.push(conf.create(_exportDir, lib, _maxSize));
+        for each (var conf :ExportConf in _confs) formats.push(conf.create(_exportDir, lib));
         return formats;
     }
 
     private var _exportDir :File;
-    private var _maxSize :int;
     private const _confs :Vector.<ExportConf> = new Vector.<ExportConf>();
     private static const log :Log = Log.getLog(Publisher);
 }

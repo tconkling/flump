@@ -16,13 +16,15 @@ public class ExportConf
     public var scale :Number = 1;
     /** The size of the border around each texture in an atlas, in pixels */
     public var textureBorder :int = 1;
+    /** The maximum size of the width and height of a generated texture atlas */
+    public var maxAtlasSize :int = 2048;
 
     public function get description () :String {
         return name + " (" + (scale * 100).toFixed(0) + "%, " + textureBorder + "px, " +
             format + ")";
     }
 
-    public function create (exportDir :File, lib :XflLibrary, maxSize :int) :Format {
+    public function create (exportDir :File, lib :XflLibrary) :Format {
         var formatClass :Class;
         switch (format.toLowerCase()) {
             case "json": formatClass = JSONFormat; break;
@@ -30,7 +32,7 @@ public class ExportConf
             case "xml": formatClass = XMLFormat; break;
             default: throw new Error("Unknown format '" + format + "'");
         }
-        return new formatClass(exportDir, lib, this, maxSize);
+        return new formatClass(exportDir, lib, this, maxAtlasSize);
     }
 
     public static function fromJSON (o :Object) :ExportConf {
@@ -39,6 +41,7 @@ public class ExportConf
         conf.scale = require(o, "scale");
         conf.format = require(o, "format");
         conf.textureBorder = optional(o, "textureBorder", 1);
+        conf.maxAtlasSize = optional(o, "maxAtlasSize", 2048);
         return conf;
     }
 }

@@ -16,8 +16,8 @@ public class JSONFormat extends Format
         return JSON.parse(bytes.readUTFBytes(bytes.length))
     }
 
-    public function JSONFormat (destDir :File, lib :XflLibrary, conf :ExportConf, maxSize :int) {
-        super(destDir, lib, conf, maxSize);
+    public function JSONFormat (destDir :File, lib :XflLibrary, conf :ExportConf) {
+        super(destDir, lib, conf);
         _prefix = conf.name + "/" + lib.location;
         _metaFile =  _destDir.resolvePath(_prefix + "/library.json");
     }
@@ -33,7 +33,8 @@ public class JSONFormat extends Format
         if (libExportDir.exists) libExportDir.deleteDirectory(/*deteDirectoryContents=*/true);
         libExportDir.createDirectory();
 
-        const packer :TexturePacker = new TexturePacker(_lib, _conf.scale, _conf.textureBorder, _maxSize);
+        const packer :TexturePacker = new TexturePacker(_lib, _conf.scale, _conf.textureBorder,
+            _conf.maxAtlasSize);
         for each (var atlas :Atlas in packer.atlases) {
             Files.write(libExportDir.resolvePath(atlas.filename), atlas.writePNG);
         }

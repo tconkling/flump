@@ -1,6 +1,6 @@
 <s:Window xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:mx="library://ns.adobe.com/flex/mx"
   xmlns:s="library://ns.adobe.com/flex/spark"
-  width="500" height="300" title="Export Formats">
+  width="600" height="300" title="Export Formats">
   <s:layout>
     <s:VerticalLayout paddingLeft="20" paddingTop="20" paddingRight="20" paddingBottom="20"/>
   </s:layout>
@@ -8,8 +8,6 @@
     <s:columns>
       <s:ArrayList>
         <s:GridColumn dataField="name" headerText="Name"/>
-        <s:GridColumn dataField="scale" headerText="Scale"/>
-        <s:GridColumn dataField="textureBorder" headerText="Texture Border"/>
         <s:GridColumn dataField="format" headerText="Type">
           <s:itemEditor>
             <fx:Component>
@@ -25,6 +23,9 @@
             </fx:Component>
           </s:itemEditor>
         </s:GridColumn>
+        <s:GridColumn dataField="scale" headerText="Scale"/>
+        <s:GridColumn dataField="textureBorder" headerText="Texture Border"/>
+        <s:GridColumn dataField="maxAtlasSize" headerText="Max Atlas Size"/>
       </s:ArrayList>
     </s:columns>
     <mx:ArrayCollection/>
