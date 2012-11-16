@@ -7,9 +7,9 @@ import flash.filesystem.File;
 
 import flump.xfl.XflLibrary;
 
-public class Format
+public class PublishFormat
 {
-    public function Format (destDir :File, lib :XflLibrary, conf :ExportConf) {
+    public function PublishFormat (destDir :File, lib :XflLibrary, conf :ExportConf) {
         _lib = lib;
         _destDir = destDir;
         _conf = conf;

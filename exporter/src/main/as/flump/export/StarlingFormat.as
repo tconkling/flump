@@ -13,7 +13,7 @@ import deng.fzip.FZipFile;
 import flump.display.StarlingResources;
 import flump.xfl.XflLibrary;
 
-public class StarlingFormat extends Format
+public class StarlingFormat extends PublishFormat
 {
     public var outputFile :File;
 

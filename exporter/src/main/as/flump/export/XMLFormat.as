@@ -12,7 +12,7 @@ import flump.xfl.XflLibrary;
 
 import com.threerings.util.XmlUtil;
 
-public class XMLFormat extends Format
+public class XMLFormat extends PublishFormat
 {
     public function XMLFormat (destDir :File, lib :XflLibrary, conf :ExportConf) {
         super(destDir, lib, conf);

@@ -20,19 +20,7 @@ public class ExportConf
     public var maxAtlasSize :int = 2048;
 
     public function get description () :String {
-        return name + " (" + (scale * 100).toFixed(0) + "%, " + textureBorder + "px, " +
-            format + ")";
-    }
-
-    public function create (exportDir :File, lib :XflLibrary) :Format {
-        var formatClass :Class;
-        switch (format.toLowerCase()) {
-            case "json": formatClass = JSONFormat; break;
-            case "starling": formatClass = StarlingFormat; break;
-            case "xml": formatClass = XMLFormat; break;
-            default: throw new Error("Unknown format '" + format + "'");
-        }
-        return new formatClass(exportDir, lib, this, maxAtlasSize);
+        return "'" + name + "' (" + format + ", " + (scale * 100).toFixed(0) + "%)";
     }
 
     public static function fromJSON (o :Object) :ExportConf {
@@ -43,6 +31,17 @@ public class ExportConf
         conf.textureBorder = optional(o, "textureBorder", 1);
         conf.maxAtlasSize = optional(o, "maxAtlasSize", 2048);
         return conf;
+    }
+
+    public function createPublishFormat (exportDir :File, lib :XflLibrary) :PublishFormat {
+        var formatClass :Class;
+        switch (format.toLowerCase()) {
+            case "json": formatClass = JSONFormat; break;
+            case "starling": formatClass = StarlingFormat; break;
+            case "xml": formatClass = XMLFormat; break;
+            default: throw new Error("Unknown format '" + format + "'");
+        }
+        return new formatClass(exportDir, lib, this, maxAtlasSize);
     }
 }
 }

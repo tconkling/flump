@@ -9,7 +9,7 @@ import flash.utils.IDataOutput;
 
 import flump.xfl.XflLibrary;
 
-public class JSONFormat extends Format
+public class JSONFormat extends PublishFormat
 {
     public static function readJSON (file :File) :Object {
         const bytes :ByteArray = Files.read(file);

@@ -17,18 +17,18 @@ public class Publisher
     }
 
     public function modified (lib :XflLibrary) :Boolean {
-        return instantiate(lib).some(function (export :Format, ..._) :Boolean {
+        return instantiate(lib).some(function (export :PublishFormat, ..._) :Boolean {
             return export.modified;
         });
     }
 
     public function publish (lib :XflLibrary) :void {
-        for each (var format :Format in instantiate(lib)) format.publish();
+        for each (var format :PublishFormat in instantiate(lib)) format.publish();
     }
 
-    protected function instantiate (lib :XflLibrary) :Vector.<Format> {
-        const formats :Vector.<Format> = new Vector.<Format>();
-        for each (var conf :ExportConf in _confs) formats.push(conf.create(_exportDir, lib));
+    protected function instantiate (lib :XflLibrary) :Vector.<PublishFormat> {
+        const formats :Vector.<PublishFormat> = new Vector.<PublishFormat>();
+        for each (var conf :ExportConf in _confs) formats.push(conf.createPublishFormat(_exportDir, lib));
         return formats;
     }
 
