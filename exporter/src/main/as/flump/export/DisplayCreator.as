@@ -5,8 +5,9 @@ package flump.export {
 
 import flash.utils.Dictionary;
 
-import flump.SwfTexture;
 import flump.display.Movie;
+import flump.mold.AtlasMold;
+import flump.mold.AtlasTextureMold;
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
 import flump.mold.MovieMold;
@@ -15,7 +16,6 @@ import flump.xfl.XflTexture;
 
 import starling.display.DisplayObject;
 import starling.display.Image;
-import starling.display.Sprite;
 import starling.textures.Texture;
 
 import com.threerings.util.Map;
@@ -25,20 +25,38 @@ public class DisplayCreator
 {
     public function DisplayCreator (lib :XflLibrary) {
         _lib = lib;
+
+        const packer :TexturePacker = new TexturePacker(lib);
+        for each (var atlas :Atlas in packer.atlases) {
+            var mold :AtlasMold = atlas.toMold();
+            var baseTexture :Texture = atlas.toTexture();
+            for each (var atlasTexture :AtlasTextureMold in mold.textures) {
+                var tex :Texture = Texture.fromTexture(baseTexture, atlasTexture.bounds);
+                var creator :ImageCreator =
+                    new ImageCreator(tex, atlasTexture.offset, atlasTexture.symbol);
+                _imageCreators[atlasTexture.symbol] = creator;
+            }
+        }
     }
 
-    public function loadMovie (name :String) :Movie {
-        return new Movie(_lib.get(name, MovieMold), _lib.frameRate, loadId);
+    public function instantiateSymbol (id :String) :DisplayObject {
+        const match :Object = FLIPBOOK_TEXTURE.exec(id);
+        if (match != null) return loadTexture(id);
+        const item :* = _lib.get(id);
+        if (item is XflTexture) return loadTexture(XflTexture(item).symbol);
+        else return createMovie(MovieMold(item).id);
     }
 
     public function getMemoryUsage (id :String, subtex :Dictionary = null) :int {
         if (id == null) return 0;
-        if (FLIPBOOK_TEXTURE.exec(id) != null || _lib.get(id) is XflTexture) {
-            const tex :Texture = getStarlingTexture(id);
+
+        const tex :Texture = getStarlingTexture(id);
+        if (tex != null) {
             const usage :int = 4 * tex.width * tex.height;
             if (subtex != null && !subtex.hasOwnProperty(id)) subtex[id] = usage;
             return usage;
         }
+
         const xflMovie :MovieMold = _lib.get(id, MovieMold);
         if (subtex == null) subtex = new Dictionary();
         for each (var layer :LayerMold in xflMovie.layers) {
@@ -57,12 +75,20 @@ public class DisplayCreator
      */
     public function getMaxDrawn (id :String) :int { return _maxDrawn.get(id); }
 
+    protected function createMovie (name :String) :Movie {
+        return new Movie(_lib.get(name, MovieMold), _lib.frameRate, instantiateSymbol);
+    }
+
+    protected function loadTexture (symbol :String) :DisplayObject {
+        return ImageCreator(_imageCreators[symbol]).create();
+    }
+
     protected function calcMaxDrawn (id :String) :int {
         if (id == null) return 0;
-        if (FLIPBOOK_TEXTURE.exec(id) != null || _lib.get(id) is XflTexture) {
-            const tex :Texture = getStarlingTexture(id);
-            return tex.width * tex.height;
-        }
+
+        const tex :Texture = getStarlingTexture(id);
+        if (tex != null) return tex.width * tex.height;
+
         const xflMovie :MovieMold = _lib.get(id, MovieMold);
         var maxDrawn :int = 0;
         for (var ii :int = 0; ii < xflMovie.frames; ii++) {
@@ -77,48 +103,45 @@ public class DisplayCreator
     }
 
     private function getStarlingTexture (symbol :String) :Texture {
-        if (!_textures.hasOwnProperty(symbol)) {
-            const match :Object = FLIPBOOK_TEXTURE.exec(symbol);
-            var packed :SwfTexture;
-            if (match == null)  {
-                packed = SwfTexture.fromTexture(_lib.swf, _lib.get(symbol, XflTexture));
-            } else {
-                const movieName :String = match[1];
-                const frame :int = int(match[2]);
-                const movie :MovieMold = _lib.get(movieName, MovieMold);
-                if (!movie.flipbook) {
-                    throw new Error("Got non-flipbook movie for flipbook texture '" + symbol + "'");
-                }
-                packed = SwfTexture.fromFlipbook(_lib, movie, frame);
-            }
-            _textures[symbol] = Texture.fromBitmapData(packed.toBitmapData());
-            _textureOffsets[symbol] = packed.offset;
+        if (!_imageCreators.hasOwnProperty(symbol)) {
+            return null;
         }
-        return _textures[symbol];
-    }
-
-    public function loadTexture (symbol :String) :DisplayObject {
-        const image :Image = new Image(getStarlingTexture(symbol));
-        image.x = _textureOffsets[symbol].x;
-        image.y = _textureOffsets[symbol].y;
-        const holder :Sprite = new Sprite();
-        holder.addChild(image);
-        return holder;
-    }
-
-    public function loadId (id :String) :DisplayObject {
-        const match :Object = FLIPBOOK_TEXTURE.exec(id);
-        if (match != null) return loadTexture(id);
-        const item :* = _lib.get(id);
-        if (item is XflTexture) return loadTexture(XflTexture(item).symbol);
-        else return loadMovie(MovieMold(item).id);
+        return ImageCreator(_imageCreators[symbol]).texture;
     }
 
     protected const _maxDrawn :Map = ValueComputingMap.newMapOf(String, calcMaxDrawn);
-    protected const _textures :Dictionary = new Dictionary();// library name to Texture
-    protected const _textureOffsets :Dictionary = new Dictionary();// library name to Point
+    protected const _imageCreators :Dictionary = new Dictionary(); //<name, TextureCreator>
     protected var _lib :XflLibrary;
 
     protected static const FLIPBOOK_TEXTURE :RegExp = /^(.*)_flipbook_(\d+)$/;
 }
+}
+
+import flash.geom.Point;
+
+import starling.display.DisplayObject;
+import starling.display.Image;
+import starling.display.Sprite;
+import starling.textures.Texture;
+
+class ImageCreator {
+    public var texture :Texture;
+    public var offset :Point;
+    public var symbol :String;
+
+    public function ImageCreator (texture :Texture, offset :Point, symbol :String) {
+        this.texture = texture;
+        this.offset = offset;
+        this.symbol = symbol;
+    }
+
+    public function create () :DisplayObject {
+        const image :Image = new Image(texture);
+        image.x = offset.x;
+        image.y = offset.y;
+        const holder :Sprite = new Sprite();
+        holder.addChild(image);
+        holder.name = symbol;
+        return holder;
+    }
 }

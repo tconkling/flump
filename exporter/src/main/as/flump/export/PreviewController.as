@@ -113,7 +113,7 @@ public class PreviewController
 
     protected function displayLibraryItem (name :String) :void {
         while (_container.numChildren > 0) _container.removeChildAt(0);
-        _previewSprite = _creator.loadId(name);
+        _previewSprite = _creator.instantiateSymbol(name);
         _container.addChild(_previewSprite);
         onResize();
     }

@@ -130,6 +130,8 @@ import flump.export.Atlas;
 import flump.mold.AtlasMold;
 import flump.mold.AtlasTextureMold;
 
+import starling.textures.Texture;
+
 import com.threerings.util.Arrays;
 
 const BORDER_SIZE :int = 2;
@@ -159,16 +161,11 @@ class AtlasImpl
     }
 
     public function writePNG (bytes :IDataOutput) :void {
-        var constructed :Sprite = new Sprite();
-        _nodes.forEach(function (node :Node, ..._) :void {
-            const tex :SwfTexture = node.texture;
-            const bm :Bitmap = new Bitmap(node.texture.toBitmapData(BORDER_SIZE), "auto", true);
-            constructed.addChild(bm);
-            bm.x = node.paddedBounds.x;
-            bm.y = node.paddedBounds.y;
-        });
-        const bd :BitmapData = Util.renderToBitmapData(constructed, _width, _height);
-        bytes.writeBytes(PNGEncoder.encode(bd));
+        bytes.writeBytes(PNGEncoder.encode(toBitmapData()));
+    }
+
+    public function toTexture () :Texture {
+        return Texture.fromBitmapData(toBitmapData());
     }
 
     public function toMold () :AtlasMold {
@@ -216,6 +213,21 @@ class AtlasImpl
         return found;
     }
 
+    protected function toBitmapData () :BitmapData {
+        if (_bitmapData == null) {
+            var constructed :Sprite = new Sprite();
+            _nodes.forEach(function (node :Node, ..._) :void {
+                const tex :SwfTexture = node.texture;
+                const bm :Bitmap = new Bitmap(node.texture.toBitmapData(BORDER_SIZE), "auto", true);
+                constructed.addChild(bm);
+                bm.x = node.paddedBounds.x;
+                bm.y = node.paddedBounds.y;
+            });
+            _bitmapData = Util.renderToBitmapData(constructed, _width, _height);
+        }
+        return _bitmapData;
+    }
+
     protected function isMasked (x :int, y :int, w :int, h :int) :Boolean {
         var xMax :int = x + w - 1;
         var yMax :int = y + h - 1;
@@ -250,6 +262,7 @@ class AtlasImpl
     protected var _width :int;
     protected var _height :int;
     protected var _mask :Array;
+    protected var _bitmapData :BitmapData;
 }
 
 class Node

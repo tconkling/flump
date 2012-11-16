@@ -7,6 +7,8 @@ import flash.utils.IDataOutput;
 
 import flump.mold.AtlasMold;
 
+import starling.textures.Texture;
+
 public interface Atlas
 {
     function get area () :int;
@@ -14,6 +16,7 @@ public interface Atlas
     function get used () :int;
 
     function writePNG (bytes :IDataOutput) :void;
+    function toTexture () :Texture;
     function toMold () :AtlasMold;
 }
 }
