@@ -80,15 +80,15 @@ public class StarlingResources
     public function createMovie (symbol :String) :Movie { return Movie(idToDisplayObject(symbol)); }
 
    /**
-    * Creates a texture for the given symbol.
+    * Creates an image for the given symbol.
     *
-    * @param symbol the symbol name of the texture to be created
+    * @param symbol the symbol name of the image to be created
     *
     * @return a DisplayObject instance for the symbol
     *
     * @throws Error if there is no such symbol in these resources, or if the symbol isn't a texture.
     */
-    public function createTexture (symbol :String) :DisplayObject {
+    public function createImage (symbol :String) :DisplayObject {
         const disp :DisplayObject = DisplayObject(idToDisplayObject(symbol));
         // TODO - add loadDisplayObject to load either if the user doesn't care?
         if (disp is Movie) throw new Error(symbol + " is a movie, not a texture");
@@ -108,7 +108,7 @@ public class StarlingResources
     public function get textureSymbols () :Vector.<String> {
         const names :Vector.<String> = new Vector.<String>();
         for (var creatorName :String in _creators) {
-            if (_creators[creatorName] is TextureCreator) names.push(creatorName);
+            if (_creators[creatorName] is ImageCreator) names.push(creatorName);
         }
         return names;
     }
@@ -203,11 +203,10 @@ class Loader
         atlasFuture.succeeded.add(function (img :LoadedImage) :void {
             const baseTexture :Texture = Texture.fromBitmapData(img.bitmapData);
             for each (var atlasTexture :AtlasTextureMold in atlas.textures) {
-                const creator :TextureCreator = new TextureCreator();
-                creator.offset = atlasTexture.offset;
-                creator.texture = Texture.fromTexture(baseTexture, atlasTexture.bounds);
-                creator.symbol = atlasTexture.symbol;
-                _creators[atlasTexture.symbol] = creator;
+                _creators[atlasTexture.symbol] = new ImageCreator(
+                    Texture.fromTexture(baseTexture, atlasTexture.bounds),
+                    atlasTexture.offset,
+                    atlasTexture.symbol);
             }
         });
     }
@@ -215,10 +214,7 @@ class Loader
     protected function onPngLoadingComplete (..._) :void {
         for each (var movie :MovieMold in _lib.movies) {
             movie.fillLabels();
-            var creator :MovieCreator = new MovieCreator();
-            creator.frameRate = _lib.frameRate;
-            creator.mold = movie;
-            _creators[movie.id] = creator;
+            _creators[movie.id] = new MovieCreator(movie, _lib.frameRate);
         }
         _future.succeed(new StarlingResources(_creators));
     }
@@ -236,21 +232,31 @@ class Loader
     protected var _zip :FZip = new FZip();
     protected var _lib :LibraryMold;
 
-    protected const _creators :Dictionary = new Dictionary();//<name, TextureCreator/MovieCreator>
+    protected const _creators :Dictionary = new Dictionary();//<name, ImageCreator/MovieCreator>
     protected const _pngBytes :Dictionary = new Dictionary();//<String name, ByteArray>
     protected const _pngLoaders :Executor = new Executor(1);
 }
+
 import flash.geom.Point;
+
+import flump.display.Movie;
+import flump.mold.MovieMold;
 
 import starling.display.DisplayObject;
 import starling.display.Image;
 import starling.display.Sprite;
 import starling.textures.Texture;
 
-class TextureCreator {
+class ImageCreator {
     public var texture :Texture;
     public var offset :Point;
     public var symbol :String;
+
+    public function ImageCreator (texture :Texture, offset :Point, symbol :String) {
+        this.texture = texture;
+        this.offset = offset;
+        this.symbol = symbol;
+    }
 
     public function create (..._) :DisplayObject {
         const image :Image = new Image(texture);
@@ -262,14 +268,15 @@ class TextureCreator {
         return holder;
     }
 }
-import flump.display.Movie;
-import flump.mold.MovieMold;
-
-import starling.display.DisplayObject;
 
 class MovieCreator {
     public var frameRate :Number;
     public var mold :MovieMold;
+
+    public function MovieCreator (mold :MovieMold, frameRate :Number) {
+        this.mold = mold;
+        this.frameRate = frameRate;
+    }
 
     public function create (idToDisplayObject :Function) :DisplayObject {
         return new Movie(mold, frameRate, idToDisplayObject);
