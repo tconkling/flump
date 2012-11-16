@@ -23,10 +23,11 @@ public class TexturePacker
 {
     public const atlases :Vector.<Atlas> = new Vector.<Atlas>();
 
-    public function TexturePacker (lib :XflLibrary, scale :Number = 1.0, maxSize :int = 2048,
-        prefix :String = "", suffix :String = "") {
+    public function TexturePacker (lib :XflLibrary, scale :Number, borderSize :int,
+        maxSize :int = 2048, prefix :String = "", suffix :String = "") {
 
         _maxSize = maxSize;
+        _borderSize = borderSize;
 
         for each (var tex :XflTexture in lib.textures) {
             _unpacked.push(SwfTexture.fromTexture(lib.swf, tex, scale));
@@ -43,7 +44,8 @@ public class TexturePacker
         while (_unpacked.length > 0) {
             // Add a new atlas
             const size :Point = findOptimalSize();
-            atlases.push(new AtlasImpl(prefix + "atlas" + atlases.length + suffix, size.x, size.y));
+            atlases.push(new AtlasImpl(prefix + "atlas" + atlases.length + suffix, size.x, size.y,
+                borderSize));
             var hasEmptyAtlas :Boolean = true;
 
             // Try to pack each texture into any atlas
@@ -51,7 +53,8 @@ public class TexturePacker
                 var unpacked :SwfTexture = _unpacked[ii];
 
                 if (unpacked.w > _maxSize || unpacked.h > _maxSize) {
-                    throw new Error("Too large to fit in an atlas: " + unpacked.w + ", " + unpacked.h + " " + unpacked.symbol);
+                    throw new Error("Too large to fit in an atlas: " + unpacked.w + ", " +
+                        unpacked.h + " " + unpacked.symbol);
                 }
 
                 for each (var atlas :AtlasImpl in atlases) {
@@ -79,8 +82,8 @@ public class TexturePacker
         var maxH :int = 0;
 
         for each (var tex :SwfTexture in _unpacked) {
-            const w :int = tex.w + (BORDER_SIZE * 2);
-            const h :int = tex.h + (BORDER_SIZE * 2);
+            const w :int = tex.w + (_borderSize * 2);
+            const h :int = tex.h + (_borderSize * 2);
             area += w * h;
             maxW = Math.max(maxW, w);
             maxH = Math.max(maxH, h);
@@ -107,6 +110,7 @@ public class TexturePacker
     }
 
     protected var _maxSize :int;
+    protected var _borderSize :int;
 
     protected const _unpacked :Vector.<SwfTexture> = new Vector.<SwfTexture>();
 
@@ -134,17 +138,16 @@ import starling.textures.Texture;
 
 import com.threerings.util.Arrays;
 
-const BORDER_SIZE :int = 2;
-
 class AtlasImpl
     implements Atlas
 {
     public var name :String;
 
-    public function AtlasImpl (name :String, w :int, h :int) {
+    public function AtlasImpl (name :String, w :int, h :int, borderSize :int) {
         this.name = name;
         _width = w;
         _height = h;
+        _borderSize = borderSize;
         _mask = Arrays.create(_width * _height, false);
     }
 
@@ -184,8 +187,8 @@ class AtlasImpl
 
     // Try to place a texture in this atlas, return true if it fit
     public function place (tex :SwfTexture) :Boolean {
-        var w :int = tex.w + (BORDER_SIZE * 2);
-        var h :int = tex.h + (BORDER_SIZE * 2);
+        var w :int = tex.w + (_borderSize * 2);
+        var h :int = tex.h + (_borderSize * 2);
         if (w > _width || h > _height) {
             return false;
         }
@@ -200,7 +203,7 @@ class AtlasImpl
                 }
 
                 if (!isMasked(xx, yy, w, h)) {
-                    var node :Node = new Node(xx + BORDER_SIZE, yy + BORDER_SIZE, tex);
+                    var node :Node = new Node(xx, yy, _borderSize, tex);
                     _nodes.push(node);
                     setMasked(node.paddedBounds.x, node.paddedBounds.y,
                         node.paddedBounds.width, node.paddedBounds.height);
@@ -218,7 +221,7 @@ class AtlasImpl
             var constructed :Sprite = new Sprite();
             _nodes.forEach(function (node :Node, ..._) :void {
                 const tex :SwfTexture = node.texture;
-                const bm :Bitmap = new Bitmap(node.texture.toBitmapData(BORDER_SIZE), "auto", true);
+                const bm :Bitmap = new Bitmap(node.texture.toBitmapData(_borderSize), "auto", true);
                 constructed.addChild(bm);
                 bm.x = node.paddedBounds.x;
                 bm.y = node.paddedBounds.y;
@@ -261,6 +264,7 @@ class AtlasImpl
     protected var _nodes :Array = [];
     protected var _width :int;
     protected var _height :int;
+    protected var _borderSize :int;
     protected var _mask :Array;
     protected var _bitmapData :BitmapData;
 }
@@ -271,10 +275,11 @@ class Node
     public var paddedBounds :Rectangle;
     public var texture :SwfTexture;
 
-    public function Node (x :int, y :int, texture :SwfTexture) {
+    public function Node (x :int, y :int, borderSize :int, texture :SwfTexture) {
         this.texture = texture;
-        this.bounds = new Rectangle(x, y, texture.w, texture.h);
-        this.paddedBounds = new Rectangle(x - BORDER_SIZE, y - BORDER_SIZE,
-            texture.w + (BORDER_SIZE * 2), texture.h + (BORDER_SIZE * 2));
+        this.bounds = new Rectangle(x + borderSize, y + borderSize, texture.w, texture.h);
+        this.paddedBounds = new Rectangle(x, y,
+            texture.w + (borderSize * 2),
+            texture.h + (borderSize * 2));
     }
 }

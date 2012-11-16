@@ -31,8 +31,8 @@ public class XMLFormat extends Format
         libExportDir.createDirectory();
 
         const packers :Vector.<TexturePacker> = new <TexturePacker>[
-            new TexturePacker(_lib, _conf.scale, _maxSize, _prefix),
-            new TexturePacker(_lib, _conf.scale * 2, _maxSize, _prefix, "@2x"),
+            new TexturePacker(_lib, _conf.scale, _conf.textureBorder, _maxSize, _prefix),
+            new TexturePacker(_lib, _conf.scale * 2, _conf.textureBorder, _maxSize, _prefix, "@2x"),
         ];
 
         for each (var packer :TexturePacker in packers) {

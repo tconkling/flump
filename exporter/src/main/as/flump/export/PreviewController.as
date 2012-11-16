@@ -79,7 +79,7 @@ public class PreviewController
         }
         _controlsWindow.totalValue.text = formatMemory({memory: totalUsage});
 
-        const packer :TexturePacker = new TexturePacker(lib);
+        const packer :TexturePacker = new TexturePacker(lib, 1, 1);
         var atlasSize :Number = 0;
         var atlasUsed :Number = 0;
         for each (var atlas :Atlas in packer.atlases) {
