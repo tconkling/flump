@@ -1,12 +1,14 @@
 {
+  "exportDir": "export",
   "importDir": "resources",
   "exports": [
     {
       "name": "XML",
       "scale": 1,
+      "maxAtlasSize": 2048,
+      "textureBorder": 1,
       "format": "XML",
-      "description": "XML (1.00/XML)"
+      "description": "'XML' (XML, 100%)"
     }
-  ],
-  "exportDir": "export"
+  ]
 }
