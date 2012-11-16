@@ -41,7 +41,7 @@ public class ExportConf
             case "xml": formatClass = XMLFormat; break;
             default: throw new Error("Unknown format '" + format + "'");
         }
-        return new formatClass(exportDir, lib, this, maxAtlasSize);
+        return new formatClass(exportDir, lib, this);
     }
 }
 }
