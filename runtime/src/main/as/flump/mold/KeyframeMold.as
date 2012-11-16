@@ -32,6 +32,22 @@ public class KeyframeMold
 
     public var ease :Number = 0;
 
+    public static function fromJSON (o :Object) :KeyframeMold {
+        const mold :KeyframeMold = new KeyframeMold();
+        mold.index = require(o, "index");
+        mold.duration = require(o, "duration");
+        extractField(o, mold, "ref");
+        extractFields(o, mold, "loc", "x", "y");
+        extractFields(o, mold, "scale", "scaleX", "scaleY");
+        extractFields(o, mold, "skew", "skewX", "skewY");
+        extractFields(o, mold, "pivot", "pivotX", "pivotY");
+        extractField(o, mold, "alpha");
+        extractField(o, mold, "visible");
+        extractField(o, mold, "ease");
+        extractField(o, mold, "label");
+        return mold
+    }
+
     public function get rotation () :Number { return skewX; }
     // public function set rotation (angle :Number) :void { skewX = skewY = angle; }
 
@@ -54,39 +70,9 @@ public class KeyframeMold
         return json;
     }
 
-    public function rotate (delta :Number) :void
-    {
+    public function rotate (delta :Number) :void {
         skewX += delta;
         skewY += delta;
-    }
-
-    protected static function extractFields(o :Object, destObj :Object, source :String, dest1 :String, dest2 :String) :void {
-        const extracted :* = o[source];
-        if (extracted === undefined) return;
-        destObj[dest1] = extracted[0];
-        destObj[dest2] = extracted[1];
-    }
-
-    protected static function extractField(o :Object, destObj :Object, field :String) :void {
-        const extracted :* = o[field];
-        if (extracted === undefined) return;
-        destObj[field] = extracted;
-    }
-
-    public static function fromJSON (o :Object) :KeyframeMold {
-        const mold :KeyframeMold = new KeyframeMold();
-        mold.index = require(o, "index");
-        mold.duration = require(o, "duration");
-        extractField(o, mold, "ref");
-        extractFields(o, mold, "loc", "x", "y");
-        extractFields(o, mold, "scale", "scaleX", "scaleY");
-        extractFields(o, mold, "skew", "skewX", "skewY");
-        extractFields(o, mold, "pivot", "pivotX", "pivotY");
-        extractField(o, mold, "alpha");
-        extractField(o, mold, "visible");
-        extractField(o, mold, "ease");
-        extractField(o, mold, "label");
-        return mold
     }
 
     public function toXML () :XML {
@@ -103,6 +89,20 @@ public class KeyframeMold
         }
         if (label != null) xml.@label = label;
         return xml;
+    }
+
+    protected static function extractFields(o :Object, destObj :Object, source :String,
+        dest1 :String, dest2 :String) :void {
+        const extracted :* = o[source];
+        if (extracted === undefined) return;
+        destObj[dest1] = extracted[0];
+        destObj[dest2] = extracted[1];
+    }
+
+    protected static function extractField(o :Object, destObj :Object, field :String) :void {
+        const extracted :* = o[field];
+        if (extracted === undefined) return;
+        destObj[field] = extracted;
     }
 
     protected static function round (n :Number, places :int = 4) :Number {

@@ -9,13 +9,6 @@ public class AtlasMold
     public var file :String;
     public var textures :Vector.<AtlasTextureMold> = new Vector.<AtlasTextureMold>();
 
-    public function toJSON (_:*) :Object {
-        return {
-            file: file,
-            textures: textures
-        };
-    }
-
     public static function fromJSON (o :Object) :AtlasMold {
         const mold :AtlasMold = new AtlasMold();
         mold.file = require(o, "file");
@@ -23,6 +16,13 @@ public class AtlasMold
             mold.textures.push(AtlasTextureMold.fromJSON(tex));
         }
         return mold;
+    }
+
+    public function toJSON (_:*) :Object {
+        return {
+            file: file,
+            textures: textures
+        };
     }
 
     public function toXML () :XML {

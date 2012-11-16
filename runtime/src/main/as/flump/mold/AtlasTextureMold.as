@@ -13,14 +13,6 @@ public class AtlasTextureMold
     public var bounds :Rectangle;
     public var offset :Point;
 
-    public function toJSON (_:*) :Object {
-        return {
-            symbol: symbol,
-            rect: [bounds.x, bounds.y, bounds.width, bounds.height],
-            offset: [offset.x, offset.y]
-        };
-    }
-
     public static function fromJSON (o :Object) :AtlasTextureMold {
         const mold :AtlasTextureMold = new AtlasTextureMold();
         mold.symbol = require(o, "symbol");
@@ -29,6 +21,14 @@ public class AtlasTextureMold
         const off :Array = require(o, "offset");
         mold.offset = new Point(off[0], off[1]);
         return mold;
+    }
+
+    public function toJSON (_:*) :Object {
+        return {
+            symbol: symbol,
+            rect: [bounds.x, bounds.y, bounds.width, bounds.height],
+            offset: [offset.x, offset.y]
+        };
     }
 
     public function toXML () :XML {

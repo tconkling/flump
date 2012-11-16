@@ -10,6 +10,16 @@ public class LayerMold
     public var keyframes :Vector.<KeyframeMold> = new Vector.<KeyframeMold>();
     public var flipbook :Boolean;
 
+    public static function fromJSON (o :Object) :LayerMold {
+        const mold :LayerMold = new LayerMold();
+        mold.name = require(o, "name");
+        for each (var kf :Object in require(o, "keyframes")) {
+            mold.keyframes.push(KeyframeMold.fromJSON(kf));
+        }
+        mold.flipbook = o.hasOwnProperty("flipbook");
+        return mold;
+    }
+
     public function keyframeForFrame (frame :int) :KeyframeMold {
         var ii :int = 1;
         for (; ii < keyframes.length && keyframes[ii].index <= frame; ii++) {}
@@ -28,14 +38,6 @@ public class LayerMold
         };
         if (flipbook) json.flipbook = flipbook;
         return json;
-    }
-
-    public static function fromJSON (o :Object) :LayerMold {
-        const mold :LayerMold = new LayerMold();
-        mold.name = require(o, "name");
-        for each (var kf :Object in require(o, "keyframes")) mold.keyframes.push(KeyframeMold.fromJSON(kf));
-        mold.flipbook = o.hasOwnProperty("flipbook");
-        return mold;
     }
 
     public function toXML () :XML

@@ -16,15 +16,6 @@ public class LibraryMold
 
     public var atlases :Vector.<AtlasMold> = new Vector.<AtlasMold>();
 
-    public function toJSON (_:*) :Object {
-        return {
-            frameRate: frameRate,
-            md5: md5,
-            movies: movies,
-            atlases: atlases
-        };
-    }
-
     public static function fromJSON (o :Object) :LibraryMold {
         const mold :LibraryMold = new LibraryMold();
         mold.frameRate = require(o, "frameRate");
@@ -32,6 +23,15 @@ public class LibraryMold
         for each (var movie :Object in require(o, "movies")) mold.movies.push(MovieMold.fromJSON(movie));
         for each (var atlas :Object in require(o, "atlases")) mold.atlases.push(AtlasMold.fromJSON(atlas));
         return mold;
+    }
+
+    public function toJSON (_:*) :Object {
+        return {
+            frameRate: frameRate,
+            md5: md5,
+            movies: movies,
+            atlases: atlases
+        };
     }
 }
 }

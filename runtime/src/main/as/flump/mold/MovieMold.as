@@ -12,6 +12,13 @@ public class MovieMold
     public var layers :Vector.<LayerMold> = new Vector.<LayerMold>();
     public var labels :Vector.<Vector.<String>>;
 
+    public static function fromJSON (o :Object) :MovieMold {
+        const mold :MovieMold = new MovieMold();
+        mold.id = require(o, "id");
+        for each (var layer :Object in require(o, "layers")) mold.layers.push(LayerMold.fromJSON(layer));
+        return mold;
+    }
+
     public function get frames () :int {
         var frames :int = 0;
         for each (var layer :LayerMold in layers) frames = Math.max(frames, layer.frames);
@@ -58,13 +65,6 @@ public class MovieMold
             layers: layers
         };
         return json
-    }
-
-    public static function fromJSON (o :Object) :MovieMold {
-        const mold :MovieMold = new MovieMold();
-        mold.id = require(o, "id");
-        for each (var layer :Object in require(o, "layers")) mold.layers.push(LayerMold.fromJSON(layer));
-        return mold;
     }
 
     public function toXML () :XML {
