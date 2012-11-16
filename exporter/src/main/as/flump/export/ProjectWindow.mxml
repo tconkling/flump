@@ -3,7 +3,7 @@
   xmlns:mx="library://ns.adobe.com/flex/mx"
   width="1024" height="768">
   <s:layout>
-    <s:VerticalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10"/>
+    <s:VerticalLayout paddingLeft="20" paddingTop="20" paddingRight="20" paddingBottom="20"/>
   </s:layout>
   <s:HGroup>
     <s:DataGrid id="libraries" width="480" height="300">
@@ -58,7 +58,7 @@
         </s:FormItem>
     </s:VGroup>
   </s:HGroup>
-  <s:DataGrid id="errors" width="100%" height="375">
+  <s:DataGrid id="errors" width="100%" height="395">
     <s:typicalItem>
       <s:DataItem severity="Critical"
         location="multiple/segment/nested/path/of/some/depth:symbolName:layerName:12"
