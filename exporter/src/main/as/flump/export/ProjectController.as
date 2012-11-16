@@ -19,6 +19,7 @@ import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;
 
 import mx.events.PropertyChangeEvent;
+import mx.managers.PopUpManager;
 
 import spark.components.DataGrid;
 import spark.components.Window;
@@ -100,8 +101,8 @@ public class ProjectController
         _exportChooser = new DirChooser(null, _win.exportRoot, _win.browseExport);
         _exportChooser.changed.add(reloadNow);
 
-        _importChooser.changed.add(F.callback(updateWindowTitle, true));
-        _exportChooser.changed.add(F.callback(updateWindowTitle, true));
+        _importChooser.changed.add(F.callback(setProjectDirty, true));
+        _exportChooser.changed.add(F.callback(setProjectDirty, true));
 
         // Edit Formats
         var editFormatsController :EditFormatsController = null;
@@ -109,26 +110,64 @@ public class ProjectController
             if (editFormatsController == null || editFormatsController.closed) {
                 editFormatsController = new EditFormatsController(_conf);
                 editFormatsController.formatsChanged.add(updateUiFromConf);
+                editFormatsController.formatsChanged.add(F.callback(setProjectDirty, true));
             } else {
                 editFormatsController.show();
             }
         });
 
+        _win.addEventListener(Event.CLOSING, function (e :Event) :void {
+            if (_projectDirty) {
+                e.preventDefault();
+                promptToSaveChanges();
+            }
+        });
+
         updateUiFromConf();
-        updateWindowTitle(false);
+        updateWindowTitle();
 
         setupMenus();
     }
 
-    public function save () :void {
+    protected function promptToSaveChanges () :void {
+        var unsavedWindow :UnsavedChangesWindow = new UnsavedChangesWindow();
+        PopUpManager.addPopUp(unsavedWindow, _win, true);
+
+        unsavedWindow.prompt.text = "Save changes to '" + projectName + "'?";
+
+        unsavedWindow.cancel.addEventListener(MouseEvent.CLICK, function (..._) :void {
+            PopUpManager.removePopUp(unsavedWindow);
+        });
+
+        unsavedWindow.dontSave.addEventListener(MouseEvent.CLICK, function (..._) :void {
+            PopUpManager.removePopUp(unsavedWindow);
+            _projectDirty = false;
+            _win.close();
+        });
+
+        unsavedWindow.save.addEventListener(MouseEvent.CLICK, function (..._) :void {
+            PopUpManager.removePopUp(unsavedWindow);
+            save(F.callback(_win.close));
+        });
+    }
+
+    public function get projectDirty () :Boolean {
+        return _projectDirty;
+    }
+
+    public function get projectName () :String {
+        return (_confFile != null ? _confFile.name.replace(/\.flump$/i, "") : "Untitled Project");
+    }
+
+    public function save (onSuccess :Function = null) :void {
         if (_confFile == null) {
-            saveAs();
+            saveAs(onSuccess);
         } else {
-            saveConf();
+            saveConf(onSuccess);
         }
     }
 
-    public function saveAs () :void {
+    public function saveAs (onSuccess :Function = null) :void {
         var file :File = new File();
         file.addEventListener(Event.SELECT, function (..._) :void {
             // Ensure the filename ends with .flump
@@ -137,7 +176,7 @@ public class ProjectController
             }
 
             _confFile = file;
-            saveConf();
+            saveConf(onSuccess);
         });
         file.browseForSave("Save Flump Configuration");
     }
@@ -155,8 +194,8 @@ public class ProjectController
             // If we're on a Mac, the menus will be set up at the application level.
             return;
         }
-        
-        var fileMenuItem  :NativeMenuItem = 
+
+        var fileMenuItem  :NativeMenuItem =
             _win.nativeWindow.menu.addSubmenu(new NativeMenu(), "File");
 
         // Add save and save as by index to work with the existing items on Mac
@@ -186,13 +225,13 @@ public class ProjectController
         saveAsMenuItem.addEventListener(Event.SELECT, F.callback(saveAs));
     }
 
-    protected function updateWindowTitle (modified :Boolean) :void {
-        var name :String = (_confFile != null) ? _confFile.name.replace(/\.flump$/i, "") : "Untitled Project";
-        if (modified) name += "*";
+    protected function updateWindowTitle () :void {
+        var name :String = this.projectName;
+        if (_projectDirty) name += "*";
         _win.title = name;
     }
 
-    protected function saveConf () :void {
+    protected function saveConf (onSuccess :Function) :void {
         Files.write(_confFile, function (out :IDataOutput) :void {
             // Set directories relative to where this file is being saved. Fall back to absolute
             // paths if relative paths aren't possible.
@@ -207,7 +246,13 @@ public class ProjectController
             }
 
             out.writeUTFBytes(JSON.stringify(_conf, null, /*space=*/2));
-            updateWindowTitle(false);
+
+            setProjectDirty(false);
+            updateWindowTitle();
+
+            if (onSuccess != null) {
+                onSuccess();
+            }
         });
     }
 
@@ -229,7 +274,7 @@ public class ProjectController
         for each (var export :ExportConf in _conf.exports) formatNames.push(export.description);
         _win.formatOverview.text = formatNames.join(", ");
 
-        updateWindowTitle(true);
+        updateWindowTitle();
     }
 
     protected function onSelectedItemChanged (..._) :void {
@@ -336,6 +381,13 @@ public class ProjectController
         });
     }
 
+    protected function setProjectDirty (val :Boolean) :void {
+        if (_projectDirty != val) {
+            _projectDirty = val;
+            updateWindowTitle();
+        }
+    }
+
     protected var _importDirectory :File;
 
     protected var _docFinder :Executor;
@@ -346,6 +398,8 @@ public class ProjectController
     protected var _importChooser :DirChooser;
     protected var _conf :ProjectConf = new ProjectConf();
     protected var _confFile :File;
+
+    protected var _projectDirty :Boolean; // true if project has unsaved changes
 
     private static const log :Log = Log.getLog(ProjectController);
 }
