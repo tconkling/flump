@@ -28,7 +28,7 @@ public class PreviewController
         }
 
         if (_previewWindow == null || _previewWindow.closed) {
-            _previewWindow = new PreviewWindow();
+            _previewWindow = new AnimPreviewWindow();
             _previewWindow.started = function (container :Sprite) :void {
                 _container = container;
                 Starling.current.stage.addEventListener(Event.RESIZE, onResize);
@@ -127,7 +127,7 @@ public class PreviewController
     protected var _previewSprite :DisplayObject;
     protected var _container :Sprite;
     protected var _controlsWindow :PreviewControlsWindow;
-    protected var _previewWindow :PreviewWindow;
+    protected var _previewWindow :AnimPreviewWindow;
     protected var _creator :DisplayCreator;
 }
 }
