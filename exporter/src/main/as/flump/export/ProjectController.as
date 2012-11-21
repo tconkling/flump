@@ -195,6 +195,8 @@ public class ProjectController
             return;
         }
 
+        _win.nativeWindow.menu = new NativeMenu();
+
         var fileMenuItem  :NativeMenuItem =
             _win.nativeWindow.menu.addSubmenu(new NativeMenu(), "File");
 
