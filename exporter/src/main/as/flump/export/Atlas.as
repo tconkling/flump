@@ -3,11 +3,9 @@
 
 package flump.export {
 
-import flash.utils.IDataOutput;
+import flash.display.BitmapData;
 
 import flump.mold.AtlasMold;
-
-import starling.textures.Texture;
 
 public interface Atlas
 {
@@ -15,8 +13,7 @@ public interface Atlas
     function get filename () :String;
     function get used () :int;
 
-    function writePNG (bytes :IDataOutput) :void;
-    function toTexture () :Texture;
+    function toBitmap () :BitmapData;
     function toMold () :AtlasMold;
 }
 }

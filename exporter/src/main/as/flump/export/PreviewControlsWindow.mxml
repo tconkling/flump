@@ -36,8 +36,11 @@
     </s:columns>
     <mx:ArrayCollection/>
   </s:DataGrid>
-  <s:HGroup>
+  <s:HGroup width="100%">
     <s:Label fontWeight="bold">Total:</s:Label><s:Label id="totalValue"/>
     <s:Label fontWeight="bold">Atlas Waste:</s:Label><s:Label id="atlasWasteValue"/>
+    <s:HGroup width="100%" horizontalAlign="right">
+      <s:Button id="showAtlas" label="Show Atlas"/>
+    </s:HGroup>
   </s:HGroup>
 </s:Window>

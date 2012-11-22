@@ -9,6 +9,8 @@ import flash.utils.IDataOutput;
 
 import flump.xfl.XflLibrary;
 
+import com.threerings.util.F;
+
 public class JSONFormat extends PublishFormat
 {
     public static function readJSON (file :File) :Object {
@@ -36,7 +38,7 @@ public class JSONFormat extends PublishFormat
         const packer :TexturePacker = new TexturePacker(_lib, _conf.scale, _conf.textureBorder,
             _conf.maxAtlasSize);
         for each (var atlas :Atlas in packer.atlases) {
-            Files.write(libExportDir.resolvePath(atlas.filename), atlas.writePNG);
+            Files.write(libExportDir.resolvePath(atlas.filename), F.partial(AtlasUtil.writePNG, atlas, F._1));
         }
         const json :String = _lib.toJSONString(packer.atlases, _conf.scale);
         Files.write(_metaFile, function (out :IDataOutput) :void {  out.writeUTFBytes(json); });

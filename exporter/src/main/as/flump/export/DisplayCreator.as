@@ -28,7 +28,7 @@ public class DisplayCreator
         const packer :TexturePacker = new TexturePacker(lib, 1, 1);
         for each (var atlas :Atlas in packer.atlases) {
             var mold :AtlasMold = atlas.toMold();
-            var baseTexture :Texture = atlas.toTexture();
+            var baseTexture :Texture = AtlasUtil.toTexture(atlas);
             for each (var atlasTexture :AtlasTextureMold in mold.textures) {
                 var tex :Texture = Texture.fromTexture(baseTexture, atlasTexture.bounds);
                 var creator :ImageCreator =

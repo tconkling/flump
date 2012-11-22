@@ -49,7 +49,7 @@ public class StarlingFormat extends PublishFormat
             new TexturePacker(_lib, _conf.scale, _conf.textureBorder, _conf.maxAtlasSize);
 
         for each (var atlas :Atlas in packer.atlases) {
-            addToZip(atlas.filename, function (b :ByteArray) :void { atlas.writePNG(b); });
+            addToZip(atlas.filename, function (b :ByteArray) :void { AtlasUtil.writePNG(atlas, b); });
         }
         addToZip(StarlingResources.LIBRARY_LOCATION, function (b :ByteArray) :void {
             b.writeUTFBytes(_lib.toJSONString(packer.atlases, _conf.scale));

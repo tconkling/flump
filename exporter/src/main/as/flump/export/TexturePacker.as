@@ -124,9 +124,6 @@ import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-import flash.utils.IDataOutput;
-
-import com.adobe.images.PNGEncoder;
 
 import flump.SwfTexture;
 import flump.Util;
@@ -163,14 +160,6 @@ class AtlasImpl
         return used;
     }
 
-    public function writePNG (bytes :IDataOutput) :void {
-        bytes.writeBytes(PNGEncoder.encode(toBitmapData()));
-    }
-
-    public function toTexture () :Texture {
-        return Texture.fromBitmapData(toBitmapData());
-    }
-
     public function toMold () :AtlasMold {
         const mold :AtlasMold = new AtlasMold();
         mold.file = this.filename;
@@ -183,6 +172,21 @@ class AtlasImpl
             mold.textures.push(texMold);
         });
         return mold;
+    }
+
+    public function toBitmap () :BitmapData {
+        if (_bitmapData == null) {
+            var constructed :Sprite = new Sprite();
+            _nodes.forEach(function (node :Node, ..._) :void {
+                const tex :SwfTexture = node.texture;
+                const bm :Bitmap = new Bitmap(node.texture.toBitmapData(_borderSize), "auto", true);
+                constructed.addChild(bm);
+                bm.x = node.paddedBounds.x;
+                bm.y = node.paddedBounds.y;
+            });
+            _bitmapData = Util.renderToBitmapData(constructed, _width, _height);
+        }
+        return _bitmapData;
     }
 
     // Try to place a texture in this atlas, return true if it fit
@@ -214,21 +218,6 @@ class AtlasImpl
         }
 
         return found;
-    }
-
-    protected function toBitmapData () :BitmapData {
-        if (_bitmapData == null) {
-            var constructed :Sprite = new Sprite();
-            _nodes.forEach(function (node :Node, ..._) :void {
-                const tex :SwfTexture = node.texture;
-                const bm :Bitmap = new Bitmap(node.texture.toBitmapData(_borderSize), "auto", true);
-                constructed.addChild(bm);
-                bm.x = node.paddedBounds.x;
-                bm.y = node.paddedBounds.y;
-            });
-            _bitmapData = Util.renderToBitmapData(constructed, _width, _height);
-        }
-        return _bitmapData;
     }
 
     protected function isMasked (x :int, y :int, w :int, h :int) :Boolean {

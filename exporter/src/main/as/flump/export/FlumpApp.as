@@ -72,11 +72,11 @@ public class FlumpApp
         setupGlobalMenus();
     }
 
-    public function showPreviewWindow (lib :XflLibrary) :void {
+    public function showPreviewWindow (project :ProjectConf, lib :XflLibrary) :void {
         if (_previewController == null) {
             _previewController = new PreviewController();
         }
-        _previewController.show(lib);
+        _previewController.show(project, lib);
     }
 
     public function newProject () :ProjectController {

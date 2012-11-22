@@ -83,7 +83,7 @@ public class ProjectController
 
         // Preview
         _win.preview.addEventListener(MouseEvent.CLICK, function (..._) :void {
-            FlumpApp.app.showPreviewWindow(_flashDocsGrid.selectedItem.lib);
+            FlumpApp.app.showPreviewWindow(_conf, _flashDocsGrid.selectedItem.lib);
         });
 
         // Export All
@@ -129,28 +129,6 @@ public class ProjectController
         setupMenus();
     }
 
-    protected function promptToSaveChanges () :void {
-        var unsavedWindow :UnsavedChangesWindow = new UnsavedChangesWindow();
-        PopUpManager.addPopUp(unsavedWindow, _win, true);
-
-        unsavedWindow.prompt.text = "Save changes to '" + projectName + "'?";
-
-        unsavedWindow.cancel.addEventListener(MouseEvent.CLICK, function (..._) :void {
-            PopUpManager.removePopUp(unsavedWindow);
-        });
-
-        unsavedWindow.dontSave.addEventListener(MouseEvent.CLICK, function (..._) :void {
-            PopUpManager.removePopUp(unsavedWindow);
-            _projectDirty = false;
-            _win.close();
-        });
-
-        unsavedWindow.save.addEventListener(MouseEvent.CLICK, function (..._) :void {
-            PopUpManager.removePopUp(unsavedWindow);
-            save(F.callback(_win.close));
-        });
-    }
-
     public function get projectDirty () :Boolean {
         return _projectDirty;
     }
@@ -187,6 +165,28 @@ public class ProjectController
 
     public function get win () :Window {
         return _win;
+    }
+
+    protected function promptToSaveChanges () :void {
+        var unsavedWindow :UnsavedChangesWindow = new UnsavedChangesWindow();
+        PopUpManager.addPopUp(unsavedWindow, _win, true);
+
+        unsavedWindow.prompt.text = "Save changes to '" + projectName + "'?";
+
+        unsavedWindow.cancel.addEventListener(MouseEvent.CLICK, function (..._) :void {
+            PopUpManager.removePopUp(unsavedWindow);
+        });
+
+        unsavedWindow.dontSave.addEventListener(MouseEvent.CLICK, function (..._) :void {
+            PopUpManager.removePopUp(unsavedWindow);
+            _projectDirty = false;
+            _win.close();
+        });
+
+        unsavedWindow.save.addEventListener(MouseEvent.CLICK, function (..._) :void {
+            PopUpManager.removePopUp(unsavedWindow);
+            save(F.callback(_win.close));
+        });
     }
 
     protected function setupMenus () :void {

@@ -10,6 +10,7 @@ import flump.Util;
 import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
 
+import com.threerings.util.F;
 import com.threerings.util.XmlUtil;
 
 public class XMLFormat extends PublishFormat
@@ -38,7 +39,8 @@ public class XMLFormat extends PublishFormat
 
         for each (var packer :TexturePacker in packers) {
             for each (var atlas :Atlas in packer.atlases) {
-                Files.write(_destDir.resolvePath(atlas.filename), atlas.writePNG);
+                Files.write(_destDir.resolvePath(atlas.filename),
+                    F.partial(AtlasUtil.writePNG, atlas, F._1));
             }
         }
 
