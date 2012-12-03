@@ -15,7 +15,7 @@ import starling.display.DisplayObject;
  * Parses movies and textures out of zip files created by the flump exporter and creates instances
  * of Movie for them.
  */
-public class StarlingResources
+public class MovieResources
 {
     /** @private */
     public static const LIBRARY_LOCATION :String = "library.json";
@@ -32,7 +32,7 @@ public class StarlingResources
     public static const VERSION :String = "0";
 
     /**
-     * Loads a StarlingResources from the zip in the given bytes.
+     * Loads a MovieResources from the zip in the given bytes.
      *
      * @param bytes The bytes containing the zip
      * @param executor The executor on which the loading should run. If not specified, it'll run on
@@ -40,7 +40,7 @@ public class StarlingResources
      *
      * @return a Future to use to track the success or failure of loading the resources out of the
      * bytes. If the loading succeeds, the Future's onSuccess will fire with an instance of
-     * StarlingResources. If it fails, the Future's onFail will fire with the Error that caused the
+     * MovieResources. If it fails, the Future's onFail will fire with the Error that caused the
      * loading failure.
      */
     public static function loadBytes (bytes :ByteArray, executor :Executor=null) :Future {
@@ -48,7 +48,7 @@ public class StarlingResources
     }
 
     /**
-     * Loads a StarlingResources from the zip at the given url.
+     * Loads a MovieResources from the zip at the given url.
      *
      * @param bytes The url where the zip can be found
      * @param executor The executor on which the loading should run. If not specified, it'll run on
@@ -56,7 +56,7 @@ public class StarlingResources
      *
      * @return a Future to use to track the success or failure of loading the resources from the
      * url. If the loading succeeds, the Future's onSuccess will fire with an instance of
-     * StarlingResources. If it fails, the Future's onFail will fire with the Error that caused the
+     * MovieResources. If it fails, the Future's onFail will fire with the Error that caused the
      * loading failure.
      */
     public static function loadURL (url :String, executor :Executor=null) :Future {
@@ -64,7 +64,7 @@ public class StarlingResources
     }
 
     /** @private */
-    public function StarlingResources (creators :Dictionary) {
+    public function MovieResources (creators :Dictionary) {
         _creators = creators;
     }
 
@@ -134,7 +134,7 @@ import deng.fzip.FZipErrorEvent;
 import deng.fzip.FZipEvent;
 import deng.fzip.FZipFile;
 
-import flump.display.StarlingResources;
+import flump.display.MovieResources;
 import flump.executor.Executor;
 import flump.executor.Future;
 import flump.executor.VisibleFuture;
@@ -167,26 +167,26 @@ class Loader
     protected function onFileLoaded (e :FZipEvent) :void {
         const loaded :FZipFile = _zip.removeFileAt(_zip.getFileCount() - 1);
         const name :String = loaded.filename;
-        if (name == StarlingResources.LIBRARY_LOCATION) {
+        if (name == MovieResources.LIBRARY_LOCATION) {
             const jsonString :String = loaded.content.readUTFBytes(loaded.content.length);
             _lib = LibraryMold.fromJSON(JSON.parse(jsonString));
         } else if (name.indexOf('.png', name.length - 4) != -1) {
             // TODO - specify density?
             _pngBytes[name.replace("@2x.png", ".png")] = loaded.content;
-        } else if (name == StarlingResources.VERSION_LOCATION) {
+        } else if (name == MovieResources.VERSION_LOCATION) {
             const zipVersion :String = loaded.content.readUTFBytes(loaded.content.length)
-            if (zipVersion != StarlingResources.VERSION) {
-                throw new Error("Zip is version " + zipVersion + " but the code needs " + StarlingResources.VERSION);
+            if (zipVersion != MovieResources.VERSION) {
+                throw new Error("Zip is version " + zipVersion + " but the code needs " + MovieResources.VERSION);
             }
             _versionChecked = true;
-        } else if (name == StarlingResources.MD5_LOCATION ) { // Nothing to verify
+        } else if (name == MovieResources.MD5_LOCATION ) { // Nothing to verify
         } else {} // ignore unknown files
     }
 
     protected function onZipLoadingComplete (..._) :void {
         _zip = null;
-        if (_lib == null) throw new Error(StarlingResources.LIBRARY_LOCATION + " missing from zip");
-        if (!_versionChecked) throw new Error(StarlingResources.VERSION_LOCATION + " missing from zip");
+        if (_lib == null) throw new Error(MovieResources.LIBRARY_LOCATION + " missing from zip");
+        if (!_versionChecked) throw new Error(MovieResources.VERSION_LOCATION + " missing from zip");
         const loader :ImageLoader = new ImageLoader();
         _pngLoaders.terminated.add(_future.monitoredCallback(onPngLoadingComplete));
         for each (var atlas :AtlasMold in _lib.atlases) loadAtlas(loader, atlas);
@@ -216,7 +216,7 @@ class Loader
             movie.fillLabels();
             _creators[movie.id] = new MovieCreator(movie, _lib.frameRate);
         }
-        _future.succeed(new StarlingResources(_creators));
+        _future.succeed(new MovieResources(_creators));
     }
 
     protected function onPngLoadingFailed (e :*) :void {

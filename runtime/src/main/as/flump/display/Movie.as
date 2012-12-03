@@ -24,7 +24,7 @@ import starling.events.Event;
  * isPlaying is true. While it's not on the stage, its playhead doesn't move regardless of the state
  * of isPlaying.</p>
  *
- * @see StarlingResources StarlingResources to create instances of Movie.
+ * @see MovieResources to create instances of Movie.
  */
 public class Movie extends Sprite
 {
