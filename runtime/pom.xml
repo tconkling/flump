@@ -10,6 +10,10 @@
       <id>ooo-external</id>
       <url>http://ahduros-ooo-maven.googlecode.com/hg/repository</url>
     </repository>
+    <repository>
+      <id>tconkling</id>
+      <url>https://raw.github.com/tconkling/maven-repo/master</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
@@ -19,9 +23,9 @@
       <type>swc</type>
     </dependency>
     <dependency>
-      <groupId>org.starling-framework</groupId>
-      <artifactId>starling</artifactId>
-      <version>1.2-ooo</version>
+      <groupId>com.gamua</groupId>
+      <artifactId>starling-framework</artifactId>
+      <version>272c8a8</version>
       <type>swc</type>
     </dependency>
     <dependency>
