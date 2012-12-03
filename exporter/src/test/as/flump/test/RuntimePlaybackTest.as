@@ -8,7 +8,7 @@ import flash.utils.Timer;
 
 import flump.display.Movie;
 import flump.display.StarlingResources;
-import flump.executor.VisibleFuture;
+import executor.VisibleFuture;
 
 import com.threerings.util.F;
 

@@ -7,8 +7,8 @@ import flash.filesystem.File;
 
 import flump.display.Movie;
 import flump.display.StarlingResources;
-import flump.executor.Future;
-import flump.executor.VisibleFuture;
+import executor.Future;
+import executor.VisibleFuture;
 
 import starling.core.Starling;
 

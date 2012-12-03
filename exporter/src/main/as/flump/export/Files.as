@@ -12,8 +12,8 @@ import flash.filesystem.FileMode;
 import flash.filesystem.FileStream;
 import flash.utils.ByteArray;
 
-import flump.executor.Executor;
-import flump.executor.Future;
+import executor.Executor;
+import executor.Future;
 
 import com.threerings.util.F;
 import com.threerings.util.StringUtil;

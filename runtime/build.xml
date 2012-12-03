@@ -35,10 +35,10 @@
       <arg value="flump.display"/>
       <arg value="Loads and draws flump content"/>
       <arg value="-package"/>
-      <arg value="flump.executor"/>
+      <arg value="executor"/>
       <arg value="Runs asynchronous tasks"/>
       <arg value="-package"/>
-      <arg value="flump.executor.load"/>
+      <arg value="executor.load"/>
       <arg value="Loads swfs and images asynchronously"/>
     </asdoc>
   </target>

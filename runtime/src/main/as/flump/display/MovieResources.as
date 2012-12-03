@@ -6,8 +6,8 @@ package flump.display {
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
 
-import flump.executor.Executor;
-import flump.executor.Future;
+import executor.Executor;
+import executor.Future;
 
 import starling.display.DisplayObject;
 
@@ -134,12 +134,13 @@ import deng.fzip.FZipErrorEvent;
 import deng.fzip.FZipEvent;
 import deng.fzip.FZipFile;
 
+import executor.Executor;
+import executor.Future;
+import executor.FutureTask;
+import executor.load.ImageLoader;
+import executor.load.LoadedImage;
+
 import flump.display.MovieResources;
-import flump.executor.Executor;
-import flump.executor.Future;
-import flump.executor.VisibleFuture;
-import flump.executor.load.ImageLoader;
-import flump.executor.load.LoadedImage;
 import flump.mold.AtlasMold;
 import flump.mold.AtlasTextureMold;
 import flump.mold.LibraryMold;
@@ -153,7 +154,7 @@ class Loader
         _toLoad = toLoad;
     }
 
-    public function load(future :VisibleFuture) :void {
+    public function load(future :FutureTask) :void {
         _future = future;
 
         _zip.addEventListener(Event.COMPLETE, _future.monitoredCallback(onZipLoadingComplete));
@@ -226,7 +227,7 @@ class Loader
     }
 
     protected var _toLoad :Object;
-    protected var _future :VisibleFuture;
+    protected var _future :FutureTask;
     protected var _versionChecked :Boolean;
 
     protected var _zip :FZip = new FZip();

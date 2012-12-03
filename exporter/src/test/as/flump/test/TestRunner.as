@@ -6,9 +6,9 @@ package flump.test {
 import flash.desktop.NativeApplication;
 import flash.filesystem.File;
 
-import flump.executor.Executor;
-import flump.executor.Future;
-import flump.executor.VisibleFuture;
+import executor.Executor;
+import executor.Future;
+import executor.VisibleFuture;
 
 import starling.display.Sprite;
 

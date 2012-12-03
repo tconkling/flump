@@ -15,6 +15,7 @@
       <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/org/osflash/signals/fd03bf873/signals-fd03bf873.swc" sourcepath="" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/Starling/bin-debug/Starling.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/flump-runtime/dist/flump-runtime.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/executor/dist/executor.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath>
       <sourceAttachmentPathEntry kind="3" linkType="1" path="${M2_REPO}/com/threerings/aspirin/1.13/aspirin-1.13.swc" sourcepath="/export/aspirin/src/main/as" useDefaultLinkType="false"/>

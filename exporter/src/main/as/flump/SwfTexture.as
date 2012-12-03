@@ -11,7 +11,8 @@ import flash.display.Sprite;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
-import flump.executor.load.LoadedSwf;
+import executor.load.LoadedSwf;
+
 import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;

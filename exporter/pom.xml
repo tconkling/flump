@@ -10,8 +10,18 @@
       <id>ooo-external</id>
       <url>http://ooo-maven.googlecode.com/hg/repository</url>
     </repository>
+    <repository>
+      <id>tconkling</id>
+      <url>https://raw.github.com/tconkling/maven-repo/master</url>
+    </repository>
   </repositories>
   <dependencies>
+    <dependency>
+      <groupId>com.threerings</groupId>
+      <artifactId>executor</artifactId>
+      <version>0.1-SNAPSHOT</version>
+      <type>swc</type>
+    </dependency>
     <dependency>
       <groupId>com.threerings.flump</groupId>
       <artifactId>flump-runtime</artifactId>

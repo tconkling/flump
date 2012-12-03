@@ -3,8 +3,8 @@
 
 package flump.test {
 
-import flump.executor.Future;
-import flump.executor.VisibleFuture;
+import executor.Future;
+import executor.VisibleFuture;
 import flump.export.XflLoader;
 import flump.xfl.XflLibrary;
 

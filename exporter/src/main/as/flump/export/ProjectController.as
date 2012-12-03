@@ -13,8 +13,9 @@ import flash.events.MouseEvent;
 import flash.filesystem.File;
 import flash.utils.IDataOutput;
 
-import flump.executor.Executor;
-import flump.executor.Future;
+import executor.Executor;
+import executor.Future;
+
 import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;
 

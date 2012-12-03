@@ -9,9 +9,10 @@ import flash.utils.ByteArray;
 import deng.fzip.FZip;
 import deng.fzip.FZipFile;
 
-import flump.executor.Executor;
-import flump.executor.Future;
-import flump.executor.VisibleFuture;
+import executor.Executor;
+import executor.Future;
+import executor.FutureTask;
+
 import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;
 
@@ -23,7 +24,7 @@ public class FlaLoader
     public function load (name :String, file :File) :Future {
         log.info("Loading fla", "path", file.nativePath, "name", name);
 
-        const future :VisibleFuture = new VisibleFuture();
+        const future :FutureTask = new FutureTask();
         _library = new XflLibrary(name);
         _loader.terminated.add(function (..._) :void {
             _library.finishLoading();

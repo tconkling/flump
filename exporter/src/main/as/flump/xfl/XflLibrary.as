@@ -9,12 +9,13 @@ import flash.utils.Dictionary;
 
 import com.adobe.crypto.MD5;
 
+import executor.Executor;
+import executor.Future;
+import executor.FutureTask;
+import executor.load.LoadedSwf;
+import executor.load.SwfLoader;
+
 import flump.Util;
-import flump.executor.Executor;
-import flump.executor.Future;
-import flump.executor.VisibleFuture;
-import flump.executor.load.LoadedSwf;
-import flump.executor.load.SwfLoader;
 import flump.export.Atlas;
 import flump.export.Files;
 import flump.mold.KeyframeMold;
@@ -145,7 +146,7 @@ public class XflLibrary
     }
 
     public function loadSWF (path :String, loader :Executor=null) :Future {
-        const onComplete :VisibleFuture = new VisibleFuture();
+        const onComplete :FutureTask = new FutureTask();
 
         const swfFile :File = new File(path);
         const loadSwfFile :Future = Files.load(swfFile, loader);
