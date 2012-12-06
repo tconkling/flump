@@ -38,19 +38,19 @@ public class Movie extends Sprite
     public const labelPassed :Signal = new Signal(String);
 
     /** @private */
-    public function Movie (src :MovieMold, frameRate :Number, idToDisplayObject :Function) {
+    public function Movie (src :MovieMold, frameRate :Number, library :Library) {
         name = src.id;
         _labels = src.labels;
         _frameRate = frameRate;
         _ticker = new Ticker(advanceTime);
         if (src.flipbook) {
             _layers = new Vector.<Layer>(1, true);
-            _layers[0] = new Layer(this, src.layers[0], idToDisplayObject, /*flipbook=*/true);
+            _layers[0] = new Layer(this, src.layers[0], library, /*flipbook=*/true);
             _frames = src.layers[0].frames;
         } else {
             _layers = new Vector.<Layer>(src.layers.length, true);
             for (var ii :int = 0; ii < _layers.length; ii++) {
-                _layers[ii] = new Layer(this, src.layers[ii], idToDisplayObject, /*flipbook=*/false);
+                _layers[ii] = new Layer(this, src.layers[ii], library, /*flipbook=*/false);
                 _frames = Math.max(src.layers[ii].frames, _frames);
             }
         }
@@ -245,6 +245,7 @@ public class Movie extends Sprite
     private static const NO_FRAME :int = -1;
 }
 }
+import flump.display.Library;
 import flump.display.Movie;
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
@@ -262,8 +263,7 @@ class Layer {
     // If the keyframe has changed since the last drawFrame
     public var changedKeyframe :Boolean;
 
-    public function Layer (movie :Movie, src :LayerMold, idToDisplayObject :Function,
-            flipbook :Boolean) {
+    public function Layer (movie :Movie, src :LayerMold, library :Library, flipbook :Boolean) {
         keyframes = src.keyframes;
         this.movie = movie;
         var lastItem :String;
@@ -276,11 +276,11 @@ class Layer {
             for (ii = 0; ii < keyframes.length && !multipleItems; ii++) {
                 multipleItems = keyframes[ii].ref != lastItem;
             }
-            if (!multipleItems) movie.addChild(idToDisplayObject(lastItem));
+            if (!multipleItems) movie.addChild(library.instantiateSymbol(lastItem));
             else {
                 displays = new Vector.<DisplayObject>();
                 for each (var kf :KeyframeMold in keyframes) {
-                    var display :DisplayObject = kf.ref == null ? new Sprite() : idToDisplayObject(kf.ref);
+                    var display :DisplayObject = kf.ref == null ? new Sprite() : library.instantiateSymbol(kf.ref);
                     displays.push(display);
                     display.name = src.name;
                 }

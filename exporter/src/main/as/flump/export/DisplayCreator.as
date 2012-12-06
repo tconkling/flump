@@ -5,6 +5,7 @@ package flump.export {
 
 import flash.utils.Dictionary;
 
+import flump.display.Library;
 import flump.display.Movie;
 import flump.mold.AtlasMold;
 import flump.mold.AtlasTextureMold;
@@ -12,15 +13,16 @@ import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
 import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
+import flump.xfl.XflTexture;
 
 import starling.display.DisplayObject;
-import starling.display.Image;
 import starling.textures.Texture;
 
 import com.threerings.util.Map;
 import com.threerings.util.maps.ValueComputingMap;
 
 public class DisplayCreator
+    implements Library
 {
     public function DisplayCreator (lib :XflLibrary) {
         _lib = lib;
@@ -36,6 +38,24 @@ public class DisplayCreator
                 _imageCreators[atlasTexture.symbol] = creator;
             }
         }
+    }
+
+    public function get imageSymbols () :Vector.<String> {
+        // Vector.map can't be used to create a Vector of a new type
+        const symbols :Vector.<String> = new Vector.<String>();
+        for each (var tex :XflTexture in _lib.textures) {
+            symbols.push(tex.symbol);
+        }
+        return symbols;
+    }
+
+    public function get movieSymbols () :Vector.<String> {
+        // Vector.map can't be used to create a Vector of a new type
+        const symbols :Vector.<String> = new Vector.<String>();
+        for each (var movie :MovieMold in _lib.movies) {
+            symbols.push(movie.id);
+        }
+        return symbols;
     }
 
     public function instantiateSymbol (id :String) :DisplayObject {
@@ -72,7 +92,7 @@ public class DisplayCreator
     public function getMaxDrawn (id :String) :int { return _maxDrawn.get(id); }
 
     protected function createMovie (name :String) :Movie {
-        return new Movie(_lib.get(name, MovieMold), _lib.frameRate, instantiateSymbol);
+        return new Movie(_lib.get(name, MovieMold), _lib.frameRate, this);
     }
 
     protected function loadTexture (symbol :String) :DisplayObject {

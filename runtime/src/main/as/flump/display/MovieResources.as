@@ -16,6 +16,7 @@ import starling.display.DisplayObject;
  * of Movie for them.
  */
 public class MovieResources
+    implements Library
 {
     /** @private */
     public static const LIBRARY_LOCATION :String = "library.json";
@@ -77,7 +78,7 @@ public class MovieResources
      *
      * @throws Error if there is no such symbol in these resources, or if the symbol isn't a Movie.
      */
-    public function createMovie (symbol :String) :Movie { return Movie(idToDisplayObject(symbol)); }
+    public function createMovie (symbol :String) :Movie { return Movie(instantiateSymbol(symbol)); }
 
    /**
     * Creates an image for the given symbol.
@@ -89,7 +90,7 @@ public class MovieResources
     * @throws Error if there is no such symbol in these resources, or if the symbol isn't a texture.
     */
     public function createImage (symbol :String) :DisplayObject {
-        const disp :DisplayObject = DisplayObject(idToDisplayObject(symbol));
+        const disp :DisplayObject = DisplayObject(instantiateSymbol(symbol));
         // TODO - add loadDisplayObject to load either if the user doesn't care?
         if (disp is Movie) throw new Error(symbol + " is a movie, not a texture");
         return disp;
@@ -105,7 +106,7 @@ public class MovieResources
     }
 
     /** The symbols of all textures in the resources.  */
-    public function get textureSymbols () :Vector.<String> {
+    public function get imageSymbols () :Vector.<String> {
         const names :Vector.<String> = new Vector.<String>();
         for (var creatorName :String in _creators) {
             if (_creators[creatorName] is ImageCreator) names.push(creatorName);
@@ -113,17 +114,17 @@ public class MovieResources
         return names;
     }
 
-    /** @private */
-    protected function idToDisplayObject (name :String) :DisplayObject {
+    public function instantiateSymbol (name :String) :DisplayObject {
         var creator :* = _creators[name];
         if (creator === undefined) throw new Error("No such id '" + name + "'");
-        return creator.create(idToDisplayObject);
+        return creator.create(this);
     }
 
     /** @private */
     protected var _creators :Dictionary;
 }
 }
+
 import flash.events.Event;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
@@ -150,11 +151,11 @@ import starling.textures.Texture;
 
 class Loader
 {
-    public function Loader(toLoad :Object) {
+    public function Loader (toLoad :Object) {
         _toLoad = toLoad;
     }
 
-    public function load(future :FutureTask) :void {
+    public function load (future :FutureTask) :void {
         _future = future;
 
         _zip.addEventListener(Event.COMPLETE, _future.monitoredCallback(onZipLoadingComplete));
@@ -240,6 +241,7 @@ class Loader
 
 import flash.geom.Point;
 
+import flump.display.Library;
 import flump.display.Movie;
 import flump.mold.MovieMold;
 
@@ -271,15 +273,15 @@ class ImageCreator {
 }
 
 class MovieCreator {
-    public var frameRate :Number;
     public var mold :MovieMold;
+    public var frameRate :Number;
 
     public function MovieCreator (mold :MovieMold, frameRate :Number) {
         this.mold = mold;
         this.frameRate = frameRate;
     }
 
-    public function create (idToDisplayObject :Function) :DisplayObject {
-        return new Movie(mold, frameRate, idToDisplayObject);
+    public function create (library :Library) :DisplayObject {
+        return new Movie(mold, frameRate, library);
     }
 }
