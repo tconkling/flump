@@ -276,11 +276,11 @@ class Layer {
             for (ii = 0; ii < keyframes.length && !multipleItems; ii++) {
                 multipleItems = keyframes[ii].ref != lastItem;
             }
-            if (!multipleItems) movie.addChild(library.instantiateSymbol(lastItem));
+            if (!multipleItems) movie.addChild(library.createDisplayObject(lastItem));
             else {
                 displays = new Vector.<DisplayObject>();
                 for each (var kf :KeyframeMold in keyframes) {
-                    var display :DisplayObject = kf.ref == null ? new Sprite() : library.instantiateSymbol(kf.ref);
+                    var display :DisplayObject = kf.ref == null ? new Sprite() : library.createDisplayObject(kf.ref);
                     displays.push(display);
                     display.name = src.name;
                 }

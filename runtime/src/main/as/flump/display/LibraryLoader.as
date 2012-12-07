@@ -104,10 +104,10 @@ class LibraryImpl
         _creators = creators;
     }
 
-    public function createMovie (symbol :String) :Movie { return Movie(instantiateSymbol(symbol)); }
+    public function createMovie (symbol :String) :Movie { return Movie(createDisplayObject(symbol)); }
 
    public function createImage (symbol :String) :DisplayObject {
-        const disp :DisplayObject = instantiateSymbol(symbol);
+        const disp :DisplayObject = createDisplayObject(symbol);
         if (disp is Movie) throw new Error(symbol + " is a movie, not a texture");
         return disp;
     }
@@ -128,7 +128,7 @@ class LibraryImpl
         return names;
     }
 
-    public function instantiateSymbol (name :String) :DisplayObject {
+    public function createDisplayObject (name :String) :DisplayObject {
         var creator :SymbolCreator = _creators[name];
         if (creator == null) throw new Error("No such id '" + name + "'");
         return creator.create(this);

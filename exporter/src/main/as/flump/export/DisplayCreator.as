@@ -58,13 +58,13 @@ public class DisplayCreator
         return symbols;
     }
 
-    public function instantiateSymbol (id :String) :DisplayObject {
+    public function createDisplayObject (id :String) :DisplayObject {
         const imageCreator :ImageCreator = ImageCreator(_imageCreators[id]);
         return (imageCreator != null ? imageCreator.create() : createMovie(id));
     }
 
     public function createImage (id :String) :DisplayObject {
-        return instantiateSymbol(id);
+        return createDisplayObject(id);
     }
 
     public function createMovie (name :String) :Movie {

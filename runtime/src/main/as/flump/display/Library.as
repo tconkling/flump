@@ -19,7 +19,7 @@ public interface Library
     /**
      * Creates a movie for the given symbol.
      *
-     * @param symbol the symbol name of the movie to be created
+     * @param symbolName the symbol name of the movie to be created
      *
      * @return a Movie instance for the symbol
      *
@@ -30,16 +30,16 @@ public interface Library
     /**
      * Creates an image for the given symbol.
      *
-     * @param symbol the symbol name of the image to be created
+     * @param symbolName the symbol name of the image to be created
      *
      * @return a DisplayObject instance for the symbol
      *
      * @throws Error if there is no such symbol in these resources, or if the symbol isn't a texture.
      */
-    function createImage (symbol :String) :DisplayObject;
+    function createImage (symbolName :String) :DisplayObject;
 
     /** Creates an instance of the given Movie or Image symbol */
-    function instantiateSymbol (name :String) :DisplayObject;
+    function createDisplayObject (symbolName :String) :DisplayObject;
 }
 
 }
