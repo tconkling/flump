@@ -4,20 +4,47 @@
 package flump.display {
 
 import flash.utils.ByteArray;
-import flash.utils.Dictionary;
 
 import executor.Executor;
 import executor.Future;
 
-import starling.display.DisplayObject;
-
 /**
- * Parses movies and textures out of zip files created by the flump exporter and creates instances
- * of Movie and DisplayObject for them.
+ * Loads zip files created by the flump exporter and parses them into Library instances.
  */
-public class MovieResources
-    implements Library
+public class LibraryLoader
 {
+    /**
+     * Loads a Library from the zip in the given bytes.
+     *
+     * @param bytes The bytes containing the zip
+     * @param executor The executor on which the loading should run. If not specified, it'll run on
+     * a new single-use executor.
+     *
+     * @return a Future to use to track the success or failure of loading the resources out of the
+     * bytes. If the loading succeeds, the Future's onSuccess will fire with an instance of
+     * Library. If it fails, the Future's onFail will fire with the Error that caused the
+     * loading failure.
+     */
+    public static function loadBytes (bytes :ByteArray, executor :Executor=null) :Future {
+        return (executor || new Executor(1)).submit(new Loader(bytes).load);
+    }
+
+    /**
+     * Loads a Library from the zip at the given url.
+     *
+     * @param bytes The url where the zip can be found
+     * @param executor The executor on which the loading should run. If not specified, it'll run on
+     * a new single-use executor.
+     *
+     * @return a Future to use to track the success or failure of loading the resources from the
+     * url. If the loading succeeds, the Future's onSuccess will fire with an instance of
+     * Library. If it fails, the Future's onFail will fire with the Error that caused the
+     * loading failure.
+     */
+    public static function loadURL (url :String, executor :Executor=null) :Future {
+        return (executor || new Executor(1)).submit(new Loader(url).load);
+    }
+
     /** @private */
     public static const LIBRARY_LOCATION :String = "library.json";
     /** @private */
@@ -31,101 +58,12 @@ public class MovieResources
      * zip must equal the version compiled into the parsing code for parsing to succeed.
      */
     public static const VERSION :String = "0";
-
-    /**
-     * Loads a MovieResources from the zip in the given bytes.
-     *
-     * @param bytes The bytes containing the zip
-     * @param executor The executor on which the loading should run. If not specified, it'll run on
-     * a new single-use executor.
-     *
-     * @return a Future to use to track the success or failure of loading the resources out of the
-     * bytes. If the loading succeeds, the Future's onSuccess will fire with an instance of
-     * MovieResources. If it fails, the Future's onFail will fire with the Error that caused the
-     * loading failure.
-     */
-    public static function loadBytes (bytes :ByteArray, executor :Executor=null) :Future {
-        return (executor || new Executor(1)).submit(new Loader(bytes).load);
-    }
-
-    /**
-     * Loads a MovieResources from the zip at the given url.
-     *
-     * @param bytes The url where the zip can be found
-     * @param executor The executor on which the loading should run. If not specified, it'll run on
-     * a new single-use executor.
-     *
-     * @return a Future to use to track the success or failure of loading the resources from the
-     * url. If the loading succeeds, the Future's onSuccess will fire with an instance of
-     * MovieResources. If it fails, the Future's onFail will fire with the Error that caused the
-     * loading failure.
-     */
-    public static function loadURL (url :String, executor :Executor=null) :Future {
-        return (executor || new Executor(1)).submit(new Loader(url).load);
-    }
-
-    /** @private */
-    public function MovieResources (creators :Dictionary) {
-        _creators = creators;
-    }
-
-    /**
-     * Creates a movie for the given symbol.
-     *
-     * @param symbol the symbol name of the movie to be created
-     *
-     * @return a Movie instance for the symbol
-     *
-     * @throws Error if there is no such symbol in these resources, or if the symbol isn't a Movie.
-     */
-    public function createMovie (symbol :String) :Movie { return Movie(instantiateSymbol(symbol)); }
-
-   /**
-    * Creates an image for the given symbol.
-    *
-    * @param symbol the symbol name of the image to be created
-    *
-    * @return a DisplayObject instance for the symbol
-    *
-    * @throws Error if there is no such symbol in these resources, or if the symbol isn't a texture.
-    */
-    public function createImage (symbol :String) :DisplayObject {
-        const disp :DisplayObject = DisplayObject(instantiateSymbol(symbol));
-        // TODO - add loadDisplayObject to load either if the user doesn't care?
-        if (disp is Movie) throw new Error(symbol + " is a movie, not a texture");
-        return disp;
-    }
-
-    /** The symbols of all movies in the resources.  */
-    public function get movieSymbols () :Vector.<String> {
-        const names :Vector.<String> = new Vector.<String>();
-        for (var creatorName :String in _creators) {
-            if (_creators[creatorName] is MovieCreator) names.push(creatorName);
-        }
-        return names;
-    }
-
-    /** The symbols of all images in the resources.  */
-    public function get imageSymbols () :Vector.<String> {
-        const names :Vector.<String> = new Vector.<String>();
-        for (var creatorName :String in _creators) {
-            if (_creators[creatorName] is ImageCreator) names.push(creatorName);
-        }
-        return names;
-    }
-
-    public function instantiateSymbol (name :String) :DisplayObject {
-        var creator :* = _creators[name];
-        if (creator === undefined) throw new Error("No such id '" + name + "'");
-        return creator.create(this);
-    }
-
-    /** @private */
-    protected var _creators :Dictionary;
 }
+
 }
 
 import flash.events.Event;
+import flash.geom.Point;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
@@ -141,13 +79,63 @@ import executor.FutureTask;
 import executor.load.ImageLoader;
 import executor.load.LoadedImage;
 
-import flump.display.MovieResources;
+import flump.display.Library;
+import flump.display.LibraryLoader;
+import flump.display.Movie;
 import flump.mold.AtlasMold;
 import flump.mold.AtlasTextureMold;
 import flump.mold.LibraryMold;
 import flump.mold.MovieMold;
 
+import starling.display.DisplayObject;
+import starling.display.Image;
+import starling.display.Sprite;
 import starling.textures.Texture;
+
+interface SymbolCreator
+{
+    function create (library :Library) :DisplayObject;
+}
+
+class LibraryImpl
+    implements Library
+{
+    public function LibraryImpl (creators :Dictionary) {
+        _creators = creators;
+    }
+
+    public function createMovie (symbol :String) :Movie { return Movie(instantiateSymbol(symbol)); }
+
+   public function createImage (symbol :String) :DisplayObject {
+        const disp :DisplayObject = instantiateSymbol(symbol);
+        if (disp is Movie) throw new Error(symbol + " is a movie, not a texture");
+        return disp;
+    }
+
+    public function get movieSymbols () :Vector.<String> {
+        const names :Vector.<String> = new Vector.<String>();
+        for (var creatorName :String in _creators) {
+            if (_creators[creatorName] is MovieCreator) names.push(creatorName);
+        }
+        return names;
+    }
+
+    public function get imageSymbols () :Vector.<String> {
+        const names :Vector.<String> = new Vector.<String>();
+        for (var creatorName :String in _creators) {
+            if (_creators[creatorName] is ImageCreator) names.push(creatorName);
+        }
+        return names;
+    }
+
+    public function instantiateSymbol (name :String) :DisplayObject {
+        var creator :SymbolCreator = _creators[name];
+        if (creator == null) throw new Error("No such id '" + name + "'");
+        return creator.create(this);
+    }
+
+    protected var _creators :Dictionary;
+}
 
 class Loader
 {
@@ -169,26 +157,26 @@ class Loader
     protected function onFileLoaded (e :FZipEvent) :void {
         const loaded :FZipFile = _zip.removeFileAt(_zip.getFileCount() - 1);
         const name :String = loaded.filename;
-        if (name == MovieResources.LIBRARY_LOCATION) {
+        if (name == LibraryLoader.LIBRARY_LOCATION) {
             const jsonString :String = loaded.content.readUTFBytes(loaded.content.length);
             _lib = LibraryMold.fromJSON(JSON.parse(jsonString));
         } else if (name.indexOf('.png', name.length - 4) != -1) {
             // TODO - specify density?
             _pngBytes[name.replace("@2x.png", ".png")] = loaded.content;
-        } else if (name == MovieResources.VERSION_LOCATION) {
+        } else if (name == LibraryLoader.VERSION_LOCATION) {
             const zipVersion :String = loaded.content.readUTFBytes(loaded.content.length)
-            if (zipVersion != MovieResources.VERSION) {
-                throw new Error("Zip is version " + zipVersion + " but the code needs " + MovieResources.VERSION);
+            if (zipVersion != LibraryLoader.VERSION) {
+                throw new Error("Zip is version " + zipVersion + " but the code needs " + LibraryLoader.VERSION);
             }
             _versionChecked = true;
-        } else if (name == MovieResources.MD5_LOCATION ) { // Nothing to verify
+        } else if (name == LibraryLoader.MD5_LOCATION ) { // Nothing to verify
         } else {} // ignore unknown files
     }
 
     protected function onZipLoadingComplete (..._) :void {
         _zip = null;
-        if (_lib == null) throw new Error(MovieResources.LIBRARY_LOCATION + " missing from zip");
-        if (!_versionChecked) throw new Error(MovieResources.VERSION_LOCATION + " missing from zip");
+        if (_lib == null) throw new Error(LibraryLoader.LIBRARY_LOCATION + " missing from zip");
+        if (!_versionChecked) throw new Error(LibraryLoader.VERSION_LOCATION + " missing from zip");
         const loader :ImageLoader = new ImageLoader();
         _pngLoaders.terminated.add(_future.monitoredCallback(onPngLoadingComplete));
         for each (var atlas :AtlasMold in _lib.atlases) loadAtlas(loader, atlas);
@@ -218,7 +206,7 @@ class Loader
             movie.fillLabels();
             _creators[movie.id] = new MovieCreator(movie, _lib.frameRate);
         }
-        _future.succeed(new MovieResources(_creators));
+        _future.succeed(new LibraryImpl(_creators));
     }
 
     protected function onPngLoadingFailed (e :*) :void {
@@ -239,18 +227,9 @@ class Loader
     protected const _pngLoaders :Executor = new Executor(1);
 }
 
-import flash.geom.Point;
-
-import flump.display.Library;
-import flump.display.Movie;
-import flump.mold.MovieMold;
-
-import starling.display.DisplayObject;
-import starling.display.Image;
-import starling.display.Sprite;
-import starling.textures.Texture;
-
-class ImageCreator {
+class ImageCreator
+    implements SymbolCreator
+{
     public var texture :Texture;
     public var offset :Point;
     public var symbol :String;
@@ -261,7 +240,7 @@ class ImageCreator {
         this.symbol = symbol;
     }
 
-    public function create (..._) :DisplayObject {
+    public function create (library :Library) :DisplayObject {
         const image :Image = new Image(texture);
         image.x = offset.x;
         image.y = offset.y;
@@ -272,7 +251,9 @@ class ImageCreator {
     }
 }
 
-class MovieCreator {
+class MovieCreator
+    implements SymbolCreator
+{
     public var mold :MovieMold;
     public var frameRate :Number;
 

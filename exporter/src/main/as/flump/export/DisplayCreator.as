@@ -63,6 +63,14 @@ public class DisplayCreator
         return (imageCreator != null ? imageCreator.create() : createMovie(id));
     }
 
+    public function createImage (id :String) :DisplayObject {
+        return instantiateSymbol(id);
+    }
+
+    public function createMovie (name :String) :Movie {
+        return new Movie(_lib.get(name, MovieMold), _lib.frameRate, this);
+    }
+
     public function getMemoryUsage (id :String, subtex :Dictionary = null) :int {
         if (id == null) return 0;
 
@@ -90,10 +98,6 @@ public class DisplayCreator
      * drawn usage is the maximum that movie can draw. We're trying to get the worst case here.
      */
     public function getMaxDrawn (id :String) :int { return _maxDrawn.get(id); }
-
-    protected function createMovie (name :String) :Movie {
-        return new Movie(_lib.get(name, MovieMold), _lib.frameRate, this);
-    }
 
     protected function loadTexture (symbol :String) :DisplayObject {
         return ImageCreator(_imageCreators[symbol]).create();

@@ -10,7 +10,7 @@ import flash.utils.IDataOutput;
 import deng.fzip.FZip;
 import deng.fzip.FZipFile;
 
-import flump.display.MovieResources;
+import flump.display.LibraryLoader;
 import flump.xfl.XflLibrary;
 
 public class StarlingFormat extends PublishFormat
@@ -51,13 +51,13 @@ public class StarlingFormat extends PublishFormat
         for each (var atlas :Atlas in packer.atlases) {
             addToZip(atlas.filename, function (b :ByteArray) :void { AtlasUtil.writePNG(atlas, b); });
         }
-        addToZip(MovieResources.LIBRARY_LOCATION, function (b :ByteArray) :void {
+        addToZip(LibraryLoader.LIBRARY_LOCATION, function (b :ByteArray) :void {
             b.writeUTFBytes(_lib.toJSONString(packer.atlases, _conf.scale));
         });
-        addToZip(MovieResources.MD5_LOCATION,
+        addToZip(LibraryLoader.MD5_LOCATION,
             function (b :ByteArray) :void { b.writeUTFBytes(_lib.md5); });
-        addToZip(MovieResources.VERSION_LOCATION,
-            function (b :ByteArray) :void { b.writeUTFBytes(MovieResources.VERSION); });
+        addToZip(LibraryLoader.VERSION_LOCATION,
+            function (b :ByteArray) :void { b.writeUTFBytes(LibraryLoader.VERSION); });
 
         Files.write(outputFile, function (out :IDataOutput) :void {
             zip.serialize(out, /*includeAdler32=*/true);
