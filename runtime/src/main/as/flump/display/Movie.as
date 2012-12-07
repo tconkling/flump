@@ -15,7 +15,7 @@ import starling.events.Event;
 /**
  * A movie created from flump-exported data. It has children corresponding to the layers in the
  * movie in Flash, in the same order and with the same names. It fills in those children
- * initially with the textures or movie of the symbol on that exported layer. After the initial
+ * initially with the image or movie of the symbol on that exported layer. After the initial
  * population, it only applies the keyframe-based transformations to the child at the index
  * corresponding to the layer. This means it's safe to swap in other DisplayObjects at those
  * positions to have them animated in place of the initial child.

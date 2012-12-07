@@ -11,7 +11,7 @@ public class KeyframeMold
     public var duration :Number;
 
     /**
-     * The symbol of the texture or movie in this keyframe, or null if there is nothing in it.
+     * The symbol of the image or movie in this keyframe, or null if there is nothing in it.
      * For flipbook frames, this will be a name constructed out of the movie and frame index.
      */
     public var ref :String;

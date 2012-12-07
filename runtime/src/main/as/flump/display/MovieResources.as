@@ -13,7 +13,7 @@ import starling.display.DisplayObject;
 
 /**
  * Parses movies and textures out of zip files created by the flump exporter and creates instances
- * of Movie for them.
+ * of Movie and DisplayObject for them.
  */
 public class MovieResources
     implements Library
@@ -105,7 +105,7 @@ public class MovieResources
         return names;
     }
 
-    /** The symbols of all textures in the resources.  */
+    /** The symbols of all images in the resources.  */
     public function get imageSymbols () :Vector.<String> {
         const names :Vector.<String> = new Vector.<String>();
         for (var creatorName :String in _creators) {
