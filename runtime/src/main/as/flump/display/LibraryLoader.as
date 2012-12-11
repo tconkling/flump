@@ -106,7 +106,7 @@ class LibraryImpl
 
     public function createMovie (symbol :String) :Movie { return Movie(createDisplayObject(symbol)); }
 
-   public function createImage (symbol :String) :DisplayObject {
+    public function createImage (symbol :String) :DisplayObject {
         const disp :DisplayObject = createDisplayObject(symbol);
         if (disp is Movie) throw new Error(symbol + " is a movie, not a texture");
         return disp;
