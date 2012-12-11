@@ -17,12 +17,6 @@
   </repositories>
   <dependencies>
     <dependency>
-      <groupId>com.threerings</groupId>
-      <artifactId>executor</artifactId>
-      <version>0.1-SNAPSHOT</version>
-      <type>swc</type>
-    </dependency>
-    <dependency>
       <groupId>com.threerings.flump</groupId>
       <artifactId>flump-runtime</artifactId>
       <version>0.1-SNAPSHOT</version>

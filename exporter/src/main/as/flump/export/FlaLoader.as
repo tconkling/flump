@@ -9,10 +9,9 @@ import flash.utils.ByteArray;
 import deng.fzip.FZip;
 import deng.fzip.FZipFile;
 
-import executor.Executor;
-import executor.Future;
-import executor.FutureTask;
-
+import flump.executor.Executor;
+import flump.executor.Future;
+import flump.executor.FutureTask;
 import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;
 

@@ -2,6 +2,14 @@
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="1">
   <includeClasses>
     <classEntry path="flump.display.Library"/>
+    <classEntry path="flump.executor.Future"/>
+    <classEntry path="flump.executor.load.ImageLoader"/>
+    <classEntry path="flump.executor.load.BaseLoader"/>
+    <classEntry path="flump.executor.load.SwfLoader"/>
+    <classEntry path="flump.executor.FutureTask"/>
+    <classEntry path="flump.executor.load.LoadedImage"/>
+    <classEntry path="flump.executor.load.LoadedSwf"/>
+    <classEntry path="flump.executor.Executor"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

@@ -3,9 +3,8 @@
 
 package flump.xfl {
 
-import executor.load.LoadedSwf;
-
 import flump.SwfTexture;
+import flump.executor.load.LoadedSwf;
 
 import com.threerings.util.XmlUtil;
 

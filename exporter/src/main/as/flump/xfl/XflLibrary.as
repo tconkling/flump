@@ -9,13 +9,12 @@ import flash.utils.Dictionary;
 
 import com.adobe.crypto.MD5;
 
-import executor.Executor;
-import executor.Future;
-import executor.FutureTask;
-import executor.load.LoadedSwf;
-import executor.load.SwfLoader;
-
 import flump.Util;
+import flump.executor.Executor;
+import flump.executor.Future;
+import flump.executor.FutureTask;
+import flump.executor.load.LoadedSwf;
+import flump.executor.load.SwfLoader;
 import flump.export.Atlas;
 import flump.export.Files;
 import flump.mold.KeyframeMold;

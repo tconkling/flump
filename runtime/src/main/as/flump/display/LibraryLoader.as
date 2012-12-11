@@ -5,8 +5,8 @@ package flump.display {
 
 import flash.utils.ByteArray;
 
-import executor.Executor;
-import executor.Future;
+import flump.executor.Executor;
+import flump.executor.Future;
 
 /**
  * Loads zip files created by the flump exporter and parses them into Library instances.
@@ -73,15 +73,14 @@ import deng.fzip.FZipErrorEvent;
 import deng.fzip.FZipEvent;
 import deng.fzip.FZipFile;
 
-import executor.Executor;
-import executor.Future;
-import executor.FutureTask;
-import executor.load.ImageLoader;
-import executor.load.LoadedImage;
-
 import flump.display.Library;
 import flump.display.LibraryLoader;
 import flump.display.Movie;
+import flump.executor.Executor;
+import flump.executor.Future;
+import flump.executor.FutureTask;
+import flump.executor.load.ImageLoader;
+import flump.executor.load.LoadedImage;
 import flump.mold.AtlasMold;
 import flump.mold.AtlasTextureMold;
 import flump.mold.LibraryMold;
