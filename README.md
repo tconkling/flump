@@ -3,8 +3,8 @@
 Flump reads specially-constructed `.fla` and `.xfl` files saved by Flash and extracts animations and
 textures to allow them to be recreated in the GPU. Animations created in Flump's style will use far
 less texture memory per frame of animation than an equivalent flipbook animation, allowing for more
-and more expressive animations on mobile platforms. Runtimes have been written for [Starling],
-[Sparrow], [Flambe] and [PlayN].
+expressive animations on mobile platforms. Runtimes have been written for [Starling], [Sparrow], [Flambe] 
+and [PlayN].
 
 [Starling]: https://github.com/threerings/flump/tree/master/runtime
 [Sparrow]: https://github.com/threerings/betwixt
