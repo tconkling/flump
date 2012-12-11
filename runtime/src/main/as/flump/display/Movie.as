@@ -7,6 +7,7 @@ import flump.mold.MovieMold;
 
 import org.osflash.signals.Signal;
 
+import starling.animation.Juggler;
 import starling.core.Starling;
 import starling.display.DisplayObject;
 import starling.display.Sprite;
@@ -38,19 +39,20 @@ public class Movie extends Sprite
     public const labelPassed :Signal = new Signal(String);
 
     /** @private */
-    public function Movie (src :MovieMold, frameRate :Number, library :Library) {
+    public function Movie (src :MovieMold, frameRate :Number, library :Library, juggler :Juggler) {
         name = src.id;
         _labels = src.labels;
         _frameRate = frameRate;
+        _juggler = (juggler || Starling.juggler); // use the default Juggler if none was specified
         _ticker = new Ticker(advanceTime);
         if (src.flipbook) {
             _layers = new Vector.<Layer>(1, true);
-            _layers[0] = new Layer(this, src.layers[0], library, /*flipbook=*/true);
+            _layers[0] = new Layer(this, src.layers[0], library, _juggler, /*flipbook=*/true);
             _frames = src.layers[0].frames;
         } else {
             _layers = new Vector.<Layer>(src.layers.length, true);
             for (var ii :int = 0; ii < _layers.length; ii++) {
-                _layers[ii] = new Layer(this, src.layers[ii], library, /*flipbook=*/false);
+                _layers[ii] = new Layer(this, src.layers[ii], library, _juggler, /*flipbook=*/false);
                 _frames = Math.max(src.layers[ii].frames, _frames);
             }
         }
@@ -216,10 +218,10 @@ public class Movie extends Sprite
     }
 
     /** @private */
-    protected function addedToStage (..._) :void { Starling.juggler.add(_ticker); }
+    protected function addedToStage (..._) :void { _juggler.add(_ticker); }
 
     /** @private */
-    protected function removedFromStage (..._) :void { Starling.juggler.remove(_ticker); }
+    protected function removedFromStage (..._) :void { _juggler.remove(_ticker); }
 
     /** @private */
     protected var _goingToFrame :Boolean;
@@ -233,6 +235,8 @@ public class Movie extends Sprite
     protected var _playTime :Number, _duration :Number;
     /** @private */
     protected var _layers :Vector.<Layer>;
+    /** @private */
+    protected var _juggler :Juggler;
     /** @private */
     protected var _ticker :Ticker;
     /** @private */
@@ -252,6 +256,7 @@ import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
 
 import starling.animation.IAnimatable;
+import starling.animation.Juggler;
 import starling.display.DisplayObject;
 import starling.display.Sprite;
 
@@ -265,7 +270,7 @@ class Layer {
     // If the keyframe has changed since the last drawFrame
     public var changedKeyframe :Boolean;
 
-    public function Layer (movie :Movie, src :LayerMold, library :Library, flipbook :Boolean) {
+    public function Layer (movie :Movie, src :LayerMold, library :Library, juggler :Juggler, flipbook :Boolean) {
         keyframes = src.keyframes;
         this.movie = movie;
         var lastItem :String;
@@ -278,11 +283,11 @@ class Layer {
             for (ii = 0; ii < keyframes.length && !multipleItems; ii++) {
                 multipleItems = keyframes[ii].ref != lastItem;
             }
-            if (!multipleItems) movie.addChild(library.createDisplayObject(lastItem));
+            if (!multipleItems) movie.addChild(library.createDisplayObject(lastItem, juggler));
             else {
                 displays = new Vector.<DisplayObject>();
                 for each (var kf :KeyframeMold in keyframes) {
-                    var display :DisplayObject = kf.ref == null ? new Sprite() : library.createDisplayObject(kf.ref);
+                    var display :DisplayObject = kf.ref == null ? new Sprite() : library.createDisplayObject(kf.ref, juggler);
                     displays.push(display);
                     display.name = src.name;
                 }

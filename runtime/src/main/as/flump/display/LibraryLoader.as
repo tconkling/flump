@@ -87,6 +87,7 @@ import flump.mold.AtlasTextureMold;
 import flump.mold.LibraryMold;
 import flump.mold.MovieMold;
 
+import starling.animation.Juggler;
 import starling.display.DisplayObject;
 import starling.display.Image;
 import starling.display.Sprite;
@@ -94,7 +95,7 @@ import starling.textures.Texture;
 
 interface SymbolCreator
 {
-    function create (library :Library) :DisplayObject;
+    function create (library :Library, juggler :Juggler) :DisplayObject;
 }
 
 class LibraryImpl
@@ -104,7 +105,9 @@ class LibraryImpl
         _creators = creators;
     }
 
-    public function createMovie (symbol :String) :Movie { return Movie(createDisplayObject(symbol)); }
+    public function createMovie (symbol :String, juggler :Juggler = null) :Movie {
+        return Movie(createDisplayObject(symbol, juggler));
+    }
 
     public function createImage (symbol :String) :DisplayObject {
         const disp :DisplayObject = createDisplayObject(symbol);
@@ -128,10 +131,10 @@ class LibraryImpl
         return names;
     }
 
-    public function createDisplayObject (name :String) :DisplayObject {
+    public function createDisplayObject (name :String, juggler :Juggler = null) :DisplayObject {
         var creator :SymbolCreator = _creators[name];
         if (creator == null) throw new Error("No such id '" + name + "'");
-        return creator.create(this);
+        return creator.create(this, juggler);
     }
 
     protected var _creators :Dictionary;
@@ -240,7 +243,7 @@ class ImageCreator
         this.symbol = symbol;
     }
 
-    public function create (library :Library) :DisplayObject {
+    public function create (library :Library, juggler :Juggler) :DisplayObject {
         const image :Image = new Image(texture);
         image.x = offset.x;
         image.y = offset.y;
@@ -262,7 +265,7 @@ class MovieCreator
         this.frameRate = frameRate;
     }
 
-    public function create (library :Library) :DisplayObject {
-        return new Movie(mold, frameRate, library);
+    public function create (library :Library, juggler :Juggler) :DisplayObject {
+        return new Movie(mold, frameRate, library, juggler);
     }
 }

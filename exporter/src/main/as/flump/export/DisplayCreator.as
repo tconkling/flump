@@ -15,6 +15,7 @@ import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;
 
+import starling.animation.Juggler;
 import starling.display.DisplayObject;
 import starling.textures.Texture;
 
@@ -58,17 +59,17 @@ public class DisplayCreator
         return symbols;
     }
 
-    public function createDisplayObject (id :String) :DisplayObject {
+    public function createDisplayObject (id :String, juggler :Juggler = null) :DisplayObject {
         const imageCreator :ImageCreator = ImageCreator(_imageCreators[id]);
-        return (imageCreator != null ? imageCreator.create() : createMovie(id));
+        return (imageCreator != null ? imageCreator.create() : createMovie(id, juggler));
     }
 
     public function createImage (id :String) :DisplayObject {
         return createDisplayObject(id);
     }
 
-    public function createMovie (name :String) :Movie {
-        return new Movie(_lib.get(name, MovieMold), _lib.frameRate, this);
+    public function createMovie (name :String, juggler :Juggler = null) :Movie {
+        return new Movie(_lib.get(name, MovieMold), _lib.frameRate, this, juggler);
     }
 
     public function getMemoryUsage (id :String, subtex :Dictionary = null) :int {

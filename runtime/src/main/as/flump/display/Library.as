@@ -3,6 +3,7 @@
 
 package flump.display {
 
+import starling.animation.Juggler;
 import starling.display.DisplayObject;
 
 /**
@@ -21,11 +22,13 @@ public interface Library
      *
      * @param symbolName the symbol name of the movie to be created
      *
+     * @param juggler the Juggler to animate the movie with (or null to use the default juggler)
+     *
      * @return a Movie instance for the symbol
      *
      * @throws Error if there is no such symbol in these resources, or if the symbol isn't a Movie.
      */
-    function createMovie (symbolName :String) :Movie;
+    function createMovie (symbolName :String, juggler :Juggler = null) :Movie;
 
     /**
      * Creates an image for the given symbol.
@@ -39,7 +42,7 @@ public interface Library
     function createImage (symbolName :String) :DisplayObject;
 
     /** Creates an instance of the given Movie or Image symbol */
-    function createDisplayObject (symbolName :String) :DisplayObject;
+    function createDisplayObject (symbolName :String, juggler :Juggler = null) :DisplayObject;
 }
 
 }
