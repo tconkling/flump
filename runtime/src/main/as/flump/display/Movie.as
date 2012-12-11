@@ -24,7 +24,7 @@ import starling.events.Event;
  * isPlaying is true. While it's not on the stage, its playhead doesn't move regardless of the state
  * of isPlaying.</p>
  *
- * @see MovieResources to create instances of Movie.
+ * @see Library and LibraryLoader to create instances of Movie.
  */
 public class Movie extends Sprite
 {
@@ -245,11 +245,13 @@ public class Movie extends Sprite
     private static const NO_FRAME :int = -1;
 }
 }
+
 import flump.display.Library;
 import flump.display.Movie;
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
 
+import starling.animation.IAnimatable;
 import starling.display.DisplayObject;
 import starling.display.Sprite;
 
@@ -345,8 +347,6 @@ class Layer {
         layer.visible = kf.visible;
     }
 }
-
-import starling.animation.IAnimatable;
 
 class Ticker implements IAnimatable {
     public function Ticker (callback :Function) {
