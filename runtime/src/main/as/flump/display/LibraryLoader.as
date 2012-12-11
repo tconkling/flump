@@ -86,7 +86,6 @@ import flump.mold.AtlasTextureMold;
 import flump.mold.LibraryMold;
 import flump.mold.MovieMold;
 
-import starling.animation.Juggler;
 import starling.display.DisplayObject;
 import starling.display.Image;
 import starling.display.Sprite;
@@ -94,7 +93,7 @@ import starling.textures.Texture;
 
 interface SymbolCreator
 {
-    function create (library :Library, juggler :Juggler) :DisplayObject;
+    function create (library :Library) :DisplayObject;
 }
 
 class LibraryImpl
@@ -104,8 +103,8 @@ class LibraryImpl
         _creators = creators;
     }
 
-    public function createMovie (symbol :String, juggler :Juggler = null) :Movie {
-        return Movie(createDisplayObject(symbol, juggler));
+    public function createMovie (symbol :String) :Movie {
+        return Movie(createDisplayObject(symbol));
     }
 
     public function createImage (symbol :String) :DisplayObject {
@@ -130,10 +129,10 @@ class LibraryImpl
         return names;
     }
 
-    public function createDisplayObject (name :String, juggler :Juggler = null) :DisplayObject {
+    public function createDisplayObject (name :String) :DisplayObject {
         var creator :SymbolCreator = _creators[name];
         if (creator == null) throw new Error("No such id '" + name + "'");
-        return creator.create(this, juggler);
+        return creator.create(this);
     }
 
     protected var _creators :Dictionary;
@@ -242,7 +241,7 @@ class ImageCreator
         this.symbol = symbol;
     }
 
-    public function create (library :Library, juggler :Juggler) :DisplayObject {
+    public function create (library :Library) :DisplayObject {
         const image :Image = new Image(texture);
         image.x = offset.x;
         image.y = offset.y;
@@ -264,7 +263,7 @@ class MovieCreator
         this.frameRate = frameRate;
     }
 
-    public function create (library :Library, juggler :Juggler) :DisplayObject {
-        return new Movie(mold, frameRate, library, juggler);
+    public function create (library :Library) :DisplayObject {
+        return new Movie(mold, frameRate, library);
     }
 }

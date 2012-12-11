@@ -9,6 +9,7 @@ import flash.events.MouseEvent;
 import flash.geom.Rectangle;
 import flash.text.TextField;
 
+import flump.display.Movie;
 import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;
@@ -210,6 +211,9 @@ public class PreviewController
         while (_container.numChildren > 0) _container.removeChildAt(0);
         _previewSprite = _creator.createDisplayObject(name);
         _container.addChild(_previewSprite);
+        if (_previewSprite is Movie) {
+            Starling.juggler.add(Movie(_previewSprite));
+        }
         onAnimPreviewResize();
     }
 

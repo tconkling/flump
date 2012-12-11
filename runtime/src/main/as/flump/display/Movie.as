@@ -7,8 +7,7 @@ import flump.mold.MovieMold;
 
 import org.osflash.signals.Signal;
 
-import starling.animation.Juggler;
-import starling.core.Starling;
+import starling.animation.IAnimatable;
 import starling.display.DisplayObject;
 import starling.display.Sprite;
 import starling.events.Event;
@@ -21,13 +20,15 @@ import starling.events.Event;
  * corresponding to the layer. This means it's safe to swap in other DisplayObjects at those
  * positions to have them animated in place of the initial child.
  *
- * <p>When the movie is added to the stage, it advances its playhead with the frame ticks if
- * isPlaying is true. While it's not on the stage, its playhead doesn't move regardless of the state
- * of isPlaying.</p>
+ * <p>A Movie will not animate unless it's added to a Juggler (or its advanceTime() function
+ * is otherwise called. When the movie is added to a juggler, it advances its playhead with the
+ * frame ticks if isPlaying is true. It will automatically removes itself from its juggler when
+ * removed from the stage.</p>
  *
  * @see Library and LibraryLoader to create instances of Movie.
  */
 public class Movie extends Sprite
+    implements IAnimatable
 {
     /** A label fired by all movies when entering their first frame. */
     public static const FIRST_FRAME :String = "flump.movie.FIRST_FRAME";
@@ -39,36 +40,37 @@ public class Movie extends Sprite
     public const labelPassed :Signal = new Signal(String);
 
     /** @private */
-    public function Movie (src :MovieMold, frameRate :Number, library :Library, juggler :Juggler) {
+    public function Movie (src :MovieMold, frameRate :Number, library :Library) {
         name = src.id;
         _labels = src.labels;
         _frameRate = frameRate;
-        _juggler = (juggler || Starling.juggler); // use the default Juggler if none was specified
-        _ticker = new Ticker(advanceTime);
         if (src.flipbook) {
             _layers = new Vector.<Layer>(1, true);
-            _layers[0] = new Layer(this, src.layers[0], library, _juggler, /*flipbook=*/true);
+            _layers[0] = new Layer(this, src.layers[0], library, /*flipbook=*/true);
             _frames = src.layers[0].frames;
         } else {
             _layers = new Vector.<Layer>(src.layers.length, true);
             for (var ii :int = 0; ii < _layers.length; ii++) {
-                _layers[ii] = new Layer(this, src.layers[ii], library, _juggler, /*flipbook=*/false);
+                _layers[ii] = new Layer(this, src.layers[ii], library, /*flipbook=*/false);
                 _frames = Math.max(src.layers[ii].frames, _frames);
             }
         }
         _duration = _frames / _frameRate;
         updateFrame(0, /*fromSkip=*/true, /*overDuration=*/false);
-        addEventListener(Event.ADDED_TO_STAGE, addedToStage);
-        addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
+
+        // When we're removed from the stage, remove ourselves from any juggler animating us.
+        addEventListener(Event.REMOVED_FROM_STAGE, function (..._) :void {
+            dispatchEventWith(Event.REMOVE_FROM_JUGGLER);
+        });
     }
 
-    /** The frame being displayed. */
+    /** @return the frame being displayed. */
     public function get frame () :int { return _frame; }
 
-    /** The number of frames in the movie. */
+    /** @return the number of frames in the movie. */
     public function get frames () :int { return _frames; }
 
-    /** If the movie is playing currently. */
+    /** @return true if the movie is currently playing. */
     public function get isPlaying () :Boolean { return _playing; }
 
     /** Starts playing if not already doing so, and continues to do so indefinitely.  */
@@ -114,31 +116,20 @@ public class Movie extends Sprite
     * @throws Error if position isn't an int or String, or if it is a String and that String isn't
     * a label on this movie.
     */
-   public function playTo (position :Object) :Movie {
+    public function playTo (position :Object) :Movie {
        _stopFrame = extractFrame(position);
        _playing = true;
        return this;
-   }
+    }
 
-   /** Stops playback if it's currently active. Doesn't alter the current frame or stop frame. */
+    /** Stops playback if it's currently active. Doesn't alter the current frame or stop frame. */
     public function stop () :Movie {
         _playing = false;
         return this;
     }
 
-    /** @private */
-    protected function extractFrame (position :Object) :int {
-        if (position is int) return int(position);
-        if (!(position is String)) throw new Error("Movie position must be an int frame or String label");
-        const label :String = String(position);
-        for (var ii :int = 0; ii < _labels.length; ii++) {
-            if (_labels[ii] != null && _labels[ii].indexOf(label) != -1) return ii;
-        }
-        throw new Error("No such label '" + label + "'");
-    }
-
-    /** @private */
-    protected function advanceTime (dt :Number) :void {
+    /** Advances the playhead by the give number of seconds. From IAnimatable. */
+    public function advanceTime (dt :Number) :void {
         if (!_playing) return;
 
         _playTime += dt;
@@ -160,6 +151,24 @@ public class Movie extends Sprite
             }
         }
         updateFrame(newFrame, false, overDuration);
+
+        for (var ii :int = 0; ii < this.numChildren; ++ii) {
+            var child :DisplayObject = getChildAt(ii);
+            if (child is Movie) {
+                Movie(child).advanceTime(dt);
+            }
+        }
+    }
+
+    /** @private */
+    protected function extractFrame (position :Object) :int {
+        if (position is int) return int(position);
+        if (!(position is String)) throw new Error("Movie position must be an int frame or String label");
+        const label :String = String(position);
+        for (var ii :int = 0; ii < _labels.length; ii++) {
+            if (_labels[ii] != null && _labels[ii].indexOf(label) != -1) return ii;
+        }
+        throw new Error("No such label '" + label + "'");
     }
 
     /** @private */
@@ -218,12 +227,6 @@ public class Movie extends Sprite
     }
 
     /** @private */
-    protected function addedToStage (..._) :void { _juggler.add(_ticker); }
-
-    /** @private */
-    protected function removedFromStage (..._) :void { _juggler.remove(_ticker); }
-
-    /** @private */
     protected var _goingToFrame :Boolean;
     /** @private */
     protected var _pendingFrame :int = NO_FRAME;
@@ -235,10 +238,6 @@ public class Movie extends Sprite
     protected var _playTime :Number, _duration :Number;
     /** @private */
     protected var _layers :Vector.<Layer>;
-    /** @private */
-    protected var _juggler :Juggler;
-    /** @private */
-    protected var _ticker :Ticker;
     /** @private */
     protected var _frames :int;
     /** @private */
@@ -255,8 +254,6 @@ import flump.display.Movie;
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
 
-import starling.animation.IAnimatable;
-import starling.animation.Juggler;
 import starling.display.DisplayObject;
 import starling.display.Sprite;
 
@@ -270,7 +267,7 @@ class Layer {
     // If the keyframe has changed since the last drawFrame
     public var changedKeyframe :Boolean;
 
-    public function Layer (movie :Movie, src :LayerMold, library :Library, juggler :Juggler, flipbook :Boolean) {
+    public function Layer (movie :Movie, src :LayerMold, library :Library, flipbook :Boolean) {
         keyframes = src.keyframes;
         this.movie = movie;
         var lastItem :String;
@@ -283,11 +280,12 @@ class Layer {
             for (ii = 0; ii < keyframes.length && !multipleItems; ii++) {
                 multipleItems = keyframes[ii].ref != lastItem;
             }
-            if (!multipleItems) movie.addChild(library.createDisplayObject(lastItem, juggler));
+            if (!multipleItems) movie.addChild(library.createDisplayObject(lastItem));
             else {
                 displays = new Vector.<DisplayObject>();
                 for each (var kf :KeyframeMold in keyframes) {
-                    var display :DisplayObject = kf.ref == null ? new Sprite() : library.createDisplayObject(kf.ref, juggler);
+                    var display :DisplayObject =
+                        (kf.ref == null ? new Sprite() : library.createDisplayObject(kf.ref));
                     displays.push(display);
                     display.name = src.name;
                 }
@@ -351,16 +349,4 @@ class Layer {
         layer.pivotY = kf.pivotY;
         layer.visible = kf.visible;
     }
-}
-
-class Ticker implements IAnimatable {
-    public function Ticker (callback :Function) {
-        _callback = callback;
-    }
-
-    public function get isComplete () :Boolean { return false; }
-
-    public function advanceTime (time :Number) :void { _callback(time); }
-
-    protected var _callback :Function;
 }
