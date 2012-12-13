@@ -32,7 +32,7 @@ public class JSONFormat extends PublishFormat
     override public function publish () :void {
         const libExportDir :File = _destDir.resolvePath(_prefix);
         // Ensure any previously generated atlases don't linger
-        if (libExportDir.exists) libExportDir.deleteDirectory(/*deteDirectoryContents=*/true);
+        if (libExportDir.exists) libExportDir.deleteDirectory(/*deleteDirectoryContents=*/true);
         libExportDir.createDirectory();
 
         const packer :TexturePacker = new TexturePacker(_lib, _conf.scale, _conf.textureBorder,

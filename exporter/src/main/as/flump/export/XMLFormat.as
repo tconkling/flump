@@ -28,7 +28,7 @@ public class XMLFormat extends PublishFormat
     override public function publish () :void {
         const libExportDir :File = _destDir.resolvePath(_prefix);
         // Ensure any previously generated atlases don't linger
-        if (libExportDir.exists) libExportDir.deleteDirectory(/*deteDirectoryContents=*/true);
+        if (libExportDir.exists) libExportDir.deleteDirectory(/*deleteDirectoryContents=*/true);
         libExportDir.createDirectory();
 
         const packers :Vector.<TexturePacker> = new <TexturePacker>[
