@@ -27,8 +27,8 @@ public class DisplayCreator
     public function DisplayCreator (lib :XflLibrary) {
         _lib = lib;
 
-        const packer :TexturePacker = new TexturePacker(lib, 1, 1);
-        for each (var atlas :Atlas in packer.atlases) {
+        const atlases :Vector.<Atlas> = TexturePacker.withLib(lib).createAtlases();
+        for each (var atlas :Atlas in atlases) {
             var mold :AtlasMold = atlas.toMold();
             var baseTexture :Texture = AtlasUtil.toTexture(atlas);
             for each (var atlasTexture :AtlasTextureMold in mold.textures) {

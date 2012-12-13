@@ -9,6 +9,10 @@ import flump.mold.optional;
 import flump.mold.require;
 import flump.xfl.XflLibrary;
 
+import com.threerings.util.Set;
+import com.threerings.util.Sets;
+import com.threerings.util.StringUtil;
+
 public class ExportConf
 {
     public var name :String = "default";
@@ -18,6 +22,28 @@ public class ExportConf
     public var textureBorder :int = 1;
     /** The maximum size of the width and height of a generated texture atlas */
     public var maxAtlasSize :int = 2048;
+    /** Additional scaleFactors to output */
+    public var additionalScaleFactors :Array = [];
+
+    public function get scaleFactorsString () :String {
+        return this.additionalScaleFactors.join(",");
+    }
+
+    public function set scaleFactorsString (str :String) :void {
+        var strings :Array = str.split(",");
+        var values :Set = Sets.newSetOf(int);
+        for each (var num :String in str.split(",")) {
+            try {
+                var scale :int = StringUtil.parseUnsignedInteger(StringUtil.trim(num));
+                if (scale >= 1) {
+                    values.add(scale);
+                }
+            } catch (e :Error) {}
+        }
+
+        this.additionalScaleFactors = values.toArray();
+        this.additionalScaleFactors.sort();
+    }
 
     public function get description () :String {
         return "'" + name + "' (" + format + ", " + (scale * 100).toFixed(0) + "%)";
@@ -30,6 +56,7 @@ public class ExportConf
         conf.format = require(o, "format");
         conf.textureBorder = optional(o, "textureBorder", 1);
         conf.maxAtlasSize = optional(o, "maxAtlasSize", 2048);
+        conf.additionalScaleFactors = optional(o, "additionalScaleFactors", []);
         return conf;
     }
 

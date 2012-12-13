@@ -1,14 +1,18 @@
 {
-  "exportDir": "export",
   "importDir": "resources",
   "exports": [
     {
-      "name": "XML",
-      "scale": 1,
+      "name": "JSON",
+      "scale": 0.5,
       "maxAtlasSize": 2048,
+      "additionalScaleFactors": [
+        2
+      ],
       "textureBorder": 1,
-      "format": "XML",
-      "description": "'XML' (XML, 100%)"
+      "format": "JSON",
+      "description": "'JSON' (JSON, 50%)",
+      "scaleFactorsString": "2"
     }
-  ]
+  ],
+  "exportDir": "export"
 }

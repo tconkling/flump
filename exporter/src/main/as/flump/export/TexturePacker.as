@@ -3,31 +3,74 @@
 
 package flump.export {
 
-import flash.geom.Point;
-import flash.utils.getTimer;
-
-import flump.SwfTexture;
-import flump.mold.KeyframeMold;
-import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
-import flump.xfl.XflTexture;
-
-import com.threerings.util.Comparators;
-import com.threerings.util.Log;
-import com.threerings.util.Preconditions;
 
 /**
  * Creates texture atlases from an XflLibrary
  */
 public class TexturePacker
 {
+    public static function withLib (lib :XflLibrary) :TexturePacker { return new TexturePacker(lib); }
+
+    public function baseScale (val :Number) :TexturePacker { _baseScale = val; return this; }
+    public function scaleFactor (val :int) :TexturePacker {  _scaleFactor = val; return this; }
+    public function borderSize (val :int) :TexturePacker { _borderSize = val; return this; }
+    public function maxAtlasSize (val :int) :TexturePacker { _maxAtlasSize = val; return this; }
+    public function filenamePrefix (val :String) :TexturePacker { _filenamePrefix = val; return this; }
+
+    public function createAtlases () :Vector.<Atlas> {
+        return new PackerImpl(_lib, _baseScale, _scaleFactor, _borderSize,
+            _maxAtlasSize, _filenamePrefix).atlases;
+    }
+
+    /** @private */
+    public function TexturePacker (lib :XflLibrary) {
+        _lib = lib;
+    }
+
+    protected var _lib :XflLibrary;
+    protected var _baseScale :Number = 1;
+    protected var _scaleFactor :int = 1;
+    protected var _borderSize :int = 1;
+    protected var _maxAtlasSize :int = 2048;
+    protected var _filenamePrefix :String = "";
+}
+}
+
+
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.Sprite;
+import flash.geom.Point;
+import flash.geom.Rectangle;
+import flash.utils.getTimer;
+
+import flump.SwfTexture;
+import flump.Util;
+import flump.export.Atlas;
+import flump.mold.AtlasMold;
+import flump.mold.AtlasTextureMold;
+import flump.mold.KeyframeMold;
+import flump.mold.MovieMold;
+import flump.xfl.XflLibrary;
+import flump.xfl.XflTexture;
+
+import com.threerings.util.Arrays;
+import com.threerings.util.Comparators;
+import com.threerings.util.Log;
+import com.threerings.util.Preconditions;
+
+class PackerImpl
+{
     public const atlases :Vector.<Atlas> = new Vector.<Atlas>();
 
-    public function TexturePacker (lib :XflLibrary, scale :Number, borderSize :int,
-        maxSize :int = 2048, prefix :String = "", suffix :String = "") {
+    public function PackerImpl (lib :XflLibrary, baseScale :Number, scaleFactor :int,
+        borderSize :int, maxSize :int /*= 2048*/, prefix :String /*= ""*/) {
 
         _maxSize = maxSize;
         _borderSize = borderSize;
+
+        var scale :Number = baseScale * scaleFactor;
 
         for each (var tex :XflTexture in lib.textures) {
             _unpacked.push(SwfTexture.fromTexture(lib.swf, tex, scale));
@@ -44,8 +87,11 @@ public class TexturePacker
         while (_unpacked.length > 0) {
             // Add a new atlas
             const size :Point = findOptimalSize();
-            atlases.push(new AtlasImpl(prefix + "atlas" + atlases.length + suffix, size.x, size.y,
-                borderSize));
+            atlases.push(new AtlasImpl(
+                prefix + "atlas" + atlases.length,
+                size.x, size.y,
+                borderSize,
+                scaleFactor));
             var hasEmptyAtlas :Boolean = true;
 
             // Try to pack each texture into any atlas
@@ -114,43 +160,28 @@ public class TexturePacker
 
     protected const _unpacked :Vector.<SwfTexture> = new Vector.<SwfTexture>();
 
-    private static const log :Log = Log.getLog(TexturePacker);
+    private static const log :Log = Log.getLog(PackerImpl);
 }
-}
-
-
-import flash.display.Bitmap;
-import flash.display.BitmapData;
-import flash.display.Sprite;
-import flash.geom.Point;
-import flash.geom.Rectangle;
-
-import flump.SwfTexture;
-import flump.Util;
-import flump.export.Atlas;
-import flump.mold.AtlasMold;
-import flump.mold.AtlasTextureMold;
-
-import starling.textures.Texture;
-
-import com.threerings.util.Arrays;
 
 class AtlasImpl
     implements Atlas
 {
     public var name :String;
 
-    public function AtlasImpl (name :String, w :int, h :int, borderSize :int) {
+    public function AtlasImpl (name :String, w :int, h :int, borderSize :int, scaleFactor :int) {
         this.name = name;
         _width = w;
         _height = h;
         _borderSize = borderSize;
         _mask = Arrays.create(_width * _height, false);
+        _scaleFactor = scaleFactor;
     }
 
     public function get area () :int { return _width * _height; }
 
-    public function get filename () :String { return name + ".png"; }
+    public function get scaleFactor () :int { return _scaleFactor; }
+
+    public function get filename () :String { return name + AtlasMold.scaleFactorSuffix(_scaleFactor) + ".png"; }
 
     public function get used () :int {
         var used :int = 0;
@@ -256,6 +287,7 @@ class AtlasImpl
     protected var _borderSize :int;
     protected var _mask :Array;
     protected var _bitmapData :BitmapData;
+    protected var _scaleFactor :int;
 }
 
 class Node

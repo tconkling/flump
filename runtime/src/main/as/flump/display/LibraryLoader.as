@@ -180,7 +180,7 @@ class Loader
         if (!_versionChecked) throw new Error(LibraryLoader.VERSION_LOCATION + " missing from zip");
         const loader :ImageLoader = new ImageLoader();
         _pngLoaders.terminated.add(_future.monitoredCallback(onPngLoadingComplete));
-        for each (var atlas :AtlasMold in _lib.atlases) loadAtlas(loader, atlas);
+        throw new Error("TODO");//for each (var atlas :AtlasMold in _lib.atlases) loadAtlas(loader, atlas);
         _pngLoaders.shutdown();
     }
 

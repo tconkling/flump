@@ -35,12 +35,14 @@ public class JSONFormat extends PublishFormat
         if (libExportDir.exists) libExportDir.deleteDirectory(/*deleteDirectoryContents=*/true);
         libExportDir.createDirectory();
 
-        const packer :TexturePacker = new TexturePacker(_lib, _conf.scale, _conf.textureBorder,
-            _conf.maxAtlasSize);
-        for each (var atlas :Atlas in packer.atlases) {
-            Files.write(libExportDir.resolvePath(atlas.filename), F.partial(AtlasUtil.writePNG, atlas, F._1));
+        const atlases :Vector.<Atlas> = createAtlases();
+        for each (var atlas :Atlas in atlases) {
+            Files.write(
+                libExportDir.resolvePath(atlas.filename),
+                F.partial(AtlasUtil.writePNG, atlas, F._1));
         }
-        const json :String = _lib.toJSONString(packer.atlases, _conf.scale);
+
+        const json :String = _lib.toJSONString(atlases, _conf);
         Files.write(_metaFile, function (out :IDataOutput) :void {  out.writeUTFBytes(json); });
     }
 

@@ -13,6 +13,8 @@ public interface Atlas
     function get filename () :String;
     function get used () :int;
 
+    function get scaleFactor () :int;
+
     function toBitmap () :BitmapData;
     function toMold () :AtlasMold;
 }

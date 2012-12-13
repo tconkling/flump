@@ -7,7 +7,9 @@ import flash.filesystem.File;
 import flash.utils.IDataOutput;
 
 import flump.Util;
+import flump.mold.LibraryMold;
 import flump.mold.MovieMold;
+import flump.mold.TextureGroupMold;
 import flump.xfl.XflLibrary;
 
 import com.threerings.util.F;
@@ -31,17 +33,11 @@ public class XMLFormat extends PublishFormat
         if (libExportDir.exists) libExportDir.deleteDirectory(/*deleteDirectoryContents=*/true);
         libExportDir.createDirectory();
 
-        const packers :Vector.<TexturePacker> = new <TexturePacker>[
-            new TexturePacker(_lib, _conf.scale, _conf.textureBorder, _conf.maxAtlasSize, _prefix),
-            new TexturePacker(_lib, _conf.scale * 2, _conf.textureBorder, _conf.maxAtlasSize,
-                _prefix, "@2x"),
-        ];
-
-        for each (var packer :TexturePacker in packers) {
-            for each (var atlas :Atlas in packer.atlases) {
-                Files.write(_destDir.resolvePath(atlas.filename),
-                    F.partial(AtlasUtil.writePNG, atlas, F._1));
-            }
+        const atlases :Vector.<Atlas> = createAtlases(_prefix);
+        for each (var atlas :Atlas in atlases) {
+            Files.write(
+                _destDir.resolvePath(atlas.filename),
+                F.partial(AtlasUtil.writePNG, atlas, F._1));
         }
 
         const xml :XML = <resources md5={_lib.md5}/>;
@@ -55,18 +51,14 @@ public class XMLFormat extends PublishFormat
             }
             xml.appendChild(movieXml);
         }
+
+        const libraryMold :LibraryMold = _lib.toMold(atlases, _conf);
         const groupsXml :XML = <textureGroups/>;
         xml.appendChild(groupsXml);
-
-        function addPacker(packer :TexturePacker, retina :Boolean) :void {
-            var groupXml :XML = <textureGroup retina={retina}/>;
-            groupsXml.appendChild(groupXml);
-            for each (var atlas :Atlas in packer.atlases) {
-                groupXml.appendChild(atlas.toMold().toXML());
-            }
+        for each (var group :TextureGroupMold in libraryMold.textureGroups) {
+            groupsXml.appendChild(group.toXML());
         }
-        addPacker(packers[0], false);
-        addPacker(packers[1], true);
+
         for each (var texture :XML in groupsXml..texture) texture.@name = prefix + texture.@name;
 
         const xmlString :String = xml.toString();

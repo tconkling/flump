@@ -45,14 +45,12 @@ public class StarlingFormat extends PublishFormat
             zip.addFile(name, bytes);
         }
 
-        const packer :TexturePacker =
-            new TexturePacker(_lib, _conf.scale, _conf.textureBorder, _conf.maxAtlasSize);
-
-        for each (var atlas :Atlas in packer.atlases) {
+        const atlases :Vector.<Atlas> = createAtlases();
+        for each (var atlas :Atlas in atlases) {
             addToZip(atlas.filename, function (b :ByteArray) :void { AtlasUtil.writePNG(atlas, b); });
         }
         addToZip(LibraryLoader.LIBRARY_LOCATION, function (b :ByteArray) :void {
-            b.writeUTFBytes(_lib.toJSONString(packer.atlases, _conf.scale));
+            b.writeUTFBytes(_lib.toJSONString(atlases, _conf));
         });
         addToZip(LibraryLoader.MD5_LOCATION,
             function (b :ByteArray) :void { b.writeUTFBytes(_lib.md5); });

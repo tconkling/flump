@@ -102,11 +102,11 @@ public class PreviewController
     protected function updateAtlas () :void {
         // create our atlases
         const scale :Number = MathUtil.clamp(Number(_atlasPreviewWindow.scale.text), 0.001, 1);
-        const packer :TexturePacker = new TexturePacker(_lib, scale, 1);
+        const atlases :Vector.<Atlas> = TexturePacker.withLib(_lib).baseScale(scale).createAtlases();
 
         const sprite :flash.display.Sprite = new flash.display.Sprite();
-        for (var ii :int = 0; ii < packer.atlases.length; ++ii) {
-            var atlas :Atlas = packer.atlases[ii];
+        for (var ii :int = 0; ii < atlases.length; ++ii) {
+            var atlas :Atlas = atlases[ii];
             var atlasSprite :flash.display.Sprite = AtlasUtil.toSprite(atlas);
             var w :int = atlasSprite.width;
             var h :int = atlasSprite.height;
@@ -182,10 +182,9 @@ public class PreviewController
         }
         _controlsWindow.totalValue.text = formatMemory({memory: totalUsage});
 
-        const packer :TexturePacker = new TexturePacker(_lib, 1, 1);
         var atlasSize :Number = 0;
         var atlasUsed :Number = 0;
-        for each (var atlas :Atlas in packer.atlases) {
+        for each (var atlas :Atlas in TexturePacker.withLib(_lib).createAtlases()) {
             atlasSize += atlas.area;
             atlasUsed += atlas.used;
         }

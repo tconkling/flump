@@ -16,11 +16,13 @@ import flump.executor.FutureTask;
 import flump.executor.load.LoadedSwf;
 import flump.executor.load.SwfLoader;
 import flump.export.Atlas;
+import flump.export.ExportConf;
 import flump.export.Files;
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
 import flump.mold.LibraryMold;
 import flump.mold.MovieMold;
+import flump.mold.TextureGroupMold;
 
 import com.threerings.util.Log;
 import com.threerings.util.Map;
@@ -129,18 +131,18 @@ public class XflLibrary
         _errors.push(new ParseError(location, severity, message, e));
     }
 
-    public function toJSONString (atlases :Vector.<Atlas>, scale :Number, pretty :Boolean=false) :String {
-        return JSON.stringify(toMold(atlases, scale), null, pretty ? "  " : null);
+    public function toJSONString (atlases :Vector.<Atlas>, conf :ExportConf, pretty :Boolean=false) :String {
+        return JSON.stringify(toMold(atlases, conf), null, pretty ? "  " : null);
     }
 
-    public function toMold (atlases :Vector.<Atlas>, scale :Number) :LibraryMold {
+    public function toMold (atlases :Vector.<Atlas>, conf :ExportConf) :LibraryMold {
         const mold :LibraryMold = new LibraryMold();
         mold.frameRate = frameRate;
         mold.md5 = md5;
         mold.movies = publishedMovies.map(function (movie :MovieMold, ..._) :MovieMold {
-            return movie.scale(scale);
+            return movie.scale(conf.scale);
         });
-        for each (var atlas :Atlas in atlases) mold.atlases.push(atlas.toMold());
+        mold.textureGroups = createTextureGroupMolds(atlases);
         return mold;
     }
 
@@ -240,6 +242,29 @@ public class XflLibrary
 
     protected function parseMovie (xml :XML) :void {
         movies.push(XflMovie.parse(this, xml));
+    }
+
+    /** Creates TextureGroupMolds from a list of Atlases */
+    protected static function createTextureGroupMolds (atlases :Vector.<Atlas>) :Vector.<TextureGroupMold> {
+        const groups :Vector.<TextureGroupMold> = new Vector.<TextureGroupMold>();
+        function getGroup (scaleFactor :int) :TextureGroupMold {
+            for each (var group :TextureGroupMold in groups) {
+                if (group.scaleFactor == scaleFactor) {
+                    return group;
+                }
+            }
+            group = new TextureGroupMold();
+            group.scaleFactor = scaleFactor;
+            groups.push(group);
+            return group;
+        }
+
+        for each (var atlas :Atlas in atlases) {
+            var group :TextureGroupMold = getGroup(atlas.scaleFactor);
+            group.atlases.push(atlas.toMold());
+        }
+
+        return groups;
     }
 
     /** Library name to XML for movies in the XFL that are not marked for export */

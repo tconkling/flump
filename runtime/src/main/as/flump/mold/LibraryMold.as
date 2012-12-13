@@ -14,14 +14,14 @@ public class LibraryMold
 
     public var movies :Vector.<MovieMold> = new Vector.<MovieMold>();
 
-    public var atlases :Vector.<AtlasMold> = new Vector.<AtlasMold>();
+    public var textureGroups :Vector.<TextureGroupMold> = new Vector.<TextureGroupMold>();
 
     public static function fromJSON (o :Object) :LibraryMold {
         const mold :LibraryMold = new LibraryMold();
         mold.frameRate = require(o, "frameRate");
         mold.md5 = require(o, "md5");
         for each (var movie :Object in require(o, "movies")) mold.movies.push(MovieMold.fromJSON(movie));
-        for each (var atlas :Object in require(o, "atlases")) mold.atlases.push(AtlasMold.fromJSON(atlas));
+        for each (var tg :Object in require(o, "textureGroups")) mold.textureGroups.push(TextureGroupMold.fromJSON(tg));
         return mold;
     }
 
@@ -30,7 +30,7 @@ public class LibraryMold
             frameRate: frameRate,
             md5: md5,
             movies: movies,
-            atlases: atlases
+            textureGroups: textureGroups
         };
     }
 }

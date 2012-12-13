@@ -9,6 +9,15 @@ public class AtlasMold
     public var file :String;
     public var textures :Vector.<AtlasTextureMold> = new Vector.<AtlasTextureMold>();
 
+    public static function scaleFactorSuffix (scaleFactor :int) :String {
+        return (scaleFactor == 1 ? "" : "@" + scaleFactor + "x");
+    }
+
+    public static function extractScaleFactor (filename :String) :int {
+        var result :Object = SCALE_FACTOR.exec(filename);
+        return (result != null ? int(result[1]) : 1);
+    }
+
     public static function fromJSON (o :Object) :AtlasMold {
         const mold :AtlasMold = new AtlasMold();
         mold.file = require(o, "file");
@@ -30,5 +39,7 @@ public class AtlasMold
         for each (var tex :AtlasTextureMold in textures) xml.appendChild(tex.toXML());
         return xml;
     }
+
+    protected static const SCALE_FACTOR :RegExp = /@(\d+)x$/;
 }
 }
