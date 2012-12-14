@@ -36,8 +36,9 @@ public class ExportConf
         var values :Set = Sets.newSetOf(int);
         for each (var num :String in str.split(",")) {
             try {
+                // additional scale factors must be integers > 1
                 var scale :int = StringUtil.parseUnsignedInteger(StringUtil.trim(num));
-                if (scale >= 1) {
+                if (scale > 1) {
                     values.add(scale);
                 }
             } catch (e :Error) {}
