@@ -14,7 +14,7 @@ public class AtlasMold
     }
 
     public static function extractScaleFactor (filename :String) :int {
-        var result :Object = SCALE_FACTOR.exec(filename);
+        var result :Object = SCALE_FACTOR.exec(Files.stripPathAndDotSuffix(filename));
         return (result != null ? int(result[1]) : 1);
     }
 
@@ -38,6 +38,10 @@ public class AtlasMold
         var xml :XML = <atlas file={file} />;
         for each (var tex :AtlasTextureMold in textures) xml.appendChild(tex.toXML());
         return xml;
+    }
+
+    public function get scaleFactor () :int {
+        return extractScaleFactor(file);
     }
 
     protected static const SCALE_FACTOR :RegExp = /@(\d+)x$/;

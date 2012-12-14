@@ -21,6 +21,7 @@
     <classEntry path="flump.mold.optional"/>
     <classEntry path="flump.mold.require"/>
     <classEntry path="flump.mold.TextureGroupMold"/>
+    <classEntry path="flump.mold.Files"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

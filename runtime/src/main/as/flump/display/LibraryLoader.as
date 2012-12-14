@@ -8,6 +8,8 @@ import flash.utils.ByteArray;
 import flump.executor.Executor;
 import flump.executor.Future;
 
+import starling.core.Starling;
+
 /**
  * Loads zip files created by the flump exporter and parses them into Library instances.
  */
@@ -17,32 +19,44 @@ public class LibraryLoader
      * Loads a Library from the zip in the given bytes.
      *
      * @param bytes The bytes containing the zip
+     *
      * @param executor The executor on which the loading should run. If not specified, it'll run on
      * a new single-use executor.
+     *
+     * @param scaleFactor the desired scale factor of the textures to load. If the Library contains
+     * textures with multiple scale factors, loader will load the textures with the scale factor
+     * closest to this value. If scaleFactor <= 0 (the default), Starling.contentScaleFactor will be
+     * used.
      *
      * @return a Future to use to track the success or failure of loading the resources out of the
      * bytes. If the loading succeeds, the Future's onSuccess will fire with an instance of
      * Library. If it fails, the Future's onFail will fire with the Error that caused the
      * loading failure.
      */
-    public static function loadBytes (bytes :ByteArray, executor :Executor=null) :Future {
-        return (executor || new Executor(1)).submit(new Loader(bytes).load);
+    public static function loadBytes (bytes :ByteArray, executor :Executor=null, scaleFactor :Number=-1) :Future {
+        return (executor || new Executor(1)).submit(new Loader(bytes, scaleFactor).load);
     }
 
     /**
      * Loads a Library from the zip at the given url.
      *
      * @param bytes The url where the zip can be found
+     *
      * @param executor The executor on which the loading should run. If not specified, it'll run on
      * a new single-use executor.
+     *
+     * @param scaleFactor the desired scale factor of the textures to load. If the Library contains
+     * textures with multiple scale factors, loader will load the textures with the scale factor
+     * closest to this value. If scaleFactor <= 0 (the default), Starling.contentScaleFactor will be
+     * used.
      *
      * @return a Future to use to track the success or failure of loading the resources from the
      * url. If the loading succeeds, the Future's onSuccess will fire with an instance of
      * Library. If it fails, the Future's onFail will fire with the Error that caused the
      * loading failure.
      */
-    public static function loadURL (url :String, executor :Executor=null) :Future {
-        return (executor || new Executor(1)).submit(new Loader(url).load);
+    public static function loadURL (url :String, executor :Executor=null, scaleFactor :Number=-1) :Future {
+        return (executor || new Executor(1)).submit(new Loader(url, scaleFactor).load);
     }
 
     /** @private */
@@ -85,7 +99,9 @@ import flump.mold.AtlasMold;
 import flump.mold.AtlasTextureMold;
 import flump.mold.LibraryMold;
 import flump.mold.MovieMold;
+import flump.mold.TextureGroupMold;
 
+import starling.core.Starling;
 import starling.display.DisplayObject;
 import starling.display.Image;
 import starling.display.Sprite;
@@ -140,7 +156,8 @@ class LibraryImpl
 
 class Loader
 {
-    public function Loader (toLoad :Object) {
+    public function Loader (toLoad :Object, scaleFactor :Number) {
+        _scaleFactor = (scaleFactor > 0 ? scaleFactor : Starling.contentScaleFactor);
         _toLoad = toLoad;
     }
 
@@ -161,9 +178,8 @@ class Loader
         if (name == LibraryLoader.LIBRARY_LOCATION) {
             const jsonString :String = loaded.content.readUTFBytes(loaded.content.length);
             _lib = LibraryMold.fromJSON(JSON.parse(jsonString));
-        } else if (name.indexOf('.png', name.length - 4) != -1) {
-            // TODO - specify density?
-            _pngBytes[name.replace("@2x.png", ".png")] = loaded.content;
+        } else if (name.indexOf(PNG, name.length - PNG.length) != -1) {
+            _pngBytes[name] = loaded.content;
         } else if (name == LibraryLoader.VERSION_LOCATION) {
             const zipVersion :String = loaded.content.readUTFBytes(loaded.content.length)
             if (zipVersion != LibraryLoader.VERSION) {
@@ -180,7 +196,14 @@ class Loader
         if (!_versionChecked) throw new Error(LibraryLoader.VERSION_LOCATION + " missing from zip");
         const loader :ImageLoader = new ImageLoader();
         _pngLoaders.terminated.add(_future.monitoredCallback(onPngLoadingComplete));
-        throw new Error("TODO");//for each (var atlas :AtlasMold in _lib.atlases) loadAtlas(loader, atlas);
+
+        // Determine the scale factor we want to use
+        var textureGroup :TextureGroupMold = _lib.bestTextureGroupForScaleFactor(_scaleFactor);
+        if (textureGroup != null) {
+            for each (var atlas :AtlasMold in textureGroup.atlases) {
+                loadAtlas(loader, atlas);
+            }
+        }
         _pngLoaders.shutdown();
     }
 
@@ -192,7 +215,12 @@ class Loader
         const atlasFuture :Future = loader.loadFromBytes(pngBytes, _pngLoaders);
         atlasFuture.failed.add(onPngLoadingFailed);
         atlasFuture.succeeded.add(function (img :LoadedImage) :void {
-            const baseTexture :Texture = Texture.fromBitmapData(img.bitmapData);
+            const baseTexture :Texture = Texture.fromBitmapData(
+                img.bitmapData,
+                true,   // generateMipMaps - do we want this?
+                false,  // optimizeForRenderToTexture
+                atlas.scaleFactor);
+
             for each (var atlasTexture :AtlasTextureMold in atlas.textures) {
                 _creators[atlasTexture.symbol] = new ImageCreator(
                     Texture.fromTexture(baseTexture, atlasTexture.bounds),
@@ -217,6 +245,7 @@ class Loader
     }
 
     protected var _toLoad :Object;
+    protected var _scaleFactor :Number;
     protected var _future :FutureTask;
     protected var _versionChecked :Boolean;
 
@@ -226,6 +255,8 @@ class Loader
     protected const _creators :Dictionary = new Dictionary();//<name, ImageCreator/MovieCreator>
     protected const _pngBytes :Dictionary = new Dictionary();//<String name, ByteArray>
     protected const _pngLoaders :Executor = new Executor(1);
+
+    protected static const PNG :String = ".png";
 }
 
 class ImageCreator

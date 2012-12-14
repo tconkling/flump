@@ -33,5 +33,30 @@ public class LibraryMold
             textureGroups: textureGroups
         };
     }
+
+    public function bestTextureGroupForScaleFactor (scaleFactor :int) :TextureGroupMold {
+        if (textureGroups.length == 0) {
+            return null;
+        }
+
+        // sort by scale factor
+        textureGroups.sort(function (a :TextureGroupMold, b :TextureGroupMold) :int {
+            return compareInts(a.scaleFactor, b.scaleFactor);
+        });
+
+        // find the group with the highest scale factor <= our desired scale factor, if one exists
+        for (var ii :int = textureGroups.length - 1; ii >= 0; --ii) {
+            if (textureGroups[ii].scaleFactor <= scaleFactor) {
+                return textureGroups[ii];
+            }
+        }
+
+        // return the group with the smallest scale factor
+        return textureGroups[0];
+    }
+
+    protected static function compareInts (a :int, b :int) :int {
+        return (a > b) ? 1 : (a == b ? 0 : -1);
+    }
 }
 }
