@@ -5,6 +5,7 @@ package flump.export {
 
 import flash.filesystem.File;
 
+import flump.mold.AtlasMold;
 import flump.mold.optional;
 import flump.mold.require;
 import flump.xfl.XflLibrary;
@@ -47,7 +48,13 @@ public class ExportConf
     }
 
     public function get description () :String {
-        return "'" + name + "' (" + format + ", " + (scale * 100).toFixed(0) + "%)";
+        const scaleString :String = (this.scale * 100).toFixed(0) + "%";
+        var scaleFactors :String = "";
+        for each (var scaleFactor :int in this.additionalScaleFactors) {
+            scaleFactors += ", " + AtlasMold.scaleFactorSuffix(scaleFactor);
+        }
+
+        return "'" + this.name + "' (" + this.format + ", " + scaleString + scaleFactors + ")";
     }
 
     public static function fromJSON (o :Object) :ExportConf {

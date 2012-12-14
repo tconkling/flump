@@ -2,16 +2,14 @@
   "importDir": "resources",
   "exports": [
     {
-      "additionalScaleFactors": [
-        2
-      ],
+      "additionalScaleFactors": [],
       "scale": 0.5,
-      "name": "default",
       "textureBorder": 1,
       "format": "JSONZip",
+      "name": "default",
       "maxAtlasSize": 2048,
-      "description": "'default' (JSONZip, 50%)",
-      "scaleFactorsString": "2"
+      "scaleFactorsString": "",
+      "description": "'default' (JSONZip, 50%)"
     }
   ],
   "exportDir": "export"
