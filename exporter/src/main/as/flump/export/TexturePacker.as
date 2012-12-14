@@ -65,10 +65,10 @@ class PackerImpl
     public const atlases :Vector.<Atlas> = new Vector.<Atlas>();
 
     public function PackerImpl (lib :XflLibrary, baseScale :Number, scaleFactor :int,
-        borderSize :int, maxSize :int /*= 2048*/, prefix :String /*= ""*/) {
+        textureBorderSize :int, maxAtlasSize :int, filenamePrefix :String) {
 
-        _maxSize = maxSize;
-        _borderSize = borderSize;
+        _maxAtlasSize = maxAtlasSize;
+        _textureBorderSize = textureBorderSize;
 
         var scale :Number = baseScale * scaleFactor;
 
@@ -88,9 +88,9 @@ class PackerImpl
             // Add a new atlas
             const size :Point = findOptimalSize();
             atlases.push(new AtlasImpl(
-                prefix + "atlas" + atlases.length,
+                filenamePrefix + "atlas" + atlases.length,
                 size.x, size.y,
-                borderSize,
+                textureBorderSize,
                 scaleFactor));
             var hasEmptyAtlas :Boolean = true;
 
@@ -98,7 +98,7 @@ class PackerImpl
             for (var ii :int = 0; ii < _unpacked.length; ++ii) {
                 var unpacked :SwfTexture = _unpacked[ii];
 
-                if (unpacked.w > _maxSize || unpacked.h > _maxSize) {
+                if (unpacked.w > _maxAtlasSize || unpacked.h > _maxAtlasSize) {
                     throw new Error("Too large to fit in an atlas: " + unpacked.w + ", " +
                         unpacked.h + " " + unpacked.symbol);
                 }
@@ -128,8 +128,8 @@ class PackerImpl
         var maxH :int = 0;
 
         for each (var tex :SwfTexture in _unpacked) {
-            const w :int = tex.w + (_borderSize * 2);
-            const h :int = tex.h + (_borderSize * 2);
+            const w :int = tex.w + (_textureBorderSize * 2);
+            const h :int = tex.h + (_textureBorderSize * 2);
             area += w * h;
             maxW = Math.max(maxW, w);
             maxH = Math.max(maxH, h);
@@ -143,8 +143,8 @@ class PackerImpl
             else size.y *= 2;
         }
 
-        size.x = Math.min(size.x, _maxSize);
-        size.y = Math.min(size.y, _maxSize);
+        size.x = Math.min(size.x, _maxAtlasSize);
+        size.y = Math.min(size.y, _maxAtlasSize);
 
         return size;
     }
@@ -155,8 +155,8 @@ class PackerImpl
         return p;
     }
 
-    protected var _maxSize :int;
-    protected var _borderSize :int;
+    protected var _maxAtlasSize :int;
+    protected var _textureBorderSize :int;
 
     protected const _unpacked :Vector.<SwfTexture> = new Vector.<SwfTexture>();
 
