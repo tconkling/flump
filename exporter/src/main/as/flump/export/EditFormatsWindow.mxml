@@ -15,7 +15,7 @@
                 <s:dataProvider>
                   <s:ArrayList>
                     <fx:String>JSON</fx:String>
-                    <fx:String>Starling</fx:String>
+                    <fx:String>JSONZip</fx:String>
                     <fx:String>XML</fx:String>
                   </s:ArrayList>
                 </s:dataProvider>

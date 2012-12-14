@@ -13,11 +13,13 @@ import deng.fzip.FZipFile;
 import flump.display.LibraryLoader;
 import flump.xfl.XflLibrary;
 
-public class StarlingFormat extends PublishFormat
+public class JSONZipFormat extends PublishFormat
 {
+    public static const NAME :String = "JSONZip";
+
     public var outputFile :File;
 
-    public function StarlingFormat (destDir :File, lib :XflLibrary, conf :ExportConf) {
+    public function JSONZipFormat (destDir :File, lib :XflLibrary, conf :ExportConf) {
         super(destDir, lib, conf);
         if (conf.name != null) {
             outputFile = _destDir.resolvePath(conf.name + "/" + lib.location + ".zip");

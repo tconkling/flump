@@ -9,6 +9,7 @@ import flump.mold.optional;
 import flump.mold.require;
 import flump.xfl.XflLibrary;
 
+import com.threerings.util.Log;
 import com.threerings.util.Set;
 import com.threerings.util.Sets;
 import com.threerings.util.StringUtil;
@@ -16,7 +17,7 @@ import com.threerings.util.StringUtil;
 public class ExportConf
 {
     public var name :String = "default";
-    public var format :String = "Starling";
+    public var format :String = JSONZipFormat.NAME;
     public var scale :Number = 1;
     /** The size of the border around each texture in an atlas, in pixels */
     public var textureBorder :int = 1;
@@ -63,12 +64,17 @@ public class ExportConf
     public function createPublishFormat (exportDir :File, lib :XflLibrary) :PublishFormat {
         var formatClass :Class;
         switch (format.toLowerCase()) {
-            case "json": formatClass = JSONFormat; break;
-            case "starling": formatClass = StarlingFormat; break;
-            case "xml": formatClass = XMLFormat; break;
-            default: throw new Error("Unknown format '" + format + "'");
+            case JSONFormat.NAME.toLowerCase(): formatClass = JSONFormat; break;
+            case JSONZipFormat.NAME.toLowerCase(): formatClass = JSONZipFormat; break;
+            case XMLFormat.NAME.toLowerCase(): formatClass = XMLFormat; break;
+            default:
+                log.error("Invalid publish format", "name", format);
+                formatClass = JSONZipFormat;
+                break;
         }
         return new formatClass(exportDir, lib, this);
     }
+
+    protected static const log :Log = Log.getLog(ExportConf);
 }
 }

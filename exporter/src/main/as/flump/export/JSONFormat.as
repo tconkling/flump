@@ -13,6 +13,8 @@ import com.threerings.util.F;
 
 public class JSONFormat extends PublishFormat
 {
+    public static const NAME :String = "JSON";
+
     public static function readJSON (file :File) :Object {
         const bytes :ByteArray = Files.read(file);
         return JSON.parse(bytes.readUTFBytes(bytes.length))

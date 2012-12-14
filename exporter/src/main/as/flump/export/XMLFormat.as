@@ -17,6 +17,8 @@ import com.threerings.util.XmlUtil;
 
 public class XMLFormat extends PublishFormat
 {
+    public static const NAME :String = "XML";
+
     public function XMLFormat (destDir :File, lib :XflLibrary, conf :ExportConf) {
         super(destDir, lib, conf);
         _prefix = conf.name + "/" + lib.location + "/";
