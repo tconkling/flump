@@ -71,7 +71,7 @@ public class LibraryLoader
      * The version produced and parsable by this version of the code. The version in a resources
      * zip must equal the version compiled into the parsing code for parsing to succeed.
      */
-    public static const VERSION :String = "0";
+    public static const VERSION :String = "1";
 }
 
 }
