@@ -19,7 +19,7 @@
     <dependency>
       <groupId>org.osflash</groupId>
       <artifactId>signals</artifactId>
-      <version>fd03bf873</version>
+      <version>0.9</version>
       <type>swc</type>
     </dependency>
     <dependency>
