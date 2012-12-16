@@ -78,6 +78,7 @@ public class LibraryLoader
 
 import flash.events.Event;
 import flash.geom.Point;
+import flash.geom.Rectangle;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
@@ -215,16 +216,33 @@ class Loader
         const atlasFuture :Future = loader.loadFromBytes(pngBytes, _pngLoaders);
         atlasFuture.failed.add(onPngLoadingFailed);
         atlasFuture.succeeded.add(function (img :LoadedImage) :void {
+            var scale :Number = atlas.scaleFactor;
             const baseTexture :Texture = Texture.fromBitmapData(
                 img.bitmapData,
-                true,   // generateMipMaps - do we want this?
+                false,   // generateMipMaps
                 false,  // optimizeForRenderToTexture
-                atlas.scaleFactor);
+                scale);
 
             for each (var atlasTexture :AtlasTextureMold in atlas.textures) {
+                var bounds :Rectangle = atlasTexture.bounds;
+                var offset :Point = atlasTexture.offset;
+
+                // Starling expects subtexture bounds to be unscaled
+                if (scale != 1) {
+                    bounds = bounds.clone();
+                    bounds.x /= scale;
+                    bounds.y /= scale;
+                    bounds.width /= scale;
+                    bounds.height /= scale;
+
+                    offset = offset.clone();
+                    offset.x /= scale;
+                    offset.y /= scale;
+                }
+
                 _creators[atlasTexture.symbol] = new ImageCreator(
-                    Texture.fromTexture(baseTexture, atlasTexture.bounds),
-                    atlasTexture.offset,
+                    Texture.fromTexture(baseTexture, bounds),
+                    offset,
                     atlasTexture.symbol);
             }
         });
