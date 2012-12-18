@@ -7,7 +7,7 @@ package flump.mold {
 public class LayerMold
 {
     public var name :String;
-    public var keyframes :Vector.<KeyframeMold> = new Vector.<KeyframeMold>();
+    public var keyframes :Vector.<KeyframeMold> = new <KeyframeMold>[];
     public var flipbook :Boolean;
 
     public static function fromJSON (o :Object) :LayerMold {

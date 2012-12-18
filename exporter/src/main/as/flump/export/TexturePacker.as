@@ -62,7 +62,7 @@ import com.threerings.util.Preconditions;
 
 class PackerImpl
 {
-    public const atlases :Vector.<Atlas> = new Vector.<Atlas>();
+    public const atlases :Vector.<Atlas> = new <Atlas>[];
 
     public function PackerImpl (lib :XflLibrary, baseScale :Number, scaleFactor :int,
         textureBorderSize :int, maxAtlasSize :int, filenamePrefix :String) {
@@ -158,7 +158,7 @@ class PackerImpl
     protected var _maxAtlasSize :int;
     protected var _textureBorderSize :int;
 
-    protected const _unpacked :Vector.<SwfTexture> = new Vector.<SwfTexture>();
+    protected const _unpacked :Vector.<SwfTexture> = new <SwfTexture>[];
 
     private static const log :Log = Log.getLog(PackerImpl);
 }

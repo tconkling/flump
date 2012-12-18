@@ -6,7 +6,7 @@ package flump.mold {
 public class TextureGroupMold
 {
     public var scaleFactor :int;
-    public var atlases :Vector.<AtlasMold> = new Vector.<AtlasMold>();
+    public var atlases :Vector.<AtlasMold> = new <AtlasMold>[];
 
     public static function fromJSON (o :Object) :TextureGroupMold {
         const mold :TextureGroupMold = new TextureGroupMold();

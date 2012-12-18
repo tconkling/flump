@@ -7,7 +7,7 @@ package flump.mold {
 public class AtlasMold
 {
     public var file :String;
-    public var textures :Vector.<AtlasTextureMold> = new Vector.<AtlasTextureMold>();
+    public var textures :Vector.<AtlasTextureMold> = new <AtlasTextureMold>[];
 
     public static function scaleFactorSuffix (scaleFactor :int) :String {
         return (scaleFactor == 1 ? "" : "@" + scaleFactor + "x");

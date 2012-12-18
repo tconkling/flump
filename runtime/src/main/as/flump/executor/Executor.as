@@ -101,12 +101,12 @@ public class Executor
      */
     public function shutdownNow () :Vector.<Function> {
         shutdown();
-        const cancelled :Vector.<Function> = new Vector.<Function>();
+        const cancelled :Vector.<Function> = new <Function>[];
         for each (var toRun :ToRun in _toRun) {
             toRun.future.onCancel();
             cancelled.push(toRun.f);
         }
-        _toRun = new Vector.<ToRun>();
+        _toRun = new <ToRun>[];
         terminateIfNecessary();
         return cancelled;
     }
@@ -175,9 +175,9 @@ public class Executor
     /** @private */
     protected var _terminated :Boolean;
     /** @private */
-    protected var _toRun :Vector.<ToRun> = new Vector.<ToRun>();
+    protected var _toRun :Vector.<ToRun> = new <ToRun>[];
     /** @private */
-    protected const _running :Vector.<Future> = new Vector.<Future>();
+    protected const _running :Vector.<Future> = new <Future>[];
     /** @private */
     protected const _timer :Timer = new Timer(1);
 }

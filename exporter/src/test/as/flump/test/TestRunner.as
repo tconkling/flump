@@ -66,8 +66,8 @@ public class TestRunner extends Sprite
     protected const _exec :Executor = new Executor();
     protected const _runs :Map = Maps.newMapOf(Future);//String name
 
-    protected const _passed :Vector.<String> = new Vector.<String>();
-    protected const _failed :Vector.<String> = new Vector.<String>();
+    protected const _passed :Vector.<String> = new <String>[];
+    protected const _failed :Vector.<String> = new <String>[];
 
     private static const log :Log = Log.getLog(TestRunner);
 }

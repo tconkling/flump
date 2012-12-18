@@ -171,6 +171,6 @@ public class RuntimePlaybackTest
     protected var _res :StarlingResources;
 
     protected var _t :Timer = new Timer(1);
-    protected const _labelsPassed :Vector.<String> = new Vector.<String>();
+    protected const _labelsPassed :Vector.<String> = new <String>[];
 }
 }

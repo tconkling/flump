@@ -131,7 +131,7 @@ class LibraryImpl
     }
 
     public function get movieSymbols () :Vector.<String> {
-        const names :Vector.<String> = new Vector.<String>();
+        const names :Vector.<String> = new <String>[];
         for (var creatorName :String in _creators) {
             if (_creators[creatorName] is MovieCreator) names.push(creatorName);
         }
@@ -139,7 +139,7 @@ class LibraryImpl
     }
 
     public function get imageSymbols () :Vector.<String> {
-        const names :Vector.<String> = new Vector.<String>();
+        const names :Vector.<String> = new <String>[];
         for (var creatorName :String in _creators) {
             if (_creators[creatorName] is ImageCreator) names.push(creatorName);
         }

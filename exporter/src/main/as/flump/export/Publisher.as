@@ -27,13 +27,13 @@ public class Publisher
     }
 
     protected function instantiate (lib :XflLibrary) :Vector.<PublishFormat> {
-        const formats :Vector.<PublishFormat> = new Vector.<PublishFormat>();
+        const formats :Vector.<PublishFormat> = new <PublishFormat>[];
         for each (var conf :ExportConf in _confs) formats.push(conf.createPublishFormat(_exportDir, lib));
         return formats;
     }
 
     private var _exportDir :File;
-    private const _confs :Vector.<ExportConf> = new Vector.<ExportConf>();
+    private const _confs :Vector.<ExportConf> = new <ExportConf>[];
     private static const log :Log = Log.getLog(Publisher);
 }
 }

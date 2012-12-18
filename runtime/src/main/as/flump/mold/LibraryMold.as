@@ -12,9 +12,9 @@ public class LibraryMold
     // The MD5 of the published library SWF
     public var md5 :String;
 
-    public var movies :Vector.<MovieMold> = new Vector.<MovieMold>();
+    public var movies :Vector.<MovieMold> = new <MovieMold>[];
 
-    public var textureGroups :Vector.<TextureGroupMold> = new Vector.<TextureGroupMold>();
+    public var textureGroups :Vector.<TextureGroupMold> = new <TextureGroupMold>[];
 
     public static function fromJSON (o :Object) :LibraryMold {
         const mold :LibraryMold = new LibraryMold();

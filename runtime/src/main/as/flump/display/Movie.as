@@ -282,7 +282,7 @@ class Layer {
             }
             if (!multipleItems) movie.addChild(library.createDisplayObject(lastItem));
             else {
-                displays = new Vector.<DisplayObject>();
+                displays = new <DisplayObject>[];
                 for each (var kf :KeyframeMold in keyframes) {
                     var display :DisplayObject =
                         (kf.ref == null ? new Sprite() : library.createDisplayObject(kf.ref));

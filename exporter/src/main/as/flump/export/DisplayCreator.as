@@ -42,7 +42,7 @@ public class DisplayCreator
 
     public function get imageSymbols () :Vector.<String> {
         // Vector.map can't be used to create a Vector of a new type
-        const symbols :Vector.<String> = new Vector.<String>();
+        const symbols :Vector.<String> = new <String>[];
         for each (var tex :XflTexture in _lib.textures) {
             symbols.push(tex.symbol);
         }
@@ -51,7 +51,7 @@ public class DisplayCreator
 
     public function get movieSymbols () :Vector.<String> {
         // Vector.map can't be used to create a Vector of a new type
-        const symbols :Vector.<String> = new Vector.<String>();
+        const symbols :Vector.<String> = new <String>[];
         for each (var movie :MovieMold in _lib.movies) {
             symbols.push(movie.id);
         }

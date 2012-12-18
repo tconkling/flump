@@ -51,8 +51,8 @@ public class XflLibrary
 
     public var location :String;
 
-    public const movies :Vector.<MovieMold> = new Vector.<MovieMold>();
-    public const textures :Vector.<XflTexture> = new Vector.<XflTexture>();
+    public const movies :Vector.<MovieMold> = new <MovieMold>[];
+    public const textures :Vector.<XflTexture> = new <XflTexture>[];
 
     public function XflLibrary (location :String) {
         this.location = location;
@@ -70,7 +70,7 @@ public class XflLibrary
     }
 
     public function get publishedMovies () :Vector.<MovieMold> {
-        const result :Vector.<MovieMold> = new Vector.<MovieMold>();
+        const result :Vector.<MovieMold> = new <MovieMold>[];
         for each (var movie :MovieMold in _toPublish.toArray().sortOn("id")) result.push(movie);
         return result;
     }
@@ -189,7 +189,7 @@ public class XflLibrary
             }
         }
 
-        const paths :Vector.<String> = new Vector.<String>();
+        const paths :Vector.<String> = new <String>[];
         if (xml.symbols != null) {
             for each (var symbolXmlPath :XML in xml.symbols.Include) {
                 paths.push("LIBRARY/" + XmlUtil.getStringAttr(symbolXmlPath, "href"));
@@ -246,7 +246,7 @@ public class XflLibrary
 
     /** Creates TextureGroupMolds from a list of Atlases */
     protected static function createTextureGroupMolds (atlases :Vector.<Atlas>) :Vector.<TextureGroupMold> {
-        const groups :Vector.<TextureGroupMold> = new Vector.<TextureGroupMold>();
+        const groups :Vector.<TextureGroupMold> = new <TextureGroupMold>[];
         function getGroup (scaleFactor :int) :TextureGroupMold {
             for each (var group :TextureGroupMold in groups) {
                 if (group.scaleFactor == scaleFactor) {
@@ -282,7 +282,7 @@ public class XflLibrary
     /** Symbol or generated symbol to texture or movie. */
     protected const _ids :Dictionary = new Dictionary();
 
-    protected const _errors :Vector.<ParseError> = new Vector.<ParseError>;
+    protected const _errors :Vector.<ParseError> = new <ParseError>[];
 
     private static const log :Log = Log.getLog(XflLibrary);
 }

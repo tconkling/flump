@@ -9,7 +9,7 @@ import flump.display.Movie;
 public class MovieMold
 {
     public var id :String;
-    public var layers :Vector.<LayerMold> = new Vector.<LayerMold>();
+    public var layers :Vector.<LayerMold> = new <LayerMold>[];
     public var labels :Vector.<Vector.<String>>;
 
     public static function fromJSON (o :Object) :MovieMold {
@@ -32,14 +32,14 @@ public class MovieMold
         if (labels.length == 0) {
             return;
         }
-        labels[0] = new Vector.<String>();
+        labels[0] = new <String>[];
         labels[0].push(Movie.FIRST_FRAME);
-        labels[frames - 1] = new Vector.<String>();
+        labels[frames - 1] = new <String>[];
         labels[frames - 1].push(Movie.LAST_FRAME);
         for each (var layer :LayerMold in layers) {
             for each (var kf :KeyframeMold in layer.keyframes) {
                 if (kf.label == null) continue;
-                if (labels[kf.index] == null) labels[kf.index] = new Vector.<String>();
+                if (labels[kf.index] == null) labels[kf.index] = new <String>[];
                 labels[kf.index].push(kf.label);
             }
 
