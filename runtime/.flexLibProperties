@@ -1,28 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="1">
-  <includeClasses>
-    <classEntry path="flump.display.Library"/>
-    <classEntry path="flump.display.LibraryLoader"/>
-    <classEntry path="flump.display.Movie"/>
-    <classEntry path="flump.executor.Executor"/>
-    <classEntry path="flump.executor.Future"/>
-    <classEntry path="flump.executor.FutureTask"/>
-    <classEntry path="flump.executor.load.BaseLoader"/>
-    <classEntry path="flump.executor.load.ImageLoader"/>
-    <classEntry path="flump.executor.load.LoadedImage"/>
-    <classEntry path="flump.executor.load.LoadedSwf"/>
-    <classEntry path="flump.executor.load.SwfLoader"/>
-    <classEntry path="flump.mold.AtlasMold"/>
-    <classEntry path="flump.mold.AtlasTextureMold"/>
-    <classEntry path="flump.mold.Files"/>
-    <classEntry path="flump.mold.KeyframeMold"/>
-    <classEntry path="flump.mold.LayerMold"/>
-    <classEntry path="flump.mold.LibraryMold"/>
-    <classEntry path="flump.mold.MovieMold"/>
-    <classEntry path="flump.mold.TextureGroupMold"/>
-    <classEntry path="flump.mold.optional"/>
-    <classEntry path="flump.mold.require"/>
-  </includeClasses>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses/>
   <includeResources/>
   <namespaceManifests/>
 </flexLibProperties>
