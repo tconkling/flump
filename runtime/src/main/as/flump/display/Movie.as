@@ -21,8 +21,8 @@ import starling.events.Event;
  * positions to have them animated in place of the initial child.
  *
  * <p>A Movie will not animate unless it's added to a Juggler (or its advanceTime() function
- * is otherwise called. When the movie is added to a juggler, it advances its playhead with the
- * frame ticks if isPlaying is true. It will automatically removes itself from its juggler when
+ * is otherwise called). When the movie is added to a juggler, it advances its playhead with the
+ * frame ticks if isPlaying is true. It will automatically remove itself from its juggler when
  * removed from the stage.</p>
  *
  * @see Library and LibraryLoader to create instances of Movie.
