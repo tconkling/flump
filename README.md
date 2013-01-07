@@ -14,7 +14,7 @@ and [PlayN].
 # Creating a movie for Flump
 
 1. [Install the latest version of Adobe AIR](http://get.adobe.com/air/)
-1. [Install the Flump AIR app](https://github.com/downloads/threerings/flump/flump-exporter.air)
+1. [Install the Flump AIR app](https://bitbucket.org/tconkling/flump-binaries/downloads/flump-exporter.air)
 2. Create a `.fla` in Flash CS 5, 5.5, or 6
 3. Create a new item in the library and draw a shape in its canvas
 4. Right-click on the item, select its properties, tick the **Export for ActionScript** and **Export in frame 1** 
