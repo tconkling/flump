@@ -99,7 +99,7 @@ public class ProjectController
         _importChooser = new DirChooser(null, _win.importRoot, _win.browseImport);
         _importChooser.changed.add(setImportDirectory);
         _exportChooser = new DirChooser(null, _win.exportRoot, _win.browseExport);
-        _exportChooser.changed.add(reloadNow);
+        _exportChooser.changed.add(F.callback(reloadNow));
 
         _importChooser.changed.add(F.callback(setProjectDirty, true));
         _exportChooser.changed.add(F.callback(setProjectDirty, true));
