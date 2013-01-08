@@ -135,8 +135,13 @@ public class Movie extends Sprite
         _playTime += dt;
         var actualPlaytime :Number = _playTime;
         if (_playTime >= _duration) _playTime = _playTime % _duration;
-        var newFrame :int = int(_playTime * _frameRate);
+
+        // If _playTime is very close to _duration, rounding error can cause us to
+        // land on lastFrame + 1. Protect against that.
+        var newFrame :int = Math.min(int(_playTime * _frameRate), _frames - 1);
+
         const overDuration :Boolean = dt >= _duration;
+
         // If the update crosses or goes to the stopFrame, go to the stop frame, stop the movie and
         // clear it
         if (_stopFrame != NO_FRAME) {
