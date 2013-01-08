@@ -11,10 +11,24 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.utils.ByteArray;
 
+import starling.display.Quad;
+import starling.display.Sprite;
+
 public class Util
 {
     public static function bytesToXML (bytes :ByteArray) :XML {
         return new XML(bytes.readUTFBytes(bytes.length));
+    }
+
+    /** Creates the little black and white origin crosshairs icon */
+    public static function createOriginIcon () :Sprite {
+        var originIcon :Sprite = new Sprite();
+        originIcon.addChild(fillRect(3, 7, 0xffffff));
+        originIcon.addChild(fillRect(7, 3, 0xffffff));
+        originIcon.addChild(fillRect(1, 9, 0x000000));
+        originIcon.addChild(fillRect(9, 1, 0x000000));
+        originIcon.flatten();
+        return originIcon;
     }
 
     /**
@@ -128,6 +142,13 @@ public class Util
         } else {
             throw new ArgumentError("src must be a a BitmapData or a DisplayObject");
         }
+    }
+
+    protected static function fillRect (width :int, height :int, color :uint) :Quad {
+        var quad :Quad = new Quad(width, height, color);
+        quad.pivotX = (width - 1) / 2;
+        quad.pivotY = (height - 1) / 2;
+        return quad;
     }
 }
 }

@@ -9,6 +9,7 @@ import flash.events.MouseEvent;
 import flash.geom.Rectangle;
 import flash.text.TextField;
 
+import flump.Util;
 import flump.display.Movie;
 import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
@@ -54,6 +55,8 @@ public class PreviewController
         _animPreviewWindow = new AnimPreviewWindow();
         _animPreviewWindow.started = function (container :starling.display.Sprite) :void {
             _container = container;
+            _originIcon = Util.createOriginIcon();
+
             Starling.current.stage.addEventListener(Event.RESIZE, onAnimPreviewResize);
             showInternal();
         };
@@ -210,6 +213,7 @@ public class PreviewController
         while (_container.numChildren > 0) _container.removeChildAt(0);
         _previewSprite = _creator.createDisplayObject(name);
         _container.addChild(_previewSprite);
+        _container.addChild(_originIcon);
         if (_previewSprite is Movie) {
             Starling.juggler.add(Movie(_previewSprite));
         }
@@ -217,13 +221,13 @@ public class PreviewController
     }
 
     protected function onAnimPreviewResize (..._) :void {
-        var bounds :Rectangle = _previewSprite.getBounds(_previewSprite);
-        _previewSprite.x = ((_animPreviewWindow.width - bounds.width) * 0.5) - bounds.left;
-        _previewSprite.y = ((_animPreviewWindow.height - bounds.height) * 0.5) - bounds.top;
+        _previewSprite.x = _originIcon.x = _animPreviewWindow.width * 0.5;
+        _previewSprite.y = _originIcon.y = _animPreviewWindow.height * 0.5;
     }
 
     protected var _previewSprite :starling.display.DisplayObject;
     protected var _container :starling.display.Sprite;
+    protected var _originIcon :starling.display.Sprite;
     protected var _controlsWindow :PreviewControlsWindow;
     protected var _animPreviewWindow :AnimPreviewWindow;
     protected var _atlasPreviewWindow :AtlasPreviewWindow;
