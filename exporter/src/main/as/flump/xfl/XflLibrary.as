@@ -58,8 +58,8 @@ public class XflLibrary
         this.location = location;
     }
 
-    public function get (id :String, requiredType :Class=null) :* {
-        const result :* = _ids[id];
+    public function getItem (id :String, requiredType :Class=null) :* {
+        const result :* = _idToItem[id];
         if (result === undefined) throw new Error("Unknown library item '" + id + "'");
         else if (requiredType != null) return requiredType(result);
         else return result;
@@ -96,7 +96,7 @@ public class XflLibrary
             for each (var kf :KeyframeMold in layer.keyframes) {
                 if (kf.ref == null) continue;
                 kf.ref = _libraryNameToId.get(kf.ref);
-                var item :Object = _ids[kf.ref];
+                var item :Object = _idToItem[kf.ref];
                 if (item == null) {
                     addTopLevelError(ParseError.CRIT,
                             "unrecognized library item '" + kf.ref + "'");
@@ -105,11 +105,11 @@ public class XflLibrary
         }
     }
 
-    public function createId (mold :Object, libraryName :String, symbol :String) :String {
-        if (symbol != null) _moldToSymbol.put(mold, symbol);
+    public function createId (item :Object, libraryName :String, symbol :String) :String {
+        if (symbol != null) _moldToSymbol.put(item, symbol);
         const id :String = symbol == null ? IMPLICIT_PREFIX + libraryName : symbol;
         _libraryNameToId.put(libraryName, id);
-        _ids[id] = mold;
+        _idToItem[id] = item;
         return id;
     }
 
@@ -280,7 +280,7 @@ public class XflLibrary
     protected const _toPublish :Set = Sets.newSetOf(MovieMold);
 
     /** Symbol or generated symbol to texture or movie. */
-    protected const _ids :Dictionary = new Dictionary();
+    protected const _idToItem :Dictionary = new Dictionary();
 
     protected const _errors :Vector.<ParseError> = new <ParseError>[];
 
