@@ -16,6 +16,7 @@ import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;
 
 import starling.display.DisplayObject;
+import starling.display.Image;
 import starling.textures.Texture;
 
 import com.threerings.util.Map;
@@ -34,7 +35,7 @@ public class DisplayCreator
             for each (var atlasTexture :AtlasTextureMold in mold.textures) {
                 var tex :Texture = Texture.fromTexture(baseTexture, atlasTexture.bounds);
                 var creator :ImageCreator =
-                    new ImageCreator(tex, atlasTexture.offset, atlasTexture.symbol);
+                    new ImageCreator(tex, atlasTexture.origin, atlasTexture.symbol);
                 _imageCreators[atlasTexture.symbol] = creator;
             }
         }
@@ -63,8 +64,8 @@ public class DisplayCreator
         return (imageCreator != null ? imageCreator.create() : createMovie(id));
     }
 
-    public function createImage (id :String) :DisplayObject {
-        return createDisplayObject(id);
+    public function createImage (id :String) :Image {
+        return Image(createDisplayObject(id));
     }
 
     public function createMovie (name :String) :Movie {
@@ -139,27 +140,24 @@ import flash.geom.Point;
 
 import starling.display.DisplayObject;
 import starling.display.Image;
-import starling.display.Sprite;
 import starling.textures.Texture;
 
 class ImageCreator {
     public var texture :Texture;
-    public var offset :Point;
+    public var origin :Point;
     public var symbol :String;
 
-    public function ImageCreator (texture :Texture, offset :Point, symbol :String) {
+    public function ImageCreator (texture :Texture, origin :Point, symbol :String) {
         this.texture = texture;
-        this.offset = offset;
+        this.origin = origin;
         this.symbol = symbol;
     }
 
     public function create () :DisplayObject {
         const image :Image = new Image(texture);
-        image.x = offset.x;
-        image.y = offset.y;
-        const holder :Sprite = new Sprite();
-        holder.addChild(image);
-        holder.name = symbol;
-        return holder;
+        image.pivotX = origin.x;
+        image.pivotY = origin.y;
+        image.name = symbol;
+        return image;
     }
 }

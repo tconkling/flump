@@ -9,6 +9,7 @@ import flash.utils.Dictionary;
 
 import com.adobe.crypto.MD5;
 
+import flump.SwfTexture;
 import flump.Util;
 import flump.executor.Executor;
 import flump.executor.Future;
@@ -87,10 +88,10 @@ public class XflLibrary
             }
         }
 
-        for each (movie in movies) if (isExported(movie)) addToPublished(movie);
+        for each (movie in movies) if (isExported(movie)) prepareForPublishing(movie);
     }
 
-    protected function addToPublished (movie :MovieMold) :void {
+    protected function prepareForPublishing (movie :MovieMold) :void {
         if (!_toPublish.add(movie) || movie.flipbook) return;
         for each (var layer :LayerMold in movie.layers) {
             for each (var kf :KeyframeMold in layer.keyframes) {
@@ -100,7 +101,15 @@ public class XflLibrary
                 if (item == null) {
                     addTopLevelError(ParseError.CRIT,
                             "unrecognized library item '" + kf.ref + "'");
-                } else if (item is MovieMold) addToPublished(MovieMold(item));
+                } else if (item is MovieMold) {
+                    prepareForPublishing(MovieMold(item));
+                } else if (item is XflTexture) {
+                    // Texture symbols have origins. For texture layer keyframes,
+                    // we combine the texture's origin with the keyframe's pivot point.
+                    var tex :SwfTexture = SwfTexture.fromTexture(this.swf, XflTexture(item));
+                    kf.pivotX += tex.origin.x;
+                    kf.pivotY += tex.origin.y;
+                }
             }
         }
     }
