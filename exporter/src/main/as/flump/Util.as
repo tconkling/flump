@@ -144,10 +144,10 @@ public class Util
         }
     }
 
-    protected static function fillRect (width :int, height :int, color :uint) :Quad {
+    protected static function fillRect (width :Number, height :Number, color :uint) :Quad {
         var quad :Quad = new Quad(width, height, color);
-        quad.pivotX = (width - 1) / 2;
-        quad.pivotY = (height - 1) / 2;
+        quad.pivotX = width / 2;
+        quad.pivotY = height / 2;
         return quad;
     }
 }

@@ -221,8 +221,9 @@ public class PreviewController
     }
 
     protected function onAnimPreviewResize (..._) :void {
-        _previewSprite.x = _originIcon.x = _animPreviewWindow.width * 0.5;
-        _previewSprite.y = _originIcon.y = _animPreviewWindow.height * 0.5;
+        var bounds :Rectangle = _previewSprite.bounds;
+        _previewSprite.x = _originIcon.x = ((_animPreviewWindow.width - bounds.width) * 0.5) - bounds.left;
+        _previewSprite.y = _originIcon.y = ((_animPreviewWindow.height - bounds.height) * 0.5) - bounds.top;
     }
 
     protected var _previewSprite :starling.display.DisplayObject;
