@@ -11,7 +11,7 @@ import starling.core.Starling;
 public class Bootstrap extends Sprite
 {
     public function Bootstrap () {
-        _starling = new Starling(ZipDisplay, stage);
+        _starling = new Starling(DemoScreen, stage);
         _starling.start();
     }
 
