@@ -35,11 +35,11 @@
   </PublishFormatProperties>
   <PublishHtmlProperties enabled="true">
     <VersionDetectionIfAvailable>0</VersionDetectionIfAvailable>
-    <VersionInfo>10,2,153,0;10,1,52,0;9,0,124,0;8,0,24,0;7,0,14,0;6,0,79,0;5,0,58,0;4,0,32,0;3,0,8,0;2,0,1,12;1,0,0,1;</VersionInfo>
+    <VersionInfo>12,0,0,0;11,2,0,0;11,1,0,0;10,3,0,0;10,2,153,0;10,1,52,0;9,0,124,0;8,0,24,0;7,0,14,0;6,0,79,0;5,0,58,0;4,0,32,0;3,0,8,0;2,0,1,12;1,0,0,1;</VersionInfo>
     <UsingDefaultContentFilename>1</UsingDefaultContentFilename>
     <UsingDefaultAlternateFilename>1</UsingDefaultAlternateFilename>
-    <ContentFilename>easing_test_content.html</ContentFilename>
-    <AlternateFilename>easing_test_alternate.html</AlternateFilename>
+    <ContentFilename>easing_test.xfl_content.html</ContentFilename>
+    <AlternateFilename>easing_test.xfl_alternate.html</AlternateFilename>
     <UsingOwnAlternateFile>0</UsingOwnAlternateFile>
     <OwnAlternateFilename></OwnAlternateFilename>
     <Width>550</Width>
@@ -72,8 +72,8 @@
     <EventFormat>0</EventFormat>
     <EventCompress>7</EventCompress>
     <OverrideSounds>0</OverrideSounds>
-    <Version>11</Version>
-    <ExternalPlayer>FlashPlayer10.2</ExternalPlayer>
+    <Version>10</Version>
+    <ExternalPlayer>FlashPlayer11.2</ExternalPlayer>
     <ActionScriptVersion>3</ActionScriptVersion>
     <PackageExportFrame>1</PackageExportFrame>
     <PackagePaths></PackagePaths>
@@ -82,6 +82,7 @@
     <DebuggingPermitted>0</DebuggingPermitted>
     <DebuggingPassword></DebuggingPassword>
     <CompressMovie>1</CompressMovie>
+    <CompressionType>0</CompressionType>
     <InvisibleLayer>1</InvisibleLayer>
     <DeviceSound>0</DeviceSound>
     <StreamUse8kSampleRate>0</StreamUse8kSampleRate>

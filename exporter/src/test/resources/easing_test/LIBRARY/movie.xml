@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="movie" itemID="4f5ac9fa-000001d8" linkageExportForAS="true" linkageClassName="movie" lastModified="1331353122" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="movie" itemID="4f5ac9fa-000001d8" linkageExportForAS="true" linkageClassName="movie" lastModified="1357697664" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="movie" currentFrame="48">
+    <DOMTimeline name="movie">
       <layers>
-        <DOMLayer name="Layer 1" color="#4FFF4F">
+        <DOMLayer name="easeIn" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
               <elements>
@@ -30,7 +30,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#9933CC">
+        <DOMLayer name="easeIn2" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="60">
               <elements>
@@ -58,9 +58,9 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#FF800A">
+        <DOMLayer name="linear" color="#FF800A" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="1">
+            <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite" centerPoint3DX="49" centerPoint3DY="186.3">
                   <matrix>
@@ -86,41 +86,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1 copy" color="#4FFF4F" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-1">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite" centerPoint3DX="49" centerPoint3DY="259.3">
-                  <matrix>
-                    <Matrix tx="50" ty="262.3"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="-1" y="-3"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="59" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite" centerPoint3DX="299" centerPoint3DY="259">
-                  <matrix>
-                    <Matrix tx="300" ty="262"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="-1" y="-3"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 2 copy" color="#9933CC" autoNamed="false">
+        <DOMLayer name="easeOut2" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-60">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite" centerPoint3DX="49" centerPoint3DY="330.3">
+                <DOMSymbolInstance libraryItemName="sprite" centerPoint3DX="49" centerPoint3DY="263">
                   <matrix>
-                    <Matrix tx="50" ty="333.3"/>
+                    <Matrix tx="50" ty="266"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-1" y="-3"/>
@@ -130,9 +102,9 @@
             </DOMFrame>
             <DOMFrame index="59" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite" centerPoint3DX="299" centerPoint3DY="330">
+                <DOMSymbolInstance libraryItemName="sprite" centerPoint3DX="299" centerPoint3DY="263">
                   <matrix>
-                    <Matrix tx="300" ty="333"/>
+                    <Matrix tx="300" ty="266"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-1" y="-3"/>
@@ -142,13 +114,13 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3 copy" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="easeOut copy" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="59" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite" centerPoint3DX="49" centerPoint3DY="404.25">
+                <DOMSymbolInstance libraryItemName="sprite" centerPoint3DX="49" centerPoint3DY="340">
                   <matrix>
-                    <Matrix tx="50" ty="407.25"/>
+                    <Matrix tx="50" ty="343"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-1" y="-3"/>
@@ -158,9 +130,37 @@
             </DOMFrame>
             <DOMFrame index="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite" centerPoint3DX="299" centerPoint3DY="403.95">
+                <DOMSymbolInstance libraryItemName="sprite" selected="true" centerPoint3DX="299" centerPoint3DY="340">
                   <matrix>
-                    <Matrix tx="300" ty="406.95"/>
+                    <Matrix tx="300" ty="343"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1" y="-3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="snap" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="59" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite" centerPoint3DX="49" centerPoint3DY="420">
+                  <matrix>
+                    <Matrix tx="50" ty="423"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1" y="-3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite" centerPoint3DX="299" centerPoint3DY="420">
+                  <matrix>
+                    <Matrix tx="300" ty="423"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-1" y="-3"/>
