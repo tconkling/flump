@@ -24,6 +24,12 @@ public class XflKeyframe
         kf.label = XmlUtil.getStringAttr(xml, "name", null);
         kf.ease = XmlUtil.getNumberAttr(xml, "acceleration", 0) / 100;
 
+        const tweenType :String = XmlUtil.getStringAttr(xml, "tweenType", null);
+        kf.tweened = (tweenType != null);
+        if (tweenType != null && tweenType != "motion") {
+            lib.addError(location, ParseError.WARN, "Unrecognized tweenType '" + tweenType + "'");
+        }
+
         if (flipbook) {
             if (xml.elements.elements().length() == 0) {
                 lib.addError(location, ParseError.CRIT, "Empty frames are not allowed in flipbooks");

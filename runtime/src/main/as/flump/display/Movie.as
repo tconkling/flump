@@ -315,7 +315,7 @@ class Layer {
 
         const kf :KeyframeMold = keyframes[keyframeIdx];
         const layer :DisplayObject = movie.getChildAt(layerIdx);
-        if (keyframeIdx == keyframes.length - 1 || kf.index == frame) {
+        if (keyframeIdx == keyframes.length - 1 || kf.index == frame || !kf.tweened) {
             layer.x = kf.x;
             layer.y = kf.y;
             layer.scaleX = kf.scaleX;

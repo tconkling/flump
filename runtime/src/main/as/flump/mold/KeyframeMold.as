@@ -30,6 +30,10 @@ public class KeyframeMold
 
     public var visible :Boolean = true;
 
+    /** Is this keyframe tweened? */
+    public var tweened :Boolean = true;
+
+    /** Tween easing. Only valid if tweened==true. */
     public var ease :Number = 0;
 
     public static function fromJSON (o :Object) :KeyframeMold {
@@ -44,12 +48,18 @@ public class KeyframeMold
         extractField(o, mold, "alpha");
         extractField(o, mold, "visible");
         extractField(o, mold, "ease");
+        extractField(o, mold, "tweened");
         extractField(o, mold, "label");
         return mold
     }
 
     public function get rotation () :Number { return skewX; }
     // public function set rotation (angle :Number) :void { skewX = skewY = angle; }
+
+    public function rotate (delta :Number) :void {
+        skewX += delta;
+        skewY += delta;
+    }
 
     public function toJSON (_:*) :Object {
         var json :Object = {
@@ -64,15 +74,11 @@ public class KeyframeMold
             if (pivotX != 0 || pivotY != 0) json.pivot = [round(pivotX), round(pivotY)];
             if (alpha != 1) json.alpha = round(alpha);
             if (!visible) json.visible = visible;
+            if (!tweened) json.tweened = tweened;
             if (ease != 0) json.ease = round(ease);
         }
         if (label != null) json.label = label;
         return json;
-    }
-
-    public function rotate (delta :Number) :void {
-        skewX += delta;
-        skewY += delta;
     }
 
     public function toXML () :XML {
@@ -85,6 +91,7 @@ public class KeyframeMold
             if (pivotX != 0 || pivotY != 0) xml.@pivot = "" + round(pivotX) + "," + round(pivotY);
             if (alpha != 1) xml.@alpha = round(alpha);
             if (!visible) xml.@visible = visible;
+            if (!tweened) xml.@tweened = tweened;
             if (ease != 0) xml.@ease = round(ease);
         }
         if (label != null) xml.@label = label;
