@@ -169,8 +169,11 @@ public class ProjectController
 
     protected function promptToSaveChanges () :void {
         var unsavedWindow :UnsavedChangesWindow = new UnsavedChangesWindow();
+        unsavedWindow.x = (_win.width - unsavedWindow.width) * 0.5;
+        unsavedWindow.y = (_win.height - unsavedWindow.height) * 0.5;
         PopUpManager.addPopUp(unsavedWindow, _win, true);
 
+        unsavedWindow.closeButton.visible = false;
         unsavedWindow.prompt.text = "Save changes to '" + projectName + "'?";
 
         unsavedWindow.cancel.addEventListener(MouseEvent.CLICK, function (..._) :void {
@@ -340,7 +343,12 @@ public class ProjectController
         const prevQuality :String = stage.quality;
 
         stage.quality = StageQuality.BEST;
-        createPublisher().publish(status.lib);
+
+        try {
+            createPublisher().publish(status.lib);
+        } catch (e :Error) {
+            ErrorWindowMgr.showErrorPopup("Publishing Failed", e.message, _win);
+        }
 
         stage.quality = prevQuality;
         status.updateModified(Ternary.FALSE);

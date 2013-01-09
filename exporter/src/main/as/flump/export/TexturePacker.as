@@ -97,10 +97,12 @@ class PackerImpl
             // Try to pack each texture into any atlas
             for (var ii :int = 0; ii < _unpacked.length; ++ii) {
                 var unpacked :SwfTexture = _unpacked[ii];
+                var w :int = unpacked.w + (_textureBorderSize * 2);
+                var h :int = unpacked.h + (_textureBorderSize * 2);
 
-                if (unpacked.w > _maxAtlasSize || unpacked.h > _maxAtlasSize) {
-                    throw new Error("Too large to fit in an atlas: " + unpacked.w + ", " +
-                        unpacked.h + " " + unpacked.symbol);
+                if (w > _maxAtlasSize || h > _maxAtlasSize) {
+                    throw new Error("Too large to fit in an atlas: '" + unpacked.symbol + "' (" +
+                        w + "x" + h + ")");
                 }
 
                 for each (var atlas :AtlasImpl in atlases) {

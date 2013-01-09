@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+               xmlns:s="library://ns.adobe.com/flex/spark"
+               xmlns:mx="library://ns.adobe.com/flex/mx"
+               width="450" height="150">
+    <s:layout>
+        <s:VerticalLayout paddingLeft="20" paddingTop="20" paddingRight="20" paddingBottom="20"/>
+    </s:layout>
+    <s:VGroup width="410" horizontalAlign="left">
+        <s:Label id="headline" fontSize="18" fontWeight="bold" text="An error occurred"/>
+        <s:Label id="details" fontSize="14" text=""/>
+        <s:Spacer height="20"/>
+        <s:HGroup width="100%" horizontalAlign="left">
+            <s:HGroup width="100%" horizontalAlign="right">
+                <s:Button id="ok" label="OK" emphasized="true"/>
+            </s:HGroup>
+        </s:HGroup>
+    </s:VGroup>
+</s:TitleWindow>
