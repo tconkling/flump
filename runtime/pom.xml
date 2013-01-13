@@ -7,10 +7,6 @@
   <version>0.1-SNAPSHOT</version>
   <repositories>
     <repository>
-      <id>ooo-external</id>
-      <url>http://ahduros-ooo-maven.googlecode.com/hg/repository</url>
-    </repository>
-    <repository>
       <id>tconkling</id>
       <url>https://raw.github.com/tconkling/maven-repo/master</url>
     </repository>

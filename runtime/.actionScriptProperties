@@ -1,41 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <actionScriptProperties analytics="false" mainApplicationPath="aspirin.as" projectUUID="889db6b2-824f-41f9-925c-013b1e200071" version="11">
-  <compiler additionalCompilerArguments="" autoRSLOrdering="true" copyDependentFiles="false" flex3CompatMode="false" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="dist" removeUnusedRSL="true" sourceFolderPath="src/main/as" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" useFlashSDK="false" verifyDigests="true" warn="true">
+  <compiler additionalCompilerArguments="" autoRSLOrdering="true" copyDependentFiles="false" flex3CompatMode="false" flexSDK="Flex 4.6.0" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="dist" removeUnusedRSL="true" sourceFolderPath="src/main/as" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" useFlashSDK="false" verifyDigests="true" warn="true">
     <compilerSourcePath/>
     <libraryPath defaultLinkType="0">
-      <libraryPathEntry kind="4" path="">
-        <modifiedEntries>
-          <libraryPathEntry applicationDomain="default" forceLoad="false" index="8" kind="3" linkType="4" path="${PROJECT_FRAMEWORKS}/libs/osmf.swc" useDefaultLinkType="true">
-            <crossDomainRsls>
-              <crossDomainRslEntry autoExtract="true" policyFileUrl="http://fpdownload.adobe.com/pub/swz/crossdomain.xml" rslUrl="http://fpdownload.adobe.com/pub/swz/flex/4.6.0.23201/osmf_1.0.0.16316.swz"/>
-              <crossDomainRslEntry autoExtract="true" policyFileUrl="" rslUrl="osmf_1.0.0.16316.swz"/>
-            </crossDomainRsls>
-          </libraryPathEntry>
-        </modifiedEntries>
-        <excludedEntries>
-          <libraryPathEntry applicationDomain="default" forceLoad="false" index="10" kind="3" linkType="4" path="${PROJECT_FRAMEWORKS}/libs/advancedgrids.swc" useDefaultLinkType="true">
-            <crossDomainRsls>
-              <crossDomainRslEntry autoExtract="true" policyFileUrl="http://fpdownload.adobe.com/pub/swz/crossdomain.xml" rslUrl="http://fpdownload.adobe.com/pub/swz/flex/4.6.0.23201/advancedgrids_4.6.0.23201.swz"/>
-              <crossDomainRslEntry autoExtract="true" policyFileUrl="" rslUrl="advancedgrids_4.6.0.23201.swz"/>
-            </crossDomainRsls>
-          </libraryPathEntry>
-          <libraryPathEntry applicationDomain="default" forceLoad="false" index="9" kind="3" linkType="4" path="${PROJECT_FRAMEWORKS}/libs/mx/mx.swc" useDefaultLinkType="true">
-            <crossDomainRsls>
-              <crossDomainRslEntry autoExtract="true" policyFileUrl="http://fpdownload.adobe.com/pub/swz/crossdomain.xml" rslUrl="http://fpdownload.adobe.com/pub/swz/flex/4.6.0.23201/mx_4.6.0.23201.swz"/>
-              <crossDomainRslEntry autoExtract="true" policyFileUrl="" rslUrl="mx_4.6.0.23201.swz"/>
-            </crossDomainRsls>
-          </libraryPathEntry>
-          <libraryPathEntry applicationDomain="default" forceLoad="false" index="7" kind="3" linkType="4" path="${PROJECT_FRAMEWORKS}/libs/spark_dmv.swc" useDefaultLinkType="true">
-            <crossDomainRsls>
-              <crossDomainRslEntry autoExtract="true" policyFileUrl="http://fpdownload.adobe.com/pub/swz/crossdomain.xml" rslUrl="http://fpdownload.adobe.com/pub/swz/flex/4.6.0.23201/spark_dmv_4.6.0.23201.swz"/>
-              <crossDomainRslEntry autoExtract="true" policyFileUrl="" rslUrl="spark_dmv_4.6.0.23201.swz"/>
-            </crossDomainRsls>
-          </libraryPathEntry>
-        </excludedEntries>
-      </libraryPathEntry>
+      <libraryPathEntry kind="4" path=""/>
       <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/org/osflash/signals/0.9/signals-0.9.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/deng/fzip/a5430bd/fzip-a5430bd.swc" useDefaultLinkType="false"/>
-      <libraryPathEntry kind="3" linkType="1" path="/Starling/bin-debug/Starling.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/com/gamua/starling-framework/272c8a8/starling-framework-272c8a8.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>

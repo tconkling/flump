@@ -5,12 +5,7 @@
   <artifactId>flump-demo</artifactId>
   <packaging>swf</packaging>
   <version>0.1-SNAPSHOT</version>
-  <repositories>
-    <repository>
-      <id>ooo-external</id>
-      <url>http://ooo-maven.googlecode.com/hg/repository</url>
-    </repository>
-  </repositories>
+  <repositories/>
   <dependencies>
     <dependency>
       <groupId>com.threerings.flump</groupId>
