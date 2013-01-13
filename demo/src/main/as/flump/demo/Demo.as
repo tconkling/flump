@@ -8,9 +8,9 @@ import flash.display.Sprite;
 import starling.core.Starling;
 
 [SWF(width="640", height="480", frameRate="60", backgroundColor="#ffffff")]
-public class Bootstrap extends Sprite
+public class Demo extends Sprite
 {
-    public function Bootstrap () {
+    public function Demo () {
         _starling = new Starling(DemoScreen, stage);
         _starling.start();
     }

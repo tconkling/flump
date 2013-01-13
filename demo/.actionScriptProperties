@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<actionScriptProperties analytics="false" mainApplicationPath="flump/demo/Bootstrap.as" projectUUID="4bad8751-ab8f-4abb-ab9a-c89f6dbce0cd" version="11">
+<actionScriptProperties analytics="false" mainApplicationPath="flump/demo/Demo.as" projectUUID="4bad8751-ab8f-4abb-ab9a-c89f6dbce0cd" version="11">
   <compiler additionalCompilerArguments="-locale en_US -swf-version=15" advancedTelemetry="false" autoRSLOrdering="true" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="true" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="true" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="dist" removeUnusedRSL="true" sourceFolderPath="src/main/as" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" useFlashSDK="true" verifyDigests="true" warn="true">
     <compilerSourcePath/>
     <libraryPath defaultLinkType="0">
@@ -33,7 +33,7 @@
     <sourceAttachmentPath/>
   </compiler>
   <applications>
-    <application path="flump/demo/Bootstrap.as"/>
+    <application path="flump/demo/Demo.as"/>
   </applications>
   <modules/>
   <workers/>
