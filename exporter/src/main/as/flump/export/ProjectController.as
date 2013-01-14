@@ -44,7 +44,15 @@ public class ProjectController
             try {
                 _conf = ProjectConf.fromJSON(JSONFormat.readJSON(_confFile));
                 var dir :String = _confFile.parent.resolvePath(_conf.importDir).nativePath;
-                setImportDirectory(new File(dir));
+                var dirFile :File = new File(dir);
+                if (!dirFile.exists || !dirFile.isDirectory) {
+                    _errorsGrid.dataProvider.addItem(new ParseError(_confFile.nativePath,
+                        ParseError.CRIT, "Import directory doesn't exist ('" + dir + "')"));
+                    _confFile = null;
+                    _conf = null;
+                } else {
+                    setImportDirectory(dirFile);
+                }
             } catch (e :Error) {
                 log.warning("Unable to parse conf", e);
                 _errorsGrid.dataProvider.addItem(new ParseError(_confFile.nativePath,
@@ -276,7 +284,11 @@ public class ProjectController
         }
 
         var formatNames :Array = [];
-        for each (var export :ExportConf in _conf.exports) formatNames.push(export.description);
+        if (_conf != null) {
+            for each (var export :ExportConf in _conf.exports) {
+                formatNames.push(export.description);
+            }
+        }
         _win.formatOverview.text = formatNames.join(", ");
 
         updateWindowTitle();

@@ -49,9 +49,12 @@ public class FlumpApp
                 if (FlumpSettings.projectWindowSettings.length > 0) {
                     // The app has been launched directly. Open the previously-opened projects.
                     for each (var pws :ProjectWindowSettings in FlumpSettings.projectWindowSettings) {
-                        var project :ProjectController = openProject(new File(pws.configFilePath));
-                        project.win.nativeWindow.x = pws.windowX;
-                        project.win.nativeWindow.y = pws.windowY;
+                        var file :File = new File(pws.configFilePath);
+                        if (file.exists) {
+                            var project :ProjectController = openProject(file);
+                            project.win.nativeWindow.x = pws.windowX;
+                            project.win.nativeWindow.y = pws.windowY;
+                        }
                     }
                 }
             }
