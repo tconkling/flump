@@ -6,7 +6,7 @@
       <libraryPathEntry kind="4" path=""/>
       <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/org/osflash/signals/0.9/signals-0.9.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/deng/fzip/a5430bd/fzip-a5430bd.swc" useDefaultLinkType="false"/>
-      <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/com/gamua/starling-framework/272c8a8/starling-framework-272c8a8.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/com/gamua/starling-framework/1.3-SNAPSHOT/starling-framework-1.3-SNAPSHOT.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>

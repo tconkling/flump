@@ -21,7 +21,7 @@
     <dependency>
       <groupId>com.gamua</groupId>
       <artifactId>starling-framework</artifactId>
-      <version>272c8a8</version>
+      <version>1.3-SNAPSHOT</version>
       <type>swc</type>
     </dependency>
     <dependency>
