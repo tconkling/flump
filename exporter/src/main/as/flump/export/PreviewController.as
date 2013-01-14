@@ -212,6 +212,7 @@ public class PreviewController
     protected function displayLibraryItem (name :String) :void {
         while (_container.numChildren > 0) _container.removeChildAt(0);
         _previewSprite = _creator.createDisplayObject(name);
+        _previewBounds = _previewSprite.bounds;
         _container.addChild(_previewSprite);
         _container.addChild(_originIcon);
         if (_previewSprite is Movie) {
@@ -221,12 +222,14 @@ public class PreviewController
     }
 
     protected function onAnimPreviewResize (..._) :void {
-        var bounds :Rectangle = _previewSprite.bounds;
-        _previewSprite.x = _originIcon.x = ((_animPreviewWindow.width - bounds.width) * 0.5) - bounds.left;
-        _previewSprite.y = _originIcon.y = ((_animPreviewWindow.height - bounds.height) * 0.5) - bounds.top;
+        _previewSprite.x = _originIcon.x =
+            ((_animPreviewWindow.width - _previewBounds.width) * 0.5) - _previewBounds.left;
+        _previewSprite.y = _originIcon.y =
+            ((_animPreviewWindow.height - _previewBounds.height) * 0.5) - _previewBounds.top;
     }
 
     protected var _previewSprite :starling.display.DisplayObject;
+    protected var _previewBounds :Rectangle;
     protected var _container :starling.display.Sprite;
     protected var _originIcon :starling.display.Sprite;
     protected var _controlsWindow :PreviewControlsWindow;
