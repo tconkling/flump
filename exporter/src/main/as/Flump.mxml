@@ -11,10 +11,7 @@
     <fx:Script>
         <![CDATA[
             import flump.export.FlumpApp;
-            private function init () :void {
-                _app.run();
-                nativeWindow.close();
-            }
+            private function init () :void { _app.run(); }
             private var _app :FlumpApp = new FlumpApp();
         ]]>
     </fx:Script>
