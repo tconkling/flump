@@ -17,7 +17,7 @@
     <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.5"/>
     <mxmlc srcdir="${asrc.dir}" libpath="${aslib.path}"
       dest="${deploy.dir}/${ant.project.name}.swf" static-lrsl="true"
-      main="flump/demo/Bootstrap.as">
+      main="flump/demo/Demo.as">
       <arg value="-swf-version=13"/>
     </mxmlc>
   </target>
