@@ -71,7 +71,7 @@ public class LibraryLoader
      * The version produced and parsable by this version of the code. The version in a resources
      * zip must equal the version compiled into the parsing code for parsing to succeed.
      */
-    public static const VERSION :String = "1";
+    public static const VERSION :String = "2";
 }
 
 }
@@ -105,7 +105,6 @@ import flump.mold.TextureGroupMold;
 import starling.core.Starling;
 import starling.display.DisplayObject;
 import starling.display.Image;
-import starling.display.Sprite;
 import starling.textures.Texture;
 
 interface SymbolCreator
@@ -124,10 +123,10 @@ class LibraryImpl
         return Movie(createDisplayObject(symbol));
     }
 
-    public function createImage (symbol :String) :DisplayObject {
+    public function createImage (symbol :String) :Image {
         const disp :DisplayObject = createDisplayObject(symbol);
         if (disp is Movie) throw new Error(symbol + " is a movie, not a texture");
-        return disp;
+        return Image(disp);
     }
 
     public function get movieSymbols () :Vector.<String> {
@@ -225,7 +224,7 @@ class Loader
 
             for each (var atlasTexture :AtlasTextureMold in atlas.textures) {
                 var bounds :Rectangle = atlasTexture.bounds;
-                var offset :Point = atlasTexture.offset;
+                var offset :Point = atlasTexture.origin;
 
                 // Starling expects subtexture bounds to be unscaled
                 if (scale != 1) {
@@ -281,23 +280,21 @@ class ImageCreator
     implements SymbolCreator
 {
     public var texture :Texture;
-    public var offset :Point;
+    public var origin :Point;
     public var symbol :String;
 
-    public function ImageCreator (texture :Texture, offset :Point, symbol :String) {
+    public function ImageCreator (texture :Texture, origin :Point, symbol :String) {
         this.texture = texture;
-        this.offset = offset;
+        this.origin = origin;
         this.symbol = symbol;
     }
 
     public function create (library :Library) :DisplayObject {
         const image :Image = new Image(texture);
-        image.x = offset.x;
-        image.y = offset.y;
-        const holder :Sprite = new Sprite();
-        holder.addChild(image);
-        holder.name = symbol;
-        return holder;
+        image.pivotX = origin.x;
+        image.pivotY = origin.y;
+        image.name = symbol;
+        return image;
     }
 }
 

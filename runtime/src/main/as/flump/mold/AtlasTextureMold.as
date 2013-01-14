@@ -11,15 +11,15 @@ public class AtlasTextureMold
 {
     public var symbol :String;
     public var bounds :Rectangle;
-    public var offset :Point;
+    public var origin :Point;
 
     public static function fromJSON (o :Object) :AtlasTextureMold {
         const mold :AtlasTextureMold = new AtlasTextureMold();
         mold.symbol = require(o, "symbol");
         const rect :Array = require(o, "rect");
         mold.bounds = new Rectangle(rect[0], rect[1], rect[2], rect[3]);
-        const off :Array = require(o, "offset");
-        mold.offset = new Point(off[0], off[1]);
+        const orig :Array = require(o, "origin");
+        mold.origin = new Point(orig[0], orig[1]);
         return mold;
     }
 
@@ -27,13 +27,13 @@ public class AtlasTextureMold
         return {
             symbol: symbol,
             rect: [bounds.x, bounds.y, bounds.width, bounds.height],
-            offset: [offset.x, offset.y]
+            origin: [origin.x, origin.y]
         };
     }
 
     public function toXML () :XML {
         const json :Object = toJSON(null);
-        return <texture name={symbol} rect={json.rect} offset={json.offset}/>;
+        return <texture name={symbol} rect={json.rect} origin={json.origin}/>;
     }
 
 }

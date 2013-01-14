@@ -19,7 +19,7 @@ import flump.xfl.XflTexture;
 public class SwfTexture
 {
     public var symbol :String;
-    public var offset :Point;
+    public var origin :Point;
     public var w :int, h :int, a :int;
     public var scale :Number;
 
@@ -48,7 +48,7 @@ public class SwfTexture
         this.scale = scale;
         _disp = disp;
 
-        offset = getOffset(_disp, scale);
+        origin = getOrigin(_disp, scale);
 
         const size :Point = getSize(_disp, scale);
         w = size.x;
@@ -68,9 +68,9 @@ public class SwfTexture
         return new Point(Math.ceil(bounds.width), Math.ceil(bounds.height));
     }
 
-    protected static function getOffset (disp :DisplayObject, scale :Number) :Point {
+    protected static function getOrigin (disp :DisplayObject, scale :Number) :Point {
         const bounds :Rectangle = getBounds(disp, scale);
-        return new Point(bounds.x, bounds.y);
+        return new Point(-bounds.x, -bounds.y);
     }
 
     protected static function getBounds (disp :DisplayObject, scale :Number) :Rectangle {
