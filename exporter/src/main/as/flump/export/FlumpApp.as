@@ -32,6 +32,13 @@ public class FlumpApp
     }
 
     public function run () :void {
+        // If we don't support a global menu (like, on Windows), then
+        // auto exit when all windows are closed.
+        NA.autoExit = !(NativeApplication.supportsMenu);
+
+        // Setup our global menu if we support it
+        setupGlobalMenus();
+
         Log.setLevel("", Log.INFO);
 
         var launched :Boolean = false;
@@ -68,8 +75,6 @@ public class FlumpApp
 
             FlumpSettings.projectWindowSettings = projectWindowSettings;
         });
-
-        setupGlobalMenus();
     }
 
     public function showPreviewWindow (project :ProjectConf, lib :XflLibrary) :void {
