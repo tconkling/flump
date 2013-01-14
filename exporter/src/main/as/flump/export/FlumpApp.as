@@ -32,10 +32,6 @@ public class FlumpApp
     }
 
     public function run () :void {
-        // If we don't support a global menu (like, on Windows), then
-        // auto exit when all windows are closed.
-        NA.autoExit = !(NativeApplication.supportsMenu);
-
         // Setup our global menu if we support it
         setupGlobalMenus();
 
@@ -119,6 +115,11 @@ public class FlumpApp
 
     protected function closeProject (controller :ProjectController) :void {
         Arrays.removeFirst(_projects, controller);
+        // NativeApplication.autoExit is not working for us. On Windows and Linux, we exit
+        // when all project windows are closed.
+        if (!NativeApplication.supportsMenu && _projects.length == 0) {
+            NA.exit();
+        }
     }
 
     protected function getActiveProject () :ProjectController {
