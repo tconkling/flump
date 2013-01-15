@@ -4,13 +4,13 @@
   <groupId>com.threerings.flump</groupId>
   <artifactId>flump-demo</artifactId>
   <packaging>swf</packaging>
-  <version>0.1-SNAPSHOT</version>
+  <version>1.0</version>
   <repositories/>
   <dependencies>
     <dependency>
       <groupId>com.threerings.flump</groupId>
       <artifactId>flump-runtime</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>1.0</version>
       <type>swc</type>
     </dependency>
   </dependencies>
