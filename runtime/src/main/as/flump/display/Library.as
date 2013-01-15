@@ -7,14 +7,14 @@ import starling.display.DisplayObject;
 import starling.display.Image;
 
 /**
- * Container for Movie and texture symbols created by the flump exporter.
+ * Container for Movie and Image symbols created by the Flump exporter.
  */
 public interface Library
 {
     /** @return the names of all Movie symbols in the Library */
     function get movieSymbols () :Vector.<String>;
 
-    /** @return the names of all iamge symbols in the Library */
+    /** @return the names of all Image symbols in the Library */
     function get imageSymbols () :Vector.<String>;
 
     /**
@@ -35,7 +35,7 @@ public interface Library
      *
      * @return an Image instance for the symbol
      *
-     * @throws Error if there is no such symbol in these resources, or if the symbol isn't a texture.
+     * @throws Error if there is no such symbol in these resources, or if the symbol isn't an Image.
      */
     function createImage (symbolName :String) :Image;
 
