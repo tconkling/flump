@@ -1,5 +1,5 @@
 //
-// Flump - Copyright 2012 Three Rings Design
+// Flump - Copyright 2013 Flump Authors
 
 package flump.executor.load {
 
