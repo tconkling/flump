@@ -149,6 +149,9 @@ public class PreviewController
     }
 
     protected function showInternal () :void {
+        // we dispose this at the end of the function
+        var oldCreator :DisplayCreator = _creator;
+
         _creator = new DisplayCreator(_lib);
 
         const intFormatter :NumberFormatter = new NumberFormatter();
@@ -206,6 +209,10 @@ public class PreviewController
 
         if (_atlasPreviewWindow != null && !_atlasPreviewWindow.closed) {
             updateAtlas();
+        }
+
+        if (oldCreator != null) {
+            oldCreator.dispose();
         }
     }
 

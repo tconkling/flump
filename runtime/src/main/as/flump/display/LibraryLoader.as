@@ -115,7 +115,8 @@ interface SymbolCreator
 class LibraryImpl
     implements Library
 {
-    public function LibraryImpl (creators :Dictionary) {
+    public function LibraryImpl (baseTextures :Vector.<Texture>, creators :Dictionary) {
+        _baseTextures = baseTextures;
         _creators = creators;
     }
 
@@ -151,7 +152,18 @@ class LibraryImpl
         return creator.create(this);
     }
 
+    public function dispose () :void {
+        if (_baseTextures != null) {
+            for each (var tex :Texture in _baseTextures) {
+                tex.dispose();
+            }
+            _baseTextures = null;
+            _creators = null;
+        }
+    }
+
     protected var _creators :Dictionary;
+    protected var _baseTextures :Vector.<Texture>;
 }
 
 class Loader
@@ -222,6 +234,12 @@ class Loader
                 false,  // optimizeForRenderToTexture
                 scale);
 
+            _baseTextures.push(baseTexture);
+
+            if (!Starling.handleLostContext) {
+                img.bitmapData.dispose();
+            }
+
             for each (var atlasTexture :AtlasTextureMold in atlas.textures) {
                 var bounds :Rectangle = atlasTexture.bounds;
                 var offset :Point = atlasTexture.origin;
@@ -252,7 +270,7 @@ class Loader
             movie.fillLabels();
             _creators[movie.id] = new MovieCreator(movie, _lib.frameRate);
         }
-        _future.succeed(new LibraryImpl(_creators));
+        _future.succeed(new LibraryImpl(_baseTextures, _creators));
     }
 
     protected function onPngLoadingFailed (e :*) :void {
@@ -269,6 +287,7 @@ class Loader
     protected var _zip :FZip = new FZip();
     protected var _lib :LibraryMold;
 
+    protected const _baseTextures :Vector.<Texture> = new <Texture>[];
     protected const _creators :Dictionary = new Dictionary();//<name, ImageCreator/MovieCreator>
     protected const _pngBytes :Dictionary = new Dictionary();//<String name, ByteArray>
     protected const _pngLoaders :Executor = new Executor(1);

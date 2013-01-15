@@ -38,6 +38,10 @@ public class MovieCreator
         return movie;
     }
 
+    public function get library () :Library {
+        return _library;
+    }
+
     protected var _library :Library;
     protected var _juggler :Juggler;
 }

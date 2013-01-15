@@ -6,6 +6,7 @@ package flump.demo {
 import flash.utils.ByteArray;
 
 import starling.display.Sprite;
+import starling.events.Event;
 
 import flump.display.Library;
 import flump.display.LibraryLoader;
@@ -26,6 +27,11 @@ public class DemoScreen extends Sprite
         movie.x = 320;
         movie.y = 240;
         addChild(movie);
+
+        // Clean up after ourselves when the screen goes away.
+        addEventListener(Event.REMOVED_FROM_STAGE, function (..._) :void {
+            _movieCreator.library.dispose();
+        });
     }
 
     protected var _movieCreator :MovieCreator;

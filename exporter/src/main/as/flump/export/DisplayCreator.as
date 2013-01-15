@@ -32,6 +32,7 @@ public class DisplayCreator
         for each (var atlas :Atlas in atlases) {
             var mold :AtlasMold = atlas.toMold();
             var baseTexture :Texture = AtlasUtil.toTexture(atlas);
+            _baseTextures.push(baseTexture);
             for each (var atlasTexture :AtlasTextureMold in mold.textures) {
                 var tex :Texture = Texture.fromTexture(baseTexture, atlasTexture.bounds);
                 var creator :ImageCreator =
@@ -92,6 +93,16 @@ public class DisplayCreator
         return subtexUsage;
     }
 
+    public function dispose () :void {
+        if (_baseTextures != null) {
+            for each (var tex :Texture in _baseTextures) {
+                tex.dispose();
+            }
+            _baseTextures = null;
+            _imageCreators = null;
+        }
+    }
+
     /**
      * Gets the maximum number of pixels drawn in a single frame by the given id. If it's
      * a texture, that's just the number of pixels in the texture. For a movie, it's the frame with
@@ -131,7 +142,8 @@ public class DisplayCreator
     }
 
     protected const _maxDrawn :Map = ValueComputingMap.newMapOf(String, calcMaxDrawn);
-    protected const _imageCreators :Dictionary = new Dictionary(); //<name, TextureCreator>
+    protected var _baseTextures :Vector.<Texture> = new <Texture>[];
+    protected var _imageCreators :Dictionary = new Dictionary(); //<name, ImageCreator>
     protected var _lib :XflLibrary;
 }
 }

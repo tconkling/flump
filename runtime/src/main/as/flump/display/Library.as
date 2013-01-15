@@ -41,6 +41,12 @@ public interface Library
 
     /** Creates an instance of the given Movie or Image symbol */
     function createDisplayObject (symbolName :String) :DisplayObject;
+
+    /**
+     * Disposes of all GPU resources associated with this Library. It's an error to use a Library
+     * that's been disposed.
+     */
+    function dispose () :void;
 }
 
 }
