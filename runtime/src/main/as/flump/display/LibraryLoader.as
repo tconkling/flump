@@ -83,10 +83,10 @@ import flash.net.URLRequest;
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
 
-import deng.fzip.FZip;
-import deng.fzip.FZipErrorEvent;
-import deng.fzip.FZipEvent;
-import deng.fzip.FZipFile;
+import starling.core.Starling;
+import starling.display.DisplayObject;
+import starling.display.Image;
+import starling.textures.Texture;
 
 import flump.display.Library;
 import flump.display.LibraryLoader;
@@ -102,10 +102,10 @@ import flump.mold.LibraryMold;
 import flump.mold.MovieMold;
 import flump.mold.TextureGroupMold;
 
-import starling.core.Starling;
-import starling.display.DisplayObject;
-import starling.display.Image;
-import starling.textures.Texture;
+import deng.fzip.FZip;
+import deng.fzip.FZipErrorEvent;
+import deng.fzip.FZipEvent;
+import deng.fzip.FZipFile;
 
 interface SymbolCreator
 {
@@ -131,6 +131,7 @@ class LibraryImpl
     }
 
     public function get movieSymbols () :Vector.<String> {
+        checkNotDisposed();
         const names :Vector.<String> = new <String>[];
         for (var creatorName :String in _creators) {
             if (_creators[creatorName] is MovieCreator) names.push(creatorName);
@@ -139,6 +140,7 @@ class LibraryImpl
     }
 
     public function get imageSymbols () :Vector.<String> {
+        checkNotDisposed();
         const names :Vector.<String> = new <String>[];
         for (var creatorName :String in _creators) {
             if (_creators[creatorName] is ImageCreator) names.push(creatorName);
@@ -147,18 +149,24 @@ class LibraryImpl
     }
 
     public function createDisplayObject (name :String) :DisplayObject {
+        checkNotDisposed();
         var creator :SymbolCreator = _creators[name];
         if (creator == null) throw new Error("No such id '" + name + "'");
         return creator.create(this);
     }
 
     public function dispose () :void {
-        if (_baseTextures != null) {
-            for each (var tex :Texture in _baseTextures) {
-                tex.dispose();
-            }
-            _baseTextures = null;
-            _creators = null;
+        checkNotDisposed();
+        for each (var tex :Texture in _baseTextures) {
+            tex.dispose();
+        }
+        _baseTextures = null;
+        _creators = null;
+    }
+
+    protected function checkNotDisposed () :void {
+        if (_baseTextures == null) {
+            throw new Error("This Library has been disposed");
         }
     }
 
