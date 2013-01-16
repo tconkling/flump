@@ -10,7 +10,7 @@
     <dependency>
       <groupId>com.threerings.flump</groupId>
       <artifactId>flump-runtime</artifactId>
-      <version>1.0</version>
+      <version>1.0.1</version>
       <type>swc</type>
     </dependency>
   </dependencies>
