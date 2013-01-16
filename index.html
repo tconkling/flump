@@ -18,7 +18,7 @@
       <div class="inner">
 
         <header>
-          <a href="https://github.com/threerings/flump"><img src="images/flump.png" width="120"/></a>
+          <a href="https://github.com/threerings/flump"><div id="logo-content"></div></a>
           <h1>Flump</h1>
           <h2>Flash animations on your GPU</h2>
         </header>
@@ -76,5 +76,11 @@
 
       </div>
     </div>
+
+    <!-- Embed the animated logo -->
+    <script src="logo/flambe.js"></script>
+    <script>
+      flambe.embed(["logo/targets/main-html.js"], "logo-content");
+    </script>
   </body>
 </html>
