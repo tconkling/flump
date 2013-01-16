@@ -83,10 +83,10 @@ import flash.net.URLRequest;
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
 
-import starling.core.Starling;
-import starling.display.DisplayObject;
-import starling.display.Image;
-import starling.textures.Texture;
+import deng.fzip.FZip;
+import deng.fzip.FZipErrorEvent;
+import deng.fzip.FZipEvent;
+import deng.fzip.FZipFile;
 
 import flump.display.Library;
 import flump.display.LibraryLoader;
@@ -102,10 +102,10 @@ import flump.mold.LibraryMold;
 import flump.mold.MovieMold;
 import flump.mold.TextureGroupMold;
 
-import deng.fzip.FZip;
-import deng.fzip.FZipErrorEvent;
-import deng.fzip.FZipEvent;
-import deng.fzip.FZipFile;
+import starling.core.Starling;
+import starling.display.DisplayObject;
+import starling.display.Image;
+import starling.textures.Texture;
 
 interface SymbolCreator
 {
