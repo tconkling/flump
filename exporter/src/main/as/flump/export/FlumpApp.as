@@ -8,6 +8,8 @@ import flash.display.NativeMenuItem;
 import flash.events.Event;
 import flash.events.InvokeEvent;
 import flash.filesystem.File;
+import flash.media.SoundMixer;
+import flash.media.SoundTransform;
 import flash.net.FileFilter;
 
 import flump.xfl.XflLibrary;
@@ -32,6 +34,10 @@ public class FlumpApp
     }
 
     public function run () :void {
+        // Disable sound completely. A SWF that plays sound on its stage will be
+        // noisy as soon as we load it.
+        SoundMixer.soundTransform = new SoundTransform(0);
+
         // Setup our global menu if we support it
         setupGlobalMenus();
 
