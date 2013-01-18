@@ -56,7 +56,7 @@ will display those bitmaps at the same timing.
 
 Flump works with Flash CS 5, 5.5, and 6
 
-# Bugs
+# Reporting Bugs
 
 To get AIR to report errors, you need to run Flump with the AIR debugger (adl).
 Assuming you have the free [Flex SDK](http://www.adobe.com/devnet/flex/flex-sdk-download.html) and [ant](http://ant.apache.org/) installed on your machine:
