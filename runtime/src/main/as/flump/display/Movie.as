@@ -73,12 +73,15 @@ public class Movie extends Sprite
     /** @return true if the movie is currently playing. */
     public function get isPlaying () :Boolean { return _playing; }
 
-    /** Starts playing if not already doing so, and continues to do so indefinitely.  */
+    /** Plays the movie from its current frame. The movie will loop forever.  */
     public function loop () :Movie {
         _playing = true;
         _stopFrame = NO_FRAME;
         return this;
     }
+
+    /** Plays the movie from its current frame, stopping when it reaches its last frame. */
+    public function playOnce () :Movie { return playTo(LAST_FRAME); }
 
     /**
      * Moves to the given String label or int frame. Doesn't alter playing status or stop frame.
@@ -93,21 +96,15 @@ public class Movie extends Sprite
      * @throws Error if position isn't an int or String, or if it is a String and that String isn't
      * a label on this movie
      */
-    public function goto (position :Object) :Movie {
+    public function goTo (position :Object) :Movie {
         const frame :int = extractFrame(position);
         updateFrame(frame, /*fromSkip=*/true, /*overDuration=*/false);
         return this;
     }
 
-    /**
-     * Starts playing if not already doing so, and continues to do so to the last frame in the
-     * movie.
-     */
-    public function play () :Movie { return playTo(LAST_FRAME); }
-
    /**
-    * Starts playing if not already doing so, and continues to do so to the given stop label or
-    * frame.
+    * Plays the movie from its current frame. The movie will stop when it reaches the given label
+    * or frame.
     *
     * @param position to int frame or String label to stop at
     *
