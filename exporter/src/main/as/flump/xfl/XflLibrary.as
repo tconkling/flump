@@ -92,23 +92,29 @@ public class XflLibrary
     }
 
     protected function prepareForPublishing (movie :MovieMold) :void {
-        if (!_toPublish.add(movie) || movie.flipbook) return;
+        if (!_toPublish.add(movie)) return;
         for each (var layer :LayerMold in movie.layers) {
             for each (var kf :KeyframeMold in layer.keyframes) {
-                if (kf.ref == null) continue;
-                kf.ref = _libraryNameToId.get(kf.ref);
-                var item :Object = _idToItem[kf.ref];
-                if (item == null) {
-                    addTopLevelError(ParseError.CRIT,
-                            "unrecognized library item '" + kf.ref + "'");
-                } else if (item is MovieMold) {
-                    prepareForPublishing(MovieMold(item));
-                } else if (item is XflTexture) {
+                function adjustPivot (tex :SwfTexture) :void {
                     // Texture symbols have origins. For texture layer keyframes,
                     // we combine the texture's origin with the keyframe's pivot point.
-                    var tex :SwfTexture = SwfTexture.fromTexture(this.swf, XflTexture(item));
                     kf.pivotX += tex.origin.x;
                     kf.pivotY += tex.origin.y;
+                };
+                if (movie.flipbook) {
+                    adjustPivot(SwfTexture.fromFlipbook(this, movie, kf.index));
+                } else {
+                    if (kf.ref == null) continue;
+                    kf.ref = _libraryNameToId.get(kf.ref);
+                    var item :Object = _idToItem[kf.ref];
+                    if (item == null) {
+                        addTopLevelError(ParseError.CRIT,
+                                "unrecognized library item '" + kf.ref + "'");
+                    } else if (item is MovieMold) {
+                        prepareForPublishing(MovieMold(item));
+                    } else if (item is XflTexture) {
+                        adjustPivot(SwfTexture.fromTexture(this.swf, XflTexture(item)));
+                    }
                 }
             }
         }
