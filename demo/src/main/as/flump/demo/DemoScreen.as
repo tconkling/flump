@@ -5,13 +5,13 @@ package flump.demo {
 
 import flash.utils.ByteArray;
 
-import starling.display.Sprite;
-import starling.events.Event;
-
 import flump.display.Library;
 import flump.display.LibraryLoader;
 import flump.display.Movie;
 import flump.executor.Future;
+
+import starling.display.Sprite;
+import starling.events.Event;
 
 public class DemoScreen extends Sprite
 {

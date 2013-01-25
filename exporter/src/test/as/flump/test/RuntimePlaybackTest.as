@@ -6,9 +6,10 @@ package flump.test {
 import flash.events.TimerEvent;
 import flash.utils.Timer;
 
+import executor.VisibleFuture;
+
 import flump.display.Movie;
 import flump.display.StarlingResources;
-import executor.VisibleFuture;
 
 import com.threerings.util.F;
 

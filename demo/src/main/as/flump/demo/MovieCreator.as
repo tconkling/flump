@@ -3,12 +3,12 @@
 
 package flump.demo {
 
+import flump.display.Library;
+import flump.display.Movie;
+
 import starling.animation.Juggler;
 import starling.core.Starling;
 import starling.events.Event;
-
-import flump.display.Library;
-import flump.display.Movie;
 
 /**
  * Movie creation and Juggler management

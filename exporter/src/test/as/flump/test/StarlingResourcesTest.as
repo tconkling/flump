@@ -5,10 +5,11 @@ package flump.test {
 
 import flash.filesystem.File;
 
-import flump.display.Movie;
-import flump.display.StarlingResources;
 import executor.Future;
 import executor.VisibleFuture;
+
+import flump.display.Movie;
+import flump.display.StarlingResources;
 
 import starling.core.Starling;
 
