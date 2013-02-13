@@ -47,16 +47,16 @@ public class Movie extends Sprite
         if (src.flipbook) {
             _layers = new Vector.<Layer>(1, true);
             _layers[0] = new Layer(this, src.layers[0], library, /*flipbook=*/true);
-            _frames = src.layers[0].frames;
+            _numFrames = src.layers[0].frames;
         } else {
             _layers = new Vector.<Layer>(src.layers.length, true);
             for (var ii :int = 0; ii < _layers.length; ii++) {
                 _layers[ii] = new Layer(this, src.layers[ii], library, /*flipbook=*/false);
-                _frames = Math.max(src.layers[ii].frames, _frames);
+                _numFrames = Math.max(src.layers[ii].frames, _numFrames);
             }
         }
-        _duration = _frames / _frameRate;
-        updateFrame(0, /*fromSkip=*/true, /*overDuration=*/false);
+        _duration = _numFrames / _frameRate;
+        updateFrame(0, 0);
 
         // When we're removed from the stage, remove ourselves from any juggler animating us.
         addEventListener(Event.REMOVED_FROM_STAGE, function (..._) :void {
@@ -68,7 +68,7 @@ public class Movie extends Sprite
     public function get frame () :int { return _frame; }
 
     /** @return the number of frames in the movie. */
-    public function get frames () :int { return _frames; }
+    public function get frames () :int { return _numFrames; }
 
     /** @return true if the movie is currently playing. */
     public function get isPlaying () :Boolean { return _playing; }
@@ -98,7 +98,7 @@ public class Movie extends Sprite
      */
     public function goTo (position :Object) :Movie {
         const frame :int = extractFrame(position);
-        updateFrame(frame, /*fromSkip=*/true, /*overDuration=*/false);
+        updateFrame(frame, 0);
         return this;
     }
 
@@ -135,16 +135,14 @@ public class Movie extends Sprite
 
         // If _playTime is very close to _duration, rounding error can cause us to
         // land on lastFrame + 1. Protect against that.
-        var newFrame :int = Math.min(int(_playTime * _frameRate), _frames - 1);
+        var newFrame :int = Math.min(int(_playTime * _frameRate), _numFrames - 1);
 
-        const overDuration :Boolean = dt >= _duration;
-
-        // If the update crosses or goes to the stopFrame, go to the stop frame, stop the movie and
-        // clear it
+        // If the update crosses or goes to the stopFrame:
+        // go to the stopFrame, stop the movie, clear the stopFrame
         if (_stopFrame != NO_FRAME) {
             // how many frames remain to the stopframe?
             var framesRemaining :int =
-                (_frame <= _stopFrame ? _stopFrame - _frame : _frames - _frame + _stopFrame);
+                (_frame <= _stopFrame ? _stopFrame - _frame : _numFrames - _frame + _stopFrame);
             var framesElapsed :int = int(actualPlaytime * _frameRate) - _frame;
             if (framesElapsed >= framesRemaining) {
                 _playing = false;
@@ -152,7 +150,7 @@ public class Movie extends Sprite
                 _stopFrame = NO_FRAME;
             }
         }
-        updateFrame(newFrame, false, overDuration);
+        updateFrame(newFrame, dt);
 
         for (var ii :int = 0; ii < this.numChildren; ++ii) {
             var child :DisplayObject = getChildAt(ii);
@@ -173,20 +171,30 @@ public class Movie extends Sprite
         throw new Error("No such label '" + label + "'");
     }
 
-    /** @private */
-    protected function updateFrame (newFrame :int, fromSkip :Boolean, overDuration :Boolean) :void {
-        if (newFrame >= _frames) {
+    /**
+     * @private
+     *
+     * @param dt the timeline's elapsed time since the last update. This should be 0
+     * for updates that are the result of a "goTo" call.
+     */
+    protected function updateFrame (newFrame :int, dt :Number) :void {
+        if (newFrame >= _numFrames) {
             throw new Error("Asked to go to frame " + newFrame + " past the last frame, " +
-                (_frames - 1));
+                (_numFrames - 1));
         }
-        if (_goingToFrame) {
+
+        if (_isUpdatingFrame) {
             _pendingFrame = newFrame;
             return;
+        } else {
+            _pendingFrame = NO_FRAME;
+            _isUpdatingFrame = true;
         }
-        _goingToFrame = true;
-        const differentFrame :Boolean = newFrame != _frame;
-        const wrapped :Boolean = newFrame < _frame;
-        if (differentFrame) {
+
+        const isGoTo :Boolean = (dt <= 0);
+        const wrapped :Boolean = (dt >= _duration) || (newFrame < _frame);
+
+        if (newFrame != _frame) {
             if (wrapped) {
                 for each (var layer :Layer in _layers) {
                     layer.changedKeyframe = true;
@@ -196,40 +204,54 @@ public class Movie extends Sprite
             for each (layer in _layers) layer.drawFrame(newFrame);
         }
 
-        // Update the frame before firing, so if firing changes the frame, it sticks.
+        if (isGoTo) _playTime = newFrame / _frameRate;
+
+        // Update the frame before firing frame label signals, so if firing changes the frame,
+        // it sticks.
         const oldFrame :int = _frame;
         _frame = newFrame;
-        if (fromSkip) {
-            fireLabels(newFrame, newFrame);
-            _playTime = newFrame/_frameRate;
-        } else if (overDuration) {
-            fireLabels(oldFrame + 1, _frames - 1);
-            fireLabels(0, _frame);
-        } else if (differentFrame) {
-            if (wrapped) {
-                fireLabels(oldFrame + 1, _frames - 1);
-                fireLabels(0, _frame);
-            } else fireLabels(oldFrame + 1, _frame);
+
+        // determine which labels to fire signals for
+        var startFrame :int;
+        var frameCount :int;
+        if (isGoTo) {
+            startFrame = newFrame;
+            frameCount = 1;
+        } else {
+            startFrame = (oldFrame + 1 < _numFrames ? oldFrame + 1 : 0);
+            frameCount = (_frame - oldFrame);
+            if (wrapped) frameCount += _numFrames;
         }
-        _goingToFrame = false;
+
+        // Fire signals. Stop if pendingFrame is updated, which indicates that the client
+        // has called goTo()
+        var frameIdx :int = startFrame;
+        for (var ii :int = 0; ii < frameCount; ++ii) {
+            if (_pendingFrame != NO_FRAME) break;
+
+            if (_labels[frameIdx] != null) {
+                for each (var label :String in _labels[frameIdx]) {
+                    labelPassed.dispatch(label);
+                    if (_pendingFrame != NO_FRAME) break;
+                }
+            }
+
+            // avoid modulo division by updating frameIdx each time through the loop
+            if (++frameIdx == _numFrames) {
+                frameIdx = 0;
+            }
+        }
+
+        _isUpdatingFrame = false;
+        // If we were interrupted by a goTo(), update to that frame now.
         if (_pendingFrame != NO_FRAME) {
             newFrame = _pendingFrame;
-            _pendingFrame = NO_FRAME;
-            updateFrame(newFrame, true, false);
-        }
-
-    }
-
-    /** @private */
-    protected function fireLabels (startFrame :int, endFrame :int) :void {
-        for (var ii :int = startFrame; ii <= endFrame; ii++) {
-            if (_labels[ii] == null) continue;
-            for each (var label :String in _labels[ii]) labelPassed.dispatch(label);
+            updateFrame(newFrame, 0);
         }
     }
 
     /** @private */
-    protected var _goingToFrame :Boolean;
+    protected var _isUpdatingFrame :Boolean;
     /** @private */
     protected var _pendingFrame :int = NO_FRAME;
     /** @private */
@@ -241,7 +263,7 @@ public class Movie extends Sprite
     /** @private */
     protected var _layers :Vector.<Layer>;
     /** @private */
-    protected var _frames :int;
+    protected var _numFrames :int;
     /** @private */
     protected var _frameRate :Number;
     /** @private */
