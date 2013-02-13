@@ -10,7 +10,7 @@
         <renderMode>direct</renderMode>
         <!-- The main SWF or HTML file of the application. Required. -->
         <!-- Note: In Flash Builder, the SWF reference is set automatically. -->
-        <content>[This value will be overwritten by Flash Builder in the output app.xml]</content>
+        <content>Flump.swf</content>
         <autoOrients>false</autoOrients>
         <fullScreen>false</fullScreen>
         <visible>false</visible>
