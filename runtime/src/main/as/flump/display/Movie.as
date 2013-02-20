@@ -127,15 +127,16 @@ public class Movie extends Sprite
 
     /** Advances the playhead by the give number of seconds. From IAnimatable. */
     public function advanceTime (dt :Number) :void {
+        if (dt < 0) throw new Error("Invalid time [dt=" + dt + "]");
         if (!_playing) return;
 
         _playTime += dt;
         var actualPlaytime :Number = _playTime;
-        if (_playTime >= _duration) _playTime = _playTime % _duration;
+        if (_playTime >= _duration) _playTime %= _duration;
 
         // If _playTime is very close to _duration, rounding error can cause us to
         // land on lastFrame + 1. Protect against that.
-        var newFrame :int = Math.min(int(_playTime * _frameRate), _numFrames - 1);
+        var newFrame :int = clamp(int(_playTime * _frameRate), 0, _numFrames - 1);
 
         // If the update crosses or goes to the stopFrame:
         // go to the stopFrame, stop the movie, clear the stopFrame
@@ -178,9 +179,9 @@ public class Movie extends Sprite
      * for updates that are the result of a "goTo" call.
      */
     protected function updateFrame (newFrame :int, dt :Number) :void {
-        if (newFrame >= _numFrames) {
-            throw new Error("Asked to go to frame " + newFrame + " past the last frame, " +
-                (_numFrames - 1));
+        if (newFrame < 0 || newFrame >= _numFrames) {
+            throw new Error("Invalid frame [frame=" + newFrame,
+                " validRange=0-" + (_numFrames - 1) + "]");
         }
 
         if (_isUpdatingFrame) {
@@ -248,6 +249,10 @@ public class Movie extends Sprite
             newFrame = _pendingFrame;
             updateFrame(newFrame, 0);
         }
+    }
+
+    protected static function clamp (n :Number, min :Number, max :Number) :Number {
+        return Math.min(Math.max(n, min), max);
     }
 
     /** @private */
