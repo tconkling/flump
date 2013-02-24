@@ -8,6 +8,7 @@ import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.net.URLRequest;
 import flash.system.ApplicationDomain;
+import flash.system.ImageDecodingPolicy;
 import flash.system.LoaderContext;
 import flash.utils.ByteArray;
 
@@ -50,6 +51,7 @@ public class BaseLoader
         } else {
             context.applicationDomain = ApplicationDomain.currentDomain;
         }
+        context.imageDecodingPolicy = ImageDecodingPolicy.ON_LOAD;
         return exec.submit(function (onSuccess :Function, onFail :Function) :void {
             const loader :Loader = new Loader();
             loader.contentLoaderInfo.addEventListener(Event.INIT, function (..._) :void {
