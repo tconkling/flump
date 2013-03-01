@@ -3,11 +3,17 @@
 
 package flump.xfl {
 
+import com.adobe.crypto.MD5;
+import com.threerings.util.Log;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
+import com.threerings.util.Set;
+import com.threerings.util.Sets;
+import com.threerings.util.XmlUtil;
+
 import flash.filesystem.File;
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
-
-import com.adobe.crypto.MD5;
 
 import flump.SwfTexture;
 import flump.Util;
@@ -24,13 +30,6 @@ import flump.mold.LayerMold;
 import flump.mold.LibraryMold;
 import flump.mold.MovieMold;
 import flump.mold.TextureGroupMold;
-
-import com.threerings.util.Log;
-import com.threerings.util.Map;
-import com.threerings.util.Maps;
-import com.threerings.util.Set;
-import com.threerings.util.Sets;
-import com.threerings.util.XmlUtil;
 
 public class XflLibrary
 {
@@ -95,14 +94,15 @@ public class XflLibrary
         if (!_toPublish.add(movie)) return;
         for each (var layer :LayerMold in movie.layers) {
             for each (var kf :KeyframeMold in layer.keyframes) {
-                function adjustPivot (tex :SwfTexture) :void {
-                    // Texture symbols have origins. For texture layer keyframes,
-                    // we combine the texture's origin with the keyframe's pivot point.
-                    kf.pivotX += tex.origin.x;
-                    kf.pivotY += tex.origin.y;
-                };
+                var swfTexture :SwfTexture = null;
                 if (movie.flipbook) {
-                    adjustPivot(SwfTexture.fromFlipbook(this, movie, kf.index));
+                    try {
+                        swfTexture = SwfTexture.fromFlipbook(this, movie, kf.index)
+                    } catch (e :Error) {
+                        addTopLevelError(ParseError.CRIT, "Error creating flipbook texture from '" + movie.id + "'");
+                        swfTexture = null;
+                    }
+
                 } else {
                     if (kf.ref == null) continue;
                     kf.ref = _libraryNameToId.get(kf.ref);
@@ -113,8 +113,21 @@ public class XflLibrary
                     } else if (item is MovieMold) {
                         prepareForPublishing(MovieMold(item));
                     } else if (item is XflTexture) {
-                        adjustPivot(SwfTexture.fromTexture(this.swf, XflTexture(item)));
+                        const tex :XflTexture = XflTexture(item);
+                        try {
+                            swfTexture = SwfTexture.fromTexture(this.swf, tex);
+                        } catch (e :Error) {
+                            addTopLevelError(ParseError.CRIT, "Error creating texture '" + tex.symbol + "'");
+                            swfTexture = null;
+                        }
                     }
+                }
+
+                if (swfTexture != null) {
+                    // Texture symbols have origins. For texture layer keyframes,
+                    // we combine the texture's origin with the keyframe's pivot point.
+                    kf.pivotX += swfTexture.origin.x;
+                    kf.pivotY += swfTexture.origin.y;
                 }
             }
         }
