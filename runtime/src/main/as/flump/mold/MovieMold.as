@@ -34,7 +34,10 @@ public class MovieMold
         }
         labels[0] = new <String>[];
         labels[0].push(Movie.FIRST_FRAME);
-        labels[frames - 1] = new <String>[];
+        if (labels.length > 1) {
+            // If we only have 1 frame, don't overwrite labels[0]
+            labels[frames - 1] = new <String>[];
+        }
         labels[frames - 1].push(Movie.LAST_FRAME);
         for each (var layer :LayerMold in layers) {
             for each (var kf :KeyframeMold in layer.keyframes) {
