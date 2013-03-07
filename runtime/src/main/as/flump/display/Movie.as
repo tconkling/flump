@@ -68,7 +68,7 @@ public class Movie extends Sprite
     public function get frame () :int { return _frame; }
 
     /** @return the number of frames in the movie. */
-    public function get frames () :int { return _numFrames; }
+    public function get numFrames () :int { return _numFrames; }
 
     /** @return true if the movie is currently playing. */
     public function get isPlaying () :Boolean { return _playing; }
