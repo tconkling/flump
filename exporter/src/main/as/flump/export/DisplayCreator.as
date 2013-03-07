@@ -3,6 +3,9 @@
 
 package flump.export {
 
+import com.threerings.util.Map;
+import com.threerings.util.maps.ValueComputingMap;
+
 import flash.utils.Dictionary;
 
 import flump.display.Library;
@@ -18,9 +21,6 @@ import flump.xfl.XflTexture;
 import starling.display.DisplayObject;
 import starling.display.Image;
 import starling.textures.Texture;
-
-import com.threerings.util.Map;
-import com.threerings.util.maps.ValueComputingMap;
 
 public class DisplayCreator
     implements Library
@@ -67,6 +67,10 @@ public class DisplayCreator
 
     public function createImage (id :String) :Image {
         return Image(createDisplayObject(id));
+    }
+
+    public function getImageTexture (id :String) :Texture {
+        return ImageCreator(_imageCreators[id]).texture;
     }
 
     public function createMovie (name :String) :Movie {
