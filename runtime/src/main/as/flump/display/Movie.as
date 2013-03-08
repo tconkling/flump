@@ -68,7 +68,7 @@ public class Movie extends Sprite
     public function get frame () :int { return _frame; }
 
     /** @return the number of frames in the movie. */
-    public function get frames () :int { return _numFrames; }
+    public function get numFrames () :int { return _numFrames; }
 
     /** @return true if the movie is currently playing. */
     public function get isPlaying () :Boolean { return _playing; }
@@ -127,32 +127,35 @@ public class Movie extends Sprite
 
     /** Advances the playhead by the give number of seconds. From IAnimatable. */
     public function advanceTime (dt :Number) :void {
+        if (dt < 0) throw new Error("Invalid time [dt=" + dt + "]");
         if (!_playing) return;
 
-        _playTime += dt;
-        var actualPlaytime :Number = _playTime;
-        if (_playTime >= _duration) _playTime = _playTime % _duration;
+        if (_numFrames > 1) {
+            _playTime += dt;
+            var actualPlaytime :Number = _playTime;
+            if (_playTime >= _duration) _playTime %= _duration;
 
-        // If _playTime is very close to _duration, rounding error can cause us to
-        // land on lastFrame + 1. Protect against that.
-        var newFrame :int = Math.min(int(_playTime * _frameRate), _numFrames - 1);
+            // If _playTime is very close to _duration, rounding error can cause us to
+            // land on lastFrame + 1. Protect against that.
+            var newFrame :int = clamp(int(_playTime * _frameRate), 0, _numFrames - 1);
 
-        // If the update crosses or goes to the stopFrame:
-        // go to the stopFrame, stop the movie, clear the stopFrame
-        if (_stopFrame != NO_FRAME) {
-            // how many frames remain to the stopframe?
-            var framesRemaining :int =
-                (_frame <= _stopFrame ? _stopFrame - _frame : _numFrames - _frame + _stopFrame);
-            var framesElapsed :int = int(actualPlaytime * _frameRate) - _frame;
-            if (framesElapsed >= framesRemaining) {
-                _playing = false;
-                newFrame = _stopFrame;
-                _stopFrame = NO_FRAME;
+            // If the update crosses or goes to the stopFrame:
+            // go to the stopFrame, stop the movie, clear the stopFrame
+            if (_stopFrame != NO_FRAME) {
+                // how many frames remain to the stopframe?
+                var framesRemaining :int =
+                    (_frame <= _stopFrame ? _stopFrame - _frame : _numFrames - _frame + _stopFrame);
+                var framesElapsed :int = int(actualPlaytime * _frameRate) - _frame;
+                if (framesElapsed >= framesRemaining) {
+                    _playing = false;
+                    newFrame = _stopFrame;
+                    _stopFrame = NO_FRAME;
+                }
             }
+            updateFrame(newFrame, dt);
         }
-        updateFrame(newFrame, dt);
 
-        for (var ii :int = 0; ii < this.numChildren; ++ii) {
+        for (var ii :int = this.numChildren - 1; ii >= 0; --ii) {
             var child :DisplayObject = getChildAt(ii);
             if (child is Movie) {
                 Movie(child).advanceTime(dt);
@@ -178,9 +181,9 @@ public class Movie extends Sprite
      * for updates that are the result of a "goTo" call.
      */
     protected function updateFrame (newFrame :int, dt :Number) :void {
-        if (newFrame >= _numFrames) {
-            throw new Error("Asked to go to frame " + newFrame + " past the last frame, " +
-                (_numFrames - 1));
+        if (newFrame < 0 || newFrame >= _numFrames) {
+            throw new Error("Invalid frame [frame=" + newFrame,
+                " validRange=0-" + (_numFrames - 1) + "]");
         }
 
         if (_isUpdatingFrame) {
@@ -248,6 +251,10 @@ public class Movie extends Sprite
             newFrame = _pendingFrame;
             updateFrame(newFrame, 0);
         }
+    }
+
+    protected static function clamp (n :Number, min :Number, max :Number) :Number {
+        return Math.min(Math.max(n, min), max);
     }
 
     /** @private */

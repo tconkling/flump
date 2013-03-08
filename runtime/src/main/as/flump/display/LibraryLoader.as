@@ -76,17 +76,17 @@ public class LibraryLoader
 
 }
 
+import deng.fzip.FZip;
+import deng.fzip.FZipErrorEvent;
+import deng.fzip.FZipEvent;
+import deng.fzip.FZipFile;
+
 import flash.events.Event;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
-
-import deng.fzip.FZip;
-import deng.fzip.FZipErrorEvent;
-import deng.fzip.FZipEvent;
-import deng.fzip.FZipFile;
 
 import flump.display.Library;
 import flump.display.LibraryLoader;
@@ -126,8 +126,15 @@ class LibraryImpl
 
     public function createImage (symbol :String) :Image {
         const disp :DisplayObject = createDisplayObject(symbol);
-        if (disp is Movie) throw new Error(symbol + " is a movie, not a texture");
+        if (disp is Movie) throw new Error(symbol + " is not an Image");
         return Image(disp);
+    }
+
+    public function getImageTexture (symbol :String) :Texture {
+        checkNotDisposed();
+        var creator :SymbolCreator = requireSymbolCreator(symbol);
+        if (!(creator is ImageCreator)) throw new Error(symbol + " is not an Image");
+        return ImageCreator(creator).texture;
     }
 
     public function get movieSymbols () :Vector.<String> {
@@ -150,9 +157,7 @@ class LibraryImpl
 
     public function createDisplayObject (name :String) :DisplayObject {
         checkNotDisposed();
-        var creator :SymbolCreator = _creators[name];
-        if (creator == null) throw new Error("No such id '" + name + "'");
-        return creator.create(this);
+        return requireSymbolCreator(name).create(this);
     }
 
     public function dispose () :void {
@@ -162,6 +167,12 @@ class LibraryImpl
         }
         _baseTextures = null;
         _creators = null;
+    }
+
+    protected function requireSymbolCreator (name :String) :SymbolCreator {
+        var creator :SymbolCreator = _creators[name];
+        if (creator == null) throw new Error("No such id '" + name + "'");
+        return creator;
     }
 
     protected function checkNotDisposed () :void {

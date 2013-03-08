@@ -5,6 +5,7 @@ package flump.display {
 
 import starling.display.DisplayObject;
 import starling.display.Image;
+import starling.textures.Texture;
 
 /**
  * Container for Movie and Image symbols created by the Flump exporter.
@@ -38,6 +39,13 @@ public interface Library
      * @throws Error if there is no such symbol in these resources, or if the symbol isn't an Image.
      */
     function createImage (symbolName :String) :Image;
+
+    /**
+     * @return the Texture associated with the given Image symbol
+     *
+     * @throws Error if there is no such symbol in these resources, or if the symbol isn't an Image.
+     */
+    function getImageTexture (symbolName :String) :Texture;
 
     /** Creates an instance of the given Movie or Image symbol */
     function createDisplayObject (symbolName :String) :DisplayObject;
