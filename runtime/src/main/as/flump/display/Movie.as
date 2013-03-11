@@ -41,7 +41,7 @@ public class Movie extends Sprite
 
     /** @private */
     public function Movie (src :MovieMold, frameRate :Number, library :Library) {
-        name = src.id;
+        this.name = src.id;
         _labels = src.labels;
         _frameRate = frameRate;
         if (src.flipbook) {
@@ -275,6 +275,8 @@ public class Movie extends Sprite
     protected var _frameRate :Number;
     /** @private */
     protected var _labels :Vector.<Vector.<String>>;
+    /** @private */
+    internal var _playerData :MoviePlayerNode;
 
     private static const NO_FRAME :int = -1;
 }
