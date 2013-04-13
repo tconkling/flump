@@ -115,7 +115,8 @@ public class Movie extends Sprite
     */
     public function playTo (position :Object) :Movie {
        _stopFrame = extractFrame(position);
-       _playing = true;
+       // don't play if we're already at the stop frame
+       _playing = (_frame != _stopFrame);
        return this;
     }
 
