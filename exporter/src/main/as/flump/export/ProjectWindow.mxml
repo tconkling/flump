@@ -44,6 +44,7 @@
         <s:FormItem width="500">
           <s:HGroup horizontalAlign="right" width="479">
             <s:Button id="exportAll" label="Export All"/>
+            <s:Button id="exportModified" label="Export Modified"/>
           </s:HGroup>
         </s:FormItem>
         <s:FormItem>

@@ -3,6 +3,10 @@
 
 package flump.export {
 
+import com.threerings.util.F;
+import com.threerings.util.Log;
+import com.threerings.util.StringUtil;
+
 import flash.desktop.NativeApplication;
 import flash.display.NativeMenu;
 import flash.display.NativeMenuItem;
@@ -24,10 +28,6 @@ import mx.managers.PopUpManager;
 import spark.components.DataGrid;
 import spark.components.Window;
 import spark.events.GridSelectionEvent;
-
-import com.threerings.util.F;
-import com.threerings.util.Log;
-import com.threerings.util.StringUtil;
 
 public class ProjectController
 {
@@ -94,14 +94,9 @@ public class ProjectController
             FlumpApp.app.showPreviewWindow(_conf, _flashDocsGrid.selectedItem.lib);
         });
 
-        // Export All
-        _win.exportAll.addEventListener(MouseEvent.CLICK, function (..._) :void {
-            for each (var status :DocStatus in _flashDocsGrid.dataProvider.toArray()) {
-                if (status.isValid) {
-                    exportFlashDocument(status);
-                }
-            }
-        });
+        // Export All, Modified
+        _win.exportAll.addEventListener(MouseEvent.CLICK, F.callback(exportAll, false));
+        _win.exportModified.addEventListener(MouseEvent.CLICK, F.callback(exportAll, true));
 
         // Import/Export directories
         _importChooser = new DirChooser(null, _win.importRoot, _win.browseImport);
@@ -173,6 +168,14 @@ public class ProjectController
 
     public function get win () :Window {
         return _win;
+    }
+
+    protected function exportAll (modifiedOnly :Boolean) :void {
+        for each (var status :DocStatus in _flashDocsGrid.dataProvider.toArray()) {
+            if (status.isValid && (!modifiedOnly || status.isModified)) {
+                exportFlashDocument(status);
+            }
+        }
     }
 
     protected function promptToSaveChanges () :void {
@@ -459,6 +462,8 @@ class DocStatus extends EventDispatcher implements IPropertyChangeNotifier {
     }
 
     public function get isValid () :Boolean { return valid == YES; }
+
+    public function get isModified () :Boolean { return modified == YES; }
 
     public function updateModified (newModified :Ternary) :void {
         changeField("modified", function (..._) :void {
