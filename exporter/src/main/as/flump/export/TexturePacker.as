@@ -16,11 +16,12 @@ public class TexturePacker
     public function scaleFactor (val :int) :TexturePacker {  _scaleFactor = val; return this; }
     public function borderSize (val :int) :TexturePacker { _borderSize = val; return this; }
     public function maxAtlasSize (val :int) :TexturePacker { _maxAtlasSize = val; return this; }
+    public function optimizeForSpeed (val :Boolean) :TexturePacker { _optimizeForSpeed = val; return this; }
     public function filenamePrefix (val :String) :TexturePacker { _filenamePrefix = val; return this; }
 
     public function createAtlases () :Vector.<Atlas> {
         return new PackerImpl(_lib, _baseScale, _scaleFactor, _borderSize,
-            _maxAtlasSize, _filenamePrefix).atlases;
+            _maxAtlasSize, _optimizeForSpeed, _filenamePrefix).atlases;
     }
 
     /** @private */
@@ -34,6 +35,7 @@ public class TexturePacker
     protected var _borderSize :int = 1;
     protected var _maxAtlasSize :int = 2048;
     protected var _filenamePrefix :String = "";
+    protected var _optimizeForSpeed :Boolean = false;
 }
 }
 
@@ -65,10 +67,12 @@ class PackerImpl
     public const atlases :Vector.<Atlas> = new <Atlas>[];
 
     public function PackerImpl (lib :XflLibrary, baseScale :Number, scaleFactor :int,
-        textureBorderSize :int, maxAtlasSize :int, filenamePrefix :String) {
+        textureBorderSize :int, maxAtlasSize :int, optimizeForSpeed :Boolean,
+        filenamePrefix :String) {
 
-        _maxAtlasSize = maxAtlasSize;
         _textureBorderSize = textureBorderSize;
+        _maxAtlasSize = maxAtlasSize;
+        _optimizeForSpeed = optimizeForSpeed;
 
         var scale :Number = baseScale * scaleFactor;
 
@@ -125,6 +129,12 @@ class PackerImpl
 
     // Estimate the optimal size for the next atlas
     protected function findOptimalSize () :Point {
+        if (_optimizeForSpeed) {
+            // Go ahead and use the largest possible atlas, extra space will be trimmed by AtlasImpl
+            // when rendering to a bitmap
+            return new Point(_maxAtlasSize, _maxAtlasSize);
+        }
+
         var area :int = 0;
         var maxW :int = 0;
         var maxH :int = 0;
@@ -151,14 +161,16 @@ class PackerImpl
         return size;
     }
 
-    protected static function nextPowerOfTwo (n :int) :int {
+    /** Returns the smallest number >= n that is a power of two. */
+    public static function nextPowerOfTwo (n :int) :int {
         var p :int = 1;
         while (p < n) p *= 2;
         return p;
     }
 
-    protected var _maxAtlasSize :int;
     protected var _textureBorderSize :int;
+    protected var _maxAtlasSize :int;
+    protected var _optimizeForSpeed :Boolean;
 
     protected const _unpacked :Vector.<SwfTexture> = new <SwfTexture>[];
 
@@ -210,14 +222,18 @@ class AtlasImpl
     public function toBitmap () :BitmapData {
         if (_bitmapData == null) {
             var constructed :Sprite = new Sprite();
+            var collapsedBounds :Rectangle = new Rectangle();
             _nodes.forEach(function (node :Node, ..._) :void {
                 const tex :SwfTexture = node.texture;
                 const bm :Bitmap = new Bitmap(node.texture.toBitmapData(_borderSize), "auto", true);
                 constructed.addChild(bm);
                 bm.x = node.paddedBounds.x;
                 bm.y = node.paddedBounds.y;
+                collapsedBounds = collapsedBounds.union(node.paddedBounds);
             });
-            _bitmapData = Util.renderToBitmapData(constructed, _width, _height);
+            _bitmapData = Util.renderToBitmapData(constructed,
+                PackerImpl.nextPowerOfTwo(collapsedBounds.x + collapsedBounds.width),
+                PackerImpl.nextPowerOfTwo(collapsedBounds.y + collapsedBounds.height));
         }
         return _bitmapData;
     }

@@ -27,6 +27,20 @@
         <s:GridColumn dataField="scaleFactorsString" headerText="Additional Scale Factors"/>
         <s:GridColumn dataField="textureBorder" headerText="Texture Border"/>
         <s:GridColumn dataField="maxAtlasSize" headerText="Max Atlas Size"/>
+        <s:GridColumn dataField="optimize" headerText="Optimize">
+          <s:itemEditor>
+            <fx:Component>
+              <s:ComboBoxGridItemEditor>
+                <s:dataProvider>
+                  <s:ArrayList>
+                    <fx:String>Memory</fx:String>
+                    <fx:String>Speed</fx:String>
+                  </s:ArrayList>
+                </s:dataProvider>
+              </s:ComboBoxGridItemEditor>
+            </fx:Component>
+          </s:itemEditor>
+        </s:GridColumn>
       </s:ArrayList>
     </s:columns>
     <mx:ArrayCollection/>
