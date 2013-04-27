@@ -3,6 +3,7 @@
 
 package flump.export {
 
+import flash.display.StageQuality;
 import flash.filesystem.File;
 
 import flump.mold.AtlasMold;
@@ -31,6 +32,8 @@ public class ExportConf
     public var additionalScaleFactors :Array = [];
     /** The optimization strategy. */
     public var optimize :String = OPTIMIZE_MEMORY;
+    /** The stage quality setting (StageQuality). */
+    public var quality :String = StageQuality.BEST;
 
     public function get scaleFactorsString () :String {
         return this.additionalScaleFactors.join(",");
@@ -72,6 +75,7 @@ public class ExportConf
         conf.maxAtlasSize = optional(o, "maxAtlasSize", 2048);
         conf.additionalScaleFactors = optional(o, "additionalScaleFactors", []);
         conf.optimize = optional(o, "optimize", OPTIMIZE_MEMORY);
+        conf.quality = optional(o, "quality", StageQuality.BEST);
         return conf;
     }
 
