@@ -8,6 +8,7 @@ import flash.display.BitmapData;
 import flash.display.DisplayObject;
 import flash.display.MovieClip;
 import flash.display.Sprite;
+import flash.display.StageQuality;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
@@ -22,30 +23,32 @@ public class SwfTexture
     public var origin :Point;
     public var w :int, h :int, a :int;
     public var scale :Number;
+    public var quality :String;
 
     public static function fromFlipbook (lib :XflLibrary, movie :MovieMold, frame :int,
-        scale :Number = 1) :SwfTexture {
+        quality :String = StageQuality.BEST, scale :Number = 1) :SwfTexture {
 
         const klass :Class = Class(lib.swf.getSymbol(movie.id));
         const clip :MovieClip = MovieClip(new klass());
         clip.gotoAndStop(frame + 1);
         const name :String = movie.id + "_flipbook_" + frame;
-        return new SwfTexture(name, clip, scale);
+        return new SwfTexture(name, clip, scale, quality);
     }
 
     public static function fromTexture (swf :LoadedSwf, tex :XflTexture,
-        scale :Number = 1) :SwfTexture {
+        quality :String = StageQuality.BEST, scale :Number = 1) :SwfTexture {
 
         const klass :Class = Class(swf.getSymbol(tex.symbol));
         const instance :Object = new klass();
         const disp :DisplayObject = (instance is BitmapData) ?
             new Bitmap(BitmapData(instance)) : DisplayObject(instance);
-        return new SwfTexture(tex.symbol, disp, scale);
+        return new SwfTexture(tex.symbol, disp, scale, quality);
     }
 
-    public function SwfTexture (symbol :String, disp :DisplayObject, scale :Number) {
+    public function SwfTexture (symbol :String, disp :DisplayObject, scale :Number, quality :String) {
         this.symbol = symbol;
         this.scale = scale;
+        this.quality = quality;
         _disp = disp;
 
         origin = getOrigin(_disp, scale);
@@ -57,7 +60,7 @@ public class SwfTexture
     }
 
     public function toBitmapData (borderPadding :int = 0) :BitmapData {
-        const bmd :BitmapData = Util.renderToBitmapData(_disp, w, h, scale);
+        const bmd :BitmapData = Util.renderToBitmapData(_disp, w, h, quality, scale);
         return (borderPadding > 0 ? Util.padBitmapBorder(bmd, borderPadding) : bmd);
     }
 
