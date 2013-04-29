@@ -6,6 +6,7 @@
   <property name="keystore" location="etc/${ant.project.name}.pfx"/>
   <property name="PASSWORD" value="pass"/>
   <property name="tsa" value="https://timestamp.geotrust.com/tsa"/>
+  <property name="swf.version" value="20"/>
 
   <property name="ooo-build.vers" value="2.5"/>
   <ant antfile="../etc/bootstrap.xml"/>
@@ -35,7 +36,7 @@
       dest="${deploy.dir}/flump-test.swf" static-lrsl="true"
       main="flump/test/Bootstrap.as">
       <arg value="-source-path+=${asrc.dir}"/>
-      <arg value="-swf-version=13"/>
+      <arg value="-swf-version=${swf.version}"/>
     </amxmlc>
   </target>
 
@@ -45,7 +46,7 @@
     <amxmlc srcdir="${asrc.dir}" libpath="${aslib.path}"
       dest="${deploy.dir}/${ant.project.name}.swf" static-lrsl="true"
       main="Flump.mxml">
-      <arg value="-swf-version=13"/>
+      <arg value="-swf-version=${swf.version}"/>
     </amxmlc>
   </target>
 
