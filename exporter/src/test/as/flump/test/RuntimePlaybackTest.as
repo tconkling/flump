@@ -6,17 +6,17 @@ package flump.test {
 import flash.events.TimerEvent;
 import flash.utils.Timer;
 
-import executor.VisibleFuture;
+import flump.executor.FutureTask;
 
 import flump.display.Movie;
-import flump.display.StarlingResources;
+import flump.display.Library;
 
 import com.threerings.util.F;
 
 public class RuntimePlaybackTest
 {
-    public static function addTests (runner :TestRunner, res :StarlingResources) :void {
-        runner.run("Goto frame and label", new RuntimePlaybackTest(runner, res).gotoFrameAndLabel);
+    public static function addTests (runner :TestRunner, res :Library) :void {
+        runner.run("Goto frame and label", new RuntimePlaybackTest(runner, res).goToFrameAndLabel);
         runner.runAsync("Play, stop, loop", new RuntimePlaybackTest(runner, res).playStopLoop);
         runner.runAsync("Stop, play", new RuntimePlaybackTest(runner, res).stopPlay);
         runner.runAsync("Play when added", new RuntimePlaybackTest(runner, res).playWhenAdded);
@@ -24,12 +24,12 @@ public class RuntimePlaybackTest
         runner.runAsync("Pause while removed", new RuntimePlaybackTest(runner, res).pauseWhileRemoved);
     }
 
-    public function RuntimePlaybackTest (runner :TestRunner, res :StarlingResources) {
+    public function RuntimePlaybackTest (runner :TestRunner, res :Library) {
         _runner = runner;
         _res = res;
     }
 
-    protected function setup (finisher :VisibleFuture) :void {
+    protected function setup (finisher :FutureTask) :void {
         _finisher = finisher;
         _movie = _res.createMovie("nesteddance");
         assert(_movie.frame == 0, "Frame starts at 0");
@@ -38,27 +38,27 @@ public class RuntimePlaybackTest
         _movie.labelPassed.add(_labelsPassed.push);
     }
 
-    public function gotoFrameAndLabel () :void {
+    public function goToFrameAndLabel () :void {
         _movie = _res.createMovie("nesteddance");
         _movie.labelPassed.add(_labelsPassed.push);
-        _movie.goto("timepassed");
+        _movie.goTo("timepassed");
         assert(_movie.frame == 9);
         passed("timepassed");
         assert(_labelsPassed.length == 1);
-        _movie.goto("timepassed");
+        _movie.goTo("timepassed");
         assert(_labelsPassed.length == 2);
-        assert(_movie.isPlaying, "Playing changed in goto");
+        assert(_movie.isPlaying, "Playing changed in goTo");
 
         _movie.stop();
-        _movie.goto(_movie.frame + 1);
+        _movie.goTo(_movie.frame + 1);
         assert(_movie.frame == 10);
-        assert(!_movie.isPlaying, "Stopped changed in goto");
+        assert(!_movie.isPlaying, "Stopped changed in goTo");
 
-        assertThrows(F.callback(_movie.goto, _movie.frames), "Went past frames");
-        assertThrows(F.callback(_movie.goto, "nonexistent label"), "Went to nonexistent label");
+        assertThrows(F.callback(_movie.goTo, _movie.numFrames), "Went past frames");
+        assertThrows(F.callback(_movie.goTo, "nonexistent label"), "Went to nonexistent label");
     }
 
-    public function playWhenAdded (finisher :VisibleFuture) :void {
+    public function playWhenAdded (finisher :FutureTask) :void {
         setup(finisher);
         delayForAtLeastOneFrame(checkAdvanced);
     }
@@ -74,21 +74,21 @@ public class RuntimePlaybackTest
         _finisher.succeed();
     }
 
-    public function playOnce (finisher :VisibleFuture) :void {
+    public function playOnce (finisher :FutureTask) :void {
         setup(finisher);
-        _movie.goto(0).play();
+        _movie.goTo(0).playOnce();
         delayForOnePlaythrough(checkPlayOnce);
     }
 
     public function checkPlayOnce () :void {
         passedAllLabels();
         assert(_labelsPassed.length == 4, "Only pass the labels once");
-        assert(_movie.frame == _movie.frames - 1, "Play once stops at last frame");
+        assert(_movie.frame == _movie.numFrames - 1, "Play once stops at last frame");
         _runner.removeChild(_movie);
         _finisher.succeed();
     }
 
-    public function pauseWhileRemoved (finisher :VisibleFuture) :void {
+    public function pauseWhileRemoved (finisher :FutureTask) :void {
         setup(finisher);
         delayForAtLeastOneFrame(checkAdvancedToRemove);
     }
@@ -106,7 +106,7 @@ public class RuntimePlaybackTest
         delayForOnePlaythrough(checkAllLabelsFired);
     }
 
-    public function stopPlay (finisher :VisibleFuture) :void {
+    public function stopPlay (finisher :FutureTask) :void {
         setup(finisher);
         _movie.stop();
         delayForAtLeastOneFrame(checkNotAdvancedWhileStopped);
@@ -114,7 +114,7 @@ public class RuntimePlaybackTest
 
     public function checkNotAdvancedWhileStopped () :void {
         assert(_movie.frame == 0, "Frame advanced passed while stopped?");
-        _movie.goto(Movie.FIRST_FRAME).playTo("timepassed");
+        _movie.goTo(Movie.FIRST_FRAME).playTo("timepassed");
         delayForOnePlaythrough(checkPlayedToTimePassed);
     }
 
@@ -126,9 +126,9 @@ public class RuntimePlaybackTest
         _finisher.succeed();
     }
 
-    public function playStopLoop (finisher :VisibleFuture) :void {
+    public function playStopLoop (finisher :FutureTask) :void {
         setup(finisher);
-        _movie.goto(10).play().stop().loop();
+        _movie.goTo(10).playOnce().stop().loop();
         assert(_movie.frame == 10, "Play stop or loop changed the frame");
         delayFor(2.6, checkDoublePass);
     }
@@ -166,10 +166,10 @@ public class RuntimePlaybackTest
         _finisher.monitor(then);
     }
 
-    protected var _finisher :VisibleFuture;
+    protected var _finisher :FutureTask;
     protected var _movie :Movie;
     protected var _runner :TestRunner;
-    protected var _res :StarlingResources;
+    protected var _res :Library;
 
     protected var _t :Timer = new Timer(1);
     protected const _labelsPassed :Vector.<String> = new <String>[];

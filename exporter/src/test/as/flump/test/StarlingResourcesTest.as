@@ -5,11 +5,12 @@ package flump.test {
 
 import flash.filesystem.File;
 
-import executor.Future;
-import executor.VisibleFuture;
+import flump.executor.Future;
+import flump.executor.FutureTask;
 
 import flump.display.Movie;
-import flump.display.StarlingResources;
+import flump.display.Library;
+import flump.display.LibraryLoader;
 
 import starling.core.Starling;
 
@@ -18,21 +19,21 @@ import com.threerings.util.F;
 public class StarlingResourcesTest
 {
     public function StarlingResourcesTest (runner :TestRunner, zipFile :File) {
-        runner.runAsync("Load Starling Resources", function (finisher :VisibleFuture) :void {
-            const loader :Future = StarlingResources.loadURL(zipFile.url);
-            loader.succeeded.add(function (res :StarlingResources) :void {
+        runner.runAsync("Load Starling Resources", function (finisher :FutureTask) :void {
+            const loader :Future = LibraryLoader.loadURL(zipFile.url);
+            loader.succeeded.add(function (res :Library) :void {
                 finisher.succeedAfter(F.callback(checkResources, res));
             });
             loader.failed.add(finisher.fail);
         });
-        function checkResources (res :StarlingResources) :void {
+        function checkResources (res :Library) :void {
             assert(res.movieSymbols.length == 2, "There should be 2 items in movieNames");
             assert(res.movieSymbols.indexOf("nesteddance") != -1, "nesteddance should be in movies");
             assert(res.movieSymbols.indexOf("squaredance") != -1, "squaredance should be in movies");
             const movie :Movie = res.createMovie("nesteddance");
-            assert(res.createTexture("redsquare") != null);
+            assert(res.createImage("redsquare") != null);
             assert(movie.name == "nesteddance", "Movies should be named after their mold name");
-            assertThrows(F.callback(res.createTexture, "nesteddance"), "Loaded movie as texture");
+            assertThrows(F.callback(res.createImage, "nesteddance"), "Loaded movie as texture");
             assertThrows(F.callback(res.createMovie, "redsquare"), "Loaded texture as movie");
             assertThrows(F.callback(res.createMovie, "no movie with this id "));
             RuntimePlaybackTest.addTests(runner, res);
@@ -45,8 +46,8 @@ public class StarlingResourcesTest
 
     protected function checkBadResourcesFail (runner :TestRunner, badResources :Class, reason :String) :void {
         runner.runAsync("Fail loading resources with " + reason,
-            function (future :VisibleFuture) :void {
-                const loader :Future = StarlingResources.loadBytes(new badResources());
+            function (future :FutureTask) :void {
+                const loader :Future = LibraryLoader.loadBytes(new badResources());
                 loader.succeeded.add(F.callback(future.fail, "Shouldn't load resources with " + reason));
                 loader.failed.add(future.succeed);
         });
