@@ -82,6 +82,7 @@ import deng.fzip.FZipEvent;
 import deng.fzip.FZipFile;
 
 import flash.events.Event;
+import flash.events.IOErrorEvent;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.net.URLRequest;
@@ -196,6 +197,7 @@ class Loader
         _future = future;
 
         _zip.addEventListener(Event.COMPLETE, _future.monitoredCallback(onZipLoadingComplete));
+        _zip.addEventListener(IOErrorEvent.IO_ERROR, _future.fail);
         _zip.addEventListener(FZipErrorEvent.PARSE_ERROR, _future.fail);
         _zip.addEventListener(FZipEvent.FILE_LOADED, _future.monitoredCallback(onFileLoaded));
 
