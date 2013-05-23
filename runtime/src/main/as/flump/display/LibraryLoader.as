@@ -27,14 +27,19 @@ public class LibraryLoader
      * textures with multiple scale factors, loader will load the textures with the scale factor
      * closest to this value. If scaleFactor <= 0 (the default), Starling.contentScaleFactor will be
      * used.
+     * @param generateMipMaps If true (defaults to false), flump will instruct Starling to generate
+     * mip maps for all loaded textures. Scaling will look better if mipmaps are enabled, but there
+     * is a loading time and memory usage penalty.
      *
      * @return a Future to use to track the success or failure of loading the resources out of the
      * bytes. If the loading succeeds, the Future's onSuccess will fire with an instance of
      * Library. If it fails, the Future's onFail will fire with the Error that caused the
      * loading failure.
      */
-    public static function loadBytes (bytes :ByteArray, executor :Executor=null, scaleFactor :Number=-1) :Future {
-        return (executor || new Executor(1)).submit(new Loader(bytes, scaleFactor).load);
+    public static function loadBytes (bytes :ByteArray, executor :Executor=null,
+        scaleFactor :Number=-1, generateMipMaps :Boolean=false) :Future {
+        return (executor || new Executor(1)).submit(
+            new Loader(bytes, scaleFactor, generateMipMaps).load);
     }
 
     /**
@@ -49,14 +54,19 @@ public class LibraryLoader
      * textures with multiple scale factors, loader will load the textures with the scale factor
      * closest to this value. If scaleFactor <= 0 (the default), Starling.contentScaleFactor will be
      * used.
+     * @param generateMipMaps If true (defaults to false), flump will instruct Starling to generate
+     * mip maps for all loaded textures. Scaling will look better if mipmaps are enabled, but there
+     * is a loading time and memory usage penalty.
      *
      * @return a Future to use to track the success or failure of loading the resources from the
      * url. If the loading succeeds, the Future's onSuccess will fire with an instance of
      * Library. If it fails, the Future's onFail will fire with the Error that caused the
      * loading failure.
      */
-    public static function loadURL (url :String, executor :Executor=null, scaleFactor :Number=-1) :Future {
-        return (executor || new Executor(1)).submit(new Loader(url, scaleFactor).load);
+    public static function loadURL (url :String, executor :Executor=null,
+        scaleFactor :Number=-1, generateMipMaps :Boolean=false) :Future {
+        return (executor || new Executor(1)).submit(
+            new Loader(url, scaleFactor, generateMipMaps).load);
     }
 
     /** @private */
@@ -188,8 +198,9 @@ class LibraryImpl
 
 class Loader
 {
-    public function Loader (toLoad :Object, scaleFactor :Number) {
+    public function Loader (toLoad :Object, scaleFactor :Number, generateMipMaps :Boolean) {
         _scaleFactor = (scaleFactor > 0 ? scaleFactor : Starling.contentScaleFactor);
+        _generateMipMaps = generateMipMaps;
         _toLoad = toLoad;
     }
 
@@ -251,7 +262,7 @@ class Loader
             var scale :Number = atlas.scaleFactor;
             const baseTexture :Texture = Texture.fromBitmapData(
                 img.bitmapData,
-                false,   // generateMipMaps
+                _generateMipMaps,
                 false,  // optimizeForRenderToTexture
                 scale);
 
@@ -302,6 +313,7 @@ class Loader
 
     protected var _toLoad :Object;
     protected var _scaleFactor :Number;
+    protected var _generateMipMaps :Boolean;
     protected var _future :FutureTask;
     protected var _versionChecked :Boolean;
 
