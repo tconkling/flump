@@ -8,8 +8,6 @@ import flash.utils.ByteArray;
 import flump.executor.Executor;
 import flump.executor.Future;
 
-import starling.core.Starling;
-
 /**
  * Loads zip files created by the flump exporter and parses them into Library instances.
  */
@@ -223,7 +221,9 @@ class Loader
             const jsonString :String = loaded.content.readUTFBytes(loaded.content.length);
             _lib = LibraryMold.fromJSON(JSON.parse(jsonString));
         } else if (name.indexOf(PNG, name.length - PNG.length) != -1) {
-            _pngBytes[name] = loaded.content;
+            _atlasBytes[name] = loaded.content;
+        } else if (name.indexOf(ATF, name.length - ATF.length) != -1) {
+            _atlasBytes[name] = loaded.content;
         } else if (name == LibraryLoader.VERSION_LOCATION) {
             const zipVersion :String = loaded.content.readUTFBytes(loaded.content.length)
             if (zipVersion != LibraryLoader.VERSION) {
@@ -238,7 +238,7 @@ class Loader
         _zip = null;
         if (_lib == null) throw new Error(LibraryLoader.LIBRARY_LOCATION + " missing from zip");
         if (!_versionChecked) throw new Error(LibraryLoader.VERSION_LOCATION + " missing from zip");
-        const loader :ImageLoader = new ImageLoader();
+        const loader :ImageLoader = _lib.textureFormat == "atf" ? null : new ImageLoader();
         _pngLoaders.terminated.add(_future.monitoredCallback(onPngLoadingComplete));
 
         // Determine the scale factor we want to use
@@ -252,49 +252,57 @@ class Loader
     }
 
     protected function loadAtlas (loader :ImageLoader, atlas :AtlasMold) :void {
-        const pngBytes :* = _pngBytes[atlas.file];
-        if (pngBytes === undefined) {
+        const bytes :* = _atlasBytes[atlas.file];
+        if (bytes === undefined) {
             throw new Error("Expected an atlas '" + atlas.file + "', but it wasn't in the zip");
         }
-        const atlasFuture :Future = loader.loadFromBytes(pngBytes, _pngLoaders);
-        atlasFuture.failed.add(onPngLoadingFailed);
-        atlasFuture.succeeded.add(function (img :LoadedImage) :void {
-            var scale :Number = atlas.scaleFactor;
-            const baseTexture :Texture = Texture.fromBitmapData(
-                img.bitmapData,
-                _generateMipMaps,
-                false,  // optimizeForRenderToTexture
-                scale);
 
-            _baseTextures.push(baseTexture);
-
-            if (!Starling.handleLostContext) {
-                img.bitmapData.dispose();
-            }
-
-            for each (var atlasTexture :AtlasTextureMold in atlas.textures) {
-                var bounds :Rectangle = atlasTexture.bounds;
-                var offset :Point = atlasTexture.origin;
-
-                // Starling expects subtexture bounds to be unscaled
-                if (scale != 1) {
-                    bounds = bounds.clone();
-                    bounds.x /= scale;
-                    bounds.y /= scale;
-                    bounds.width /= scale;
-                    bounds.height /= scale;
-
-                    offset = offset.clone();
-                    offset.x /= scale;
-                    offset.y /= scale;
+        var scale :Number = atlas.scaleFactor;
+        if (_lib.textureFormat == "atf") {
+            baseTextureLoaded(Texture.fromAtfData(bytes, scale), atlas);
+        } else {
+            const atlasFuture :Future = loader.loadFromBytes(bytes, _pngLoaders);
+            atlasFuture.failed.add(onPngLoadingFailed);
+            atlasFuture.succeeded.add(function (img :LoadedImage) :void {
+                baseTextureLoaded(Texture.fromBitmapData(
+                    img.bitmapData,
+                    _generateMipMaps,
+                    false,  // optimizeForRenderToTexture
+                    scale), atlas);
+                if (!Starling.handleLostContext) {
+                    img.bitmapData.dispose();
                 }
+            });
 
-                _creators[atlasTexture.symbol] = new ImageCreator(
-                    Texture.fromTexture(baseTexture, bounds),
-                    offset,
-                    atlasTexture.symbol);
+        }
+    }
+
+    protected function baseTextureLoaded (baseTexture :Texture, atlas :AtlasMold) :void {
+        _baseTextures.push(baseTexture);
+
+        var scale :Number = atlas.scaleFactor;
+        for each (var atlasTexture :AtlasTextureMold in atlas.textures) {
+            var bounds :Rectangle = atlasTexture.bounds;
+            var offset :Point = atlasTexture.origin;
+
+            // Starling expects subtexture bounds to be unscaled
+            if (scale != 1) {
+                bounds = bounds.clone();
+                bounds.x /= scale;
+                bounds.y /= scale;
+                bounds.width /= scale;
+                bounds.height /= scale;
+
+                offset = offset.clone();
+                offset.x /= scale;
+                offset.y /= scale;
             }
-        });
+
+            _creators[atlasTexture.symbol] = new ImageCreator(
+                Texture.fromTexture(baseTexture, bounds),
+                offset,
+                atlasTexture.symbol);
+        }
     }
 
     protected function onPngLoadingComplete (..._) :void {
@@ -322,10 +330,11 @@ class Loader
 
     protected const _baseTextures :Vector.<Texture> = new <Texture>[];
     protected const _creators :Dictionary = new Dictionary();//<name, ImageCreator/MovieCreator>
-    protected const _pngBytes :Dictionary = new Dictionary();//<String name, ByteArray>
+    protected const _atlasBytes :Dictionary = new Dictionary();//<String name, ByteArray>
     protected const _pngLoaders :Executor = new Executor(1);
 
     protected static const PNG :String = ".png";
+    protected static const ATF :String = ".atf"
 }
 
 class ImageCreator

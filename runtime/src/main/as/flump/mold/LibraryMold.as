@@ -12,6 +12,9 @@ public class LibraryMold
     // The MD5 of the published library SWF
     public var md5 :String;
 
+    // the format of the atlases. Default is "png"
+    public var textureFormat :String;
+
     public var movies :Vector.<MovieMold> = new <MovieMold>[];
 
     public var textureGroups :Vector.<TextureGroupMold> = new <TextureGroupMold>[];
@@ -20,6 +23,7 @@ public class LibraryMold
         const mold :LibraryMold = new LibraryMold();
         mold.frameRate = require(o, "frameRate");
         mold.md5 = require(o, "md5");
+        mold.textureFormat = o["textureFormat"] || "png";
         for each (var movie :Object in require(o, "movies")) mold.movies.push(MovieMold.fromJSON(movie));
         for each (var tg :Object in require(o, "textureGroups")) mold.textureGroups.push(TextureGroupMold.fromJSON(tg));
         return mold;
