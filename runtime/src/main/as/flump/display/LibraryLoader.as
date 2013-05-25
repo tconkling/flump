@@ -16,6 +16,8 @@ public class LibraryLoader
     /**
      * Loads a Library from the zip in the given bytes.
      *
+     * @deprecated Use a new LibraryLoader with the builder pattern instead.
+     *
      * @param bytes The bytes containing the zip
      *
      * @param executor The executor on which the loading should run. If not specified, it'll run on
@@ -25,9 +27,6 @@ public class LibraryLoader
      * textures with multiple scale factors, loader will load the textures with the scale factor
      * closest to this value. If scaleFactor <= 0 (the default), Starling.contentScaleFactor will be
      * used.
-     * @param generateMipMaps If true (defaults to false), flump will instruct Starling to generate
-     * mip maps for all loaded textures. Scaling will look better if mipmaps are enabled, but there
-     * is a loading time and memory usage penalty.
      *
      * @return a Future to use to track the success or failure of loading the resources out of the
      * bytes. If the loading succeeds, the Future's onSuccess will fire with an instance of
@@ -35,15 +34,17 @@ public class LibraryLoader
      * loading failure.
      */
     public static function loadBytes (bytes :ByteArray, executor :Executor=null,
-        scaleFactor :Number=-1, generateMipMaps :Boolean=false) :Future {
-        return (executor || new Executor(1)).submit(
-            new Loader(bytes, scaleFactor, generateMipMaps).load);
+        scaleFactor :Number=-1) :Future {
+        return new LibraryLoader().setExecutor(executor).setScaleFactor(scaleFactor)
+            .loadBytes(bytes);
     }
 
     /**
      * Loads a Library from the zip at the given url.
      *
-     * @param bytes The url where the zip can be found
+     * @deprecated Use a new LibraryLoader with the builder pattern instead.
+     *
+     * @param url The url where the zip can be found
      *
      * @param executor The executor on which the loading should run. If not specified, it'll run on
      * a new single-use executor.
@@ -52,9 +53,6 @@ public class LibraryLoader
      * textures with multiple scale factors, loader will load the textures with the scale factor
      * closest to this value. If scaleFactor <= 0 (the default), Starling.contentScaleFactor will be
      * used.
-     * @param generateMipMaps If true (defaults to false), flump will instruct Starling to generate
-     * mip maps for all loaded textures. Scaling will look better if mipmaps are enabled, but there
-     * is a loading time and memory usage penalty.
      *
      * @return a Future to use to track the success or failure of loading the resources from the
      * url. If the loading succeeds, the Future's onSuccess will fire with an instance of
@@ -62,9 +60,67 @@ public class LibraryLoader
      * loading failure.
      */
     public static function loadURL (url :String, executor :Executor=null,
-        scaleFactor :Number=-1, generateMipMaps :Boolean=false) :Future {
-        return (executor || new Executor(1)).submit(
-            new Loader(url, scaleFactor, generateMipMaps).load);
+        scaleFactor :Number=-1) :Future {
+        return new LibraryLoader().setExecutor(executor).setScaleFactor(scaleFactor)
+            .loadURL(url);
+    }
+
+    /**
+     * Sets the executor instance to use with this loader.
+     *
+     * @param executor The executor on which the loading should run. If left null (the default),
+     * it'll run on a new single-use executor.
+     */
+    public function setExecutor (executor :Executor) :LibraryLoader {
+        _executor = executor;
+        return this;
+    }
+
+    /**
+     * Sets the scale factor value to use with this loader.
+     *
+     * @param scaleFactor the desired scale factor of the textures to load. If the Library contains
+     * textures with multiple scale factors, loader will load the textures with the scale factor
+     * closest to this value. If scaleFactor <= 0 (the default), Starling.contentScaleFactor will be
+     * used.
+     */
+    public function setScaleFactor (scaleFactor :Number) :LibraryLoader {
+        _scaleFactor = scaleFactor;
+        return this;
+    }
+
+    /**
+     * Sets the mip map generation for this loader.
+     *
+     * @param generateMipMaps If true (defaults to false), flump will instruct Starling to generate
+     * mip maps for all loaded textures. Scaling will look better if mipmaps are enabled, but there
+     * is a loading time and memory usage penalty.
+     */
+    public function setGenerateMipMaps (generateMipMaps :Boolean) :LibraryLoader {
+        _generateMipMaps = generateMipMaps;
+        return this;
+    }
+
+    /**
+     * Loads a Library from the zip in the given bytes, using the settings configured in this
+     * loader.
+     *
+     * @param bytes The bytes containing the zip
+     */
+    public function loadBytes (bytes :ByteArray) :Future {
+        return (_executor || new Executor(1)).submit(
+            new Loader(bytes, _scaleFactor, _generateMipMaps).load);
+    }
+
+    /**
+     * Loads a Library from the zip at the given url, using the settings configured in this
+     * loader.
+     *
+     * @param url The url where the zip can be found
+     */
+    public function loadURL (url :String) :Future {
+        return (_executor || new Executor(1)).submit(
+            new Loader(url, _scaleFactor, _generateMipMaps).load);
     }
 
     /** @private */
@@ -80,6 +136,10 @@ public class LibraryLoader
      * zip must equal the version compiled into the parsing code for parsing to succeed.
      */
     public static const VERSION :String = "2";
+
+    protected var _executor :Executor;
+    protected var _scaleFactor :Number = -1;
+    protected var _generateMipMaps :Boolean = false;
 }
 
 }
