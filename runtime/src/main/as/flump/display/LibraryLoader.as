@@ -8,6 +8,8 @@ import flash.utils.ByteArray;
 import flump.executor.Executor;
 import flump.executor.Future;
 
+import org.osflash.signals.Signal;
+
 /**
  * Loads zip files created by the flump exporter and parses them into Library instances.
  */
@@ -66,6 +68,46 @@ public class LibraryLoader
     }
 
     /**
+     * Dispatched when a file is found in the Zip archive that is not recognized by Flump
+     *
+     * Signal parameters:
+     *  * name :String - the filename in the archive
+     *  * bytes :ByteArray - the content of the file
+     */
+    public const fileLoaded :Signal = new Signal();
+
+    /**
+     * Dispatched when the library mold has been read from the archive.
+     *
+     * Signal parameters:
+     *  * mold :LibraryMold
+     */
+    public const libraryMoldLoaded :Signal = new Signal();
+
+    /**
+     * Dispatched when the bytes for an ATF atlas have been read from the archive.
+     *
+     * Signal parameters:
+     *  * name :String - the filename of the atlas
+     *  * bytes :ByteArray - the content of the atlas
+     */
+    public const atfAtlasLoaded :Signal = new Signal();
+
+    /**
+     * Dispatched when a PNG atlas has been loaded and decoded from the archive. Changes made to
+     * the loaded png in a signal listener will affect the final rendered texture.
+     *
+     * NOTE: If Starling is not configured to handle lost context (Starling.handleLostContext),
+     * the Bitmap dispatched to this signal will be disposed immediately after the dispatch, and
+     * will become useless.
+     *
+     * Signal parameters:
+     *  * atlas :AtlasMold - The loaded atlas.
+     *  * image :LoadedImage - the decoded image.
+     */
+    public const pngAtlasLoaded :Signal = new Signal();
+
+    /**
      * Sets the executor instance to use with this loader.
      *
      * @param executor The executor on which the loading should run. If left null (the default),
@@ -89,6 +131,10 @@ public class LibraryLoader
         return this;
     }
 
+    public function get scaleFactor () :Number {
+        return _scaleFactor;
+    }
+
     /**
      * Sets the mip map generation for this loader.
      *
@@ -101,6 +147,25 @@ public class LibraryLoader
         return this;
     }
 
+    public function get generateMipMaps () :Boolean {
+        return _generateMipMaps;
+    }
+
+    /**
+     * Sets the CreatorFactory instance used for this loader.
+     */
+    public function setCreatorFactory (factory :CreatorFactory) :LibraryLoader {
+        _creatorFactory = factory;
+        return this;
+    }
+
+    public function get creatorFactory () :CreatorFactory {
+        if (_creatorFactory == null) {
+            _creatorFactory = new CreatorFactoryImpl();
+        }
+        return _creatorFactory;
+    }
+
     /**
      * Loads a Library from the zip in the given bytes, using the settings configured in this
      * loader.
@@ -109,7 +174,7 @@ public class LibraryLoader
      */
     public function loadBytes (bytes :ByteArray) :Future {
         return (_executor || new Executor(1)).submit(
-            new Loader(bytes, _scaleFactor, _generateMipMaps).load);
+            new Loader(bytes, this).load);
     }
 
     /**
@@ -120,7 +185,7 @@ public class LibraryLoader
      */
     public function loadURL (url :String) :Future {
         return (_executor || new Executor(1)).submit(
-            new Loader(url, _scaleFactor, _generateMipMaps).load);
+            new Loader(url, this).load);
     }
 
     /** @private */
@@ -140,8 +205,8 @@ public class LibraryLoader
     protected var _executor :Executor;
     protected var _scaleFactor :Number = -1;
     protected var _generateMipMaps :Boolean = false;
+    protected var _creatorFactory :CreatorFactory;
 }
-
 }
 
 import deng.fzip.FZip;
@@ -157,9 +222,12 @@ import flash.net.URLRequest;
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
 
+import flump.display.ImageCreator;
 import flump.display.Library;
 import flump.display.LibraryLoader;
 import flump.display.Movie;
+import flump.display.MovieCreator;
+import flump.display.SymbolCreator;
 import flump.executor.Executor;
 import flump.executor.Future;
 import flump.executor.FutureTask;
@@ -175,11 +243,6 @@ import starling.core.Starling;
 import starling.display.DisplayObject;
 import starling.display.Image;
 import starling.textures.Texture;
-
-interface SymbolCreator
-{
-    function create (library :Library) :DisplayObject;
-}
 
 class LibraryImpl
     implements Library
@@ -256,9 +319,10 @@ class LibraryImpl
 
 class Loader
 {
-    public function Loader (toLoad :Object, scaleFactor :Number, generateMipMaps :Boolean) {
-        _scaleFactor = (scaleFactor > 0 ? scaleFactor : Starling.contentScaleFactor);
-        _generateMipMaps = generateMipMaps;
+    public function Loader (toLoad :Object, libLoader :LibraryLoader) {
+        _scaleFactor =
+            (libLoader.scaleFactor > 0 ? libLoader.scaleFactor : Starling.contentScaleFactor);
+        _libLoader = libLoader;
         _toLoad = toLoad;
     }
 
@@ -280,18 +344,22 @@ class Loader
         if (name == LibraryLoader.LIBRARY_LOCATION) {
             const jsonString :String = loaded.content.readUTFBytes(loaded.content.length);
             _lib = LibraryMold.fromJSON(JSON.parse(jsonString));
+            _libLoader.libraryMoldLoaded.dispatch(_lib);
         } else if (name.indexOf(PNG, name.length - PNG.length) != -1) {
             _atlasBytes[name] = loaded.content;
         } else if (name.indexOf(ATF, name.length - ATF.length) != -1) {
             _atlasBytes[name] = loaded.content;
+            _libLoader.atfAtlasLoaded.dispatch(name, loaded.content);
         } else if (name == LibraryLoader.VERSION_LOCATION) {
-            const zipVersion :String = loaded.content.readUTFBytes(loaded.content.length)
+            const zipVersion :String = loaded.content.readUTFBytes(loaded.content.length);
             if (zipVersion != LibraryLoader.VERSION) {
                 throw new Error("Zip is version " + zipVersion + " but the code needs " + LibraryLoader.VERSION);
             }
             _versionChecked = true;
         } else if (name == LibraryLoader.MD5_LOCATION ) { // Nothing to verify
-        } else {} // ignore unknown files
+        } else {
+            _libLoader.fileLoaded.dispatch(name, loaded.content);
+        }
     }
 
     protected function onZipLoadingComplete (..._) :void {
@@ -317,6 +385,7 @@ class Loader
             throw new Error("Expected an atlas '" + atlas.file + "', but it wasn't in the zip");
         }
 
+        ByteArray(bytes).position = 0; // reset the read head
         var scale :Number = atlas.scaleFactor;
         if (_lib.textureFormat == "atf") {
             baseTextureLoaded(Texture.fromAtfData(bytes, scale), atlas);
@@ -324,9 +393,10 @@ class Loader
             const atlasFuture :Future = loader.loadFromBytes(bytes, _pngLoaders);
             atlasFuture.failed.add(onPngLoadingFailed);
             atlasFuture.succeeded.add(function (img :LoadedImage) :void {
+                _libLoader.pngAtlasLoaded.dispatch(atlas, img);
                 baseTextureLoaded(Texture.fromBitmapData(
                     img.bitmapData,
-                    _generateMipMaps,
+                    _libLoader.generateMipMaps,
                     false,  // optimizeForRenderToTexture
                     scale), atlas);
                 if (!Starling.handleLostContext) {
@@ -340,6 +410,7 @@ class Loader
     protected function baseTextureLoaded (baseTexture :Texture, atlas :AtlasMold) :void {
         _baseTextures.push(baseTexture);
 
+        _libLoader.creatorFactory.consumingAtlasMold(atlas);
         var scale :Number = atlas.scaleFactor;
         for each (var atlasTexture :AtlasTextureMold in atlas.textures) {
             var bounds :Rectangle = atlasTexture.bounds;
@@ -358,7 +429,8 @@ class Loader
                 offset.y /= scale;
             }
 
-            _creators[atlasTexture.symbol] = new ImageCreator(
+            _creators[atlasTexture.symbol] = _libLoader.creatorFactory.createImageCreator(
+                atlasTexture,
                 Texture.fromTexture(baseTexture, bounds),
                 offset,
                 atlasTexture.symbol);
@@ -368,7 +440,8 @@ class Loader
     protected function onPngLoadingComplete (..._) :void {
         for each (var movie :MovieMold in _lib.movies) {
             movie.fillLabels();
-            _creators[movie.id] = new MovieCreator(movie, _lib.frameRate);
+            _creators[movie.id] = _libLoader.creatorFactory.createMovieCreator(
+                movie, _lib.frameRate);
         }
         _future.succeed(new LibraryImpl(_baseTextures, _creators));
     }
@@ -381,7 +454,7 @@ class Loader
 
     protected var _toLoad :Object;
     protected var _scaleFactor :Number;
-    protected var _generateMipMaps :Boolean;
+    protected var _libLoader :LibraryLoader;
     protected var _future :FutureTask;
     protected var _versionChecked :Boolean;
 
@@ -397,40 +470,3 @@ class Loader
     protected static const ATF :String = ".atf"
 }
 
-class ImageCreator
-    implements SymbolCreator
-{
-    public var texture :Texture;
-    public var origin :Point;
-    public var symbol :String;
-
-    public function ImageCreator (texture :Texture, origin :Point, symbol :String) {
-        this.texture = texture;
-        this.origin = origin;
-        this.symbol = symbol;
-    }
-
-    public function create (library :Library) :DisplayObject {
-        const image :Image = new Image(texture);
-        image.pivotX = origin.x;
-        image.pivotY = origin.y;
-        image.name = symbol;
-        return image;
-    }
-}
-
-class MovieCreator
-    implements SymbolCreator
-{
-    public var mold :MovieMold;
-    public var frameRate :Number;
-
-    public function MovieCreator (mold :MovieMold, frameRate :Number) {
-        this.mold = mold;
-        this.frameRate = frameRate;
-    }
-
-    public function create (library :Library) :DisplayObject {
-        return new Movie(mold, frameRate, library);
-    }
-}
