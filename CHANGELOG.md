@@ -10,9 +10,9 @@ Runtime:
 - added: Library.getImageTexture
 - fixed: don't fire label signals if updateFrame is interrupted
 - fixed: various minor bugs
+- added: texture mipmap generation options
 
 Exporter:
-- added: texture mipmap generation options
 - added: texture atlas optimization options
 - added: texture bitmap data quality options
 - added: "Export Modified" button
