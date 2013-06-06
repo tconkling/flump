@@ -68,7 +68,15 @@ public class LibraryLoader
     }
 
     /**
-     * Dispatched when a file is found in the Zip archive that is not recognized by Flump
+     * Dispatched when a ProgressEvent is received on a URL load of a Zip archive.
+     *
+     * Signal parameters:
+     *  * event :flash.events.ProgressEvent
+     */
+    public const urlLoadProgressed :Signal = new Signal();
+
+    /**
+     * Dispatched when a file is found in the Zip archive that is not recognized by Flump.
      *
      * Signal parameters:
      *  * name :String - the filename in the archive
@@ -216,6 +224,7 @@ import deng.fzip.FZipFile;
 
 import flash.events.Event;
 import flash.events.IOErrorEvent;
+import flash.events.ProgressEvent;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.net.URLRequest;
@@ -333,9 +342,14 @@ class Loader
         _zip.addEventListener(IOErrorEvent.IO_ERROR, _future.fail);
         _zip.addEventListener(FZipErrorEvent.PARSE_ERROR, _future.fail);
         _zip.addEventListener(FZipEvent.FILE_LOADED, _future.monitoredCallback(onFileLoaded));
+        _zip.addEventListener(ProgressEvent.PROGRESS, _future.monitoredCallback(onProgress))
 
         if (_toLoad is String) _zip.load(new URLRequest(String(_toLoad)));
         else _zip.loadBytes(ByteArray(_toLoad));
+    }
+
+    protected function onProgress (e :ProgressEvent) :void {
+        _libLoader.urlLoadProgressed.dispatch(e);
     }
 
     protected function onFileLoaded (e :FZipEvent) :void {
