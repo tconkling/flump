@@ -68,12 +68,12 @@ public class LibraryLoader
     }
 
     /**
-     * Dispatched when a ProgressEvent is received on a URL load of a Zip archive.
+     * Dispatched when a ProgressEvent is received during Zip archive loading.
      *
      * Signal parameters:
      *  * event :flash.events.ProgressEvent
      */
-    public const urlLoadProgressed :Signal = new Signal();
+    public const loadProgressed :Signal = new Signal();
 
     /**
      * Dispatched when a file is found in the Zip archive that is not recognized by Flump.
@@ -349,7 +349,7 @@ class Loader
     }
 
     protected function onProgress (e :ProgressEvent) :void {
-        _libLoader.urlLoadProgressed.dispatch(e);
+        _libLoader.loadProgressed.dispatch(e);
     }
 
     protected function onFileLoaded (e :FZipEvent) :void {
