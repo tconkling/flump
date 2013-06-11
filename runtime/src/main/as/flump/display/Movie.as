@@ -5,7 +5,7 @@ package flump.display {
 
 import flump.mold.MovieMold;
 
-import org.osflash.signals.Signal;
+import react.Signal;
 
 import starling.animation.IAnimatable;
 import starling.display.DisplayObject;
@@ -235,7 +235,7 @@ public class Movie extends Sprite
 
             if (_labels[frameIdx] != null) {
                 for each (var label :String in _labels[frameIdx]) {
-                    labelPassed.dispatch(label);
+                    labelPassed.emit(label);
                     if (_pendingFrame != NO_FRAME) break;
                 }
             }

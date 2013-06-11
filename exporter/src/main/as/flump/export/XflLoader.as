@@ -22,17 +22,17 @@ public class XflLoader
 
         const future :FutureTask = new FutureTask();
         _library = new XflLibrary(name);
-        _loader.terminated.add(function (..._) :void {
+        _loader.terminated.connect(function (..._) :void {
             _library.finishLoading();
             future.succeed(_library);
         });
 
         var loadSWF :Future = _library.loadSWF(file.nativePath + ".swf");
-        loadSWF.succeeded.add(function () :void {
+        loadSWF.succeeded.connect(function () :void {
             // Since listLibrary shuts down the executor, wait for the swf to load first
             listLibrary(file);
         });
-        loadSWF.failed.add(F.adapt(_loader.shutdown));
+        loadSWF.failed.connect(F.adapt(_loader.shutdown));
 
         return future;
     }
@@ -40,7 +40,7 @@ public class XflLoader
     protected function listLibrary (file :File) :void {
         const domFile :File = file.resolvePath("DOMDocument.xml");
         const loadDomFile :Future = Files.load(domFile, _loader);
-        loadDomFile.succeeded.add(function (data :ByteArray) :void {
+        loadDomFile.succeeded.connect(function (data :ByteArray) :void {
             const symbolPaths :Vector.<String> = _library.parseDocumentFile(
                 data, domFile.nativePath);
             for each (var path :String in symbolPaths) {
@@ -48,7 +48,7 @@ public class XflLoader
             }
             _loader.shutdown();
         });
-        loadDomFile.failed.add(function (error :Error) :void {
+        loadDomFile.failed.connect(function (error :Error) :void {
             _library.addTopLevelError(ParseError.CRIT, error.message, error);
             _loader.shutdown();
         });
@@ -56,10 +56,10 @@ public class XflLoader
 
     protected function parseLibraryFile (file :File) :void {
         const loadLibraryFile :Future = Files.load(file, _loader);
-        loadLibraryFile.succeeded.add(function (data :ByteArray) :void {
+        loadLibraryFile.succeeded.connect(function (data :ByteArray) :void {
             _library.parseLibraryFile(data, file.nativePath);
         });
-        loadLibraryFile.failed.add(function (error :Error) :void {
+        loadLibraryFile.failed.connect(function (error :Error) :void {
             _library.addTopLevelError(ParseError.CRIT, error.message, error);
         });
     }

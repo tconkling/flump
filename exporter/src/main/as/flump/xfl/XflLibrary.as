@@ -179,19 +179,19 @@ public class XflLibrary
 
         const swfFile :File = new File(path);
         const loadSwfFile :Future = Files.load(swfFile, loader);
-        loadSwfFile.succeeded.add(function (data :ByteArray) :void {
+        loadSwfFile.succeeded.connect(function (data :ByteArray) :void {
             md5 = MD5.hashBytes(data);
 
             const loadSwf :Future = new SwfLoader().loadFromBytes(data);
-            loadSwf.succeeded.add(function (loadedSwf :LoadedSwf) :void {
+            loadSwf.succeeded.connect(function (loadedSwf :LoadedSwf) :void {
                 swf = loadedSwf;
             });
-            loadSwf.failed.add(function (error :Error) :void {
+            loadSwf.failed.connect(function (error :Error) :void {
                 addTopLevelError(ParseError.CRIT, error.message, error);
             });
-            loadSwf.completed.add(onComplete.succeed);
+            loadSwf.completed.connect(onComplete.succeed);
         });
-        loadSwfFile.failed.add(function (error :Error) :void {
+        loadSwfFile.failed.connect(function (error :Error) :void {
             addTopLevelError(ParseError.CRIT, error.message, error);
             onComplete.fail(error);
         });

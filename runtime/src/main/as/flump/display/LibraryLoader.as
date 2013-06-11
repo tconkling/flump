@@ -7,8 +7,9 @@ import flash.utils.ByteArray;
 
 import flump.executor.Executor;
 import flump.executor.Future;
+import flump.mold.LibraryMold;
 
-import org.osflash.signals.Signal;
+import react.Signal;
 
 /**
  * Loads zip files created by the flump exporter and parses them into Library instances.
@@ -78,28 +79,25 @@ public class LibraryLoader
     /**
      * Dispatched when a file is found in the Zip archive that is not recognized by Flump.
      *
-     * Signal parameters:
+     * Dispatched Object has the following named properties:
      *  * name :String - the filename in the archive
      *  * bytes :ByteArray - the content of the file
      */
-    public const fileLoaded :Signal = new Signal();
+    public const fileLoaded :Signal = new Signal(Object);
 
     /**
      * Dispatched when the library mold has been read from the archive.
-     *
-     * Signal parameters:
-     *  * mold :LibraryMold
      */
-    public const libraryMoldLoaded :Signal = new Signal();
+    public const libraryMoldLoaded :Signal = new Signal(LibraryMold);
 
     /**
      * Dispatched when the bytes for an ATF atlas have been read from the archive.
      *
-     * Signal parameters:
+     * Dispatched Object has the following named properties:
      *  * name :String - the filename of the atlas
      *  * bytes :ByteArray - the content of the atlas
      */
-    public const atfAtlasLoaded :Signal = new Signal();
+    public const atfAtlasLoaded :Signal = new Signal(Object);
 
     /**
      * Dispatched when a PNG atlas has been loaded and decoded from the archive. Changes made to
@@ -109,11 +107,11 @@ public class LibraryLoader
      * the Bitmap dispatched to this signal will be disposed immediately after the dispatch, and
      * will become useless.
      *
-     * Signal parameters:
+     * Dispatched Object has the following named properties:
      *  * atlas :AtlasMold - The loaded atlas.
      *  * image :LoadedImage - the decoded image.
      */
-    public const pngAtlasLoaded :Signal = new Signal();
+    public const pngAtlasLoaded :Signal = new Signal(Object);
 
     /**
      * Sets the executor instance to use with this loader.
@@ -269,7 +267,7 @@ class Loader {
     }
 
     protected function onProgress (e :ProgressEvent) :void {
-        _libLoader.urlLoadProgressed.dispatch(e);
+        _libLoader.urlLoadProgressed.emit(e);
     }
 
     protected function onFileLoaded (e :FZipEvent) :void {
@@ -278,12 +276,12 @@ class Loader {
         if (name == LibraryLoader.LIBRARY_LOCATION) {
             const jsonString :String = loaded.content.readUTFBytes(loaded.content.length);
             _lib = LibraryMold.fromJSON(JSON.parse(jsonString));
-            _libLoader.libraryMoldLoaded.dispatch(_lib);
+            _libLoader.libraryMoldLoaded.emit(_lib);
         } else if (name.indexOf(PNG, name.length - PNG.length) != -1) {
             _atlasBytes[name] = loaded.content;
         } else if (name.indexOf(ATF, name.length - ATF.length) != -1) {
             _atlasBytes[name] = loaded.content;
-            _libLoader.atfAtlasLoaded.dispatch(name, loaded.content);
+            _libLoader.atfAtlasLoaded.emit({name: name, bytes: loaded.content});
         } else if (name == LibraryLoader.VERSION_LOCATION) {
             const zipVersion :String = loaded.content.readUTFBytes(loaded.content.length);
             if (zipVersion != LibraryLoader.VERSION) {
@@ -292,7 +290,7 @@ class Loader {
             _versionChecked = true;
         } else if (name == LibraryLoader.MD5_LOCATION ) { // Nothing to verify
         } else {
-            _libLoader.fileLoaded.dispatch(name, loaded.content);
+            _libLoader.fileLoaded.emit({name: name, bytes: loaded.content});
         }
     }
 
@@ -301,7 +299,7 @@ class Loader {
         if (_lib == null) throw new Error(LibraryLoader.LIBRARY_LOCATION + " missing from zip");
         if (!_versionChecked) throw new Error(LibraryLoader.VERSION_LOCATION + " missing from zip");
         const loader :ImageLoader = _lib.textureFormat == "atf" ? null : new ImageLoader();
-        _pngLoaders.terminated.add(_future.monitoredCallback(onPngLoadingComplete));
+        _pngLoaders.terminated.connect(_future.monitoredCallback(onPngLoadingComplete));
 
         // Determine the scale factor we want to use
         var textureGroup :TextureGroupMold = _lib.bestTextureGroupForScaleFactor(_scaleFactor);
@@ -325,9 +323,9 @@ class Loader {
             baseTextureLoaded(Texture.fromAtfData(bytes, scale), atlas);
         } else {
             const atlasFuture :Future = loader.loadFromBytes(bytes, _pngLoaders);
-            atlasFuture.failed.add(onPngLoadingFailed);
-            atlasFuture.succeeded.add(function (img :LoadedImage) :void {
-                _libLoader.pngAtlasLoaded.dispatch(atlas, img);
+            atlasFuture.failed.connect(onPngLoadingFailed);
+            atlasFuture.succeeded.connect(function (img :LoadedImage) :void {
+                _libLoader.pngAtlasLoaded.emit({atlas: atlas, image: img});
                 baseTextureLoaded(Texture.fromBitmapData(
                     img.bitmapData,
                     _libLoader.generateMipMaps,

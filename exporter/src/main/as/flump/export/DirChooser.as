@@ -7,12 +7,10 @@ import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.filesystem.File;
 
-import org.osflash.signals.Signal;
+import react.Signal;
 
 import spark.components.Button;
 import spark.components.Label;
-
-import com.threerings.util.F;
 
 public class DirChooser
 {
@@ -27,7 +25,7 @@ public class DirChooser
             if (dir == null) browser = File.documentsDirectory;
             browser.addEventListener(Event.SELECT, function (..._) :void {
                 dir = browser;
-                changed.dispatch(dir);
+                changed.emit(dir);
             });
             browser.browseForDirectory("Select Directory");
         });

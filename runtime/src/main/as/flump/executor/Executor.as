@@ -6,7 +6,7 @@ package flump.executor {
 import flash.events.TimerEvent;
 import flash.utils.Timer;
 
-import org.osflash.signals.Signal;
+import react.Signal;
 
 /**
  * Manages the simultaneous execution of multiple asynchronous tasks. Handles notifying on
@@ -118,8 +118,8 @@ public class Executor
      * termination and possibly dispatches that.
      */
     protected function onCompleted (f :Future) :void {
-        if (f.isSuccessful) succeeded.dispatch(f)
-        else failed.dispatch(f)
+        if (f.isSuccessful) succeeded.emit(f)
+        else failed.emit(f)
 
         var removed :Boolean = false;
         for (var ii :int = 0; ii < _running.length && !removed; ii++) {
@@ -131,7 +131,7 @@ public class Executor
         if (!removed) throw new Error("Unknown future completed? " + f);
         // Only dispatch terminated if it was set when this future completed. If it's set as
         // part of this dispatch, it'll dispatch in the shutdown call
-        completed.dispatch(f);
+        completed.emit(f);
 
         runIfAvailable();
         terminateIfNecessary();
@@ -158,7 +158,7 @@ public class Executor
     protected function terminateIfNecessary () :void {
         if (_terminated || !isIdle) return;
         _terminated = true;
-        terminated.dispatch(this);
+        terminated.emit(this);
     }
 
     /** @private */
@@ -183,7 +183,6 @@ public class Executor
 }
 }
 
-import flump.executor.Future;
 import flump.executor.FutureTask;
 
 class ToRun {
