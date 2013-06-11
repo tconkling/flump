@@ -3,6 +3,7 @@
 
 package flump.display {
 
+import flash.events.ProgressEvent;
 import flash.utils.ByteArray;
 
 import flump.executor.Executor;
@@ -74,7 +75,7 @@ public class LibraryLoader
      * Signal parameters:
      *  * event :flash.events.ProgressEvent
      */
-    public const urlLoadProgressed :Signal = new Signal();
+    public const urlLoadProgressed :Signal = new Signal(ProgressEvent);
 
     /**
      * Dispatched when a file is found in the Zip archive that is not recognized by Flump.
