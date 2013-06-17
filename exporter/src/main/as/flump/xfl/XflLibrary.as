@@ -87,7 +87,87 @@ public class XflLibrary
             }
         }
 
-        for each (movie in movies) if (isExported(movie)) prepareForPublishing(movie);
+        resolveKfRefs();
+        var sortedMovies:Vector.<MovieMold> = getSortedMovies();
+        for each (movie in sortedMovies) {
+            if (isExported(movie)) {
+                propagateFilters(movie, []);
+                prepareForPublishing(movie);
+            }
+        }
+    }
+
+    protected function resolveKfRefs():void {
+        for (var ii:int = 0; ii < movies.length; ++ii) {
+            var movie:MovieMold = movies[ii];
+            if (movie.flipbook)
+                continue;
+            for each (var layer:LayerMold in movie.layers) {
+                for each (var kf:KeyframeMold in layer.keyframes) {
+                    if (kf.ref == null)
+                        continue;
+                    kf.ref = _libraryNameToId.get(kf.ref);
+                }
+            }
+        }
+    }
+
+    // Get movies sorted such that contained movies are after the movies that contain them
+    protected function getSortedMovies():Vector.<MovieMold> {
+        var sortedMovies:Vector.<MovieMold> = movies.concat();
+        for (var ii:int = 0; ii < sortedMovies.length; ++ii) {
+            var movie:MovieMold = sortedMovies[ii];
+            for each (var layer:LayerMold in movie.layers) {
+                for each (var kf:KeyframeMold in layer.keyframes) {
+                    if (kf.ref == null)
+                        continue;
+                    var item:Object = _idToItem[kf.ref];
+                    if (item is MovieMold) {
+                        var movieToMove:MovieMold = item as MovieMold;
+                        var arrayIndex:int = sortedMovies.indexOf(movieToMove);
+                        if (arrayIndex < ii) {
+                            sortedMovies.splice(arrayIndex, 1);
+                            ii--;
+                        }
+                        sortedMovies.splice(ii + 1, 0, movieToMove);
+                    }
+                }
+            }
+        }
+
+        return sortedMovies;
+    }
+
+    // Propagate filters down the display graph from a movie and attach them to leaf nodes
+    protected function propagateFilters(movie:MovieMold, inFilters:Array):void {
+        for each (var layer:LayerMold in movie.layers) {
+            for each (var kf:KeyframeMold in layer.keyframes) {
+                var kfFilters:Array = XflKeyframe.getFiltersForKeyframe(kf);
+                var filters:Array = kfFilters ? inFilters.concat(kfFilters) : inFilters;
+                var swfTexture:SwfTexture = null;
+                if (movie.flipbook) {
+                    // Nothing to be done
+                } else {
+                    if (kf.ref == null)
+                        continue;
+                    var item:Object = _idToItem[kf.ref];
+                    if (item == null){
+                        // Nothing to be done
+                    } else if (item is MovieMold) {
+                        // Propagate filters to component movie
+                        propagateFilters(MovieMold(item), filters);
+                    } else if (item is XflTexture) {
+                        // Assign filters to this XflTexture
+                        const tex:XflTexture = XflTexture(item);
+                        // If filters have previously been assigned,
+                        // replace them only if new list is longer
+                        if (filters.length > tex.filters.length) {
+                            tex.filters = filters;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     protected function prepareForPublishing (movie :MovieMold) :void {
@@ -105,7 +185,6 @@ public class XflLibrary
 
                 } else {
                     if (kf.ref == null) continue;
-                    kf.ref = _libraryNameToId.get(kf.ref);
                     var item :Object = _idToItem[kf.ref];
                     if (item == null) {
                         addTopLevelError(ParseError.CRIT,
