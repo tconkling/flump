@@ -360,10 +360,12 @@ public class ProjectController
         stage.quality = StageQuality.BEST;
 
         try {
-            if (_exportChooser.dir == null)
+            if (_exportChooser.dir == null) {
                 throw new Error("No export directory specified.");
-            if (_conf.exports.length == 0)
+            }
+            if (_conf.exports.length == 0) {
                 throw new Error("No export formats specified.");
+            }
             createPublisher().publish(status.lib);
         } catch (e :Error) {
             ErrorWindowMgr.showErrorPopup("Publishing Failed", e.message, _win);
