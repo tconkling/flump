@@ -21,5 +21,7 @@ public class XflTexture
         var swfTex :SwfTexture = SwfTexture.fromTexture(swf, this);
         return (swfTex.w > 0 && swfTex.h > 0);
     }
+
+    public var filters :Array = [];
 }
 }
