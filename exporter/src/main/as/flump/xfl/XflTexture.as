@@ -11,6 +11,7 @@ import com.threerings.util.XmlUtil;
 public class XflTexture
 {
     public var symbol :String;
+    public var filters :Array = [];
 
     public function XflTexture (lib :XflLibrary, location :String, xml :XML) {
         symbol = XmlUtil.getStringAttr(xml, "linkageClassName");
@@ -22,6 +23,5 @@ public class XflTexture
         return (swfTex.w > 0 && swfTex.h > 0);
     }
 
-    public var filters :Array = [];
 }
 }
