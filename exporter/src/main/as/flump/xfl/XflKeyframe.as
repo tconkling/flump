@@ -128,7 +128,7 @@ public class XflKeyframe
         }
 
         // initialize lookup table entry
-        _filtersByKeyframe[kf] = [];
+        _s_filtersByKeyframe[kf] = [];
 
         // for each filter nodes, parse the xml and add a BitmapFilter to the lookup table
         var filter:BitmapFilter;
@@ -143,7 +143,7 @@ public class XflKeyframe
                 colorFilter.contrast = XmlUtil.getNumberAttr(filterXml, "contrast", 0);
                 var mMatrix:Array = colorFilter.CalculateFinalFlatArray();
                 filter = new ColorMatrixFilter(mMatrix);
-                _filtersByKeyframe[kf].push(filter);
+                _s_filtersByKeyframe[kf].push(filter);
             } else if (filterXml.name().localName == "BlurFilter") {
                 // <BlurFilter blurX="4" blurY="4" quality="2"/>
                 filter = new BlurFilter(
@@ -151,7 +151,7 @@ public class XflKeyframe
                     XmlUtil.getNumberAttr(filterXml, "blurY", 5),
                     XmlUtil.getNumberAttr(filterXml, "quality", 1)
                 );
-                _filtersByKeyframe[kf].push(filter);
+                _s_filtersByKeyframe[kf].push(filter);
             } else if (filterXml.name().localName == "BevelFilter") {
                 // <BevelFilter blurX="11" blurY="11" quality="2" angle="80.0000022767297" distance="-7" 
                 // highlightColor="#33FF00" shadowColor="#CC00FF" strength="1.28"/>
@@ -169,7 +169,7 @@ public class XflKeyframe
                     XmlUtil.getStringAttr(filterXml, "type", "inner"),
                     XmlUtil.getBooleanAttr(filterXml, "knockout", false)
                 );
-                _filtersByKeyframe[kf].push(filter);
+                _s_filtersByKeyframe[kf].push(filter);
             } else if (filterXml.name().localName == "DropShadowFilter") {
                 // <DropShadowFilter angle="15.9999994308176" blurX="12" blurY="12" color="#9933CC" 
                 // distance="18" hideObject="true" inner="true" knockout="true" quality="3" strength="0.77"/>
@@ -186,7 +186,7 @@ public class XflKeyframe
                     XmlUtil.getBooleanAttr(filterXml, "knockout", false),
                     XmlUtil.getBooleanAttr(filterXml, "hideObject", false)
                 );
-                _filtersByKeyframe[kf].push(filter);
+                _s_filtersByKeyframe[kf].push(filter);
             } else if (filterXml.name().localName == "GlowFilter") {
                 // <GlowFilter blurX="6" blurY="6" color="#00CC66" inner="true" knockout="true" quality="2" strength="0.9"/>
                 filter = new GlowFilter(
@@ -199,24 +199,24 @@ public class XflKeyframe
                     XmlUtil.getBooleanAttr(filterXml, "inner", false),
                     XmlUtil.getBooleanAttr(filterXml, "knockout", false)
                 );
-                _filtersByKeyframe[kf].push(filter);
+                _s_filtersByKeyframe[kf].push(filter);
             } else {
                 // parsing for this filter type is unimplemented
                 lib.addError(location, ParseError.WARN, "Unimplemented parsing for filter type: '" + filterXml.name().localName + "'");
             }
 
             // if we only parsed unsupported filter types, remove the lookup table entry
-            if (_filtersByKeyframe[kf].length == 0) {
-                delete _filtersByKeyframe[kf];
+            if (_s_filtersByKeyframe[kf].length == 0) {
+                delete _s_filtersByKeyframe[kf];
             }
         }
     }
 
     // lookup table for filters associated with a given KeyframeMold
-    static private var _filtersByKeyframe:Dictionary = new Dictionary(true);
+    static private var _s_filtersByKeyframe:Dictionary = new Dictionary(true);
     static public function getFiltersForKeyframe(kf:KeyframeMold):Array
     {
-        return (kf in _filtersByKeyframe) ? _filtersByKeyframe[kf] : null;
+        return (kf in _s_filtersByKeyframe) ? _s_filtersByKeyframe[kf] : null;
     }
 
 }
