@@ -194,7 +194,8 @@ class AtlasImpl
         _width = w;
         _height = h;
         _borderSize = borderSize;
-        _mask = Arrays.create(_width * _height, false);
+        _mask = new BitmapData(_width, _height, true, 0);
+        _mask.lock()
         _scaleFactor = scaleFactor;
         _quality = quality;
     }
@@ -280,41 +281,28 @@ class AtlasImpl
         return found;
     }
 
+    protected static var _isMaskedPoint:Point = new Point();
+    protected static var _isMaskedRect:Rectangle = new Rectangle();
     protected function isMasked (x :int, y :int, w :int, h :int) :Boolean {
-        var xMax :int = x + w - 1;
-        var yMax :int = y + h - 1;
-        // fail fast on extents
-        if (maskAt(x, y) || maskAt(x, yMax) || maskAt(xMax, y) || maskAt(xMax, yMax)) {
-            return true;
-        }
-
-        for (var yy :int = y + 1; yy < yMax; ++yy) {
-            for (var xx :int = x + 1; xx < xMax; ++xx) {
-                if (maskAt(xx, yy)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        _isMaskedRect.setTo(x, y, w, h);
+        return _mask.hitTest(_isMaskedPoint, 1, _isMaskedRect);
     }
 
+    protected static var _setMaskedRect:Rectangle = new Rectangle();
     protected function setMasked (x :int, y :int, w: int, h :int) :void {
-        for (var yy :int = y; yy < y + h; ++yy) {
-            for (var xx :int = x; xx < x + w; ++xx) {
-                _mask[(yy * _width) + xx] = true;
-            }
-        }
+        _setMaskedRect.setTo(x, y, w, h);
+        _mask.fillRect(_setMaskedRect, 0xffffffff);
     }
 
     protected function maskAt (xx :int, yy :int) :Boolean {
-        return _mask[(yy * _width) + xx];
+        return _mask.getPixel32(xx, yy) != 0;
     }
 
     protected var _nodes :Array = [];
     protected var _width :int;
     protected var _height :int;
     protected var _borderSize :int;
-    protected var _mask :Array;
+    protected var _mask :BitmapData;
     protected var _bitmapData :BitmapData;
     protected var _scaleFactor :int;
     protected var _quality :String;
