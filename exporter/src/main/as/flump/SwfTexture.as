@@ -51,18 +51,18 @@ public class SwfTexture
     }
 
     public function SwfTexture (symbol :String, disp :DisplayObject, scale :Number, quality :String) {
-        this._symbol = symbol;
-        this._quality = quality;
+        _symbol = symbol;
+        _quality = quality;
 
         // wrap object twice for convenience
         var wrapper:Sprite = new Sprite();
         wrapper.addChild(disp);
-        this._disp = new Sprite();
-        this._disp.addChild(wrapper);
+        _disp = new Sprite();
+        _disp.addChild(wrapper);
 
         // set the scale and size info
-        this._treatAsFiltered = this.hasPotentiallySizeAlteringFilters(disp);
-        this.setScale(scale);
+        _treatAsFiltered = hasPotentiallySizeAlteringFilters(disp);
+        setScale(scale);
     }
     
     // scale can be changed after creation, if desired
@@ -75,66 +75,66 @@ public class SwfTexture
         // if not filtered:
         //    set the scale in the wrapper
         //    render directly at target size with vector renderer
-        if (this._treatAsFiltered) {
+        if (_treatAsFiltered) {
             // cache the scale to use later
-            this._scale = value;
-            // only need to calculate size once, since this._disp is not changing
-            if (this._visualBounds == null) {
+            _scale = value;
+            // only need to calculate size once, since _disp is not changing
+            if (_visualBounds == null) {
                 recalculateSizeInfo();
             }
         } else {
-            // embed the scale in this._disp
-            var wrapper:DisplayObject = this._disp.getChildAt(0);
+            // embed the scale in _disp
+            var wrapper:DisplayObject = _disp.getChildAt(0);
             wrapper.scaleX = wrapper.scaleY = value;
-            this._scale = 1;
-            // recalculate size since this._disp has changed
+            _scale = 1;
+            // recalculate size since _disp has changed
             recalculateSizeInfo();
         }
     }
 
     public function toBitmapData (borderPadding :int = 0) :BitmapData {
         // render with vector renderer
-        var bmd :BitmapData = new BitmapData(Math.ceil(this._w), Math.ceil(this._h), true, 0x00);
+        var bmd :BitmapData = new BitmapData(Math.ceil(_w), Math.ceil(_h), true, 0x00);
         var m :Matrix = new Matrix();
-        m.translate(this._origin.x, this._origin.y);
-        bmd.drawWithQuality(this._disp, m, null, null, null, true, this._quality);
+        m.translate(_origin.x, _origin.y);
+        bmd.drawWithQuality(_disp, m, null, null, null, true, _quality);
 
         // scale bitmap to target size if necessary (only used if _disp contains filters)
-        if (this._scale != 1.0) {
-            bmd = Util.renderToBitmapData(bmd, this.w, this.h, this._quality, this._scale);
+        if (_scale != 1.0) {
+            bmd = Util.renderToBitmapData(bmd, w, h, _quality, _scale);
         }
 
         // add padding if necessary
         return (borderPadding > 0 ? Util.padBitmapBorder(bmd, borderPadding) : bmd);
     }
 
-    public function toString () :String { return "a " + this.a + " w " + this.w + " h " + this.h; }
+    public function toString () :String { return "a " + a + " w " + w + " h " + h; }
 
     private function recalculateSizeInfo() :void {
         // get normal bounds
-        this._strictBounds = this._disp.getChildAt(0).getBounds(this._disp);
-        this._visualBounds = this._strictBounds;
+        _strictBounds = _disp.getChildAt(0).getBounds(_disp);
+        _visualBounds = _strictBounds;
         
         // possibly increase the visual bounds (due to filter action)
-        if (this._treatAsFiltered) {
+        if (_treatAsFiltered) {
             // render to bmd
-            var topLeft:Point = new Point(_filteredBmd.width / 2 - this._strictBounds.width / 2 - this._strictBounds.x, _filteredBmd.height / 2 - this._strictBounds.height / 2 - this._strictBounds.y);
+            var topLeft:Point = new Point(_s_filteredBmd.width / 2 - _strictBounds.width / 2 - _strictBounds.x, _s_filteredBmd.height / 2 - _strictBounds.height / 2 - _strictBounds.y);
             var m :Matrix = new Matrix(1,0,0,1, topLeft.x, topLeft.y);
-            _filteredBmd.drawWithQuality(this._disp, m, null, null, null, true, this._quality);
+            _s_filteredBmd.drawWithQuality(_disp, m, null, null, null, true, _quality);
             
             // calculate visual bounds
-            this._visualBounds = _filteredBmd.getColorBoundsRect(0xff000000, 0x00000000, false);
-            _filteredBmd.fillRect(this._visualBounds, 0x0);
+            _visualBounds = _s_filteredBmd.getColorBoundsRect(0xff000000, 0x00000000, false);
+            _s_filteredBmd.fillRect(_visualBounds, 0x0);
 
             // adjust registration point
-            this._visualBounds.x = -(topLeft.x - this._visualBounds.x);
-            this._visualBounds.y = -(topLeft.y - this._visualBounds.y);
+            _visualBounds.x = -(topLeft.x - _visualBounds.x);
+            _visualBounds.y = -(topLeft.y - _visualBounds.y);
         }
         
         // calculate derivative info
-        this._origin = new Point(-this._visualBounds.x, -this._visualBounds.y);
-        this._w = this._visualBounds.width;
-        this._h = this._visualBounds.height;
+        _origin = new Point(-_visualBounds.x, -_visualBounds.y);
+        _w = _visualBounds.width;
+        _h = _visualBounds.height;
     }
     
     private function hasPotentiallySizeAlteringFilters(dObj:DisplayObject) :Boolean {
@@ -170,7 +170,7 @@ public class SwfTexture
     private var _quality :String;
     private var _treatAsFiltered:Boolean;
     
-    static private var _filteredBmd:BitmapData = new BitmapData(2048, 2048, true, 0x0);
-    { _filteredBmd.lock(); }
+    static private var _s_filteredBmd:BitmapData = new BitmapData(2048, 2048, true, 0x0);
+    { _s_filteredBmd.lock(); }
 }
 }
