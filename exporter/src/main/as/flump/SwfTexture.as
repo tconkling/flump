@@ -27,7 +27,7 @@ public class SwfTexture
     public function get origin():Point  {   return new Point(_origin.x*_scale, _origin.y*_scale);     }
     public function get w():int {   return Math.ceil(_w*_scale);  }
     public function get h():int {   return Math.ceil(_h*_scale);  }
-    public function get a():int {   return w*h;  }
+    public function get a():int {   return this.w*this.h;  }
 
     public static function fromFlipbook (lib :XflLibrary, movie :MovieMold, frame :int,
         quality :String = StageQuality.BEST, scale :Number = 1) :SwfTexture {
@@ -100,14 +100,14 @@ public class SwfTexture
 
         // scale bitmap to target size if necessary (only used if _disp contains filters)
         if (_scale != 1.0) {
-            bmd = Util.renderToBitmapData(bmd, w, h, _quality, _scale);
+            bmd = Util.renderToBitmapData(bmd, this.w, this.h, _quality, _scale);
         }
 
         // add padding if necessary
         return (borderPadding > 0 ? Util.padBitmapBorder(bmd, borderPadding) : bmd);
     }
 
-    public function toString () :String { return "a " + a + " w " + w + " h " + h; }
+    public function toString () :String { return "a " + this.a + " w " + this.w + " h " + this.h; }
 
     private function recalculateSizeInfo() :void {
         // get normal bounds
