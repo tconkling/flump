@@ -2,7 +2,7 @@ package flump.display {
 
 import starling.display.DisplayObject;
 
-public interface SymbolCreator {
+internal interface SymbolCreator {
     function create (library :Library) :DisplayObject;
 }
 }

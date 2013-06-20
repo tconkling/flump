@@ -6,7 +6,7 @@ import starling.display.DisplayObject;
 import starling.display.Image;
 import starling.textures.Texture;
 
-public class LibraryImpl implements Library {
+internal class LibraryImpl implements Library {
     public function LibraryImpl (baseTextures :Vector.<Texture>, creators :Dictionary) {
         _baseTextures = baseTextures;
         _creators = creators;

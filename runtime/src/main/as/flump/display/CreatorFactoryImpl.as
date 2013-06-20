@@ -13,7 +13,7 @@ import starling.textures.Texture;
  * MovieCreators. It may be used as an adapter super class for a custom CreatorFactory
  * implementation.
  */
-public class CreatorFactoryImpl implements CreatorFactory {
+internal class CreatorFactoryImpl implements CreatorFactory {
     public function createImageCreator (mold :AtlasTextureMold, texture :Texture, origin :Point,
         symbol :String) :ImageCreator {
         return new ImageCreator(texture, origin, symbol);
