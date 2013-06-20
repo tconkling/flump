@@ -6,7 +6,7 @@ import starling.display.DisplayObject;
 import starling.display.Image;
 import starling.textures.Texture;
 
-public class ImageCreator
+internal class ImageCreator
     implements SymbolCreator
 {
     public var texture :Texture;

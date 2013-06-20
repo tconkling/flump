@@ -4,7 +4,7 @@ import flump.mold.MovieMold;
 
 import starling.display.DisplayObject;
 
-public class MovieCreator
+internal class MovieCreator
     implements SymbolCreator
 {
     public var mold :MovieMold;
