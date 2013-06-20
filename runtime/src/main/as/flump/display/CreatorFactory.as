@@ -11,7 +11,7 @@ import starling.textures.Texture;
 /**
  * A Factory for creating SymbolCreators that is given some context as a Library is assembled.
  */
-internal interface CreatorFactory {
+public interface CreatorFactory {
     function createImageCreator (mold :AtlasTextureMold, texture :Texture, origin :Point,
         symbol :String) :ImageCreator;
 
