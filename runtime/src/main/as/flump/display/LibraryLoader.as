@@ -29,7 +29,7 @@ public class LibraryLoader
      *
      * @param scaleFactor the desired scale factor of the textures to load. If the Library contains
      * textures with multiple scale factors, loader will load the textures with the scale factor
-     * closest to this value. If scaleFactor <= 0 (the default), Starling.contentScaleFactor will be
+     * closest to this value. If scaleFactor &lt;= 0 (the default), Starling.contentScaleFactor will be
      * used.
      *
      * @return a Future to use to track the success or failure of loading the resources out of the
@@ -55,7 +55,7 @@ public class LibraryLoader
      *
      * @param scaleFactor the desired scale factor of the textures to load. If the Library contains
      * textures with multiple scale factors, loader will load the textures with the scale factor
-     * closest to this value. If scaleFactor <= 0 (the default), Starling.contentScaleFactor will be
+     * closest to this value. If scaleFactor &lt;= 0 (the default), Starling.contentScaleFactor will be
      * used.
      *
      * @return a Future to use to track the success or failure of loading the resources from the
@@ -130,8 +130,8 @@ public class LibraryLoader
      *
      * @param scaleFactor the desired scale factor of the textures to load. If the Library contains
      * textures with multiple scale factors, loader will load the textures with the scale factor
-     * closest to this value. If scaleFactor <= 0 (the default), Starling.contentScaleFactor will be
-     * used.
+     * closest to this value. If scaleFactor &lt;= 0 (the default), Starling.contentScaleFactor will
+     * be used.
      */
     public function setScaleFactor (scaleFactor :Number) :LibraryLoader {
         _scaleFactor = scaleFactor;
