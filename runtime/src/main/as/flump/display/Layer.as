@@ -11,7 +11,7 @@ import starling.display.Sprite;
  * Movie. Responsible for efficiently managing the creation and display of the DisplayObjects for
  * this layer on each frame.
  */
-public class Layer {
+internal class Layer {
     public var keyframeIdx :int;// The index of the last keyframe drawn in drawFrame
     public var layerIdx :int;// This layer's index in the movie
     public var keyframes :Vector.<KeyframeMold>;
