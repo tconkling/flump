@@ -27,6 +27,7 @@ public class LayerMold
     }
 
     public function get frames () :int {
+        if (keyframes.length == 0) return 0;
         const lastKf :KeyframeMold = keyframes[keyframes.length - 1];
         return lastKf.index + lastKf.duration;
     }
