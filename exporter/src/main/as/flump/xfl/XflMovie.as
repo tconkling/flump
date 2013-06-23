@@ -57,7 +57,8 @@ public class XflMovie
             }
         } else {
             for each (var layerEl :XML in layerEls) {
-                if (XmlUtil.getStringAttr(layerEl, "layerType", "") != "guide") {
+                var layerType:String = XmlUtil.getStringAttr(layerEl, "layerType", "");
+                if ((layerType != "guide") && (layerType != "folder")) {
                     movie.layers.unshift(XflLayer.parse(lib, location, layerEl, false));
                 }
             }
