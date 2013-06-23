@@ -93,19 +93,23 @@ public class PreviewController
 
         // default our atlas scale to our export scale
         var scale :Number = 1;
+        var border :int = 1;
         if (_project.exports.length > 0) {
             const exportConf :ExportConf = _project.exports[0];
             scale = exportConf.scale;
+            border = exportConf.textureBorder;
         }
         _atlasPreviewWindow.scale.text = "" + scale;
-        _atlasPreviewWindow.setScale.addEventListener(MouseEvent.CLICK, F.callback(updateAtlas));
+        _atlasPreviewWindow.border.text = "" + border;
+        _atlasPreviewWindow.preview.addEventListener(MouseEvent.CLICK, F.callback(updateAtlas));
         updateAtlas();
     }
 
     protected function updateAtlas () :void {
         // create our atlases
         const scale :Number = MathUtil.clamp(Number(_atlasPreviewWindow.scale.text), 0.001, 1);
-        const atlases :Vector.<Atlas> = TexturePacker.withLib(_lib).baseScale(scale).createAtlases();
+        const border :int = Math.max(0, int(_atlasPreviewWindow.border.text));
+        const atlases :Vector.<Atlas> = TexturePacker.withLib(_lib).baseScale(scale).borderSize(border).createAtlases();
 
         const sprite :flash.display.Sprite = new flash.display.Sprite();
         for (var ii :int = 0; ii < atlases.length; ++ii) {
