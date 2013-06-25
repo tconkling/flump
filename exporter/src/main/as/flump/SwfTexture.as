@@ -23,11 +23,12 @@ import flump.xfl.XflTexture;
 
 public class SwfTexture
 {
-    public function get symbol():String {   return _symbol;     }
-    public function get origin():Point  {   return new Point(_origin.x*_scale, _origin.y*_scale);     }
-    public function get w():int {   return Math.ceil(_w*_scale);  }
-    public function get h():int {   return Math.ceil(_h*_scale);  }
-    public function get a():int {   return this.w*this.h;  }
+    public var symbol :String;
+    public var quality :String;
+    public function get origin() :Point { return new Point(_origin.x * _scale, _origin.y * _scale); }
+    public function get w() :int { return Math.ceil(_w * _scale); }
+    public function get h() :int { return Math.ceil(_h * _scale); }
+    public function get a() :int { return this.w * this.h; }
 
     public static function fromFlipbook (lib :XflLibrary, movie :MovieMold, frame :int,
         quality :String = StageQuality.BEST, scale :Number = 1) :SwfTexture {
@@ -50,8 +51,8 @@ public class SwfTexture
     }
 
     public function SwfTexture (symbol :String, disp :DisplayObject, scale :Number, quality :String) {
-        _symbol = symbol;
-        _quality = quality;
+        this.symbol = symbol;
+        this.quality = quality;
 
         // wrap object twice for convenience
         var wrapper:Sprite = new Sprite();
@@ -96,11 +97,11 @@ public class SwfTexture
         var bmd :BitmapData = new BitmapData(Math.ceil(_w), Math.ceil(_h), true, 0x00);
         var m :Matrix = new Matrix();
         m.translate(_origin.x, _origin.y);
-        bmd.drawWithQuality(_disp, m, null, null, null, true, _quality);
+        bmd.drawWithQuality(_disp, m, null, null, null, true, this.quality);
 
         // scale bitmap to target size if necessary (only used if _disp contains filters)
         if (_scale != 1.0) {
-            bmd = Util.renderToBitmapData(bmd, this.w, this.h, _quality, _scale);
+            bmd = Util.renderToBitmapData(bmd, this.w, this.h, this.quality, _scale);
         }
 
         // add padding if necessary
@@ -119,7 +120,7 @@ public class SwfTexture
             // render to bmd
             var topLeft:Point = new Point(_s_filteredBmd.width / 2 - _strictBounds.width / 2 - _strictBounds.x, _s_filteredBmd.height / 2 - _strictBounds.height / 2 - _strictBounds.y);
             var m :Matrix = new Matrix(1,0,0,1, topLeft.x, topLeft.y);
-            _s_filteredBmd.drawWithQuality(_disp, m, null, null, null, true, _quality);
+            _s_filteredBmd.drawWithQuality(_disp, m, null, null, null, true, this.quality);
             
             // calculate visual bounds
             _visualBounds = _s_filteredBmd.getColorBoundsRect(0xff000000, 0x00000000, false);
@@ -159,14 +160,12 @@ public class SwfTexture
         return false;        
     }
     
-    private var _symbol :String;
     private var _disp :DisplayObjectContainer;
     private var _w :int, _h :int;
     private var _origin :Point;
     private var _strictBounds :Rectangle;
     private var _visualBounds :Rectangle;
     private var _scale :Number;
-    private var _quality :String;
     private var _treatAsFiltered:Boolean;
     
     static private var _s_filteredBmd:BitmapData = new BitmapData(2048, 2048, true, 0x0);
