@@ -71,9 +71,8 @@ public class XflMovie
 
         return movie;
     }
-    
 
-    // lookup table for filters associated with a given KeyframeMold
+    // lookup table for filters associated with a given flipbook MovieMold
     static private var _s_filtersByFlipbookMovieMold :Dictionary = new Dictionary(true);
     static public function setFiltersForFlipbook(movie :MovieMold, filters :Array) :void {
         _s_filtersByFlipbookMovieMold[movie] = filters;
@@ -81,6 +80,6 @@ public class XflMovie
     static public function getFiltersForFlipbook(movie :MovieMold) :Array {
         return (movie in _s_filtersByFlipbookMovieMold) ? _s_filtersByFlipbookMovieMold[movie] : [];
     }
-    
+
 }
 }
