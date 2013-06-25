@@ -213,10 +213,9 @@ public class XflKeyframe
     }
 
     // lookup table for filters associated with a given KeyframeMold
-    static private var _s_filtersByKeyframe:Dictionary = new Dictionary(true);
-    static public function getFiltersForKeyframe(kf:KeyframeMold):Array
-    {
-        return (kf in _s_filtersByKeyframe) ? _s_filtersByKeyframe[kf] : null;
+    static private var _s_filtersByKeyframe :Dictionary = new Dictionary(true);
+    static public function getFiltersForKeyframe(kf :KeyframeMold) :Array {
+        return (kf in _s_filtersByKeyframe) ? _s_filtersByKeyframe[kf] : [];
     }
 
 }
