@@ -131,12 +131,12 @@ public class XflKeyframe
         _s_filtersByKeyframe[kf] = [];
 
         // for each filter nodes, parse the xml and add a BitmapFilter to the lookup table
-        var filter:BitmapFilter;
-        for each (var filterXml:XML in symbolXml.filters.elements()) {
+        var filter :BitmapFilter;
+        for each (var filterXml :XML in symbolXml.filters.elements()) {
             // parse different filter types into their native flash.filter types
             if (filterXml.name().localName == "AdjustColorFilter") {
                 // <AdjustColorFilter brightness="-100" hue="-32"/>
-                var colorFilter:AdjustColor = new AdjustColor();
+                var colorFilter :AdjustColor = new AdjustColor();
                 colorFilter.hue = XmlUtil.getNumberAttr(filterXml, "hue", 0);
                 colorFilter.saturation = XmlUtil.getNumberAttr(filterXml, "saturation", 0);
                 colorFilter.brightness = XmlUtil.getNumberAttr(filterXml, "brightness", 0);
