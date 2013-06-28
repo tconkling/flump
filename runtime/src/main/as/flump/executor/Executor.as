@@ -156,7 +156,7 @@ public class Executor
 
     /** @private */
     protected function terminateIfNecessary () :void {
-        if (_terminated || !isIdle) return;
+        if (!_shutdown || _terminated || !isIdle) return;
         _terminated = true;
         terminated.emit(this);
     }
