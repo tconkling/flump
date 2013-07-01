@@ -3,6 +3,8 @@
 
 package flump {
 
+import com.threerings.display.DisplayUtil;
+
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.DisplayObject;
@@ -138,30 +140,19 @@ public class SwfTexture
         _w = _visualBounds.width;
         _h = _visualBounds.height;
     }
-    
+
     private function hasPotentiallySizeAlteringFilters(dObj:DisplayObject) :Boolean {
-        // check dObj's filter list
-        var filters:Array = dObj.filters;
-        for (var ff:int = 0, nf:int = filters.length; ff < nf; ++ff) {
-            // all standard filters except ColorMatrixFilter can change the visual bounds
-            if (!(filters[ff] is ColorMatrixFilter)) {
-                return true;
-            }
-        }
-        // recursively check children
-        var dObjContainer:flash.display.DisplayObjectContainer = dObj as flash.display.DisplayObjectContainer;
-        if (dObjContainer) {
-            for (var cc:int = 0, nc:int = dObjContainer.numChildren; cc < nc; ++cc) {
-                var child:DisplayObject = dObjContainer.getChildAt(cc);
-                if (hasPotentiallySizeAlteringFilters(child)) {
+        return DisplayUtil.applyToHierarchy(dObj, function (disp :DisplayObject) :Boolean {
+            for each (var filter :Object in disp.filters) {
+                // all standard filters except ColorMatrixFilter can change the visual bounds
+                if (!(filter is ColorMatrixFilter)) {
                     return true;
                 }
             }
-        }
-        // all clear
-        return false;        
+            return false;
+        });
     }
-    
+
     private var _disp :DisplayObjectContainer;
     private var _w :int, _h :int;
     private var _origin :Point;
