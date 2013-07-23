@@ -101,7 +101,7 @@ public class Util
     }
 
     public static function renderToBitmapData (src :IBitmapDrawable, w :int, h :int,
-        scale :Number = 1, multipassScaleThreshold :Number = 0.5) :BitmapData {
+        quality:String, scale :Number = 1, multipassScaleThreshold :Number = 0.5) :BitmapData {
 
         var bounds :Rectangle = getBitmapDrawableBounds(src);
 
@@ -109,7 +109,7 @@ public class Util
             // for down or up-scaling, render at normal size first, then scale to get the
             // benefit of bitmap smoothing. BitmapData.draw smoothing only works
             // when the source is itself a BitmapData object.
-            src = renderToBitmapData(src, Math.ceil(bounds.width), Math.ceil(bounds.height), 1);
+            src = renderToBitmapData(src, Math.ceil(bounds.width), Math.ceil(bounds.height), quality, 1);
             bounds = getBitmapDrawableBounds(src);
         }
 
@@ -121,7 +121,7 @@ public class Util
         while (targetScale < multipassScaleThreshold) {
             targetW *= multipassScaleThreshold;
             targetH *= multipassScaleThreshold;
-            src = renderToBitmapData(src, Math.ceil(targetW), Math.ceil(targetH), multipassScaleThreshold);
+            src = renderToBitmapData(src, Math.ceil(targetW), Math.ceil(targetH), quality, multipassScaleThreshold);
             targetScale /= multipassScaleThreshold;
         }
         bounds = getBitmapDrawableBounds(src);
@@ -130,7 +130,7 @@ public class Util
         var m :Matrix = new Matrix();
         m.translate(-bounds.x, -bounds.y);
         m.scale(targetScale, targetScale);
-        bmd.draw(src, m, null, null, null, true);
+        bmd.drawWithQuality(src, m, null, null, null, true, quality);
         return bmd;
     }
 

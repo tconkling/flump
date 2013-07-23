@@ -6,11 +6,10 @@ package flump.test {
 import flash.filesystem.File;
 
 import flump.export.ExportConf;
-import flump.export.Format;
 import flump.export.JSONFormat;
 import flump.export.ProjectConf;
 import flump.export.Publisher;
-import flump.export.StarlingFormat;
+import flump.export.JSONZipFormat;
 import flump.export.XMLFormat;
 import flump.xfl.XflLibrary;
 
@@ -20,7 +19,7 @@ public class PublishTest
         _lib = lib;
         runner.run("Publish XML", makePublishTest("xml", XMLFormat));
         runner.run("Publish JSON", makePublishTest("json", JSONFormat));
-        runner.run("Publish Starling", makePublishTest("starling", StarlingFormat,
+        runner.run("Publish JSONZip", makePublishTest("jsonzip", JSONZipFormat,
             function (output :File) :void {  new StarlingResourcesTest(runner, output); }));
     }
 

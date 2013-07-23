@@ -25,24 +25,24 @@ public class FlaLoader
 
         const future :FutureTask = new FutureTask();
         _library = new XflLibrary(name);
-        _loader.terminated.add(function (..._) :void {
+        _loader.terminated.connect(function (..._) :void {
             _library.finishLoading();
             future.succeed(_library);
         });
 
         var loadSWF :Future = _library.loadSWF(Files.replaceExtension(file, "swf"));
-        loadSWF.succeeded.add(function () :void {
+        loadSWF.succeeded.connect(function () :void {
             // Since listLibrary shuts down the executor, wait for the swf to load first
             listLibrary(file);
         });
-        loadSWF.failed.add(F.adapt(_loader.shutdown));
+        loadSWF.failed.connect(F.adapt(_loader.shutdown));
 
         return future;
     }
 
     protected function listLibrary (file :File) :void {
         const loadZip :Future = Files.load(file, _loader);
-        loadZip.succeeded.add(function (data :ByteArray) :void {
+        loadZip.succeeded.connect(function (data :ByteArray) :void {
             const zip :FZip = new FZip();
             zip.loadBytes(data);
 
@@ -55,7 +55,7 @@ public class FlaLoader
             }
             _loader.shutdown();
         });
-        loadZip.failed.add(function (error :Error) :void {
+        loadZip.failed.connect(function (error :Error) :void {
             _library.addTopLevelError(ParseError.CRIT, error.message, error);
             _loader.shutdown();
         });

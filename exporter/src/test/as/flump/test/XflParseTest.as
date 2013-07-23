@@ -3,8 +3,8 @@
 
 package flump.test {
 
-import executor.Future;
-import executor.VisibleFuture;
+import flump.executor.Future;
+import flump.executor.FutureTask;
 
 import flump.export.XflLoader;
 import flump.xfl.XflLibrary;
@@ -22,7 +22,7 @@ public class XflParseTest
     }
 
     protected function makeParseTest (name :String, postParse :Function) :Function {
-        return function (finisher :VisibleFuture) :void {
+        return function (finisher :FutureTask) :void {
             const load :Future = new XflLoader().load(name, TestRunner.resources.resolvePath(name));
             load.succeeded.add(function (lib :XflLibrary) :void {
                 finisher.succeedAfter(function (..._) :void {

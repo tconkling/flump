@@ -3,12 +3,14 @@
 
 package flump.display {
 
+import flash.events.ProgressEvent;
 import flash.utils.ByteArray;
 
 import flump.executor.Executor;
 import flump.executor.Future;
+import flump.mold.LibraryMold;
 
-import starling.core.Starling;
+import react.Signal;
 
 /**
  * Loads zip files created by the flump exporter and parses them into Library instances.
@@ -18,6 +20,8 @@ public class LibraryLoader
     /**
      * Loads a Library from the zip in the given bytes.
      *
+     * @deprecated Use a new LibraryLoader with the builder pattern instead.
+     *
      * @param bytes The bytes containing the zip
      *
      * @param executor The executor on which the loading should run. If not specified, it'll run on
@@ -25,7 +29,7 @@ public class LibraryLoader
      *
      * @param scaleFactor the desired scale factor of the textures to load. If the Library contains
      * textures with multiple scale factors, loader will load the textures with the scale factor
-     * closest to this value. If scaleFactor <= 0 (the default), Starling.contentScaleFactor will be
+     * closest to this value. If scaleFactor &lt;= 0 (the default), Starling.contentScaleFactor will be
      * used.
      *
      * @return a Future to use to track the success or failure of loading the resources out of the
@@ -33,21 +37,25 @@ public class LibraryLoader
      * Library. If it fails, the Future's onFail will fire with the Error that caused the
      * loading failure.
      */
-    public static function loadBytes (bytes :ByteArray, executor :Executor=null, scaleFactor :Number=-1) :Future {
-        return (executor || new Executor(1)).submit(new Loader(bytes, scaleFactor).load);
+    public static function loadBytes (bytes :ByteArray, executor :Executor=null,
+        scaleFactor :Number=-1) :Future {
+        return new LibraryLoader().setExecutor(executor).setScaleFactor(scaleFactor)
+            .loadBytes(bytes);
     }
 
     /**
      * Loads a Library from the zip at the given url.
      *
-     * @param bytes The url where the zip can be found
+     * @deprecated Use a new LibraryLoader with the builder pattern instead.
+     *
+     * @param url The url where the zip can be found
      *
      * @param executor The executor on which the loading should run. If not specified, it'll run on
      * a new single-use executor.
      *
      * @param scaleFactor the desired scale factor of the textures to load. If the Library contains
      * textures with multiple scale factors, loader will load the textures with the scale factor
-     * closest to this value. If scaleFactor <= 0 (the default), Starling.contentScaleFactor will be
+     * closest to this value. If scaleFactor &lt;= 0 (the default), Starling.contentScaleFactor will be
      * used.
      *
      * @return a Future to use to track the success or failure of loading the resources from the
@@ -55,8 +63,136 @@ public class LibraryLoader
      * Library. If it fails, the Future's onFail will fire with the Error that caused the
      * loading failure.
      */
-    public static function loadURL (url :String, executor :Executor=null, scaleFactor :Number=-1) :Future {
-        return (executor || new Executor(1)).submit(new Loader(url, scaleFactor).load);
+    public static function loadURL (url :String, executor :Executor=null,
+        scaleFactor :Number=-1) :Future {
+        return new LibraryLoader().setExecutor(executor).setScaleFactor(scaleFactor)
+            .loadURL(url);
+    }
+
+    /**
+     * Dispatched when a ProgressEvent is received on a URL load of a Zip archive.
+     *
+     * Signal parameters:
+     *  * event :flash.events.ProgressEvent
+     */
+    public const urlLoadProgressed :Signal = new Signal(ProgressEvent);
+
+    /**
+     * Dispatched when a file is found in the Zip archive that is not recognized by Flump.
+     *
+     * Dispatched Object has the following named properties:
+     *  * name :String - the filename in the archive
+     *  * bytes :ByteArray - the content of the file
+     */
+    public const fileLoaded :Signal = new Signal(Object);
+
+    /**
+     * Dispatched when the library mold has been read from the archive.
+     */
+    public const libraryMoldLoaded :Signal = new Signal(LibraryMold);
+
+    /**
+     * Dispatched when the bytes for an ATF atlas have been read from the archive.
+     *
+     * Dispatched Object has the following named properties:
+     *  * name :String - the filename of the atlas
+     *  * bytes :ByteArray - the content of the atlas
+     */
+    public const atfAtlasLoaded :Signal = new Signal(Object);
+
+    /**
+     * Dispatched when a PNG atlas has been loaded and decoded from the archive. Changes made to
+     * the loaded png in a signal listener will affect the final rendered texture.
+     *
+     * NOTE: If Starling is not configured to handle lost context (Starling.handleLostContext),
+     * the Bitmap dispatched to this signal will be disposed immediately after the dispatch, and
+     * will become useless.
+     *
+     * Dispatched Object has the following named properties:
+     *  * atlas :AtlasMold - The loaded atlas.
+     *  * image :LoadedImage - the decoded image.
+     */
+    public const pngAtlasLoaded :Signal = new Signal(Object);
+
+    /**
+     * Sets the executor instance to use with this loader.
+     *
+     * @param executor The executor on which the loading should run. If left null (the default),
+     * it'll run on a new single-use executor.
+     */
+    public function setExecutor (executor :Executor) :LibraryLoader {
+        _executor = executor;
+        return this;
+    }
+
+    /**
+     * Sets the scale factor value to use with this loader.
+     *
+     * @param scaleFactor the desired scale factor of the textures to load. If the Library contains
+     * textures with multiple scale factors, loader will load the textures with the scale factor
+     * closest to this value. If scaleFactor &lt;= 0 (the default), Starling.contentScaleFactor will
+     * be used.
+     */
+    public function setScaleFactor (scaleFactor :Number) :LibraryLoader {
+        _scaleFactor = scaleFactor;
+        return this;
+    }
+
+    public function get scaleFactor () :Number {
+        return _scaleFactor;
+    }
+
+    /**
+     * Sets the mip map generation for this loader.
+     *
+     * @param generateMipMaps If true (defaults to false), flump will instruct Starling to generate
+     * mip maps for all loaded textures. Scaling will look better if mipmaps are enabled, but there
+     * is a loading time and memory usage penalty.
+     */
+    public function setGenerateMipMaps (generateMipMaps :Boolean) :LibraryLoader {
+        _generateMipMaps = generateMipMaps;
+        return this;
+    }
+
+    public function get generateMipMaps () :Boolean {
+        return _generateMipMaps;
+    }
+
+    /**
+     * Sets the CreatorFactory instance used for this loader.
+     */
+    public function setCreatorFactory (factory :CreatorFactory) :LibraryLoader {
+        _creatorFactory = factory;
+        return this;
+    }
+
+    public function get creatorFactory () :CreatorFactory {
+        if (_creatorFactory == null) {
+            _creatorFactory = new CreatorFactoryImpl();
+        }
+        return _creatorFactory;
+    }
+
+    /**
+     * Loads a Library from the zip in the given bytes, using the settings configured in this
+     * loader.
+     *
+     * @param bytes The bytes containing the zip
+     */
+    public function loadBytes (bytes :ByteArray) :Future {
+        return (_executor || new Executor(1)).submit(
+            new Loader(bytes, this).load);
+    }
+
+    /**
+     * Loads a Library from the zip at the given url, using the settings configured in this
+     * loader.
+     *
+     * @param url The url where the zip can be found
+     */
+    public function loadURL (url :String) :Future {
+        return (_executor || new Executor(1)).submit(
+            new Loader(url, this).load);
     }
 
     /** @private */
@@ -72,282 +208,10 @@ public class LibraryLoader
      * zip must equal the version compiled into the parsing code for parsing to succeed.
      */
     public static const VERSION :String = "2";
+
+    protected var _executor :Executor;
+    protected var _scaleFactor :Number = -1;
+    protected var _generateMipMaps :Boolean = false;
+    protected var _creatorFactory :CreatorFactory;
 }
-
-}
-
-import deng.fzip.FZip;
-import deng.fzip.FZipErrorEvent;
-import deng.fzip.FZipEvent;
-import deng.fzip.FZipFile;
-
-import flash.events.Event;
-import flash.geom.Point;
-import flash.geom.Rectangle;
-import flash.net.URLRequest;
-import flash.utils.ByteArray;
-import flash.utils.Dictionary;
-
-import flump.display.Library;
-import flump.display.LibraryLoader;
-import flump.display.Movie;
-import flump.executor.Executor;
-import flump.executor.Future;
-import flump.executor.FutureTask;
-import flump.executor.load.ImageLoader;
-import flump.executor.load.LoadedImage;
-import flump.mold.AtlasMold;
-import flump.mold.AtlasTextureMold;
-import flump.mold.LibraryMold;
-import flump.mold.MovieMold;
-import flump.mold.TextureGroupMold;
-
-import starling.core.Starling;
-import starling.display.DisplayObject;
-import starling.display.Image;
-import starling.textures.Texture;
-
-interface SymbolCreator
-{
-    function create (library :Library) :DisplayObject;
-}
-
-class LibraryImpl
-    implements Library
-{
-    public function LibraryImpl (baseTextures :Vector.<Texture>, creators :Dictionary) {
-        _baseTextures = baseTextures;
-        _creators = creators;
-    }
-
-    public function createMovie (symbol :String) :Movie {
-        return Movie(createDisplayObject(symbol));
-    }
-
-    public function createImage (symbol :String) :Image {
-        const disp :DisplayObject = createDisplayObject(symbol);
-        if (disp is Movie) throw new Error(symbol + " is not an Image");
-        return Image(disp);
-    }
-
-    public function getImageTexture (symbol :String) :Texture {
-        checkNotDisposed();
-        var creator :SymbolCreator = requireSymbolCreator(symbol);
-        if (!(creator is ImageCreator)) throw new Error(symbol + " is not an Image");
-        return ImageCreator(creator).texture;
-    }
-
-    public function get movieSymbols () :Vector.<String> {
-        checkNotDisposed();
-        const names :Vector.<String> = new <String>[];
-        for (var creatorName :String in _creators) {
-            if (_creators[creatorName] is MovieCreator) names.push(creatorName);
-        }
-        return names;
-    }
-
-    public function get imageSymbols () :Vector.<String> {
-        checkNotDisposed();
-        const names :Vector.<String> = new <String>[];
-        for (var creatorName :String in _creators) {
-            if (_creators[creatorName] is ImageCreator) names.push(creatorName);
-        }
-        return names;
-    }
-
-    public function createDisplayObject (name :String) :DisplayObject {
-        checkNotDisposed();
-        return requireSymbolCreator(name).create(this);
-    }
-
-    public function dispose () :void {
-        checkNotDisposed();
-        for each (var tex :Texture in _baseTextures) {
-            tex.dispose();
-        }
-        _baseTextures = null;
-        _creators = null;
-    }
-
-    protected function requireSymbolCreator (name :String) :SymbolCreator {
-        var creator :SymbolCreator = _creators[name];
-        if (creator == null) throw new Error("No such id '" + name + "'");
-        return creator;
-    }
-
-    protected function checkNotDisposed () :void {
-        if (_baseTextures == null) {
-            throw new Error("This Library has been disposed");
-        }
-    }
-
-    protected var _creators :Dictionary;
-    protected var _baseTextures :Vector.<Texture>;
-}
-
-class Loader
-{
-    public function Loader (toLoad :Object, scaleFactor :Number) {
-        _scaleFactor = (scaleFactor > 0 ? scaleFactor : Starling.contentScaleFactor);
-        _toLoad = toLoad;
-    }
-
-    public function load (future :FutureTask) :void {
-        _future = future;
-
-        _zip.addEventListener(Event.COMPLETE, _future.monitoredCallback(onZipLoadingComplete));
-        _zip.addEventListener(FZipErrorEvent.PARSE_ERROR, _future.fail);
-        _zip.addEventListener(FZipEvent.FILE_LOADED, _future.monitoredCallback(onFileLoaded));
-
-        if (_toLoad is String) _zip.load(new URLRequest(String(_toLoad)));
-        else _zip.loadBytes(ByteArray(_toLoad));
-    }
-
-    protected function onFileLoaded (e :FZipEvent) :void {
-        const loaded :FZipFile = _zip.removeFileAt(_zip.getFileCount() - 1);
-        const name :String = loaded.filename;
-        if (name == LibraryLoader.LIBRARY_LOCATION) {
-            const jsonString :String = loaded.content.readUTFBytes(loaded.content.length);
-            _lib = LibraryMold.fromJSON(JSON.parse(jsonString));
-        } else if (name.indexOf(PNG, name.length - PNG.length) != -1) {
-            _pngBytes[name] = loaded.content;
-        } else if (name == LibraryLoader.VERSION_LOCATION) {
-            const zipVersion :String = loaded.content.readUTFBytes(loaded.content.length)
-            if (zipVersion != LibraryLoader.VERSION) {
-                throw new Error("Zip is version " + zipVersion + " but the code needs " + LibraryLoader.VERSION);
-            }
-            _versionChecked = true;
-        } else if (name == LibraryLoader.MD5_LOCATION ) { // Nothing to verify
-        } else {} // ignore unknown files
-    }
-
-    protected function onZipLoadingComplete (..._) :void {
-        _zip = null;
-        if (_lib == null) throw new Error(LibraryLoader.LIBRARY_LOCATION + " missing from zip");
-        if (!_versionChecked) throw new Error(LibraryLoader.VERSION_LOCATION + " missing from zip");
-        const loader :ImageLoader = new ImageLoader();
-        _pngLoaders.terminated.add(_future.monitoredCallback(onPngLoadingComplete));
-
-        // Determine the scale factor we want to use
-        var textureGroup :TextureGroupMold = _lib.bestTextureGroupForScaleFactor(_scaleFactor);
-        if (textureGroup != null) {
-            for each (var atlas :AtlasMold in textureGroup.atlases) {
-                loadAtlas(loader, atlas);
-            }
-        }
-        _pngLoaders.shutdown();
-    }
-
-    protected function loadAtlas (loader :ImageLoader, atlas :AtlasMold) :void {
-        const pngBytes :* = _pngBytes[atlas.file];
-        if (pngBytes === undefined) {
-            throw new Error("Expected an atlas '" + atlas.file + "', but it wasn't in the zip");
-        }
-        const atlasFuture :Future = loader.loadFromBytes(pngBytes, _pngLoaders);
-        atlasFuture.failed.add(onPngLoadingFailed);
-        atlasFuture.succeeded.add(function (img :LoadedImage) :void {
-            var scale :Number = atlas.scaleFactor;
-            const baseTexture :Texture = Texture.fromBitmapData(
-                img.bitmapData,
-                false,   // generateMipMaps
-                false,  // optimizeForRenderToTexture
-                scale);
-
-            _baseTextures.push(baseTexture);
-
-            if (!Starling.handleLostContext) {
-                img.bitmapData.dispose();
-            }
-
-            for each (var atlasTexture :AtlasTextureMold in atlas.textures) {
-                var bounds :Rectangle = atlasTexture.bounds;
-                var offset :Point = atlasTexture.origin;
-
-                // Starling expects subtexture bounds to be unscaled
-                if (scale != 1) {
-                    bounds = bounds.clone();
-                    bounds.x /= scale;
-                    bounds.y /= scale;
-                    bounds.width /= scale;
-                    bounds.height /= scale;
-
-                    offset = offset.clone();
-                    offset.x /= scale;
-                    offset.y /= scale;
-                }
-
-                _creators[atlasTexture.symbol] = new ImageCreator(
-                    Texture.fromTexture(baseTexture, bounds),
-                    offset,
-                    atlasTexture.symbol);
-            }
-        });
-    }
-
-    protected function onPngLoadingComplete (..._) :void {
-        for each (var movie :MovieMold in _lib.movies) {
-            movie.fillLabels();
-            _creators[movie.id] = new MovieCreator(movie, _lib.frameRate);
-        }
-        _future.succeed(new LibraryImpl(_baseTextures, _creators));
-    }
-
-    protected function onPngLoadingFailed (e :*) :void {
-        if (_future.isComplete) return;
-        _future.fail(e);
-        _pngLoaders.shutdownNow();
-    }
-
-    protected var _toLoad :Object;
-    protected var _scaleFactor :Number;
-    protected var _future :FutureTask;
-    protected var _versionChecked :Boolean;
-
-    protected var _zip :FZip = new FZip();
-    protected var _lib :LibraryMold;
-
-    protected const _baseTextures :Vector.<Texture> = new <Texture>[];
-    protected const _creators :Dictionary = new Dictionary();//<name, ImageCreator/MovieCreator>
-    protected const _pngBytes :Dictionary = new Dictionary();//<String name, ByteArray>
-    protected const _pngLoaders :Executor = new Executor(1);
-
-    protected static const PNG :String = ".png";
-}
-
-class ImageCreator
-    implements SymbolCreator
-{
-    public var texture :Texture;
-    public var origin :Point;
-    public var symbol :String;
-
-    public function ImageCreator (texture :Texture, origin :Point, symbol :String) {
-        this.texture = texture;
-        this.origin = origin;
-        this.symbol = symbol;
-    }
-
-    public function create (library :Library) :DisplayObject {
-        const image :Image = new Image(texture);
-        image.pivotX = origin.x;
-        image.pivotY = origin.y;
-        image.name = symbol;
-        return image;
-    }
-}
-
-class MovieCreator
-    implements SymbolCreator
-{
-    public var mold :MovieMold;
-    public var frameRate :Number;
-
-    public function MovieCreator (mold :MovieMold, frameRate :Number) {
-        this.mold = mold;
-        this.frameRate = frameRate;
-    }
-
-    public function create (library :Library) :DisplayObject {
-        return new Movie(mold, frameRate, library);
-    }
 }

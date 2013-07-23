@@ -3,6 +3,7 @@
 
 package flump.export {
 
+import flash.display.StageQuality;
 import flash.filesystem.File;
 
 import flump.mold.AtlasMold;
@@ -17,6 +18,9 @@ import com.threerings.util.StringUtil;
 
 public class ExportConf
 {
+    public static const OPTIMIZE_MEMORY :String = "Memory";
+    public static const OPTIMIZE_SPEED :String = "Speed";
+
     public var name :String = "default";
     public var format :String = JSONZipFormat.NAME;
     public var scale :Number = 1;
@@ -26,6 +30,10 @@ public class ExportConf
     public var maxAtlasSize :int = 2048;
     /** Additional scaleFactors to output */
     public var additionalScaleFactors :Array = [];
+    /** The optimization strategy. */
+    public var optimize :String = OPTIMIZE_MEMORY;
+    /** The stage quality setting (StageQuality). */
+    public var quality :String = StageQuality.BEST;
 
     public function get scaleFactorsString () :String {
         return this.additionalScaleFactors.join(",");
@@ -66,6 +74,8 @@ public class ExportConf
         conf.textureBorder = optional(o, "textureBorder", 1);
         conf.maxAtlasSize = optional(o, "maxAtlasSize", 2048);
         conf.additionalScaleFactors = optional(o, "additionalScaleFactors", []);
+        conf.optimize = optional(o, "optimize", OPTIMIZE_MEMORY);
+        conf.quality = optional(o, "quality", StageQuality.BEST);
         return conf;
     }
 

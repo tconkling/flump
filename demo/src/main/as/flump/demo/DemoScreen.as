@@ -17,8 +17,8 @@ public class DemoScreen extends Sprite
 {
     public function DemoScreen () {
         const loader :Future = LibraryLoader.loadBytes(ByteArray(new MASCOT_ZIP()));
-        loader.succeeded.add(onLibraryLoaded);
-        loader.failed.add(function (e :Error) :void { throw e; });
+        loader.succeeded.connect(onLibraryLoaded);
+        loader.failed.connect(function (e :Error) :void { throw e; });
     }
 
     protected function onLibraryLoaded (library :Library) :void {

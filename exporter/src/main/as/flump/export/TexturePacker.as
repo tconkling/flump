@@ -3,6 +3,8 @@
 
 package flump.export {
 
+import flash.display.StageQuality;
+
 import flump.xfl.XflLibrary;
 
 /**
@@ -16,11 +18,13 @@ public class TexturePacker
     public function scaleFactor (val :int) :TexturePacker {  _scaleFactor = val; return this; }
     public function borderSize (val :int) :TexturePacker { _borderSize = val; return this; }
     public function maxAtlasSize (val :int) :TexturePacker { _maxAtlasSize = val; return this; }
+    public function optimizeForSpeed (val :Boolean) :TexturePacker { _optimizeForSpeed = val; return this; }
+	public function quality (val :String) :TexturePacker { _quality = val; return this; }
     public function filenamePrefix (val :String) :TexturePacker { _filenamePrefix = val; return this; }
 
     public function createAtlases () :Vector.<Atlas> {
         return new PackerImpl(_lib, _baseScale, _scaleFactor, _borderSize,
-            _maxAtlasSize, _filenamePrefix).atlases;
+            _maxAtlasSize, _optimizeForSpeed, _quality, _filenamePrefix).atlases;
     }
 
     /** @private */
@@ -34,6 +38,8 @@ public class TexturePacker
     protected var _borderSize :int = 1;
     protected var _maxAtlasSize :int = 2048;
     protected var _filenamePrefix :String = "";
+    protected var _optimizeForSpeed :Boolean = false;
+    protected var _quality :String = StageQuality.BEST;
 }
 }
 
@@ -65,20 +71,23 @@ class PackerImpl
     public const atlases :Vector.<Atlas> = new <Atlas>[];
 
     public function PackerImpl (lib :XflLibrary, baseScale :Number, scaleFactor :int,
-        textureBorderSize :int, maxAtlasSize :int, filenamePrefix :String) {
+        textureBorderSize :int, maxAtlasSize :int, optimizeForSpeed :Boolean,
+        quality :String, filenamePrefix :String) {
 
-        _maxAtlasSize = maxAtlasSize;
         _textureBorderSize = textureBorderSize;
+        _maxAtlasSize = maxAtlasSize;
+        _optimizeForSpeed = optimizeForSpeed;
+        _quality = quality;
 
         var scale :Number = baseScale * scaleFactor;
 
         for each (var tex :XflTexture in lib.textures) {
-            _unpacked.push(SwfTexture.fromTexture(lib.swf, tex, scale));
+            _unpacked.push(SwfTexture.fromTexture(lib.swf, tex, quality, scale));
         }
         for each (var movie :MovieMold in lib.movies) {
             if (!movie.flipbook) continue;
             for each (var kf :KeyframeMold in movie.layers[0].keyframes) {
-                _unpacked.push(SwfTexture.fromFlipbook(lib, movie, kf.index, scale));
+                _unpacked.push(SwfTexture.fromFlipbook(lib, movie, kf.index, quality, scale));
             }
         }
         _unpacked.sort(Comparators.createReverse(Comparators.createFields(["a", "w", "h"])));
@@ -91,7 +100,8 @@ class PackerImpl
                 filenamePrefix + "atlas" + atlases.length,
                 size.x, size.y,
                 textureBorderSize,
-                scaleFactor));
+                scaleFactor,
+                quality));
             var hasEmptyAtlas :Boolean = true;
 
             // Try to pack each texture into any atlas
@@ -125,6 +135,12 @@ class PackerImpl
 
     // Estimate the optimal size for the next atlas
     protected function findOptimalSize () :Point {
+        if (_optimizeForSpeed) {
+            // Go ahead and use the largest possible atlas, extra space will be trimmed by AtlasImpl
+            // when rendering to a bitmap
+            return new Point(_maxAtlasSize, _maxAtlasSize);
+        }
+
         var area :int = 0;
         var maxW :int = 0;
         var maxH :int = 0;
@@ -151,14 +167,17 @@ class PackerImpl
         return size;
     }
 
-    protected static function nextPowerOfTwo (n :int) :int {
+    /** Returns the smallest number >= n that is a power of two. */
+    public static function nextPowerOfTwo (n :int) :int {
         var p :int = 1;
         while (p < n) p *= 2;
         return p;
     }
 
-    protected var _maxAtlasSize :int;
     protected var _textureBorderSize :int;
+    protected var _maxAtlasSize :int;
+    protected var _optimizeForSpeed :Boolean;
+    protected var _quality :String;
 
     protected const _unpacked :Vector.<SwfTexture> = new <SwfTexture>[];
 
@@ -170,18 +189,22 @@ class AtlasImpl
 {
     public var name :String;
 
-    public function AtlasImpl (name :String, w :int, h :int, borderSize :int, scaleFactor :int) {
+    public function AtlasImpl (name :String, w :int, h :int, borderSize :int, scaleFactor :int, quality :String) {
         this.name = name;
         _width = w;
         _height = h;
         _borderSize = borderSize;
-        _mask = Arrays.create(_width * _height, false);
+        _mask = new BitmapData(_width, _height, true, 0);
+        _mask.lock()
         _scaleFactor = scaleFactor;
+        _quality = quality;
     }
 
     public function get area () :int { return _width * _height; }
 
     public function get scaleFactor () :int { return _scaleFactor; }
+
+    public function get quailty () :String { return _quality; }
 
     public function get filename () :String { return name + AtlasMold.scaleFactorSuffix(_scaleFactor) + ".png"; }
 
@@ -210,14 +233,19 @@ class AtlasImpl
     public function toBitmap () :BitmapData {
         if (_bitmapData == null) {
             var constructed :Sprite = new Sprite();
+            var collapsedBounds :Rectangle = new Rectangle();
             _nodes.forEach(function (node :Node, ..._) :void {
                 const tex :SwfTexture = node.texture;
                 const bm :Bitmap = new Bitmap(node.texture.toBitmapData(_borderSize), "auto", true);
                 constructed.addChild(bm);
                 bm.x = node.paddedBounds.x;
                 bm.y = node.paddedBounds.y;
+                collapsedBounds = collapsedBounds.union(node.paddedBounds);
             });
-            _bitmapData = Util.renderToBitmapData(constructed, _width, _height);
+            _bitmapData = Util.renderToBitmapData(constructed,
+                PackerImpl.nextPowerOfTwo(collapsedBounds.x + collapsedBounds.width),
+                PackerImpl.nextPowerOfTwo(collapsedBounds.y + collapsedBounds.height),
+                quailty);
         }
         return _bitmapData;
     }
@@ -253,43 +281,31 @@ class AtlasImpl
         return found;
     }
 
+    protected static var _isMaskedPoint:Point = new Point();
+    protected static var _isMaskedRect:Rectangle = new Rectangle();
     protected function isMasked (x :int, y :int, w :int, h :int) :Boolean {
-        var xMax :int = x + w - 1;
-        var yMax :int = y + h - 1;
-        // fail fast on extents
-        if (maskAt(x, y) || maskAt(x, yMax) || maskAt(xMax, y) || maskAt(xMax, yMax)) {
-            return true;
-        }
-
-        for (var yy :int = y + 1; yy < yMax; ++yy) {
-            for (var xx :int = x + 1; xx < xMax; ++xx) {
-                if (maskAt(xx, yy)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        _isMaskedRect.setTo(x, y, w, h);
+        return _mask.hitTest(_isMaskedPoint, 1, _isMaskedRect);
     }
 
+    protected static var _setMaskedRect:Rectangle = new Rectangle();
     protected function setMasked (x :int, y :int, w: int, h :int) :void {
-        for (var yy :int = y; yy < y + h; ++yy) {
-            for (var xx :int = x; xx < x + w; ++xx) {
-                _mask[(yy * _width) + xx] = true;
-            }
-        }
+        _setMaskedRect.setTo(x, y, w, h);
+        _mask.fillRect(_setMaskedRect, 0xffffffff);
     }
 
     protected function maskAt (xx :int, yy :int) :Boolean {
-        return _mask[(yy * _width) + xx];
+        return _mask.getPixel32(xx, yy) != 0;
     }
 
     protected var _nodes :Array = [];
     protected var _width :int;
     protected var _height :int;
     protected var _borderSize :int;
-    protected var _mask :Array;
+    protected var _mask :BitmapData;
     protected var _bitmapData :BitmapData;
     protected var _scaleFactor :int;
+    protected var _quality :String;
 }
 
 class Node

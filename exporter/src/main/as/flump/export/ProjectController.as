@@ -100,20 +100,20 @@ public class ProjectController
 
         // Import/Export directories
         _importChooser = new DirChooser(null, _win.importRoot, _win.browseImport);
-        _importChooser.changed.add(setImportDirectory);
+        _importChooser.changed.connect(setImportDirectory);
         _exportChooser = new DirChooser(null, _win.exportRoot, _win.browseExport);
-        _exportChooser.changed.add(F.callback(reloadNow));
+        _exportChooser.changed.connect(F.callback(reloadNow));
 
-        _importChooser.changed.add(F.callback(setProjectDirty, true));
-        _exportChooser.changed.add(F.callback(setProjectDirty, true));
+        _importChooser.changed.connect(F.callback(setProjectDirty, true));
+        _exportChooser.changed.connect(F.callback(setProjectDirty, true));
 
         // Edit Formats
         var editFormatsController :EditFormatsController = null;
         _win.editFormats.addEventListener(MouseEvent.CLICK, function (..._) :void {
             if (editFormatsController == null || editFormatsController.closed) {
                 editFormatsController = new EditFormatsController(_conf);
-                editFormatsController.formatsChanged.add(updateUiFromConf);
-                editFormatsController.formatsChanged.add(F.callback(setProjectDirty, true));
+                editFormatsController.formatsChanged.connect(updateUiFromConf);
+                editFormatsController.formatsChanged.connect(F.callback(setProjectDirty, true));
             } else {
                 editFormatsController.show();
             }
@@ -331,7 +331,7 @@ public class ProjectController
     }
 
     protected function findFlashDocuments (base :File, exec :Executor, ignoreXflAtBase :Boolean = false) :void {
-        Files.list(base, exec).succeeded.add(function (files :Array) :void {
+        Files.list(base, exec).succeeded.connect(function (files :Array) :void {
             if (exec.isShutdown) return;
             for each (var file :File in files) {
                 if (Files.hasExtension(file, "xfl")) {
@@ -360,6 +360,12 @@ public class ProjectController
         stage.quality = StageQuality.BEST;
 
         try {
+            if (_exportChooser.dir == null) {
+                throw new Error("No export directory specified.");
+            }
+            if (_conf.exports.length == 0) {
+                throw new Error("No export formats specified.");
+            }
             createPublisher().publish(status.lib);
         } catch (e :Error) {
             ErrorWindowMgr.showErrorPopup("Publishing Failed", e.message, _win);
@@ -392,14 +398,14 @@ public class ProjectController
         const status :DocStatus = new DocStatus(name, Ternary.UNKNOWN, Ternary.UNKNOWN, null);
         _flashDocsGrid.dataProvider.addItem(status);
 
-        load.succeeded.add(function (lib :XflLibrary) :void {
+        load.succeeded.connect(function (lib :XflLibrary) :void {
             var pub :Publisher = createPublisher();
             status.lib = lib;
             status.updateModified(Ternary.of(pub == null || pub.modified(lib)));
             for each (var err :ParseError in lib.getErrors()) _errorsGrid.dataProvider.addItem(err);
             status.updateValid(Ternary.of(lib.valid));
         });
-        load.failed.add(function (error :Error) :void {
+        load.failed.connect(function (error :Error) :void {
             trace("Failed to load " + file.nativePath + ": " + error);
             status.updateValid(Ternary.FALSE);
             throw error;

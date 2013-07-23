@@ -8,13 +8,13 @@ import flash.events.MouseEvent;
 import mx.collections.ArrayList;
 import mx.events.CollectionEvent;
 
-import org.osflash.signals.Signal;
+import react.UnitSignal;
 
 import spark.events.GridSelectionEvent;
 
 public class EditFormatsController
 {
-    public const formatsChanged :Signal = new Signal();
+    public const formatsChanged :UnitSignal = new UnitSignal();
 
     public function EditFormatsController (conf :ProjectConf) {
         _win = new EditFormatsWindow();
@@ -22,7 +22,7 @@ public class EditFormatsController
 
         var dataProvider :ArrayList = new ArrayList(conf.exports);
         dataProvider.addEventListener(CollectionEvent.COLLECTION_CHANGE, function (..._) :void {
-            formatsChanged.dispatch();
+            formatsChanged.emit();
         });
 
         _win.exports.dataProvider = dataProvider;

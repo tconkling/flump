@@ -6,9 +6,9 @@ package flump.test {
 import flash.desktop.NativeApplication;
 import flash.filesystem.File;
 
-import executor.Executor;
-import executor.Future;
-import executor.VisibleFuture;
+import flump.executor.Executor;
+import flump.executor.Future;
+import flump.executor.FutureTask;
 
 import starling.display.Sprite;
 
@@ -40,7 +40,7 @@ public class TestRunner extends Sprite
     }
 
     public function run (name :String, f :Function) :void {
-        runAsync(name, function (future :VisibleFuture) :void { future.succeedAfter(f); });
+        runAsync(name, function (future :FutureTask) :void { future.succeedAfter(f); });
     }
 
     public function runAsync (name :String, f :Function) :void { _runs.put(_exec.submit(f), name); }
