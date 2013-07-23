@@ -151,9 +151,6 @@ public class Movie extends Sprite
                     _playing = false;
                     newFrame = _stopFrame;
                     _stopFrame = NO_FRAME;
-					
-                    // movie is complete
-                    dispatchEventWith(Event.COMPLETE);
                 }
             }
             updateFrame(newFrame, dt);
