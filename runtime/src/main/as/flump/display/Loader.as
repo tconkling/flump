@@ -95,11 +95,19 @@ internal class Loader {
                 loadAtlas(loader, atlas);
             }
         }
+        // free up extra atlas bytes immediately
+        for (var leftover :String in _atlasBytes) {
+            if (_atlasBytes.hasOwnProperty(leftover)) {
+                ByteArray(_atlasBytes[leftover]).clear();
+                delete (_atlasBytes[leftover]);
+            }
+        }
         _pngLoaders.shutdown();
     }
 
     protected function loadAtlas (loader :ImageLoader, atlas :AtlasMold) :void {
         const bytes :* = _atlasBytes[atlas.file];
+        delete _atlasBytes[atlas.file];
         if (bytes === undefined) {
             throw new Error("Expected an atlas '" + atlas.file + "', but it wasn't in the zip");
         }
@@ -108,6 +116,7 @@ internal class Loader {
         var scale :Number = atlas.scaleFactor;
         if (_lib.textureFormat == "atf") {
             baseTextureLoaded(Texture.fromAtfData(bytes, scale), atlas);
+            ByteArray(bytes).clear();
         } else {
             const atlasFuture :Future = loader.loadFromBytes(bytes, _pngLoaders);
             atlasFuture.failed.connect(onPngLoadingFailed);
@@ -121,6 +130,7 @@ internal class Loader {
                 if (!Starling.handleLostContext) {
                     img.bitmapData.dispose();
                 }
+                ByteArray(bytes).clear();
             });
 
         }
