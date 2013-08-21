@@ -73,6 +73,11 @@ public class Movie extends Sprite
     /** @return true if the movie is currently playing. */
     public function get isPlaying () :Boolean { return _playing; }
 
+    /** @return true if the movie contains the given label. */
+    public function hasLabel (label :String) :Boolean {
+        return getFrameForLabel(label) >= 0;
+    }
+
     /** Plays the movie from its current frame. The movie will loop forever.  */
     public function loop () :Movie {
         _playing = true;
@@ -169,10 +174,23 @@ public class Movie extends Sprite
         if (position is int) return int(position);
         if (!(position is String)) throw new Error("Movie position must be an int frame or String label");
         const label :String = String(position);
+        var frame :int = getFrameForLabel(label);
+        if (frame < 0) {
+            throw new Error("No such label '" + label + "'");
+        }
+        return frame;
+    }
+
+    /**
+     * @private
+     *
+     * Returns the frame index for the given label, or -1 if the label doesn't exist.
+     */
+    protected function getFrameForLabel (label :String) :int {
         for (var ii :int = 0; ii < _labels.length; ii++) {
             if (_labels[ii] != null && _labels[ii].indexOf(label) != -1) return ii;
         }
-        throw new Error("No such label '" + label + "'");
+        return -1;
     }
 
     /**
