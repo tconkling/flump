@@ -3,8 +3,8 @@
 Flump reads specially-constructed `.fla` and `.xfl` files saved by Flash and extracts animations and
 textures to allow them to be recreated in the GPU. Animations created in Flump's style will use far
 less texture memory per frame of animation than an equivalent flipbook animation, allowing for more
-expressive animations on mobile platforms. Runtimes have been written for [Starling], [Sparrow], [Flambe] 
-and [PlayN].
+expressive animations on mobile platforms. Runtimes have been written for [Starling], [Sparrow],
+[Flambe] and [PlayN].
 
 [Starling]: https://github.com/threerings/flump/tree/master/runtime
 [Sparrow]: https://github.com/threerings/betwixt
@@ -13,12 +13,12 @@ and [PlayN].
 
 # Creating a movie for Flump
 
-1. [Install the latest version of Adobe AIR](http://get.adobe.com/air/)
-1. [Install the Flump AIR app](https://bitbucket.org/tconkling/flump-binaries/downloads/flump-exporter.air)
-2. Create a `.fla` in Flash CS 5, 5.5, or 6
-3. Create a new item in the library and draw a shape in its canvas
-4. Right-click on the item, select its properties, tick the **Export for ActionScript** and **Export in frame 1** 
-   checkboxes and change its base class to `flash.display.Sprite`
+1. [Install the latest version of Adobe AIR](http://get.adobe.com/air/).
+1. [Install the Flump AIR app](https://bitbucket.org/tconkling/flump-binaries/downloads/flump-exporter.air).
+2. Create a `.fla` in Flash CS 5, 5.5, or 6.
+3. Create a new item in the library and draw a shape in its canvas.
+4. Right-click on the item, select its properties, tick the **Export for ActionScript** and
+   **Export in frame 1** checkboxes and change its base class to `flash.display.Sprite`.
 5. Create a second item in the library, and drag the first into it.
 6. Add additional frames in the second item, and create a classic tween moving the first item around
    in those frames.
@@ -35,15 +35,18 @@ This walks through Flump's process when it exports a single .fla/.swf file combo
 ### Texture creation
 
 For each item in the document's library that is exported for ActionScript and extends
-`flash.display.Sprite`, Flump creates a texture. To do so, it instantiates the library's exported symbol from 
-the `.swf` file and renders it to a bitmap.
+`flash.display.Sprite`, Flump creates a texture. To do so, it instantiates the library's exported
+symbol from the `.swf` file and renders it to a bitmap.
 
 All of the created bitmaps for a Flash document are packed into texture atlases, and xml is
 generated to map between a texture's symbol and its location in the bitmap.
 
 ### Animation creation
 
-For each item in the document's library that extends `flash.display.MovieClip` and isn't a flipbook (explained below), Flump creates an animation. It checks that for all layers and keyframes, each used symbol is either a texture, an animation, or a flipbook. Flump animations can only be constructed from the flump types.
+For each item in the document's library that extends `flash.display.MovieClip` and isn't a flipbook
+(explained below), Flump creates an animation. It checks that for all layers and keyframes, each
+used symbol is either a texture, an animation, or a flipbook. Flump animations can only be
+constructed from the flump types.
 
 ### Flipbook creation
 
@@ -58,8 +61,9 @@ Flump works with Flash CS 5, 5.5, and 6
 
 # Reporting Bugs
 
-To get AIR to report errors, you need to run Flump with the AIR debugger (adl).
-Assuming you have the free [Flex SDK](http://www.adobe.com/devnet/flex/flex-sdk-download.html) and [ant](http://ant.apache.org/) installed on your machine:
+To get AIR to report errors, you need to run Flump with the AIR debugger (adl). Assuming you have
+the free [Flex SDK](http://www.adobe.com/devnet/flex/flex-sdk-download.html) and
+[ant](http://ant.apache.org/) installed on your machine:
 
 1. Build the flump runtime
 
