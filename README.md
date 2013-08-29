@@ -59,11 +59,18 @@ will display those bitmaps at the same timing.
 
 Flump works with Flash CS 5, 5.5, and 6
 
-# Reporting Bugs
+# Building
 
-To get AIR to report errors, you need to run Flump with the AIR debugger (adl). Assuming you have
-the free [Flex SDK](http://www.adobe.com/devnet/flex/flex-sdk-download.html) and
-[ant](http://ant.apache.org/) installed on your machine:
+You will need these dependencies to build Flump:
+
+* [Flex SDK 4.6](http://www.adobe.com/devnet/flex/flex-sdk-download.html).
+
+* [AIR SDK](https://www.adobe.com/devnet/air/air-sdk-download.html). Get the version without the new
+  compiler (links near the bottom of that page) and extract it on top of your Flex SDK.
+
+* [Ant](http://ant.apache.org/).
+
+To get AIR to report errors during development, run Flump with the AIR debugger (adl):
 
 1. Build the flump runtime
 
