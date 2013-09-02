@@ -66,7 +66,7 @@ You will need these dependencies to build Flump:
 * [Flex SDK 4.6](http://www.adobe.com/devnet/flex/flex-sdk-download.html).
 
 * [AIR SDK](https://www.adobe.com/devnet/air/air-sdk-download.html). Get the version without the new
-  compiler (links near the bottom of that page) and extract it on top of your Flex SDK.
+  compiler (links near the bottom of that page) and [follow the instructions here to overlay it on the Flex SDK](http://helpx.adobe.com/x-productkb/multi/how-overlay-air-sdk-flex-sdk.html)
 
 * [Ant](http://ant.apache.org/).
 
