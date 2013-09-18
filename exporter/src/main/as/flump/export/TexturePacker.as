@@ -19,7 +19,7 @@ public class TexturePacker
     public function borderSize (val :int) :TexturePacker { _borderSize = val; return this; }
     public function maxAtlasSize (val :int) :TexturePacker { _maxAtlasSize = val; return this; }
     public function optimizeForSpeed (val :Boolean) :TexturePacker { _optimizeForSpeed = val; return this; }
-	public function quality (val :String) :TexturePacker { _quality = val; return this; }
+    public function quality (val :String) :TexturePacker { _quality = val; return this; }
     public function filenamePrefix (val :String) :TexturePacker { _filenamePrefix = val; return this; }
 
     public function createAtlases () :Vector.<Atlas> {
@@ -130,7 +130,7 @@ class PackerImpl
         }
 
         var totalTime :int = flash.utils.getTimer() - start;
-        log.info("Finished packing", "scale", scale, "time", totalTime / 1000);
+        log.info("Finished packing", "quality", quality, "scale", scale, "time", totalTime / 1000);
     }
 
     // Estimate the optimal size for the next atlas

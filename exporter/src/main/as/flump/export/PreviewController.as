@@ -25,10 +25,9 @@ import starling.core.Starling;
 import starling.display.DisplayObject;
 import starling.display.Sprite;
 
+import com.threerings.text.TextFieldUtil;
 import com.threerings.util.F;
 import com.threerings.util.MathUtil;
-
-import com.threerings.text.TextFieldUtil;
 
 public class PreviewController
 {
@@ -107,9 +106,17 @@ public class PreviewController
 
     protected function updateAtlas () :void {
         // create our atlases
+        const exportConf :ExportConf =
+            (_project.exports.length > 0 ? _project.exports[0] : new ExportConf());
         const scale :Number = MathUtil.clamp(Number(_atlasPreviewWindow.scale.text), 0.001, 1);
         const border :int = Math.max(0, int(_atlasPreviewWindow.border.text));
-        const atlases :Vector.<Atlas> = TexturePacker.withLib(_lib).baseScale(scale).borderSize(border).createAtlases();
+
+        const atlases :Vector.<Atlas> = TexturePacker.withLib(_lib)
+            .baseScale(scale)
+            .borderSize(border)
+            .optimizeForSpeed(exportConf.optimize == ExportConf.OPTIMIZE_SPEED)
+            .quality(exportConf.quality)
+            .createAtlases();
 
         const sprite :flash.display.Sprite = new flash.display.Sprite();
         for (var ii :int = 0; ii < atlases.length; ++ii) {
