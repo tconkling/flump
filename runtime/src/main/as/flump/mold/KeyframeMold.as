@@ -50,8 +50,11 @@ public class KeyframeMold
         extractField(o, mold, "ease");
         extractField(o, mold, "tweened");
         extractField(o, mold, "label");
-        return mold
+        return mold;
     }
+
+    /** True if this keyframe does not display anything. */
+    public function get isEmpty () :Boolean { return this.ref == null; }
 
     public function get rotation () :Number { return skewX; }
     // public function set rotation (angle :Number) :void { skewX = skewY = angle; }
