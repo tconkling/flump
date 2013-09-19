@@ -18,9 +18,9 @@ internal class Layer {
     // Only created if there are multiple items on this layer. If it does exist, the appropriate
     // display is swapped in at keyframe changes. If it doesn't, the display is only added to the
     // parent on layer creation
-    public var displays :Vector.<DisplayObject>;// <SPDisplayObject*>
+    public var displays :Vector.<DisplayObject>;
     public var movie :Movie; // The movie this layer belongs to
-    // If the keyframe has changed since the last drawFrame
+    // true if the keyframe has changed since the last drawFrame
     public var changedKeyframe :Boolean;
 
     public function Layer (movie :Movie, src :LayerMold, library :Library, flipbook :Boolean) {
