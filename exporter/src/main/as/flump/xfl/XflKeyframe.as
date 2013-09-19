@@ -20,7 +20,7 @@ public class XflKeyframe
         const kf :KeyframeMold = new KeyframeMold();
         kf.index = XmlUtil.getIntAttr(xml, "index");
         const location :String = baseLocation + ":" + (kf.index + 1);
-        kf.duration = XmlUtil.getNumberAttr(xml, "duration", 1);
+        kf.duration = XmlUtil.getIntAttr(xml, "duration", 1);
         kf.label = XmlUtil.getStringAttr(xml, "name", null);
         kf.ease = XmlUtil.getNumberAttr(xml, "acceleration", 0) / 100;
 

@@ -8,7 +8,7 @@ public class KeyframeMold
     public var index :int;
 
     /** The length of this keyframe in frames. */
-    public var duration :Number;
+    public var duration :int;
 
     /**
      * The symbol of the image or movie in this keyframe, or null if there is nothing in it.
