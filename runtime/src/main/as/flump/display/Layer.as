@@ -74,7 +74,12 @@ internal class Layer {
         if (_needsKeyframeUpdate) {
             // Swap in the proper DisplayObject for this keyframe.
             _movie.removeChildAt(_layerIdx);
-            _movie.addChildAt(_displays[_keyframeIdx], _layerIdx);
+            const disp :DisplayObject = _displays[_keyframeIdx];
+            // If we're swapping in a Movie, reset its timeline.
+            if (disp is Movie) {
+                Movie(disp).goTo(0);
+            }
+            _movie.addChildAt(disp, _layerIdx);
         }
         _needsKeyframeUpdate = false;
 
