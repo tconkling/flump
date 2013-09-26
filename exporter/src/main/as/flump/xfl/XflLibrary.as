@@ -95,20 +95,6 @@ public class XflLibrary
 
         const numMovieFrames :int = movie.frames;
         for each (var layer :LayerMold in movie.layers) {
-            // If the layer's timeline is shorter than its movie's timeline, and it doesn't end in
-            // an empty keyframe, we add an empty keyframe at the end so that the layer will be
-            // "invisible" for the remainder of the movie's timeline. This matches Flash's behavior.
-            if (layer.frames < numMovieFrames) {
-                var lastKeyframe :KeyframeMold = (layer.keyframes.length > 0 ?
-                    layer.keyframes[layer.keyframes.length - 1] : null);
-                if (lastKeyframe == null || !lastKeyframe.isEmpty) {
-                    var emptyKeyframe :KeyframeMold = new KeyframeMold();
-                    emptyKeyframe.index = layer.frames;
-                    emptyKeyframe.duration = 1;
-                    layer.keyframes.push(emptyKeyframe);
-                }
-            }
-
             for each (var kf :KeyframeMold in layer.keyframes) {
                 var swfTexture :SwfTexture = null;
                 if (movie.flipbook) {
