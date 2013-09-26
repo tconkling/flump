@@ -103,7 +103,7 @@ public class XflLibrary
                     layer.keyframes[layer.keyframes.length - 1] : null);
                 if (lastKeyframe == null || !lastKeyframe.isEmpty) {
                     var emptyKeyframe :KeyframeMold = new KeyframeMold();
-                    emptyKeyframe.index = layer.frames + 1;
+                    emptyKeyframe.index = layer.frames;
                     emptyKeyframe.duration = 1;
                     layer.keyframes.push(emptyKeyframe);
                 }
