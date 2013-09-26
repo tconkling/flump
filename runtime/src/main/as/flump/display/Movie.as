@@ -219,8 +219,7 @@ public class Movie extends Sprite
         if (newFrame != _frame) {
             if (wrapped) {
                 for each (var layer :Layer in _layers) {
-                    layer.changedKeyframe = true;
-                    layer.keyframeIdx = 0;
+                    layer.movieLooped();
                 }
             }
             for each (layer in _layers) layer.drawFrame(newFrame);

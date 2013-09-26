@@ -12,60 +12,60 @@ import starling.display.Sprite;
  * this layer on each frame.
  */
 internal class Layer {
-    public var keyframeIdx :int;// The index of the last keyframe drawn in drawFrame
-    public var layerIdx :int;// This layer's index in the movie
-    public var keyframes :Vector.<KeyframeMold>;
-    // Only created if there are multiple items on this layer. If it does exist, the appropriate
-    // display is swapped in at keyframe changes. If it doesn't, the display is only added to the
-    // parent on layer creation
-    public var displays :Vector.<DisplayObject>;
-    public var movie :Movie; // The movie this layer belongs to
-    // true if the keyframe has changed since the last drawFrame
-    public var changedKeyframe :Boolean;
-
     public function Layer (movie :Movie, src :LayerMold, library :Library, flipbook :Boolean) {
-        keyframes = src.keyframes;
-        this.movie = movie;
+        _keyframes = src.keyframes;
+        _movie = movie;
         var lastItem :String;
-        for (var ii :int = 0; ii < keyframes.length && lastItem == null; ii++) {
-            lastItem = keyframes[ii].ref;
+        for (var ii :int = 0; ii < _keyframes.length && lastItem == null; ii++) {
+            lastItem = _keyframes[ii].ref;
         }
-        if (!flipbook && lastItem == null) movie.addChild(new Sprite());// Label only layer
-        else {
-            var multipleItems :Boolean = flipbook;
-            for (ii = 0; ii < keyframes.length && !multipleItems; ii++) {
-                multipleItems = keyframes[ii].ref != lastItem;
+        if (!flipbook && lastItem == null) {
+            // The layer is empty.
+            movie.addChild(new Sprite());
+        } else {
+            // Discover whether we have multiple display items. If not, we don't need
+            // to create the 'displays' vector.
+            var hasMultipleDisplayItems :Boolean = flipbook;
+            for (ii = 0; ii < _keyframes.length && !hasMultipleDisplayItems; ii++) {
+                hasMultipleDisplayItems = _keyframes[ii].ref != lastItem;
             }
-            if (!multipleItems) movie.addChild(library.createDisplayObject(lastItem));
+            if (!hasMultipleDisplayItems) movie.addChild(library.createDisplayObject(lastItem));
             else {
-                displays = new <DisplayObject>[];
-                for each (var kf :KeyframeMold in keyframes) {
+                _displays = new <DisplayObject>[];
+                for each (var kf :KeyframeMold in _keyframes) {
                     var display :DisplayObject =
                         (kf.ref == null ? new Sprite() : library.createDisplayObject(kf.ref));
-                    displays.push(display);
+                    _displays.push(display);
                     display.name = src.name;
                 }
-                movie.addChild(displays[0]);
+                movie.addChild(_displays[0]);
             }
         }
-        layerIdx = movie.numChildren - 1;
-        movie.getChildAt(layerIdx).name = src.name;
+        _layerIdx = movie.numChildren - 1;
+        movie.getChildAt(_layerIdx).name = src.name;
+    }
+
+    /** Called by Movie when we loop. */
+    public function movieLooped () :void {
+        _changedKeyframe = true;
+        _keyframeIdx = 0;
     }
 
     public function drawFrame (frame :int) :void {
-        while (keyframeIdx < keyframes.length - 1 && keyframes[keyframeIdx + 1].index <= frame) {
-            keyframeIdx++;
-            changedKeyframe = true;
+        while (_keyframeIdx < _keyframes.length - 1 && _keyframes[_keyframeIdx + 1].index <= frame) {
+            _keyframeIdx++;
+            _changedKeyframe = true;
         }
-        // We've got multiple items. Swap in the one for this kf
-        if (changedKeyframe && displays != null) {
-            movie.removeChildAt(layerIdx);
-            movie.addChildAt(displays[keyframeIdx], layerIdx);
+        if (_changedKeyframe && _displays != null) {
+            // Swap in the DisplayObject for this keyframe.
+            _movie.removeChildAt(_layerIdx);
+            _movie.addChildAt(_displays[_keyframeIdx], _layerIdx);
         }
-        changedKeyframe = false;
-        const kf :KeyframeMold = keyframes[keyframeIdx];
-        const layer :DisplayObject = movie.getChildAt(layerIdx);
-        if (keyframeIdx == keyframes.length - 1 || kf.index == frame || !kf.tweened) {
+
+        _changedKeyframe = false;
+        const kf :KeyframeMold = _keyframes[_keyframeIdx];
+        const layer :DisplayObject = _movie.getChildAt(_layerIdx);
+        if (_keyframeIdx == _keyframes.length - 1 || kf.index == frame || !kf.tweened) {
             layer.x = kf.x;
             layer.y = kf.y;
             layer.scaleX = kf.scaleX;
@@ -89,7 +89,7 @@ internal class Layer {
                 }
                 interped = ease * t + (1 - ease) * interped;
             }
-            const nextKf :KeyframeMold = keyframes[keyframeIdx + 1];
+            const nextKf :KeyframeMold = _keyframes[_keyframeIdx + 1];
             layer.x = kf.x + (nextKf.x - kf.x) * interped;
             layer.y = kf.y + (nextKf.y - kf.y) * interped;
             layer.scaleX = kf.scaleX + (nextKf.scaleX - kf.scaleX) * interped;
@@ -102,5 +102,20 @@ internal class Layer {
         layer.pivotY = kf.pivotY;
         layer.visible = kf.visible;
     }
+
+    protected var _layerIdx :int;// This layer's index in the movie
+    protected var _keyframes :Vector.<KeyframeMold>;
+    // Only created if there are multiple items on this layer. If it does exist, the appropriate
+    // display is swapped in at keyframe changes. If it doesn't, the display is only added to the
+    // parent on layer creation
+    protected var _displays :Vector.<DisplayObject>;
+    protected var _movie :Movie; // The movie this layer belongs to
+
+    // The index of the last keyframe drawn in drawFrame. Updated in drawFrame. When the parent
+    // movie loops, it resets all of its layers' keyframeIdx's to 0.
+    protected var _keyframeIdx :int;
+
+    // true if the keyframe has changed since the last drawFrame
+    protected var _changedKeyframe :Boolean;
 }
 }
