@@ -26,11 +26,20 @@ internal class Layer {
             // The layer is empty.
             movie.addChild(new Sprite());
         } else {
+            // Create the display objects for each keyframe.
+            // If multiple consecutive keyframes refer to the same library item,
+            // we reuse that item across those frames.
             _displays = new Vector.<DisplayObject>(_keyframes.length, true);
             for (ii = 0; ii < _keyframes.length; ++ii) {
                 var kf :KeyframeMold = _keyframes[ii];
-                var display :DisplayObject =
-                    (kf.ref == null ? new Sprite() : library.createDisplayObject(kf.ref));
+                var display :DisplayObject = null;
+                if (ii > 0 && _keyframes[ii - 1].ref == kf.ref) {
+                    display = _displays[ii - 1];
+                } else if (kf.ref == null) {
+                    display = new Sprite();
+                } else {
+                    display = library.createDisplayObject(kf.ref);
+                }
                 _displays[ii] = display;
                 display.name = src.name;
             }
@@ -73,13 +82,15 @@ internal class Layer {
 
         if (_needsKeyframeUpdate) {
             // Swap in the proper DisplayObject for this keyframe.
-            _movie.removeChildAt(_layerIdx);
             const disp :DisplayObject = _displays[_keyframeIdx];
-            // If we're swapping in a Movie, reset its timeline.
-            if (disp is Movie) {
-                Movie(disp).goTo(0);
+            if (_movie.getChildAt(_layerIdx) != disp) {
+                _movie.removeChildAt(_layerIdx);
+                // If we're swapping in a Movie, reset its timeline.
+                if (disp is Movie) {
+                    Movie(disp).goTo(0);
+                }
+                _movie.addChildAt(disp, _layerIdx);
             }
-            _movie.addChildAt(disp, _layerIdx);
         }
         _needsKeyframeUpdate = false;
 
