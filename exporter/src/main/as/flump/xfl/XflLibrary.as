@@ -93,7 +93,6 @@ public class XflLibrary
     protected function prepareForPublishing (movie :MovieMold) :void {
         if (!_toPublish.add(movie)) return;
 
-        const numMovieFrames :int = movie.frames;
         for each (var layer :LayerMold in movie.layers) {
             for each (var kf :KeyframeMold in layer.keyframes) {
                 var swfTexture :SwfTexture = null;
