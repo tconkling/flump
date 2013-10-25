@@ -161,8 +161,8 @@ public class XflLibrary
         _errors.push(new ParseError(location, severity, message, e));
     }
 
-    public function toJSONString (atlases :Vector.<Atlas>, conf :ExportConf, pretty :Boolean=false) :String {
-        return JSON.stringify(toMold(atlases, conf), null, pretty ? "  " : null);
+    public function toJSONString (atlases :Vector.<Atlas>, conf :ExportConf) :String {
+        return JSON.stringify(toMold(atlases, conf), null, conf.prettyPrint ? "  " : null);
     }
 
     public function toMold (atlases :Vector.<Atlas>, conf :ExportConf) :LibraryMold {
