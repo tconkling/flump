@@ -43,7 +43,6 @@ public class XMLFormat extends PublishFormat
         }
 
         const xml :XML = <resources md5={_lib.md5}/>;
-        xml.prettyPrinting = _conf.prettyPrint;
         const prefix :String = _lib.location + "/";
         for each (var movie :MovieMold in _lib.publishedMovies) {
             var movieXml :XML = movie.scale(_conf.scale).toXML();
@@ -64,7 +63,11 @@ public class XMLFormat extends PublishFormat
 
         for each (var texture :XML in groupsXml..texture) texture.@name = prefix + texture.@name;
 
+        // For XML, the pretty printing option is a static, so save & restore
+        const oldPretty :Boolean = XML.prettyPrinting;
+        XML.prettyPrinting = _conf.prettyPrint;
         const xmlString :String = xml.toString();
+        XML.prettyPrinting = oldPretty;
         Files.write(_metaFile, function (out :IDataOutput) :void { out.writeUTFBytes(xmlString); });
     }
 
