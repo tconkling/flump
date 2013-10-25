@@ -7,6 +7,8 @@ import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
 
 import starling.display.DisplayObject;
+import starling.display.DisplayObjectContainer;
+import starling.display.Image;
 import starling.display.Sprite;
 
 /**
@@ -134,6 +136,33 @@ internal class Layer {
         layer.visible = kf.visible;
     }
 
+    /** @param color tint to apply to the Layer */
+    public function set color(color :uint) :void {
+        if (_color == color) return;
+        _color = color;
+        if (_displays) {
+            for each (var display :DisplayObject in _displays) {
+                colorDisplay(display, color);
+            }
+        } else {
+            colorDisplay(_movie.getChildAt(_layerIdx), color);
+        }
+    }
+
+    /** utility to set color tint for a given display */
+    protected static function colorDisplay(display :DisplayObject, color :uint) :void {
+        if (display is Movie) {
+            Movie(display).color = color;
+        } else if (display is Image) {
+            Image(display).color = color;
+        } else if (display is DisplayObjectContainer) {
+            var container:DisplayObjectContainer = display as DisplayObjectContainer;
+            for (var ii :int = container.numChildren - 1; ii >= 0; --ii) {
+                colorDisplay(container.getChildAt(ii), color);
+            }
+        }
+    }
+
     protected function get numFrames () :int {
         const lastKf :KeyframeMold = _keyframes[_keyframes.length - 1];
         return lastKf.index + lastKf.duration;
@@ -152,5 +181,7 @@ internal class Layer {
     protected var _keyframeIdx :int;
     // true if the keyframe has changed since the last drawFrame
     protected var _needsKeyframeUpdate :Boolean;
+    // color tint applied to layer
+    protected var _color:uint = 0xffffff;
 }
 }

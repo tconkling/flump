@@ -73,6 +73,9 @@ public class Movie extends Sprite
     /** @return true if the movie is currently playing. */
     public function get isPlaying () :Boolean { return _playing; }
 
+    /** @return the color tint to the Movie. */
+    public function get color () :uint { return _color; }
+
     /** @return true if the movie contains the given label. */
     public function hasLabel (label :String) :Boolean {
         return getFrameForLabel(label) >= 0;
@@ -166,6 +169,17 @@ public class Movie extends Sprite
             if (child is Movie) {
                 Movie(child).advanceTime(dt);
             }
+        }
+    }
+
+    /**
+     * @param color tint to apply to the Movie
+     */
+    public function set color(color :uint) :void {
+        if (_color == color) return;
+        _color = color;
+        for (var ii :int = 0; ii < _layers.length; ii++) {
+            _layers[ii].color = color;
         }
     }
 
@@ -295,6 +309,8 @@ public class Movie extends Sprite
     protected var _labels :Vector.<Vector.<String>>;
     /** @private */
     internal var _playerData :MoviePlayerNode;
+    /** @private */
+    private var _color:uint = 0xffffff;
 
     private static const NO_FRAME :int = -1;
 }
