@@ -171,8 +171,7 @@ public class Movie extends Sprite
     }
 
     /** notify this Movie that it has been added to the Layer after initialization */
-    public function addedToLayer() :void
-    {
+    public function addedToLayer() :void {
         goTo(0);
         _skipAdvanceTime = true;
     }
