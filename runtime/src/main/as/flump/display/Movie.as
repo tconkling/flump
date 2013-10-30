@@ -137,7 +137,7 @@ public class Movie extends Sprite
         return this;
     }
 
-    /** Sets the movie playing.  Movie will automatically stop at its stopFrame, if one is set, 
+    /** Sets the movie playing.  Movie will automatically stop at its stopFrame, if one is set,
      *  otherwise it will loop forever.
      *
      * @return this movie for chaining
@@ -192,8 +192,12 @@ public class Movie extends Sprite
         }
     }
 
-    /** notify this Movie that it has been added to the Layer after initialization */
-    public function addedToLayer() :void {
+    /**
+     * @private
+     *
+     * Called when the Movie has been newly added to a layer.
+     */
+    internal function addedToLayer () :void {
         goTo(0);
         _skipAdvanceTime = true;
     }
