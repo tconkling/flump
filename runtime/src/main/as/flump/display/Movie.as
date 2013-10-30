@@ -123,7 +123,8 @@ public class Movie extends Sprite
        return stopAt(position).play();
     }
 
-    /** Sets the stop frame for this Movie.
+    /**
+     * Sets the stop frame for this Movie.
      *
      * @param position the int frame or String label to stop at.
      *
@@ -137,14 +138,15 @@ public class Movie extends Sprite
         return this;
     }
 
-    /** Sets the movie playing.  Movie will automatically stop at its stopFrame, if one is set,
-     *  otherwise it will loop forever.
+    /**
+     * Sets the movie playing. It will automatically stop at its stopFrame, if one is set,
+     * otherwise it will loop forever.
      *
      * @return this movie for chaining
      */
     public function play () :Movie {
         // set playing to true unless movie is at the stop frame
-        _playing = (_frame != _stopFrame) || (_stopFrame == NO_FRAME);
+        _playing = (_frame != _stopFrame);
         return this;
     }
 
