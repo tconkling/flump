@@ -134,6 +134,7 @@ public class Movie extends Sprite
     /** Advances the playhead by the give number of seconds. From IAnimatable. */
     public function advanceTime (dt :Number) :void {
         if (dt < 0) throw new Error("Invalid time [dt=" + dt + "]");
+        if (_skipAdvanceTime) { _skipAdvanceTime = false; return; }
         if (!_playing) return;
 
         if (_numFrames > 1) {
@@ -167,6 +168,12 @@ public class Movie extends Sprite
                 Movie(child).advanceTime(dt);
             }
         }
+    }
+
+    /** notify this Movie that it has been added to the Layer after initialization */
+    public function addedToLayer() :void {
+        goTo(0);
+        _skipAdvanceTime = true;
     }
 
     /** @private */
@@ -293,6 +300,8 @@ public class Movie extends Sprite
     protected var _frameRate :Number;
     /** @private */
     protected var _labels :Vector.<Vector.<String>>;
+    /** @private */
+    private var _skipAdvanceTime :Boolean = false;
     /** @private */
     internal var _playerData :MoviePlayerNode;
 

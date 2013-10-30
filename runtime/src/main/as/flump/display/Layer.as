@@ -87,7 +87,7 @@ internal class Layer {
                 _movie.removeChildAt(_layerIdx);
                 // If we're swapping in a Movie, reset its timeline.
                 if (disp is Movie) {
-                    Movie(disp).goTo(0);
+                    Movie(disp).addedToLayer();
                 }
                 _movie.addChildAt(disp, _layerIdx);
             }
