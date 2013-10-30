@@ -56,7 +56,9 @@ public class MoviePlayer
     protected function addMovies (disp :DisplayObject) :void {
         var movie :Movie = disp as Movie;
         if (movie != null) {
-            if (movie._playerData == null) {
+            // Add this movie to our list if it's not already in a MoviePlayer, and if its
+            // parent isn't a Movie (parent Movies control their children).
+            if (!(movie.parent is Movie) && movie._playerData == null) {
                 var node :MoviePlayerNode = new MoviePlayerNode(movie, this);
                 movie._playerData = node;
 
@@ -67,6 +69,9 @@ public class MoviePlayer
                 }
                 _head = node;
             }
+
+            // Stop searching when we find our first Movie; Movies update their children, so
+            // we only track top-level movies.
             return;
         }
 
