@@ -5,6 +5,7 @@ package flump.display {
 
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
+import starling.display.Quad;
 
 import starling.display.DisplayObject;
 import starling.display.DisplayObjectContainer;
@@ -153,8 +154,8 @@ internal class Layer {
     protected static function colorDisplay(display :DisplayObject, color :uint) :void {
         if (display is Movie) {
             Movie(display).color = color;
-        } else if (display is Image) {
-            Image(display).color = color;
+        } else if (display is Quad) {
+            Quad(display).color = color;
         } else if (display is DisplayObjectContainer) {
             var container:DisplayObjectContainer = display as DisplayObjectContainer;
             for (var ii :int = container.numChildren - 1; ii >= 0; --ii) {
