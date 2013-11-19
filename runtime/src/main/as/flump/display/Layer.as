@@ -6,6 +6,7 @@ package flump.display {
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
 
+import starling.animation.IAnimatable;
 import starling.display.DisplayObject;
 import starling.display.Sprite;
 
@@ -14,17 +15,25 @@ import starling.display.Sprite;
  * Movie. Responsible for efficiently managing the creation and display of the DisplayObjects for
  * this layer on each frame.
  */
-internal class Layer {
+internal class Layer
+    implements IAnimatable
+{
     public function Layer (movie :Movie, src :LayerMold, library :Library, flipbook :Boolean) {
         _keyframes = src.keyframes;
         _movie = movie;
+
+        const lastKf :KeyframeMold = _keyframes[_keyframes.length - 1];
+        _numFrames = lastKf.index + lastKf.duration;
+
         var lastItem :String;
         for (var ii :int = 0; ii < _keyframes.length && lastItem == null; ii++) {
             lastItem = _keyframes[ii].ref;
         }
         if (!flipbook && lastItem == null) {
             // The layer is empty.
-            movie.addChild(new Sprite());
+            _currentDisplay = new Sprite();
+            _currentDisplay.name = src.name;
+            _movie.addChild(_currentDisplay);
         } else {
             // Create the display objects for each keyframe.
             // If multiple consecutive keyframes refer to the same library item,
@@ -42,11 +51,17 @@ internal class Layer {
                 }
                 _displays[ii] = display;
                 display.name = src.name;
+                display.visible = false;
+                _movie.addChild(display);
             }
-            movie.addChild(_displays[0]);
+            _currentDisplay = _displays[0];
+            _currentDisplay.visible = true;
+
+            _frameOvershootDisplay = new Sprite();
+            _frameOvershootDisplay.name = src.name;
+            _frameOvershootDisplay.visible = false;
+            _movie.addChild(_frameOvershootDisplay);
         }
-        _layerIdx = movie.numChildren - 1;
-        movie.getChildAt(_layerIdx).name = src.name;
     }
 
     /** Called by Movie when we loop. */
@@ -55,19 +70,23 @@ internal class Layer {
         _keyframeIdx = 0;
     }
 
+    /** Advances the playhead by the give number of seconds. From IAnimatable. */
+    public function advanceTime (dt :Number) :void {
+        if (_currentDisplay is IAnimatable) {
+            IAnimatable(_currentDisplay).advanceTime(dt);
+        }
+    }
+
     public function drawFrame (frame :int) :void {
         if (_displays == null) {
             // We have nothing to display.
             return;
 
-        } else if (frame >= this.numFrames) {
+        } else if (frame >= _numFrames) {
             // We've overshot our final frame. Show an empty sprite.
-            if (_frameOvershootDisplay == null) {
-                _frameOvershootDisplay = new Sprite();
-            }
-            if (_movie.getChildAt(_layerIdx) != _frameOvershootDisplay) {
-                _movie.removeChildAt(_layerIdx);
-                _movie.addChildAt(_frameOvershootDisplay, _layerIdx);
+            if (_currentDisplay != _frameOvershootDisplay) {
+                _currentDisplay.visible = false;
+                _currentDisplay = _frameOvershootDisplay;
             }
             // keep our keyframeIdx updated
             _keyframeIdx = _keyframes.length - 1;
@@ -83,19 +102,19 @@ internal class Layer {
         if (_needsKeyframeUpdate) {
             // Swap in the proper DisplayObject for this keyframe.
             const disp :DisplayObject = _displays[_keyframeIdx];
-            if (_movie.getChildAt(_layerIdx) != disp) {
-                _movie.removeChildAt(_layerIdx);
+            if (_currentDisplay != disp) {
+                _currentDisplay.visible = false;
                 // If we're swapping in a Movie, reset its timeline.
                 if (disp is Movie) {
                     Movie(disp).addedToLayer();
                 }
-                _movie.addChildAt(disp, _layerIdx);
+                _currentDisplay = disp;
             }
         }
         _needsKeyframeUpdate = false;
 
         const kf :KeyframeMold = _keyframes[_keyframeIdx];
-        const layer :DisplayObject = _movie.getChildAt(_layerIdx);
+        const layer :DisplayObject = _currentDisplay;
         if (_keyframeIdx == _keyframes.length - 1 || kf.index == frame || !kf.tweened) {
             layer.x = kf.x;
             layer.y = kf.y;
@@ -134,18 +153,15 @@ internal class Layer {
         layer.visible = kf.visible;
     }
 
-    protected function get numFrames () :int {
-        const lastKf :KeyframeMold = _keyframes[_keyframes.length - 1];
-        return lastKf.index + lastKf.duration;
-    }
-
-    protected var _layerIdx :int;// This layer's index in the movie
     protected var _keyframes :Vector.<KeyframeMold>;
+    protected var _numFrames :int;
     // Stores this layer's DisplayObjects indexed by keyframe.
     protected var _displays :Vector.<DisplayObject>;
     // Created if the layer has fewer frames than its parent movie. If the layer is told to
     // draw a frame past its last frame, it will display this empty sprite.
     protected var _frameOvershootDisplay :Sprite;
+    // The current DisplayObject being rendered for this layer
+    protected var _currentDisplay :DisplayObject;
     protected var _movie :Movie; // The movie this layer belongs to
     // The index of the last keyframe drawn in drawFrame. Updated in drawFrame. When the parent
     // movie loops, it resets all of its layers' keyframeIdx's to 0.
