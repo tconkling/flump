@@ -3,6 +3,8 @@
 
 package flump {
 
+import com.threerings.display.DisplayUtil;
+
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.DisplayObject;
@@ -14,14 +16,11 @@ import flash.filters.ColorMatrixFilter;
 import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-import flump.xfl.XflMovie;
 
 import flump.executor.load.LoadedSwf;
 import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;
-
-import com.threerings.display.DisplayUtil;
 
 public class SwfTexture
 {
@@ -57,7 +56,7 @@ public class SwfTexture
         this.quality = quality;
 
         // wrap object twice for convenience
-        var wrapper:Sprite = new Sprite();
+        const wrapper :Sprite = new Sprite();
         wrapper.addChild(disp);
         _disp = new Sprite();
         _disp.addChild(wrapper);
@@ -66,11 +65,10 @@ public class SwfTexture
         _treatAsFiltered = hasPotentiallySizeAlteringFilters(disp);
         setScale(scale);
     }
-    
+
     // scale can be changed after creation, if desired
-    public function setScale(value:Number):void
-    {
-        // To compensate for the fact that filters don't "scale", do the following
+    public function setScale (value :Number) :void {
+        // To compensate for the fact that filters don't "scale", we do the following
         // if filtered:
         //    render at scale 1
         //    then scale bitmapData to target size
@@ -86,7 +84,7 @@ public class SwfTexture
             }
         } else {
             // embed the scale in _disp
-            var wrapper:DisplayObject = _disp.getChildAt(0);
+            var wrapper :DisplayObject = _disp.getChildAt(0);
             wrapper.scaleX = wrapper.scaleY = value;
             _scale = 1;
             // recalculate size since _disp has changed
@@ -97,7 +95,7 @@ public class SwfTexture
     public function toBitmapData (borderPadding :int = 0) :BitmapData {
         // render with vector renderer
         var bmd :BitmapData = new BitmapData(Math.ceil(_w), Math.ceil(_h), true, 0x00);
-        var m :Matrix = new Matrix();
+        const m :Matrix = new Matrix();
         m.translate(_origin.x, _origin.y);
         bmd.drawWithQuality(_disp, m, null, null, null, true, this.quality);
 
@@ -112,18 +110,20 @@ public class SwfTexture
 
     public function toString () :String { return "a " + this.a + " w " + this.w + " h " + this.h; }
 
-    private function recalculateSizeInfo() :void {
+    private function recalculateSizeInfo () :void {
         // get normal bounds
         _strictBounds = _disp.getChildAt(0).getBounds(_disp);
         _visualBounds = _strictBounds;
-        
+
         // possibly increase the visual bounds (due to filter action)
         if (_treatAsFiltered) {
             // render to bmd
-            var topLeft:Point = new Point(_s_filteredBmd.width / 2 - _strictBounds.width / 2 - _strictBounds.x, _s_filteredBmd.height / 2 - _strictBounds.height / 2 - _strictBounds.y);
-            var m :Matrix = new Matrix(1,0,0,1, topLeft.x, topLeft.y);
+            const topLeft:Point = new Point(
+                _s_filteredBmd.width / 2 - _strictBounds.width / 2 - _strictBounds.x,
+                _s_filteredBmd.height / 2 - _strictBounds.height / 2 - _strictBounds.y);
+            const m :Matrix = new Matrix(1, 0, 0, 1, topLeft.x, topLeft.y);
             _s_filteredBmd.drawWithQuality(_disp, m, null, null, null, true, this.quality);
-            
+
             // calculate visual bounds
             _visualBounds = _s_filteredBmd.getColorBoundsRect(0xff000000, 0x00000000, false);
             _s_filteredBmd.fillRect(_visualBounds, 0x0);
@@ -132,14 +132,14 @@ public class SwfTexture
             _visualBounds.x = -(topLeft.x - _visualBounds.x);
             _visualBounds.y = -(topLeft.y - _visualBounds.y);
         }
-        
+
         // calculate derivative info
         _origin = new Point(-_visualBounds.x, -_visualBounds.y);
         _w = _visualBounds.width;
         _h = _visualBounds.height;
     }
 
-    private function hasPotentiallySizeAlteringFilters(dObj:DisplayObject) :Boolean {
+    private function hasPotentiallySizeAlteringFilters (dObj :DisplayObject) :Boolean {
         return DisplayUtil.applyToHierarchy(dObj, function (disp :DisplayObject) :Boolean {
             for each (var filter :Object in disp.filters) {
                 // all standard filters except ColorMatrixFilter can change the visual bounds
@@ -158,7 +158,7 @@ public class SwfTexture
     private var _visualBounds :Rectangle;
     private var _scale :Number;
     private var _treatAsFiltered:Boolean;
-    
+
     static private var _s_filteredBmd:BitmapData = new BitmapData(2048, 2048, true, 0x0);
     { _s_filteredBmd.lock(); }
 }
