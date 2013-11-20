@@ -21,6 +21,7 @@ internal class Layer
     public function Layer (movie :Movie, src :LayerMold, library :Library, flipbook :Boolean) {
         _keyframes = src.keyframes;
         _movie = movie;
+        _name = src.name;
 
         const lastKf :KeyframeMold = _keyframes[_keyframes.length - 1];
         _numFrames = lastKf.index + lastKf.duration;
@@ -32,7 +33,7 @@ internal class Layer
         if (!flipbook && lastItem == null) {
             // The layer is empty.
             _currentDisplay = new Sprite();
-            _currentDisplay.name = src.name;
+            _currentDisplay.name = null;
             _movie.addChild(_currentDisplay);
         } else {
             // Create the display objects for each keyframe.
@@ -50,7 +51,7 @@ internal class Layer
                     display = library.createDisplayObject(kf.ref);
                 }
                 _displays[ii] = display;
-                display.name = src.name;
+                display.name = null;
                 display.visible = false;
                 _movie.addChild(display);
             }
@@ -58,10 +59,12 @@ internal class Layer
             _currentDisplay.visible = true;
 
             _frameOvershootDisplay = new Sprite();
-            _frameOvershootDisplay.name = src.name;
+            _frameOvershootDisplay.name = null;
             _frameOvershootDisplay.visible = false;
             _movie.addChild(_frameOvershootDisplay);
         }
+
+        _currentDisplay.name = _name;
     }
 
     /** Called by Movie when we loop. */
@@ -85,8 +88,10 @@ internal class Layer
         } else if (frame >= _numFrames) {
             // We've overshot our final frame. Show an empty sprite.
             if (_currentDisplay != _frameOvershootDisplay) {
+                _currentDisplay.name = null;
                 _currentDisplay.visible = false;
                 _currentDisplay = _frameOvershootDisplay;
+                _currentDisplay.name = _name;
             }
             // keep our keyframeIdx updated
             _keyframeIdx = _keyframes.length - 1;
@@ -103,12 +108,14 @@ internal class Layer
             // Swap in the proper DisplayObject for this keyframe.
             const disp :DisplayObject = _displays[_keyframeIdx];
             if (_currentDisplay != disp) {
+                _currentDisplay.name = null;
                 _currentDisplay.visible = false;
                 // If we're swapping in a Movie, reset its timeline.
                 if (disp is Movie) {
                     Movie(disp).addedToLayer();
                 }
                 _currentDisplay = disp;
+                _currentDisplay.name = _name;
             }
         }
         _needsKeyframeUpdate = false;
@@ -168,5 +175,7 @@ internal class Layer
     protected var _keyframeIdx :int;
     // true if the keyframe has changed since the last drawFrame
     protected var _needsKeyframeUpdate :Boolean;
+    // name of the layer
+    protected var _name :String;
 }
 }
