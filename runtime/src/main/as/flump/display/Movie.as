@@ -194,11 +194,8 @@ public class Movie extends Sprite
             updateFrame(newFrame, dt);
         }
 
-        for (var ii :int = this.numChildren - 1; ii >= 0; --ii) {
-            var child :DisplayObject = getChildAt(ii);
-            if (child is Movie) {
-                Movie(child).advanceTime(dt);
-            }
+        for (var ii :int = _layers.length - 1; ii >= 0; --ii) {
+            _layers[ii].advanceTime(dt);
         }
     }
 
