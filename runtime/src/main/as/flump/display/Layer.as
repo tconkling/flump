@@ -33,7 +33,6 @@ internal class Layer
         if (!flipbook && lastItem == null) {
             // The layer is empty.
             _currentDisplay = new Sprite();
-            _currentDisplay.name = null;
             _movie.addChild(_currentDisplay);
         } else {
             // Create the display objects for each keyframe.
@@ -51,7 +50,6 @@ internal class Layer
                     display = library.createDisplayObject(kf.ref);
                 }
                 _displays[ii] = display;
-                display.name = null;
                 display.visible = false;
                 _movie.addChild(display);
             }
@@ -59,7 +57,6 @@ internal class Layer
             _currentDisplay.visible = true;
 
             _frameOvershootDisplay = new Sprite();
-            _frameOvershootDisplay.name = null;
             _frameOvershootDisplay.visible = false;
             _movie.addChild(_frameOvershootDisplay);
         }
