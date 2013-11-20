@@ -175,7 +175,9 @@ public class Movie extends Sprite
 
             // If _playTime is very close to _duration, rounding error can cause us to
             // land on lastFrame + 1. Protect against that.
-            var newFrame :int = clamp(int(_playTime * _frameRate), 0, _numFrames - 1);
+            var newFrame :int = int(_playTime * _frameRate);
+            if (newFrame < 0) newFrame = 0;
+            if (newFrame >= _numFrames) newFrame = _numFrames - 1;
 
             // If the update crosses or goes to the stopFrame:
             // go to the stopFrame, stop the movie, clear the stopFrame
@@ -192,11 +194,8 @@ public class Movie extends Sprite
             updateFrame(newFrame, dt);
         }
 
-        for (var ii :int = this.numChildren - 1; ii >= 0; --ii) {
-            var child :DisplayObject = getChildAt(ii);
-            if (child is Movie) {
-                Movie(child).advanceTime(dt);
-            }
+        for (var ii :int = _layers.length - 1; ii >= 0; --ii) {
+            _layers[ii].advanceTime(dt);
         }
     }
 
@@ -310,10 +309,6 @@ public class Movie extends Sprite
             newFrame = _pendingFrame;
             updateFrame(newFrame, 0);
         }
-    }
-
-    protected static function clamp (n :Number, min :Number, max :Number) :Number {
-        return Math.min(Math.max(n, min), max);
     }
 
     /** @private */
