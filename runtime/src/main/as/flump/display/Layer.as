@@ -3,6 +3,8 @@
 
 package flump.display {
 
+import flash.geom.Rectangle;
+
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
 
@@ -146,6 +148,26 @@ internal class Layer
         layer.pivotX = kf.pivotX;
         layer.pivotY = kf.pivotY;
         layer.visible = kf.visible;
+    }
+
+    /** Expands the given bounds to include the bounds of this Layer's current display object. */
+    internal function expandBounds(targetSpace :DisplayObject, resultRect :Rectangle) :Rectangle {
+        // if no objects on this frame, do not change bounds
+        if (_keyframes[_keyframeIdx].ref == null)
+            return resultRect;
+
+        // if no rect was incoming, the resulting bounds is exactly the bounds of the display
+        if (resultRect.isEmpty())
+            return _currentDisplay.getBounds(targetSpace, resultRect);
+
+        // otherwise expand bounds by current display's bounds, if it has any
+        var layerRect :Rectangle = _currentDisplay.getBounds(targetSpace);
+        if (layerRect.left < resultRect.left) resultRect.left = layerRect.left;
+        if (layerRect.right > resultRect.right) resultRect.right = layerRect.right;
+        if (layerRect.top < resultRect.top) resultRect.top = layerRect.top;
+        if (layerRect.bottom > resultRect.bottom) resultRect.bottom = layerRect.bottom;
+
+        return resultRect;
     }
 
     protected var _keyframes :Vector.<KeyframeMold>;

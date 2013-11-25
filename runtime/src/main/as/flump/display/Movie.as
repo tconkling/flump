@@ -3,6 +3,10 @@
 
 package flump.display {
 
+import flash.geom.Matrix;
+import flash.geom.Point;
+import flash.geom.Rectangle;
+
 import flump.mold.MovieMold;
 
 import react.Signal;
@@ -11,6 +15,7 @@ import starling.animation.IAnimatable;
 import starling.display.DisplayObject;
 import starling.display.Sprite;
 import starling.events.Event;
+import starling.utils.MatrixUtil;
 
 /**
  * A movie created from flump-exported data. It has children corresponding to the layers in the
@@ -200,6 +205,33 @@ public class Movie extends Sprite
     }
 
     /**
+     * @public
+     *
+     * Modified from starling.display.DisplayObjectContainer
+     */
+    public override function getBounds(targetSpace :DisplayObject, resultRect :Rectangle=null) :Rectangle {
+        if (resultRect == null) {
+            resultRect = new Rectangle();
+        } else {
+            resultRect.setEmpty();
+        }
+
+        // get bounds from layer contents
+        for (var ii :int = 0; ii < _layers.length; ii++) {
+            _layers[ii].expandBounds(targetSpace, resultRect);
+        }
+
+        // if no contents exist, simply include this movie's position in the bounds
+        if (resultRect.isEmpty()) {
+            getTransformationMatrix(targetSpace, IDENTITY_MATRIX);
+            MatrixUtil.transformCoords(IDENTITY_MATRIX, 0.0, 0.0, _s_helperPoint);
+            resultRect.setTo(_s_helperPoint.x, _s_helperPoint.y, 0, 0);
+        }
+
+        return resultRect;
+    }
+
+    /**
      * @private
      *
      * Called when the Movie has been newly added to a layer.
@@ -333,6 +365,10 @@ public class Movie extends Sprite
     private var _skipAdvanceTime :Boolean = false;
     /** @private */
     internal var _playerData :MoviePlayerNode;
+    /** @private */
+    private static var _s_helperPoint:Point = new Point();
+
+    private static const IDENTITY_MATRIX:Matrix = new Matrix();
 
     private static const NO_FRAME :int = -1;
 
