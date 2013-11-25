@@ -55,10 +55,6 @@ internal class Layer
             }
             _currentDisplay = _displays[0];
             _currentDisplay.visible = true;
-
-            _frameOvershootDisplay = new Sprite();
-            _frameOvershootDisplay.visible = false;
-            _movie.addChild(_frameOvershootDisplay);
         }
 
         _currentDisplay.name = _name;
@@ -83,13 +79,8 @@ internal class Layer
             return;
 
         } else if (frame >= _numFrames) {
-            // We've overshot our final frame. Show an empty sprite.
-            if (_currentDisplay != _frameOvershootDisplay) {
-                _currentDisplay.name = null;
-                _currentDisplay.visible = false;
-                _currentDisplay = _frameOvershootDisplay;
-                _currentDisplay.name = _name;
-            }
+            // We've overshot our final frame. Hide the display
+            _currentDisplay.visible = false;
             // keep our keyframeIdx updated
             _keyframeIdx = _keyframes.length - 1;
             _needsKeyframeUpdate = true;
@@ -161,9 +152,6 @@ internal class Layer
     protected var _numFrames :int;
     // Stores this layer's DisplayObjects indexed by keyframe.
     protected var _displays :Vector.<DisplayObject>;
-    // Created if the layer has fewer frames than its parent movie. If the layer is told to
-    // draw a frame past its last frame, it will display this empty sprite.
-    protected var _frameOvershootDisplay :Sprite;
     // The current DisplayObject being rendered for this layer
     protected var _currentDisplay :DisplayObject;
     protected var _movie :Movie; // The movie this layer belongs to
