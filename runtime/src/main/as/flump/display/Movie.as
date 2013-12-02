@@ -209,7 +209,7 @@ public class Movie extends Sprite
      *
      * Modified from starling.display.DisplayObjectContainer
      */
-    public override function getBounds(targetSpace :DisplayObject, resultRect :Rectangle=null) :Rectangle {
+    public override function getBounds (targetSpace :DisplayObject, resultRect :Rectangle=null) :Rectangle {
         if (resultRect == null) {
             resultRect = new Rectangle();
         } else {
@@ -217,8 +217,8 @@ public class Movie extends Sprite
         }
 
         // get bounds from layer contents
-        for (var ii :int = 0; ii < _layers.length; ii++) {
-            _layers[ii].expandBounds(targetSpace, resultRect);
+        for each (var layer :Layer in _layers) {
+            layer.expandBounds(targetSpace, resultRect);
         }
 
         // if no contents exist, simply include this movie's position in the bounds
@@ -366,9 +366,9 @@ public class Movie extends Sprite
     /** @private */
     internal var _playerData :MoviePlayerNode;
     /** @private */
-    private static var _s_helperPoint:Point = new Point();
+    private static var _s_helperPoint :Point = new Point();
 
-    private static const IDENTITY_MATRIX:Matrix = new Matrix();
+    private static const IDENTITY_MATRIX :Matrix = new Matrix();
 
     private static const NO_FRAME :int = -1;
 

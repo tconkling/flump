@@ -151,14 +151,16 @@ internal class Layer
     }
 
     /** Expands the given bounds to include the bounds of this Layer's current display object. */
-    internal function expandBounds(targetSpace :DisplayObject, resultRect :Rectangle) :Rectangle {
+    internal function expandBounds (targetSpace :DisplayObject, resultRect :Rectangle) :Rectangle {
         // if no objects on this frame, do not change bounds
-        if (_keyframes[_keyframeIdx].ref == null)
+        if (_keyframes[_keyframeIdx].ref == null) {
             return resultRect;
+        }
 
         // if no rect was incoming, the resulting bounds is exactly the bounds of the display
-        if (resultRect.isEmpty())
+        if (resultRect.isEmpty()) {
             return _currentDisplay.getBounds(targetSpace, resultRect);
+        }
 
         // otherwise expand bounds by current display's bounds, if it has any
         var layerRect :Rectangle = _currentDisplay.getBounds(targetSpace);
