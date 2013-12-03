@@ -3,6 +3,8 @@
 
 package flump.display {
 
+import flash.geom.Rectangle;
+
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
 
@@ -55,10 +57,6 @@ internal class Layer
             }
             _currentDisplay = _displays[0];
             _currentDisplay.visible = true;
-
-            _frameOvershootDisplay = new Sprite();
-            _frameOvershootDisplay.visible = false;
-            _movie.addChild(_frameOvershootDisplay);
         }
 
         _currentDisplay.name = _name;
@@ -83,13 +81,8 @@ internal class Layer
             return;
 
         } else if (frame >= _numFrames) {
-            // We've overshot our final frame. Show an empty sprite.
-            if (_currentDisplay != _frameOvershootDisplay) {
-                _currentDisplay.name = null;
-                _currentDisplay.visible = false;
-                _currentDisplay = _frameOvershootDisplay;
-                _currentDisplay.name = _name;
-            }
+            // We've overshot our final frame. Hide the display
+            _currentDisplay.visible = false;
             // keep our keyframeIdx updated
             _keyframeIdx = _keyframes.length - 1;
             _needsKeyframeUpdate = true;
@@ -157,13 +150,32 @@ internal class Layer
         layer.visible = kf.visible;
     }
 
+    /** Expands the given bounds to include the bounds of this Layer's current display object. */
+    internal function expandBounds (targetSpace :DisplayObject, resultRect :Rectangle) :Rectangle {
+        // if no objects on this frame, do not change bounds
+        if (_keyframes[_keyframeIdx].ref == null) {
+            return resultRect;
+        }
+
+        // if no rect was incoming, the resulting bounds is exactly the bounds of the display
+        if (resultRect.isEmpty()) {
+            return _currentDisplay.getBounds(targetSpace, resultRect);
+        }
+
+        // otherwise expand bounds by current display's bounds, if it has any
+        var layerRect :Rectangle = _currentDisplay.getBounds(targetSpace);
+        if (layerRect.left < resultRect.left) resultRect.left = layerRect.left;
+        if (layerRect.right > resultRect.right) resultRect.right = layerRect.right;
+        if (layerRect.top < resultRect.top) resultRect.top = layerRect.top;
+        if (layerRect.bottom > resultRect.bottom) resultRect.bottom = layerRect.bottom;
+
+        return resultRect;
+    }
+
     protected var _keyframes :Vector.<KeyframeMold>;
     protected var _numFrames :int;
     // Stores this layer's DisplayObjects indexed by keyframe.
     protected var _displays :Vector.<DisplayObject>;
-    // Created if the layer has fewer frames than its parent movie. If the layer is told to
-    // draw a frame past its last frame, it will display this empty sprite.
-    protected var _frameOvershootDisplay :Sprite;
     // The current DisplayObject being rendered for this layer
     protected var _currentDisplay :DisplayObject;
     protected var _movie :Movie; // The movie this layer belongs to
