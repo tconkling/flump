@@ -196,6 +196,6 @@ internal class Loader {
     protected const _pngLoaders :Executor = new Executor(1);
 
     protected static const PNG :String = ".png";
-    protected static const ATF :String = ".atf"
+    protected static const ATF :String = ".atf";
 }
 }

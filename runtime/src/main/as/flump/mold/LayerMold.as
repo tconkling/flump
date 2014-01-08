@@ -42,7 +42,7 @@ public class LayerMold
     }
 
     public function toXML () :XML {
-        var xml :XML = <layer name={name}/>
+        var xml :XML = <layer name={name}/>;
         if (flipbook) xml.@flipbook = flipbook;
         for each (var kf :KeyframeMold in keyframes) xml.appendChild(kf.toXML());
         return xml;

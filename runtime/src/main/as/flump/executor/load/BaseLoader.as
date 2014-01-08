@@ -26,7 +26,7 @@ public class BaseLoader
     public function loadFromClass (klass :Class, exec :Executor = null) :Future {
         return submitLoader(exec, function (loader :Loader, context :LoaderContext) :void {
             loader.loadBytes(ByteArray(new klass()), context);
-        })
+        });
 
     }
 

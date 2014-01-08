@@ -118,8 +118,8 @@ public class Executor
      * termination and possibly dispatches that.
      */
     protected function onCompleted (f :Future) :void {
-        if (f.isSuccessful) succeeded.emit(f)
-        else failed.emit(f)
+        if (f.isSuccessful) succeeded.emit(f);
+        else failed.emit(f);
 
         var removed :Boolean = false;
         for (var ii :int = 0; ii < _running.length && !removed; ii++) {

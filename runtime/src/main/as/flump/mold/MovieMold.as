@@ -67,7 +67,7 @@ public class MovieMold
             id: id,
             layers: layers
         };
-        return json
+        return json;
     }
 
     public function toXML () :XML {
