@@ -3,10 +3,17 @@
 	<name>flump-runtime</name>
 	<comment></comment>
 	<projects>
+		<project>react</project>
+		<project>Starling</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
 			<name>com.adobe.flexbuilder.project.flexbuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>com.powerflasher.fdt.core.FlashBuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
@@ -15,5 +22,13 @@
 		<nature>org.maven.ide.eclipse.maven2Nature</nature>
 		<nature>com.adobe.flexbuilder.project.flexlibnature</nature>
 		<nature>com.adobe.flexbuilder.project.actionscriptnature</nature>
+		<nature>com.powerflasher.fdt.core.FlashNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>M2_REPO</name>
+			<type>2</type>
+			<locationURI>M2_REPO</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
