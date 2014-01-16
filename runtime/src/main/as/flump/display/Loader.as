@@ -116,7 +116,9 @@ internal class Loader {
         var scale :Number = atlas.scaleFactor;
         if (_lib.textureFormat == "atf") {
             baseTextureLoaded(Texture.fromAtfData(bytes, scale, _libLoader.generateMipMaps), atlas);
-            ByteArray(bytes).clear();
+            if (!Starling.handleLostContext) {
+                ByteArray(bytes).clear();
+            }
         } else {
             const atlasFuture :Future = loader.loadFromBytes(bytes, _pngLoaders);
             atlasFuture.failed.connect(onPngLoadingFailed);
