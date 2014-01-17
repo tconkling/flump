@@ -7,6 +7,7 @@ import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
+import flump.mold.LayerMold;
 import flump.mold.MovieMold;
 
 import react.Signal;
@@ -51,12 +52,12 @@ public class Movie extends Sprite
         _frameRate = frameRate;
         if (src.flipbook) {
             _layers = new Vector.<Layer>(1, true);
-            _layers[0] = new Layer(this, src.layers[0], library, /*flipbook=*/true);
+            _layers[0] = createLayer(this, src.layers[0], library, /*flipbook=*/true);
             _numFrames = src.layers[0].frames;
         } else {
             _layers = new Vector.<Layer>(src.layers.length, true);
             for (var ii :int = 0; ii < _layers.length; ii++) {
-                _layers[ii] = new Layer(this, src.layers[ii], library, /*flipbook=*/false);
+                _layers[ii] = createLayer(this, src.layers[ii], library, /*flipbook=*/false);
                 _numFrames = Math.max(src.layers[ii].frames, _numFrames);
             }
         }
@@ -341,6 +342,10 @@ public class Movie extends Sprite
             newFrame = _pendingFrame;
             updateFrame(newFrame, 0);
         }
+    }
+
+    protected function createLayer (movie :Movie, src :LayerMold, library :Library, flipbook :Boolean) :Layer {
+        return new Layer(movie, src, library, flipbook);
     }
 
     /** @private */
