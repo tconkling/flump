@@ -14,9 +14,9 @@
   <target name="swf" depends="-init-ooo" description="Builds the swf">
     <mkdir dir="${deploy.dir}"/>
     <mavendep pom="pom.xml" pathProp="aslib.path"/>
-    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.5"/>
+    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.8"/>
     <mxmlc srcdir="${asrc.dir}" libpath="${aslib.path}"
-      dest="${deploy.dir}/${ant.project.name}.swf" static-lrsl="true"
+      dest="${deploy.dir}/${ant.project.name}.swf"
       main="flump/demo/Demo.as">
       <arg value="-swf-version=13"/>
     </mxmlc>

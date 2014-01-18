@@ -14,7 +14,7 @@
   <target name="prepare" depends="-init-ooo">
     <mkdir dir="${deploy.dir}"/>
     <mavendep pom="pom.xml" pathProp="aslib.path"/>
-    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.6"/>
+    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.8"/>
   </target>
 
   <target name="swc" depends="prepare" description="Builds the library (.swc file)">

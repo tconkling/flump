@@ -17,7 +17,7 @@
   </target>
 
   <target name="prepare" depends="-init-ooo">
-    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.6"/>
+    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.8"/>
   </target>
 
   <target name="flexserver" depends="prepare">
@@ -33,7 +33,7 @@
     <mkdir dir="${deploy.dir}"/>
     <mavendep pom="pom.xml" pathProp="aslib.path"/>
     <amxmlc srcdir="src/test/as" libpath="${aslib.path}" id="flump-test"
-      dest="${deploy.dir}/flump-test.swf" static-lrsl="true"
+      dest="${deploy.dir}/flump-test.swf"
       main="flump/test/Bootstrap.as">
       <arg value="-source-path+=${asrc.dir}"/>
       <arg value="-swf-version=${swf.version}"/>
@@ -43,11 +43,11 @@
   <target name="swf" depends="prepare" description="Builds the swf">
     <mkdir dir="${deploy.dir}"/>
     <mavendep pom="pom.xml" pathProp="aslib.path"/>
-    <amxmlc srcdir="${asrc.dir}" libpath="${aslib.path}"
-      dest="${deploy.dir}/${ant.project.name}.swf" static-lrsl="true"
+    <amxmlc-asc1 srcdir="${asrc.dir}" libpath="${aslib.path}"
+      dest="${deploy.dir}/${ant.project.name}.swf"
       main="Flump.mxml">
       <arg value="-swf-version=${swf.version}"/>
-    </amxmlc>
+    </amxmlc-asc1>
   </target>
 
   <target name="package" depends="swf" description="Builds the .air package">
