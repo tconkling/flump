@@ -7,7 +7,7 @@ version 1.3 - 2014-02-08
 Runtime:
 - new APIs: Movie.playChildrenOnly, Movie.stopAt, Movie.play
 - updated: rather than adding and removing children from the display list, Layer toggles its
-    childrens; visibility. This results in a reasonable performance increase, but is also a
+    childrens' visibility. This results in a reasonable performance increase, but is also a
     breaking change; please test your code accordingly! (thanks to @kpatelPro)
 - fixed: support for Starling's `handleLostContext` functionality
 - updated: build with ASC 2.0
