@@ -3,6 +3,8 @@
 
 package flump.export {
 
+import aspire.util.StringUtil;
+
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.FileListEvent;
@@ -14,9 +16,6 @@ import flash.utils.ByteArray;
 
 import flump.executor.Executor;
 import flump.executor.Future;
-
-import com.threerings.util.F;
-import com.threerings.util.StringUtil;
 
 public class Files
 {

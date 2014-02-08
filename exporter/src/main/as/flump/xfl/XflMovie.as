@@ -3,9 +3,9 @@
 
 package flump.xfl {
 
-import com.threerings.util.Set;
-import com.threerings.util.Sets;
-import com.threerings.util.XmlUtil;
+import aspire.util.Set;
+import aspire.util.Sets;
+import aspire.util.XmlUtil;
 
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;

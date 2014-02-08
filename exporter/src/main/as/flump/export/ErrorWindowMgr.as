@@ -3,12 +3,12 @@
 
 package flump.export {
 
+import aspire.util.F;
+
 import flash.display.DisplayObject;
 import flash.events.MouseEvent;
 
 import mx.managers.PopUpManager;
-
-import com.threerings.util.F;
 
 public class ErrorWindowMgr
 {
@@ -23,7 +23,7 @@ public class ErrorWindowMgr
         popup.closeButton.visible = false;
         popup.headline.text = headline;
         popup.details.text = details;
-        popup.ok.addEventListener(MouseEvent.CLICK, F.callback(PopUpManager.removePopUp, popup));
+        popup.ok.addEventListener(MouseEvent.CLICK, F.bind(PopUpManager.removePopUp, popup));
     }
 }
 }

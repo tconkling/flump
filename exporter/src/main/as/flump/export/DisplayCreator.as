@@ -3,8 +3,8 @@
 
 package flump.export {
 
-import com.threerings.util.Map;
-import com.threerings.util.maps.ValueComputingMap;
+import aspire.util.Map;
+import aspire.util.maps.ValueComputingMap;
 
 import flash.utils.Dictionary;
 

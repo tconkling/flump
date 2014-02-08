@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<actionScriptProperties analytics="false" mainApplicationPath="Flump.mxml" projectUUID="394d3b90-7b79-41f0-8217-e4501b9a5c25" version="11">
-  <compiler additionalCompilerArguments="-locale en_US -swf-version=20" autoRSLOrdering="true" copyDependentFiles="true" flexSDK="Flex 4.6.0" fteInMXComponents="false" generateAccessible="true" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="dist" removeUnusedRSL="true" sourceFolderPath="src/main/as" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="true" useDebugRSLSwfs="true" useFlashSDK="false" verifyDigests="true" warn="true">
+<actionScriptProperties analytics="false" mainApplicationPath="Flump.mxml" projectUUID="394d3b90-7b79-41f0-8217-e4501b9a5c25" version="10">
+  <compiler additionalCompilerArguments="-locale en_US -swf-version=20" autoRSLOrdering="true" copyDependentFiles="true" flexSDK="Flex 4.6.0" fteInMXComponents="false" generateAccessible="true" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="dist" removeUnusedRSL="true" sourceFolderPath="src/main/as" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="true" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
     <compilerSourcePath/>
     <libraryPath defaultLinkType="0">
       <libraryPathEntry kind="4" path="">
@@ -10,15 +10,13 @@
         </excludedEntries>
       </libraryPathEntry>
       <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/com/adobe/as3corelib/0.93/as3corelib-0.93.swc" useDefaultLinkType="false"/>
-      <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/com/threerings/aspirin/1.13/aspirin-1.13.swc" sourcepath="/export/aspirin/src/main/as" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/flump-runtime/dist/flump-runtime.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/Starling/bin-debug/Starling.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/deng/fzip/a5430bd/fzip-a5430bd.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/react/dist/react.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/aspire/dist/aspire.swc" useDefaultLinkType="false"/>
     </libraryPath>
-    <sourceAttachmentPath>
-      <sourceAttachmentPathEntry kind="3" linkType="1" path="${M2_REPO}/com/threerings/aspirin/1.13/aspirin-1.13.swc" sourcepath="/export/aspirin/src/main/as" useDefaultLinkType="false"/>
-    </sourceAttachmentPath>
+    <sourceAttachmentPath/>
   </compiler>
   <applications>
     <application path="Flump.mxml">
@@ -26,18 +24,13 @@
     </application>
   </applications>
   <modules/>
-  <workers/>
   <buildCSSFiles/>
   <flashCatalyst validateFlashCatalystCompatibility="false"/>
   <buildTargets>
-    <buildTarget buildTargetName="default" platformId="default">
+    <buildTarget buildTargetName="default">
       <airSettings airCertificatePath="" airTimestamp="true" anePathSet="true" version="1">
         <airExcludes/>
         <anePaths/>
-        <newLaunchParams/>
-        <modifiedLaunchParams/>
-        <newPackagingParams/>
-        <modifiedPackagingParams/>
       </airSettings>
       <actionScriptSettings version="1"/>
     </buildTarget>

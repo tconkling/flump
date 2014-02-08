@@ -3,8 +3,6 @@
 
 package flump {
 
-import com.threerings.display.DisplayUtil;
-
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.DisplayObject;

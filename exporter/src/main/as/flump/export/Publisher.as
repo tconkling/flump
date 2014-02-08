@@ -3,11 +3,11 @@
 
 package flump.export {
 
+import aspire.util.Log;
+
 import flash.filesystem.File;
 
 import flump.xfl.XflLibrary;
-
-import com.threerings.util.Log;
 
 public class Publisher
 {

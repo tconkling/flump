@@ -3,13 +3,14 @@
 
 package flump.xfl {
 
+import aspire.util.Log;
+import aspire.util.Map;
+import aspire.util.Maps;
+import aspire.util.Set;
+import aspire.util.Sets;
+import aspire.util.XmlUtil;
+
 import com.adobe.crypto.MD5;
-import com.threerings.util.Log;
-import com.threerings.util.Map;
-import com.threerings.util.Maps;
-import com.threerings.util.Set;
-import com.threerings.util.Sets;
-import com.threerings.util.XmlUtil;
 
 import flash.filesystem.File;
 import flash.utils.ByteArray;

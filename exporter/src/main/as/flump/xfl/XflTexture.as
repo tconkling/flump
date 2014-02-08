@@ -3,10 +3,10 @@
 
 package flump.xfl {
 
+import aspire.util.XmlUtil;
+
 import flump.SwfTexture;
 import flump.executor.load.LoadedSwf;
-
-import com.threerings.util.XmlUtil;
 
 public class XflTexture
 {

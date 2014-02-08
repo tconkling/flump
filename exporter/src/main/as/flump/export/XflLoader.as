@@ -3,6 +3,9 @@
 
 package flump.export {
 
+import aspire.util.F;
+import aspire.util.Log;
+
 import flash.filesystem.File;
 import flash.utils.ByteArray;
 
@@ -11,9 +14,6 @@ import flump.executor.Future;
 import flump.executor.FutureTask;
 import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;
-
-import com.threerings.util.F;
-import com.threerings.util.Log;
 
 public class XflLoader
 {
@@ -32,7 +32,7 @@ public class XflLoader
             // Since listLibrary shuts down the executor, wait for the swf to load first
             listLibrary(file);
         });
-        loadSWF.failed.connect(F.adapt(_loader.shutdown));
+        loadSWF.failed.connect(F.bind(_loader.shutdown));
 
         return future;
     }

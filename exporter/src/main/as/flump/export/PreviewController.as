@@ -3,14 +3,18 @@
 
 package flump.export {
 
+import aspire.util.F;
+import aspire.util.MathUtil;
+
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.geom.Rectangle;
 import flash.text.TextField;
 
-import flump.Util;
 import flump.display.Movie;
+import flump.TextFieldUtil;
+import flump.Util;
 import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;
@@ -24,10 +28,6 @@ import spark.formatters.NumberFormatter;
 import starling.core.Starling;
 import starling.display.DisplayObject;
 import starling.display.Sprite;
-
-import com.threerings.text.TextFieldUtil;
-import com.threerings.util.F;
-import com.threerings.util.MathUtil;
 
 public class PreviewController
 {
@@ -100,7 +100,7 @@ public class PreviewController
         }
         _atlasPreviewWindow.scale.text = "" + scale;
         _atlasPreviewWindow.border.text = "" + border;
-        _atlasPreviewWindow.preview.addEventListener(MouseEvent.CLICK, F.callback(updateAtlas));
+        _atlasPreviewWindow.preview.addEventListener(MouseEvent.CLICK, F.bind(updateAtlas));
         updateAtlas();
     }
 

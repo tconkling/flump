@@ -3,6 +3,9 @@
 
 package flump.export {
 
+import aspire.util.Arrays;
+import aspire.util.Log;
+
 import flash.desktop.NativeApplication;
 import flash.display.NativeMenuItem;
 import flash.events.Event;
@@ -12,11 +15,8 @@ import flash.media.SoundMixer;
 import flash.media.SoundTransform;
 import flash.net.FileFilter;
 
+import flump.Util;
 import flump.xfl.XflLibrary;
-
-import com.threerings.util.Arrays;
-import com.threerings.util.F;
-import com.threerings.util.Log;
 
 public class FlumpApp
 {
@@ -107,7 +107,7 @@ public class FlumpApp
         }
 
         var controller :ProjectController = new ProjectController(configFile);
-        controller.win.addEventListener(Event.CLOSE, F.callbackOnce(closeProject, controller));
+        controller.win.addEventListener(Event.CLOSE, Util.callbackOnce(closeProject, controller));
         _projects.push(controller);
 
         return controller;

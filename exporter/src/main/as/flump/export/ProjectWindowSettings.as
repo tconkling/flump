@@ -3,9 +3,7 @@
 
 package flump.export {
 
-import flump.export.ProjectController;
-
-import com.threerings.util.Preconditions;
+import aspire.util.Preconditions;
 
 public class ProjectWindowSettings
 {

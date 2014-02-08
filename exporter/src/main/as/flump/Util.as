@@ -6,6 +6,7 @@ package flump {
 import flash.display.BitmapData;
 import flash.display.DisplayObject;
 import flash.display.IBitmapDrawable;
+import flash.events.Event;
 import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
@@ -16,6 +17,61 @@ import starling.display.Sprite;
 
 public class Util
 {
+    /**
+    * Initialize the target object with values present in the initProps object and the defaults
+    * object. Neither initProps nor defaults will be modified.
+    * @throws ReferenceError if a property cannot be set on the target object.
+    *
+    * @param target any object or class instance.
+    * @param initProps a plain Object hash containing names and properties to set on the target
+    *                  object.
+    * @param defaults a plain Object hash containing names and properties to set on the target
+    *                 object, only if the same property name does not exist in initProps.
+    * @param maskProps a plain Object hash containing names of properties to omit setting
+    *                  from the initProps object. This allows you to add custom properties to
+    *                  initProps without having to modify the value from your callers.
+    */
+    public static function init (
+        target :Object, initProps :Object, defaults :Object = null, maskProps :Object = null) :void
+    {
+        var prop :String;
+        for (prop in initProps) {
+            if (maskProps == null || !(prop in maskProps)) {
+                target[prop] = initProps[prop];
+            }
+        }
+
+        if (defaults != null) {
+            for (prop in defaults) {
+                if (initProps == null || !(prop in initProps)) {
+                    target[prop] = defaults[prop];
+                }
+            }
+        }
+    }
+
+    /**
+     * Creates a listener that removes itself from the event source and calls f with args.
+     *
+     * Functionally equivalent to justOnce(callback(f, args));
+     */
+    public static function callbackOnce (f: Function, ... args) :Function
+    {
+        return function listener (event :Event) :void {
+            event.currentTarget.removeEventListener(event.type, listener);
+            f.apply(this, args);
+        }
+    }
+
+    /**
+     * Returns a property of an object by name if the object contains the property, otherwise
+     * returns a default value.
+     */
+    public static function getDefault (props :Object, name :String, defaultValue :Object) :Object
+    {
+        return (name in props) ? props[name] : defaultValue;
+    }
+
     public static function bytesToXML (bytes :ByteArray) :XML {
         return new XML(bytes.readUTFBytes(bytes.length));
     }

@@ -3,9 +3,9 @@
 
 package flump.export {
 
-import com.threerings.util.F;
-import com.threerings.util.Log;
-import com.threerings.util.StringUtil;
+import aspire.util.F;
+import aspire.util.Log;
+import aspire.util.StringUtil;
 
 import flash.desktop.NativeApplication;
 import flash.display.NativeMenu;
@@ -80,7 +80,7 @@ public class ProjectController
         });
 
         // Reload
-        _win.reload.addEventListener(MouseEvent.CLICK, F.callback(reloadNow));
+        _win.reload.addEventListener(MouseEvent.CLICK, F.bind(reloadNow));
 
         // Export
         _win.export.addEventListener(MouseEvent.CLICK, function (..._) :void {
@@ -95,17 +95,17 @@ public class ProjectController
         });
 
         // Export All, Modified
-        _win.exportAll.addEventListener(MouseEvent.CLICK, F.callback(exportAll, false));
-        _win.exportModified.addEventListener(MouseEvent.CLICK, F.callback(exportAll, true));
+        _win.exportAll.addEventListener(MouseEvent.CLICK, F.bind(exportAll, false));
+        _win.exportModified.addEventListener(MouseEvent.CLICK, F.bind(exportAll, true));
 
         // Import/Export directories
         _importChooser = new DirChooser(null, _win.importRoot, _win.browseImport);
         _importChooser.changed.connect(setImportDirectory);
         _exportChooser = new DirChooser(null, _win.exportRoot, _win.browseExport);
-        _exportChooser.changed.connect(F.callback(reloadNow));
+        _exportChooser.changed.connect(F.bind(reloadNow));
 
-        _importChooser.changed.connect(F.callback(setProjectDirty, true));
-        _exportChooser.changed.connect(F.callback(setProjectDirty, true));
+        _importChooser.changed.connect(F.bind(setProjectDirty, true));
+        _exportChooser.changed.connect(F.bind(setProjectDirty, true));
 
         // Edit Formats
         var editFormatsController :EditFormatsController = null;
@@ -113,7 +113,7 @@ public class ProjectController
             if (editFormatsController == null || editFormatsController.closed) {
                 editFormatsController = new EditFormatsController(_conf);
                 editFormatsController.formatsChanged.connect(updateUiFromConf);
-                editFormatsController.formatsChanged.connect(F.callback(setProjectDirty, true));
+                editFormatsController.formatsChanged.connect(F.bind(setProjectDirty, true));
             } else {
                 editFormatsController.show();
             }
@@ -199,7 +199,7 @@ public class ProjectController
 
         unsavedWindow.save.addEventListener(MouseEvent.CLICK, function (..._) :void {
             PopUpManager.removePopUp(unsavedWindow);
-            save(F.callback(_win.close));
+            save(F.bind(_win.close));
         });
     }
 
@@ -233,12 +233,12 @@ public class ProjectController
         const saveMenuItem :NativeMenuItem =
             fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save Project"), 3);
         saveMenuItem.keyEquivalent = "s";
-        saveMenuItem.addEventListener(Event.SELECT, F.callback(save));
+        saveMenuItem.addEventListener(Event.SELECT, F.bind(save));
 
         const saveAsMenuItem :NativeMenuItem =
             fileMenuItem.submenu.addItemAt(new NativeMenuItem("Save Project As..."), 4);
         saveAsMenuItem.keyEquivalent = "S";
-        saveAsMenuItem.addEventListener(Event.SELECT, F.callback(saveAs));
+        saveAsMenuItem.addEventListener(Event.SELECT, F.bind(saveAs));
     }
 
     protected function updateWindowTitle () :void {

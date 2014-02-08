@@ -3,13 +3,13 @@
 
 package flump.export {
 
+import aspire.util.F;
+
 import flash.filesystem.File;
 import flash.utils.ByteArray;
 import flash.utils.IDataOutput;
 
 import flump.xfl.XflLibrary;
-
-import com.threerings.util.F;
 
 public class JSONFormat extends PublishFormat
 {
@@ -41,7 +41,7 @@ public class JSONFormat extends PublishFormat
         for each (var atlas :Atlas in atlases) {
             Files.write(
                 libExportDir.resolvePath(atlas.filename),
-                F.partial(AtlasUtil.writePNG, atlas, F._1));
+                F.bind(AtlasUtil.writePNG, atlas, F._1));
         }
 
         const json :String = _lib.toJSONString(atlases, _conf);

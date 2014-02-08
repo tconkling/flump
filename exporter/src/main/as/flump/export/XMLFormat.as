@@ -3,6 +3,9 @@
 
 package flump.export {
 
+import aspire.util.F;
+import aspire.util.XmlUtil;
+
 import flash.filesystem.File;
 import flash.utils.IDataOutput;
 
@@ -11,9 +14,6 @@ import flump.mold.LibraryMold;
 import flump.mold.MovieMold;
 import flump.mold.TextureGroupMold;
 import flump.xfl.XflLibrary;
-
-import com.threerings.util.F;
-import com.threerings.util.XmlUtil;
 
 public class XMLFormat extends PublishFormat
 {
@@ -39,7 +39,7 @@ public class XMLFormat extends PublishFormat
         for each (var atlas :Atlas in atlases) {
             Files.write(
                 _destDir.resolvePath(atlas.filename),
-                F.partial(AtlasUtil.writePNG, atlas, F._1));
+                F.bind(AtlasUtil.writePNG, atlas, F._1));
         }
 
         const xml :XML = <resources md5={_lib.md5}/>;

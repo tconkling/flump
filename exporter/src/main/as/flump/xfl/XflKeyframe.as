@@ -3,12 +3,12 @@
 
 package flump.xfl {
 
+import aspire.util.MatrixUtil;
+import aspire.util.XmlUtil;
+
 import flash.geom.Matrix;
 
 import flump.mold.KeyframeMold;
-
-import com.threerings.util.MatrixUtil;
-import com.threerings.util.XmlUtil;
 
 public class XflKeyframe
 {

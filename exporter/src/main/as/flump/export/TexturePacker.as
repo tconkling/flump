@@ -44,6 +44,10 @@ public class TexturePacker
 }
 
 
+import aspire.util.Comparators;
+import aspire.util.Log;
+import aspire.util.Preconditions;
+
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Sprite;
@@ -60,11 +64,6 @@ import flump.mold.KeyframeMold;
 import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;
-
-import com.threerings.util.Arrays;
-import com.threerings.util.Comparators;
-import com.threerings.util.Log;
-import com.threerings.util.Preconditions;
 
 class PackerImpl
 {

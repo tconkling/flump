@@ -3,9 +3,9 @@
 
 package flump.export {
 
-import com.threerings.util.Enum;
+import aspire.util.Enum;
 
-public class Ternary extends Enum
+public class Ternary extends aspire.util.Enum
 {
     public static const TRUE :Ternary = new Ternary("TRUE");
     public static const FALSE :Ternary = new Ternary("FALSE");

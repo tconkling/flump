@@ -3,20 +3,20 @@
 
 package flump.export {
 
-import flash.filesystem.File;
-import flash.utils.ByteArray;
+import aspire.util.F;
+import aspire.util.Log;
 
 import deng.fzip.FZip;
 import deng.fzip.FZipFile;
+
+import flash.filesystem.File;
+import flash.utils.ByteArray;
 
 import flump.executor.Executor;
 import flump.executor.Future;
 import flump.executor.FutureTask;
 import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;
-
-import com.threerings.util.F;
-import com.threerings.util.Log;
 
 public class FlaLoader
 {

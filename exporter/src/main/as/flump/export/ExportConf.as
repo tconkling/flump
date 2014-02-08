@@ -3,6 +3,11 @@
 
 package flump.export {
 
+import aspire.util.Log;
+import aspire.util.Set;
+import aspire.util.Sets;
+import aspire.util.StringUtil;
+
 import flash.display.StageQuality;
 import flash.filesystem.File;
 
@@ -10,11 +15,6 @@ import flump.mold.AtlasMold;
 import flump.mold.optional;
 import flump.mold.require;
 import flump.xfl.XflLibrary;
-
-import com.threerings.util.Log;
-import com.threerings.util.Set;
-import com.threerings.util.Sets;
-import com.threerings.util.StringUtil;
 
 public class ExportConf
 {
