@@ -23,21 +23,23 @@ public class PublishTest
             function (output :File) :void {  new StarlingResourcesTest(runner, output); }));
     }
 
-    protected function makePublishTest (type :String, formatClass :Class, postPublish :Function=null) :Function {
+    protected function makePublishTest (name :String, formatClass :Class, postPublish :Function=null) :Function {
         return function () :void {
-            const exportDir :File = TestRunner.dist.resolvePath("test/publish" + type);
+            const exportDir :File = TestRunner.dist.resolvePath("test/publish" + name);
             if (exportDir.exists) exportDir.deleteDirectory(/*deleteDirectoryContents=*/true);
             exportDir.createDirectory();
             const conf :ExportConf = new ExportConf();
-            conf.directory = "starling";
-            conf.format = formatClass;
+            conf.format = formatClass.NAME;
             const project :ProjectConf = new ProjectConf();
+            project.exportDir = "starling";
             project.exports = [conf];
             const pub :Publisher = new Publisher(exportDir, project);
             assert(pub.modified(_lib), "Lack of output should indicate modified");
             pub.publish(_lib);
             assert(!pub.modified(_lib), "Shouldn't be modified after publishing");
-            if (postPublish != null) postPublish(conf.create(exportDir, _lib).outputFile);
+            if (postPublish != null) {
+                postPublish(conf.createPublishFormat(exportDir, _lib)["outputFile"]);
+            }
         }
     }
 

@@ -3,18 +3,22 @@
 
 package flump.test {
 
+import aspire.util.Log;
+import aspire.util.Map;
+import aspire.util.Maps;
+
 import flash.desktop.NativeApplication;
 import flash.filesystem.File;
+
+import flump.display.MoviePlayer;
 
 import flump.executor.Executor;
 import flump.executor.Future;
 import flump.executor.FutureTask;
 
-import starling.display.Sprite;
+import starling.core.Starling;
 
-import com.threerings.util.Log;
-import com.threerings.util.Map;
-import com.threerings.util.Maps;
+import starling.display.Sprite;
 
 public class TestRunner extends Sprite
 {
@@ -24,8 +28,11 @@ public class TestRunner extends Sprite
 
     public function TestRunner () {
         Log.setLevel("", Log.INFO);
-        _exec.completed.add(onCompletion);
-        _exec.terminated.add(function (..._) :void {
+        // create a MoviePlayer
+        Starling.current.juggler.add(new MoviePlayer(this));
+
+        _exec.completed.connect(onCompletion);
+        _exec.terminated.connect(function (..._) :void {
             if (_passed.length > 0) {
                 trace("Passed:");
                 for each (var name :String in _passed) trace("  " + name);
@@ -55,7 +62,7 @@ public class TestRunner extends Sprite
             log.info("Passed", "test", name);
             _passed.push(name);
         } else {
-            _failed.push(name)
+            _failed.push(name);
             if (f.result is Error) log.error("Failed", "test", name, f.result);
             else log.error("Failed", "test", name, "reason", f.result);
             _exec.shutdownNow();

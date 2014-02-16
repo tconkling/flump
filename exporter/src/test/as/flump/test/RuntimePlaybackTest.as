@@ -3,15 +3,14 @@
 
 package flump.test {
 
+import aspire.util.F;
+
 import flash.events.TimerEvent;
 import flash.utils.Timer;
 
-import flump.executor.FutureTask;
-
-import flump.display.Movie;
 import flump.display.Library;
-
-import com.threerings.util.F;
+import flump.display.Movie;
+import flump.executor.FutureTask;
 
 public class RuntimePlaybackTest
 {
@@ -35,12 +34,16 @@ public class RuntimePlaybackTest
         assert(_movie.frame == 0, "Frame starts at 0");
         assert(_movie.isPlaying, "Movie starts out playing");
         _runner.addChild(_movie);
-        _movie.labelPassed.add(_labelsPassed.push);
+        _movie.labelPassed.connect(function (label :String) :void {
+            _labelsPassed.push(label);
+        });
     }
 
     public function goToFrameAndLabel () :void {
         _movie = _res.createMovie("nesteddance");
-        _movie.labelPassed.add(_labelsPassed.push);
+        _movie.labelPassed.connect(function (labelName :String) :void {
+            _labelsPassed.push(labelName);
+        });
         _movie.goTo("timepassed");
         assert(_movie.frame == 9);
         passed("timepassed");
@@ -54,8 +57,8 @@ public class RuntimePlaybackTest
         assert(_movie.frame == 10);
         assert(!_movie.isPlaying, "Stopped changed in goTo");
 
-        assertThrows(F.callback(_movie.goTo, _movie.numFrames), "Went past frames");
-        assertThrows(F.callback(_movie.goTo, "nonexistent label"), "Went to nonexistent label");
+        assertThrows(F.bind(_movie.goTo, _movie.numFrames), "Went past frames");
+        assertThrows(F.bind(_movie.goTo, "nonexistent label"), "Went to nonexistent label");
     }
 
     public function playWhenAdded (finisher :FutureTask) :void {
