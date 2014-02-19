@@ -78,7 +78,11 @@ You will need these dependencies to build Flump:
 2. Build the flump exporter
 
         flump/exporter$ ant -Dflexsdk.dir=/path/to/flex swf
+        
+3. Build the flump demo
 
-3. To get AIR to report errors, run Flump with the AIR debugger (adl):
+        flump/demo ant -Dairsdk.dir=/path/to/air
+
+4. To get AIR to report errors, run Flump with the AIR debugger (adl):
 
         flump/exporter$ /path/to/air/bin/adl etc/airdesc.xml dist
