@@ -65,21 +65,20 @@ You will need these dependencies to build Flump:
 
 * [Flex SDK 4.6](http://www.adobe.com/devnet/flex/flex-sdk-download.html).
 
-* [AIR SDK](https://www.adobe.com/devnet/air/air-sdk-download.html). Get the version without the new
-  compiler (links near the bottom of that page) and [follow the instructions here to overlay it on the Flex SDK](http://helpx.adobe.com/x-productkb/multi/how-overlay-air-sdk-flex-sdk.html)
+* [AIR SDK](https://www.adobe.com/devnet/air/air-sdk-download.html). 
 
-* [Ant](http://ant.apache.org/).
+* [AIR SDK with Flex Support](https://www.adobe.com/devnet/air/air-sdk-download.html) You'll also need to download the version of the AIR SDK that comes *without* the new compiler (links near the bottom of that page) and [follow the instructions here to overlay it on the Flex SDK](http://helpx.adobe.com/x-productkb/multi/how-overlay-air-sdk-flex-sdk.html)
 
-To get AIR to report errors during development, run Flump with the AIR debugger (adl):
+* [Ant](http://ant.apache.org/)
 
 1. Build the flump runtime
 
-        flump/runtime$ ant -Dflexsdk.dir=/path/to/flex maven-deploy
+        flump/runtime$ ant -Dairsdk.dir=/path/to/air maven-deploy
 
 2. Build the flump exporter
 
         flump/exporter$ ant -Dflexsdk.dir=/path/to/flex swf
 
-3. Run the flump exporter
+3. To get AIR to report errors, run Flump with the AIR debugger (adl):
 
-        flump/exporter$ /path/to/flex/bin/adl etc/airdesc.xml dist
+        flump/exporter$ /path/to/air/bin/adl etc/airdesc.xml dist
