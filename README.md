@@ -59,6 +59,11 @@ will display those bitmaps at the same timing.
 
 Flump works with Flash CS 5, 5.5, and 6
 
+# Precompiled binaries
+
+* [Flump Exporter .air package](https://bitbucket.org/tconkling/flump-binaries/downloads/flump-exporter.air)
+* [Flump AS3 runtime swc](https://github.com/tconkling/maven-repo/raw/master/com/threerings/flump/flump-runtime/1.3/flump-runtime-1.3.swc)
+
 # Building
 
 You will need these dependencies to build Flump:
