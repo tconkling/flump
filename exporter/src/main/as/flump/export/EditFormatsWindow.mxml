@@ -23,6 +23,20 @@
             </fx:Component>
           </s:itemEditor>
         </s:GridColumn>
+        <s:GridColumn dataField="prettyPrint" headerText="Pretty Print">
+          <s:itemEditor>
+            <fx:Component>
+              <s:ComboBoxGridItemEditor>
+                <s:dataProvider>
+                  <s:ArrayList>
+                    <fx:String>true</fx:String>
+                    <fx:String>false</fx:String>
+                  </s:ArrayList>
+                </s:dataProvider>
+              </s:ComboBoxGridItemEditor>
+            </fx:Component>
+          </s:itemEditor>
+        </s:GridColumn>
         <s:GridColumn dataField="scale" headerText="Base Scale"/>
         <s:GridColumn dataField="scaleFactorsString" headerText="Additional Scale Factors"/>
         <s:GridColumn dataField="textureBorder" headerText="Texture Border"/>
