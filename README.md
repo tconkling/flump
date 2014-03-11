@@ -14,7 +14,7 @@ expressive animations on mobile platforms. Runtimes have been written for [Starl
 # Creating a movie for Flump
 
 1. [Install the latest version of Adobe AIR](http://get.adobe.com/air/).
-1. [Install the Flump AIR app](https://bitbucket.org/tconkling/flump-binaries/downloads/flump-exporter.air).
+1. [Install the Flump AIR app](https://github.com/threerings/flump/releases/latest).
 2. Create a `.fla` in Flash CS 5, 5.5, or 6.
 3. Create a new item in the library and draw a shape in its canvas.
 4. Right-click on the item, select its properties, tick the **Export for ActionScript** and
@@ -61,8 +61,8 @@ Flump works with Flash CS 5, 5.5, and 6
 
 # Precompiled binaries
 
-* [Flump Exporter .air package](https://bitbucket.org/tconkling/flump-binaries/downloads/flump-exporter.air)
-* [Flump AS3 runtime swc](https://github.com/tconkling/maven-repo/raw/master/com/threerings/flump/flump-runtime/1.3/flump-runtime-1.3.swc)
+* [Flump Exporter .air package](https://github.com/threerings/flump/releases/download/1.3/flump-exporter.air)
+* [Flump AS3 runtime swc](https://github.com/threerings/flump/releases/download/1.3/flump-runtime-1.3.swc)
 
 # Building
 
