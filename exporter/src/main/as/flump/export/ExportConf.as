@@ -31,7 +31,7 @@ public class ExportConf
     /** Additional scaleFactors to output */
     public var additionalScaleFactors :Array = [];
     /** The optimization strategy. */
-    public var optimize :String = OPTIMIZE_MEMORY;
+    public var optimize :String = OPTIMIZE_SPEED;
     /** The stage quality setting (StageQuality). */
     public var quality :String = StageQuality.BEST;
     /** Whether or not to pretty print the library. */
