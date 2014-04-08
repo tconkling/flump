@@ -42,7 +42,6 @@ public class ExportConf
     }
 
     public function set scaleFactorsString (str :String) :void {
-        var strings :Array = str.split(",");
         var values :Set = Sets.newSetOf(int);
         for each (var num :String in str.split(",")) {
             try {
