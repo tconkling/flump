@@ -10,19 +10,25 @@ import flump.mold.LayerMold;
 
 public class XflLayer
 {
+    public static const NAME :String = "name";
+    public static const TYPE :String = "layerType";
+
+    public static const TYPE_GUIDE :String = "guide";
+    public static const TYPE_FOLDER :String = "folder";
+
     use namespace xflns;
 
     public static function parse (lib :XflLibrary, baseLocation :String, xml :XML, flipbook :Boolean) :LayerMold {
         const layer :LayerMold = new LayerMold();
-        layer.name = XmlUtil.getStringAttr(xml, "name");
+        layer.name = XmlUtil.getStringAttr(xml, NAME);
         layer.flipbook = flipbook;
         const location :String = baseLocation + ":" + layer.name;
-        for each (var frameEl :XML in xml.frames.DOMFrame) {
-            layer.keyframes.push(XflKeyframe.parse(lib, location, frameEl, flipbook));
+        var frameXmlList :XMLList = xml.frames.DOMFrame;
+        for each (var frameXml :XML in frameXmlList) {
+            layer.keyframes.push(XflKeyframe.parse(lib, location, frameXml, flipbook));
         }
         if (layer.keyframes.length == 0) lib.addError(location, ParseError.INFO, "No keyframes on layer");
 
-        var domFrames :XMLList = xml.frames.DOMFrame;
         var ii :int;
         var kf :KeyframeMold;
         var nextKf :KeyframeMold;
@@ -32,7 +38,7 @@ public class XflLayer
         for (ii = 0; ii < layer.keyframes.length - 1; ++ii) {
             kf = layer.keyframes[ii];
             nextKf = layer.keyframes[ii+1];
-            frameEl = domFrames[ii];
+            frameXml = frameXmlList[ii];
 
             if (kf.skewX + Math.PI < nextKf.skewX) {
                 nextKf.skewX += -Math.PI * 2;
@@ -51,14 +57,14 @@ public class XflLayer
         for (ii = 0; ii < layer.keyframes.length - 1; ++ii) {
             kf = layer.keyframes[ii];
             nextKf = layer.keyframes[ii+1];
-            frameEl = domFrames[ii];
+            frameXml = frameXmlList[ii];
 
-            var motionTweenRotate :String =
-                XmlUtil.getStringAttr(frameEl, "motionTweenRotate", "none");
+            var motionTweenRotate :String = XmlUtil.getStringAttr(frameXml,
+                XflKeyframe.MOTION_TWEEN_ROTATE, XflKeyframe.MOTION_TWEEN_ROTATE_NONE);
 
             // If a direction is specified, take it into account
-            if (motionTweenRotate != "none") {
-                var direction :Number = (motionTweenRotate == "clockwise" ? 1 : -1);
+            if (motionTweenRotate != XflKeyframe.MOTION_TWEEN_ROTATE_NONE) {
+                var direction :Number = (motionTweenRotate == XflKeyframe.MOTION_TWEEN_ROTATE_CLOCKWISE ? 1 : -1);
                 // negative scales affect rotation direction
                 direction *= sign(nextKf.scaleX) * sign(nextKf.scaleY);
 
@@ -77,7 +83,7 @@ public class XflLayer
 
                 // additional rotations specified?
                 var motionTweenRotateTimes :Number =
-                    XmlUtil.getNumberAttr(frameEl, "motionTweenRotateTimes", 0);
+                    XmlUtil.getNumberAttr(frameXml, XflKeyframe.MOTION_TWEEN_ROTATE_TIMES, 0);
                 var thisRotation :Number = motionTweenRotateTimes * Math.PI * 2 * direction;
                 additionalRotation += thisRotation;
             }

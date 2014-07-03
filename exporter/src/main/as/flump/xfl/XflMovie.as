@@ -11,18 +11,18 @@ import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
 import flump.mold.MovieMold;
 
-public class XflMovie
+public class XflMovie extends XflSymbol
 {
     use namespace xflns;
 
     /** Returns true if the given movie symbol is marked for "Export for ActionScript" */
     public static function isExported (xml :XML) :Boolean {
-        return XmlUtil.hasAttr(xml, "linkageClassName");
+        return XmlUtil.hasAttr(xml, EXPORT_CLASS_NAME);
     }
 
     /** Returns the library name of the given movie */
     public static function getName (xml :XML) :String {
-        return XmlUtil.getStringAttr(xml, "name");
+        return XmlUtil.getStringAttr(xml, NAME);
     }
 
     /** Return a Set of all the symbols this movie references. */
@@ -41,14 +41,14 @@ public class XflMovie
     public static function parse (lib :XflLibrary, xml :XML) :MovieMold {
         const movie :MovieMold = new MovieMold();
         const name :String = getName(xml);
-        const symbol :String = XmlUtil.getStringAttr(xml, "linkageClassName", null);
-        movie.id = lib.createId(movie, name, symbol);
+        const exportName :String = XmlUtil.getStringAttr(xml, EXPORT_CLASS_NAME, null);
+        movie.id = lib.createId(movie, name, exportName);
         const location :String = lib.location + ":" + movie.id;
 
         const layerEls :XMLList = xml.timeline.DOMTimeline[0].layers.DOMLayer;
-        if (XmlUtil.getStringAttr(layerEls[0], "name") == "flipbook") {
+        if (XmlUtil.getStringAttr(layerEls[0], XflLayer.NAME) == "flipbook") {
             movie.layers.push(XflLayer.parse(lib, location, layerEls[0], true));
-            if (symbol == null) {
+            if (exportName == null) {
                 lib.addError(location, ParseError.CRIT, "Flipbook movie '" + movie.id + "' not exported");
             }
             for each (var kf :KeyframeMold in movie.layers[0].keyframes) {
@@ -56,8 +56,8 @@ public class XflMovie
             }
         } else {
             for each (var layerEl :XML in layerEls) {
-                var layerType :String = XmlUtil.getStringAttr(layerEl, "layerType", "");
-                if ((layerType != "guide") && (layerType != "folder")) {
+                var layerType :String = XmlUtil.getStringAttr(layerEl, XflLayer.TYPE, "");
+                if ((layerType != XflLayer.TYPE_GUIDE) && (layerType != XflLayer.TYPE_FOLDER)) {
                     movie.layers.unshift(XflLayer.parse(lib, location, layerEl, false));
                 }
             }

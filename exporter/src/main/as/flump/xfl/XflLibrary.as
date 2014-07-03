@@ -36,6 +36,9 @@ public class XflLibrary
 {
     use namespace xflns;
 
+    public static const FRAME_RATE :String = "frameRate";
+    public static const BACKGROUND_COLOR :String = "backgroundColor";
+
     /**
      * When an exported movie contains an unexported movie, it gets assigned a generated symbol
      * name with this prefix.
@@ -111,7 +114,7 @@ public class XflLibrary
                     var item :Object = _idToItem[kf.ref];
                     if (item == null) {
                         addTopLevelError(ParseError.CRIT,
-                                "unrecognized library item '" + kf.ref + "'");
+                            "unrecognized library item '" + kf.ref + "'");
                     } else if (item is MovieMold) {
                         prepareForPublishing(MovieMold(item));
                     } else if (item is XflTexture) {
@@ -205,23 +208,23 @@ public class XflLibrary
      * @returns A list of paths to symbols in this library.
      */
     public function parseDocumentFile (fileData :ByteArray, path :String) :Vector.<String> {
-        const xml :XML = Util.bytesToXML(fileData);
-        frameRate = XmlUtil.getNumberAttr(xml, "frameRate", 24);
+        const docXml :XML = Util.bytesToXML(fileData);
+        frameRate = XmlUtil.getNumberAttr(docXml, FRAME_RATE, 24);
 
-        const hex :String = XmlUtil.getStringAttr(xml, "backgroundColor", "#ffffff");
+        const hex :String = XmlUtil.getStringAttr(docXml, BACKGROUND_COLOR, "#ffffff");
         backgroundColor = parseInt(hex.substr(1), 16);
 
-        if (xml.media != null) {
-            for each (var bitmap :XML in xml.media.DOMBitmapItem) {
-                if (XmlUtil.getBooleanAttr(bitmap, "linkageExportForAS", false)) {
+        if (docXml.media != null) {
+            for each (var bitmap :XML in docXml.media.DOMBitmapItem) {
+                if (XmlUtil.getBooleanAttr(bitmap, XflSymbol.EXPORT_FOR_ACTIONSCRIPT, false)) {
                     textures.push(new XflTexture(this, location, bitmap));
                 }
             }
         }
 
         const paths :Vector.<String> = new <String>[];
-        if (xml.symbols != null) {
-            for each (var symbolXmlPath :XML in xml.symbols.Include) {
+        if (docXml.symbols != null) {
+            for each (var symbolXmlPath :XML in docXml.symbols.Include) {
                 paths.push("LIBRARY/" + XmlUtil.getStringAttr(symbolXmlPath, "href"));
             }
         }
@@ -231,24 +234,24 @@ public class XflLibrary
 
     public function parseLibraryFile (fileData :ByteArray, path :String) :void {
         const xml :XML = Util.bytesToXML(fileData);
-        if (xml.name().localName != "DOMSymbolItem") {
+        if (!XflSymbol.isSymbolItem(xml)) {
             addTopLevelError(ParseError.DEBUG,
-                "Skipping file since its root element isn't DOMSymbolItem");
+                "Skipping file since its root element isn't " + XflSymbol.SYMBOL_ITEM);
             return;
-        } else if (XmlUtil.getStringAttr(xml, "symbolType", "") == "graphic") {
-            addTopLevelError(ParseError.DEBUG, "Skipping file because symbolType=graphic");
+        } else if (XmlUtil.getStringAttr(xml, XflSymbol.TYPE, "") == XflSymbol.TYPE_GRAPHIC) {
+//            addTopLevelError(ParseError.DEBUG, "Skipping file because symbolType=graphic");
             return;
         }
 
-        const isSprite :Boolean = XmlUtil.getBooleanAttr(xml, "isSpriteSubclass", false);
+        const isSprite :Boolean = XmlUtil.getBooleanAttr(xml, XflSymbol.IS_SPRITE, false);
         log.debug("Parsing for library", "file", path, "isSprite", isSprite);
         try {
             if (isSprite) {
                 // if "export in first frame" is not set, we won't be able to load the texture
                 // from the swf.
                 // TODO: remove this restriction by loading the entire swf before reading textures?
-                if (!XmlUtil.getBooleanAttr(xml, "linkageExportInFirstFrame", true)) {
-                    addError(location + ":" + XmlUtil.getStringAttr(xml, "linkageClassName"),
+                if (!XmlUtil.getBooleanAttr(xml, XflSymbol.EXPORT_IN_FIRST_FRAME, true)) {
+                    addError(location + ":" + XmlUtil.getStringAttr(xml, XflSymbol.EXPORT_CLASS_NAME),
                         ParseError.CRIT, "\"Export in frame 1\" must be set");
                     return;
                 }
@@ -264,8 +267,8 @@ public class XflLibrary
                 else _unexportedMovies.put(XflMovie.getName(xml), xml);
             }
         } catch (e :Error) {
-            var type :String = isSprite ? "sprite" : "movie";
-            addTopLevelError(ParseError.CRIT, "Unable to parse " + type + " in " + path, e);
+            addTopLevelError(ParseError.CRIT,
+                "Unable to parse " + (isSprite ? "sprite" : "movie") + " in " + path, e);
             log.error("Unable to parse " + path, e);
         }
     }
