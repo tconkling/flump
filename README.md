@@ -23,6 +23,7 @@ expressive animations on mobile platforms. Runtimes have been written for [Starl
 5. Create a second item in the library, and drag the first into it.
 6. Add additional frames in the second item, and create a classic tween moving the first item around
    in those frames.
+6. Set the **Export for ActionScript** and **Export in frame 1** properties for the second item. Leave its base class as `flash.display.MovieClip`.
 7. Save the file and publish it as a swf.
 8. Open the Flump app and change its import directory to the directory containing the `.fla` and
    `.swf` files. The `.fla` file should appear in the list of source files.
