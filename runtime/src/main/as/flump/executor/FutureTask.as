@@ -49,7 +49,14 @@ public class FutureTask extends Future
     protected function applyMonitored(monitored :Function, args :Array) :void {
         try {
             monitored.apply(this, args);
-        } catch (e :Error) { fail(e); }
+        } catch (e :Error) {
+            if (this.isComplete) {
+                // can't fail if we're already completed
+                throw e;
+            } else {
+                fail(e);
+            }
+        }
     }
 }
 }

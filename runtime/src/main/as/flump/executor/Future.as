@@ -53,6 +53,9 @@ public class Future
     public function get result () :* { return _result; }
 
     internal function onSuccess (...result) :void {
+        if (_result !== undefined) {
+            throw new Error("already completed");
+        }
         if (result.length > 0) _result = result[0];
         _state = STATE_SUCCEEDED;
         if (_onSuccess) _onSuccess.emit(_result);
@@ -60,6 +63,9 @@ public class Future
     }
 
     internal function onFailure (error :Object) :void {
+        if (_result !== undefined) {
+            throw new Error("already completed");
+        }
         _result = error;
         _state = STATE_FAILED;
         if (_onFailure) _onFailure.emit(error);
