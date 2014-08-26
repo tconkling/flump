@@ -287,20 +287,14 @@ public class ProjectController
         }
 
         var formatNames :Array = [];
+        var hasCombined :Boolean = false;
         if (_conf != null) {
             for each (var export :ExportConf in _conf.exports) {
                 formatNames.push(export.description);
+                hasCombined ||= export.combine;
             }
         }
         _win.formatOverview.text = formatNames.join(", ");
-
-        var hasCombined :Boolean = false;
-        for each (var exportConf :ExportConf in _conf.exports) {
-            if (exportConf.combine) {
-                hasCombined = true;
-                break;
-            }
-        }
         _win.exportAll.label = hasCombined ? "Export Combined" : "Export All";
         _win.exportModified.enabled = !hasCombined;
 
