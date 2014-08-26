@@ -36,6 +36,8 @@ public class ExportConf
     public var quality :String = StageQuality.BEST;
     /** Whether or not to pretty print the library. */
     public var prettyPrint :Boolean = false;
+    /** Whether or not to combine all FLAs into a single library */
+    public var combine :Boolean = false;
 
     public function get scaleFactorsString () :String {
         return this.additionalScaleFactors.join(",");
@@ -78,6 +80,7 @@ public class ExportConf
         conf.optimize = optional(o, "optimize", OPTIMIZE_MEMORY);
         conf.quality = optional(o, "quality", StageQuality.BEST);
         conf.prettyPrint = optional(o, "prettyPrint", false);
+        conf.combine = optional(o, "combine", false);
         return conf;
     }
 

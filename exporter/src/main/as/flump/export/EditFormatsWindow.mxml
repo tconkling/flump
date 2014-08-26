@@ -55,26 +55,40 @@
             </fx:Component>
           </s:itemEditor>
         </s:GridColumn>
-          <s:GridColumn dataField="quality" headerText="Quality">
-            <s:itemEditor>
-              <fx:Component>
-                <s:ComboBoxGridItemEditor>
-                  <s:dataProvider>
-                    <s:ArrayList>
-                      <fx:String>low</fx:String>
-                      <fx:String>medium</fx:String>
-                      <fx:String>high</fx:String>
-                      <fx:String>best</fx:String>
-                      <fx:String>8x8</fx:String>
-                      <fx:String>8x8linear</fx:String>
-                      <fx:String>16x16</fx:String>
-                      <fx:String>16x16linear</fx:String>
-                    </s:ArrayList>
-                  </s:dataProvider>
-                </s:ComboBoxGridItemEditor>
-              </fx:Component>
-            </s:itemEditor>
-          </s:GridColumn>
+        <s:GridColumn dataField="quality" headerText="Quality">
+          <s:itemEditor>
+            <fx:Component>
+              <s:ComboBoxGridItemEditor>
+                <s:dataProvider>
+                  <s:ArrayList>
+                    <fx:String>low</fx:String>
+                    <fx:String>medium</fx:String>
+                    <fx:String>high</fx:String>
+                    <fx:String>best</fx:String>
+                    <fx:String>8x8</fx:String>
+                    <fx:String>8x8linear</fx:String>
+                    <fx:String>16x16</fx:String>
+                    <fx:String>16x16linear</fx:String>
+                  </s:ArrayList>
+                </s:dataProvider>
+              </s:ComboBoxGridItemEditor>
+            </fx:Component>
+          </s:itemEditor>
+        </s:GridColumn>
+        <s:GridColumn dataField="combine" headerText="Combine to a Single Library">
+          <s:itemEditor>
+            <fx:Component>
+              <s:ComboBoxGridItemEditor>
+                <s:dataProvider>
+                  <s:ArrayList>
+                    <fx:String>true</fx:String>
+                    <fx:String>false</fx:String>
+                  </s:ArrayList>
+                </s:dataProvider>
+              </s:ComboBoxGridItemEditor>
+            </fx:Component>
+          </s:itemEditor>
+        </s:GridColumn>
       </s:ArrayList>
     </s:columns>
     <mx:ArrayCollection/>
