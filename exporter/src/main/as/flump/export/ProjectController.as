@@ -294,6 +294,16 @@ public class ProjectController
         }
         _win.formatOverview.text = formatNames.join(", ");
 
+        var hasCombined :Boolean = false;
+        for each (var exportConf :ExportConf in _conf.exports) {
+            if (exportConf.combine) {
+                hasCombined = true;
+                break;
+            }
+        }
+        _win.exportAll.label = hasCombined ? "Export Combined" : "Export All";
+        _win.exportModified.enabled = !hasCombined;
+
         updateWindowTitle();
     }
 
