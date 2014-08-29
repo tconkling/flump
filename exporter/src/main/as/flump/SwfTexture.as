@@ -30,23 +30,25 @@ public class SwfTexture
     public function get a() :int { return this.w * this.h; }
 
     public static function fromFlipbook (lib :XflLibrary, movie :MovieMold, frame :int,
-        quality :String = StageQuality.BEST, scale :Number = 1) :SwfTexture {
-
+            quality :String = StageQuality.BEST, scale :Number = 1,
+            useNamespace :Boolean = false) :SwfTexture {
         const klass :Class = Class(lib.swf.getSymbol(movie.id));
         const clip :MovieClip = MovieClip(new klass());
         clip.gotoAndStop(frame + 1);
-        const name :String = movie.id + "_flipbook_" + frame;
+        const ns :String = useNamespace ? lib.location + "/" : "";
+        const name :String = ns + movie.id + "_flipbook_" + frame;
         return new SwfTexture(name, clip, scale, quality);
     }
 
-    public static function fromTexture (swf :LoadedSwf, tex :XflTexture,
-        quality :String = StageQuality.BEST, scale :Number = 1) :SwfTexture {
-
-        const klass :Class = Class(swf.getSymbol(tex.symbol));
+    public static function fromTexture (lib :XflLibrary, tex :XflTexture,
+            quality :String = StageQuality.BEST, scale :Number = 1,
+            useNamespace :Boolean = false) :SwfTexture {
+        const klass :Class = Class(lib.swf.getSymbol(tex.symbol));
         const instance :Object = new klass();
+        const ns :String = useNamespace ? lib.location + "/" : "";
         const disp :DisplayObject = (instance is BitmapData) ?
             new Bitmap(BitmapData(instance)) : DisplayObject(instance);
-        return new SwfTexture(tex.symbol, disp, scale, quality);
+        return new SwfTexture(ns + tex.symbol, disp, scale, quality);
     }
 
     public function SwfTexture (symbol :String, disp :DisplayObject, scale :Number, quality :String) {

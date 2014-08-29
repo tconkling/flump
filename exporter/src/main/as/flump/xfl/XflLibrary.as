@@ -120,7 +120,7 @@ public class XflLibrary
                     } else if (item is XflTexture) {
                         const tex :XflTexture = XflTexture(item);
                         try {
-                            swfTexture = SwfTexture.fromTexture(this.swf, tex);
+                            swfTexture = SwfTexture.fromTexture(this, tex);
                         } catch (e :Error) {
                             addTopLevelError(ParseError.CRIT, "Error creating texture '" + tex.symbol + "'");
                             swfTexture = null;
@@ -256,7 +256,7 @@ public class XflLibrary
                     return;
                 }
                 var texture :XflTexture = new XflTexture(this, location, xml);
-                if (texture.isValid(swf)) textures.push(texture);
+                if (texture.isValid(this)) textures.push(texture);
                 else addError(location + ":" + texture.symbol, ParseError.CRIT, "Sprite is empty");
 
             } else {

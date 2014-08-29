@@ -17,8 +17,8 @@ public class XflTexture
         lib.createId(this, XmlUtil.getStringAttr(xml, "name"), symbol);
     }
 
-    public function isValid (swf :LoadedSwf) :Boolean {
-        var swfTex :SwfTexture = SwfTexture.fromTexture(swf, this);
+    public function isValid (lib :XflLibrary) :Boolean {
+        var swfTex :SwfTexture = SwfTexture.fromTexture(lib, this);
         return (swfTex.w > 0 && swfTex.h > 0);
     }
 }
