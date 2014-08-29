@@ -19,14 +19,14 @@ public class XMLFormat extends PublishFormat
 {
     public static const NAME :String = "XML";
 
-    public function XMLFormat (destDir :File, lib :XflLibrary, conf :ExportConf) {
-        super(destDir, lib, conf);
-        _prefix = conf.name + "/" + lib.location + "/";
+    public function XMLFormat (destDir :File, libs :Vector.<XflLibrary>, conf :ExportConf) {
+        super(destDir, libs, conf);
+        _prefix = conf.name + "/" + location + "/";
         _metaFile =  _destDir.resolvePath(_prefix + "resources.xml");
     }
 
     override public function get modified () :Boolean {
-        return !_metaFile.exists || Util.bytesToXML(Files.read(_metaFile)).@md5 != _lib.md5;
+        return !_metaFile.exists || Util.bytesToXML(Files.read(_metaFile)).@md5 != md5;
     }
 
     override public function publish () :void {
@@ -42,19 +42,19 @@ public class XMLFormat extends PublishFormat
                 F.bind(AtlasUtil.writePNG, atlas, F._1));
         }
 
-        const xml :XML = <resources md5={_lib.md5}/>;
-        const prefix :String = _lib.location + "/";
-        for each (var movie :MovieMold in _lib.publishedMovies) {
+        const xml :XML = <resources md5={md5}/>;
+        const prefix :String = location + "/";
+        const libraryMold :LibraryMold = createMold(atlases);
+        for each (var movie :MovieMold in libraryMold.movies) {
             var movieXml :XML = movie.scale(_conf.scale).toXML();
             movieXml.@name = prefix + movieXml.@name;
-            movieXml.@frameRate = _lib.frameRate;
+            movieXml.@frameRate = _libs[0].frameRate;
             for each (var kf :XML in movieXml..kf) {
                 if (XmlUtil.hasAttr(kf, "ref")) kf.@ref = prefix + kf.@ref;
             }
             xml.appendChild(movieXml);
         }
 
-        const libraryMold :LibraryMold = _lib.toMold(atlases, _conf);
         const groupsXml :XML = <textureGroups/>;
         xml.appendChild(groupsXml);
         for each (var group :TextureGroupMold in libraryMold.textureGroups) {

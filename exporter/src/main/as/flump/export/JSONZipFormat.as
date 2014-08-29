@@ -19,12 +19,12 @@ public class JSONZipFormat extends PublishFormat
 
     public var outputFile :File;
 
-    public function JSONZipFormat (destDir :File, lib :XflLibrary, conf :ExportConf) {
-        super(destDir, lib, conf);
+    public function JSONZipFormat (destDir :File, libs :Vector.<XflLibrary>, conf :ExportConf) {
+        super(destDir, libs, conf);
         if (conf.name != null) {
-            outputFile = _destDir.resolvePath(conf.name + "/" + lib.location + ".zip");
+            outputFile = _destDir.resolvePath(conf.name + "/" + location + ".zip");
         } else {
-            outputFile = _destDir.resolvePath(lib.location + ".zip");
+            outputFile = _destDir.resolvePath(location + ".zip");
         }
     }
 
@@ -35,7 +35,7 @@ public class JSONZipFormat extends PublishFormat
         zip.loadBytes(Files.read(outputFile));
         const md5File :FZipFile = zip.getFileByName("md5");
         const md5 :String = md5File.content.readUTFBytes(md5File.content.length);
-        return md5 != _lib.md5;
+        return md5 != md5;
     }
 
     override public function publish() :void {
@@ -52,10 +52,10 @@ public class JSONZipFormat extends PublishFormat
             addToZip(atlas.filename, function (b :ByteArray) :void { AtlasUtil.writePNG(atlas, b); });
         }
         addToZip(LibraryLoader.LIBRARY_LOCATION, function (b :ByteArray) :void {
-            b.writeUTFBytes(_lib.toJSONString(atlases, _conf));
+            b.writeUTFBytes(toJSONString(createMold(atlases)));
         });
         addToZip(LibraryLoader.MD5_LOCATION,
-            function (b :ByteArray) :void { b.writeUTFBytes(_lib.md5); });
+            function (b :ByteArray) :void { b.writeUTFBytes(md5); });
         addToZip(LibraryLoader.VERSION_LOCATION,
             function (b :ByteArray) :void { b.writeUTFBytes(LibraryLoader.VERSION); });
 
