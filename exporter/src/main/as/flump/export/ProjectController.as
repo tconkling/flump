@@ -370,7 +370,7 @@ public class ProjectController
             if (_conf.exports.length == 0) {
                 throw new Error("No export formats specified.");
             }
-            createPublisher().publish(status.lib);
+            createPublisher().publishSingle(status.lib);
         } catch (e :Error) {
             ErrorWindowMgr.showErrorPopup("Publishing Failed", e.message, _win);
         }
@@ -403,9 +403,8 @@ public class ProjectController
         _flashDocsGrid.dataProvider.addItem(status);
 
         load.succeeded.connect(function (lib :XflLibrary) :void {
-            var pub :Publisher = createPublisher();
             status.lib = lib;
-            status.updateModified(Ternary.of(pub == null || pub.modified(lib)));
+            checkModified();
             for each (var err :ParseError in lib.getErrors()) _errorsGrid.dataProvider.addItem(err);
             status.updateValid(Ternary.of(lib.valid));
         });
@@ -414,6 +413,28 @@ public class ProjectController
             status.updateValid(Ternary.FALSE);
             throw error;
         });
+    }
+
+    /** returns all libs if all known flash docs are done loading, else null */
+    protected function getLibs () :Vector.<XflLibrary> {
+        var libs :Vector.<XflLibrary> = new <XflLibrary>[];
+        for each (var status :DocStatus in _flashDocsGrid.dataProvider) {
+            if (status.lib == null) return null; // not done loading yet
+            libs[libs.length] = status.lib;
+        }
+        return libs;
+    }
+
+    protected function checkModified () :void {
+        var libs :Vector.<XflLibrary> = getLibs();
+        if (libs == null) return; // not done loading yet
+
+        // all the docs we know about have been loaded
+        var pub :Publisher = createPublisher();
+        for (var ii :int = 0; ii < libs.length; ii++) {
+            var status :DocStatus = _flashDocsGrid.dataProvider[ii];
+            status.updateModified(Ternary.of(pub == null || pub.modified(libs, ii)))
+        }
     }
 
     protected function setProjectDirty (val :Boolean) :void {
