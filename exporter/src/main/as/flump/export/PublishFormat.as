@@ -9,6 +9,8 @@ import com.adobe.crypto.MD5;
 
 import flash.filesystem.File;
 
+import flump.mold.KeyframeMold;
+import flump.mold.LayerMold;
 import flump.mold.LibraryMold;
 import flump.mold.MovieMold;
 import flump.mold.TextureGroupMold;
@@ -73,9 +75,24 @@ public class PublishFormat
         mold.md5 = md5;
         mold.textureGroups = createTextureGroupMolds(atlases);
         mold.movies = new <MovieMold>[];
+        var useNamespaces :Boolean = _libs.length > 1;
         for each (var lib :XflLibrary in _libs) {
             for each (var movie :MovieMold in lib.publishedMovies) {
-                mold.movies[mold.movies.length] = movie.scale(_conf.scale);
+                // movie.scale() returns a scaled clone
+                movie = movie.scale(_conf.scale);
+                mold.movies[mold.movies.length] = movie;
+
+                if (useNamespaces) {
+                    // if we're creating a combined library mold, namespace all movie names and
+                    // refs on movie layer keyframes. Texture names have already been namespaced
+                    // in the texture packer.
+                    movie.id = lib.location + "/" + movie.id;
+                    for each (var layer :LayerMold in movie.layers) {
+                        for each (var kf :KeyframeMold in layer.keyframes) {
+                            if (kf.ref != null) kf.ref = lib.location + "/" + kf.ref;
+                        }
+                    }
+                }
             }
         }
         return mold;
