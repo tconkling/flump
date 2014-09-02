@@ -24,14 +24,18 @@ public class Publisher
         });
     }
 
-    public function publishSingle (lib :XflLibrary) :void {
+    public function publishSingle (lib :XflLibrary) :int {
         var libs :Vector.<XflLibrary> = new <XflLibrary>[lib];
-        for each (var format :PublishFormat in instantiate(libs, 0, false)) format.publish();
+        var formats :Vector.<PublishFormat> = instantiate(libs, 0, false);
+        for each (var format :PublishFormat in formats) format.publish();
+        return formats.length;
     }
 
-    public function publishCombined (libs :Vector.<XflLibrary>) :void {
+    public function publishCombined (libs :Vector.<XflLibrary>) :int {
         // no index passed to instantiate() acts as a <do not include non-combined> flag
-        for each (var format :PublishFormat in instantiate(libs)) format.publish();
+        var formats :Vector.<PublishFormat> = instantiate(libs);
+        for each (var format :PublishFormat in formats) format.publish();
+        return formats.length;
     }
 
     protected function instantiate (libs :Vector.<XflLibrary>,

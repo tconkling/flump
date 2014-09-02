@@ -171,6 +171,14 @@ public class ProjectController
     }
 
     protected function exportAll (modifiedOnly :Boolean) :void {
+        // if we have one or more combined export format, publish them
+        for each (var conf :ExportConf in _conf.exports) {
+            if (conf.combine) {
+                exportCombined();
+                break;
+            }
+        }
+        // now publish any appropriate single formats
         for each (var status :DocStatus in _flashDocsGrid.dataProvider.toArray()) {
             if (status.isValid && (!modifiedOnly || status.isModified)) {
                 exportFlashDocument(status);
@@ -370,13 +378,43 @@ public class ProjectController
             if (_conf.exports.length == 0) {
                 throw new Error("No export formats specified.");
             }
-            createPublisher().publishSingle(status.lib);
+            var published :int = createPublisher().publishSingle(status.lib);
+            if (published == 0) {
+                throw new Error("No suitable formats were found for publishing");
+            }
         } catch (e :Error) {
             ErrorWindowMgr.showErrorPopup("Publishing Failed", e.message, _win);
         }
 
         stage.quality = prevQuality;
         status.updateModified(Ternary.FALSE);
+    }
+
+    protected function exportCombined () :void {
+        const stage :Stage = NA.activeWindow.stage;
+        const prevQuality :String = stage.quality;
+
+        stage.quality = StageQuality.BEST;
+
+        try {
+            if (_exportChooser.dir == null) {
+                throw new Error("No export directory specified.");
+            }
+            if (_conf.exports.length == 0) {
+                throw new Error("No export formats specified.");
+            }
+            var published :int = createPublisher().publishCombined(getLibs());
+            if (published == 0) {
+                throw new Error("No suitable formats were found for publishing");
+            }
+        } catch (e :Error) {
+            ErrorWindowMgr.showErrorPopup("Publishing Failed", e.message, _win);
+        }
+
+        stage.quality = prevQuality;
+        for each (var status :DocStatus in _flashDocsGrid.dataProvider) {
+            status.updateModified(Ternary.FALSE);
+        }
     }
 
     protected function addFlashDocument (file :File) :void {
