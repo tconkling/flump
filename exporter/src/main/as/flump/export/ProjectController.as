@@ -172,11 +172,13 @@ public class ProjectController
 
     protected function exportAll (modifiedOnly :Boolean) :void {
         // if we have one or more combined export format, publish them
-        if (hasCombinedConfig()) exportCombined();
+        if (hasCombinedExportConfig()) exportCombined();
         // now publish any appropriate single formats
-        for each (var status :DocStatus in _flashDocsGrid.dataProvider.toArray()) {
-            if (status.isValid && (!modifiedOnly || status.isModified)) {
-                exportFlashDocument(status);
+        if (hasSingleExportConfig()) {
+            for each (var status :DocStatus in _flashDocsGrid.dataProvider.toArray()) {
+                if (status.isValid && (!modifiedOnly || status.isModified)) {
+                    exportFlashDocument(status);
+                }
             }
         }
     }
@@ -305,14 +307,20 @@ public class ProjectController
         updateWindowTitle();
     }
 
-    protected function hasCombinedConfig () :Boolean {
+    protected function hasCombinedExportConfig () :Boolean {
         if (_conf == null) return false;
         for each (var config :ExportConf in _conf.exports) if (config.combine) return true;
         return false;
     }
 
+    protected function hasSingleExportConfig () :Boolean {
+        if (_conf == null) return false;
+        for each (var config :ExportConf in _conf.exports) if (!config.combine) return true;
+        return false;
+    }
+
     protected function onSelectedItemChanged (..._) :void {
-        _win.export.enabled = !hasCombinedConfig() && _exportChooser.dir != null &&
+        _win.export.enabled = !hasCombinedExportConfig() && _exportChooser.dir != null &&
             _flashDocsGrid.selectionLength > 0 &&
             _flashDocsGrid.selectedItems.some(function (status :DocStatus, ..._) :Boolean {
                 return status.isValid;
