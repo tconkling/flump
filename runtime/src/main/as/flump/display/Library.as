@@ -18,6 +18,10 @@ public interface Library
     /** @return the names of all Image symbols in the Library */
     function get imageSymbols () :Vector.<String>;
 
+    /** @return true if the symbols within the library have a namespace prefix due to being combined
+     * from multiple source FLAs. */
+    function get isNamespaced () :Boolean;
+
     /**
      * Creates a movie for the given symbol.
      *

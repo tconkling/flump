@@ -27,6 +27,7 @@ public class LibraryMold
         mold.frameRate = require(o, "frameRate");
         mold.md5 = require(o, "md5");
         mold.textureFormat = o["textureFormat"] || "png";
+        mold.isNamespaced = o["isNamespaced"] === true; // default false
         for each (var movie :Object in require(o, "movies")) mold.movies.push(MovieMold.fromJSON(movie));
         for each (var tg :Object in require(o, "textureGroups")) mold.textureGroups.push(TextureGroupMold.fromJSON(tg));
         return mold;
