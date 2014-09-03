@@ -16,14 +16,15 @@ import flump.xfl.XflLibrary;
 public class PublishTest
 {
     public function PublishTest (runner :TestRunner, lib :XflLibrary) {
-        _lib = lib;
+        _lib = new <XflLibrary>[lib];
         runner.run("Publish XML", makePublishTest("xml", XMLFormat));
         runner.run("Publish JSON", makePublishTest("json", JSONFormat));
         runner.run("Publish JSONZip", makePublishTest("jsonzip", JSONZipFormat,
             function (output :File) :void {  new StarlingResourcesTest(runner, output); }));
     }
 
-    protected function makePublishTest (name :String, formatClass :Class, postPublish :Function=null) :Function {
+    protected function makePublishTest (name :String, formatClass :Class,
+            postPublish :Function=null) :Function {
         return function () :void {
             const exportDir :File = TestRunner.dist.resolvePath("test/publish" + name);
             if (exportDir.exists) exportDir.deleteDirectory(/*deleteDirectoryContents=*/true);
@@ -34,15 +35,16 @@ public class PublishTest
             project.exportDir = "starling";
             project.exports = [conf];
             const pub :Publisher = new Publisher(exportDir, project, "Test Project");
-            assert(pub.modified(_lib), "Lack of output should indicate modified");
-            pub.publish(_lib);
-            assert(!pub.modified(_lib), "Shouldn't be modified after publishing");
+            assert(pub.modified(_lib, 0), "Lack of output should indicate modified");
+            pub.publishSingle(_lib[0]);
+            assert(!pub.modified(_lib, 0), "Shouldn't be modified after publishing");
             if (postPublish != null) {
-                postPublish(conf.createPublishFormat(exportDir, _lib)["outputFile"]);
+                postPublish(
+                    conf.createPublishFormat(exportDir, _lib, "Text Project")["outputFile"]);
             }
         }
     }
 
-    protected var _lib :XflLibrary;
+    protected var _lib :Vector.<XflLibrary>;
 }
 }
