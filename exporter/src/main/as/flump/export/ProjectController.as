@@ -394,6 +394,7 @@ public class ProjectController
                 throw new Error("No suitable formats were found for publishing");
             }
         } catch (e :Error) {
+            log.warning("publishing failed", e);
             ErrorWindowMgr.showErrorPopup("Publishing Failed", e.message, _win);
         }
 
@@ -419,6 +420,7 @@ public class ProjectController
                 throw new Error("No suitable formats were found for publishing");
             }
         } catch (e :Error) {
+            log.warning("publishing failed", e);
             ErrorWindowMgr.showErrorPopup("Publishing Failed", e.message, _win);
         }
 
