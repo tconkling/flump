@@ -40,9 +40,9 @@ public class PublishFormat
         if (_libs.length == 1) return _libs[0].md5;
 
         // for combined libs, use a hash of the concatenated libs' md5s.
-        return MD5.hash(_libs.map(function (lib :XflLibrary, ...ignored) :String {
-            return lib.md5;
-        }).join("|"))
+        var md5s :Vector.<String> = new <String>[];
+        for each (var lib :XflLibrary in _libs) md5s[md5s.length] = lib.md5;
+        return MD5.hash(md5s.join("|"));
     }
 
     protected function get location () :String {
