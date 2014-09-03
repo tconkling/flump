@@ -172,12 +172,7 @@ public class ProjectController
 
     protected function exportAll (modifiedOnly :Boolean) :void {
         // if we have one or more combined export format, publish them
-        for each (var conf :ExportConf in _conf.exports) {
-            if (conf.combine) {
-                exportCombined();
-                break;
-            }
-        }
+        if (hasCombinedConfig()) exportCombined();
         // now publish any appropriate single formats
         for each (var status :DocStatus in _flashDocsGrid.dataProvider.toArray()) {
             if (status.isValid && (!modifiedOnly || status.isModified)) {
@@ -305,12 +300,20 @@ public class ProjectController
         _win.formatOverview.text = formatNames.join(", ");
         _win.exportAll.label = hasCombined ? "Export Combined" : "Export All";
         _win.exportModified.enabled = !hasCombined;
+        _win.export.enabled = !hasCombined;
 
         updateWindowTitle();
     }
 
+    protected function hasCombinedConfig () :Boolean {
+        if (_conf == null) return false;
+        for each (var config :ExportConf in _conf.exports) if (config.combine) return true;
+        return false;
+    }
+
     protected function onSelectedItemChanged (..._) :void {
-        _win.export.enabled = _exportChooser.dir != null && _flashDocsGrid.selectionLength > 0 &&
+        _win.export.enabled = !hasCombinedConfig() && _exportChooser.dir != null &&
+            _flashDocsGrid.selectionLength > 0 &&
             _flashDocsGrid.selectedItems.some(function (status :DocStatus, ..._) :Boolean {
                 return status.isValid;
             });
