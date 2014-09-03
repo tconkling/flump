@@ -77,6 +77,7 @@ public class PublishFormat
         mold.md5 = md5;
         mold.textureGroups = createTextureGroupMolds(atlases);
         mold.movies = new <MovieMold>[];
+        mold.isNamespaced = _libs.length > 1;
         var useNamespaces :Boolean = _libs.length > 1;
         for each (var lib :XflLibrary in _libs) {
             for each (var movie :MovieMold in lib.publishedMovies) {

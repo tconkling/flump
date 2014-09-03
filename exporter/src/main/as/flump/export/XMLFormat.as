@@ -43,7 +43,7 @@ public class XMLFormat extends PublishFormat
                 F.bind(AtlasUtil.writePNG, atlas, F._1));
         }
 
-        const xml :XML = <resources md5={md5}/>;
+        const xml :XML = <resources md5={md5} isNamespaced={_libs.length > 1}/>;
         const prefix :String = location + "/";
         const libraryMold :LibraryMold = createMold(atlases);
         for each (var movie :MovieMold in libraryMold.movies) {
