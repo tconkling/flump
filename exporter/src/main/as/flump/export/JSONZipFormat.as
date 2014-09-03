@@ -19,8 +19,9 @@ public class JSONZipFormat extends PublishFormat
 
     public var outputFile :File;
 
-    public function JSONZipFormat (destDir :File, libs :Vector.<XflLibrary>, conf :ExportConf) {
-        super(destDir, libs, conf);
+    public function JSONZipFormat (destDir :File, libs :Vector.<XflLibrary>, conf :ExportConf,
+            projectName :String) {
+        super(destDir, libs, conf, projectName);
         if (conf.name != null) {
             outputFile = _destDir.resolvePath(conf.name + "/" + location + ".zip");
         } else {

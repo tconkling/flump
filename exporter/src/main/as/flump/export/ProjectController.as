@@ -334,7 +334,7 @@ public class ProjectController
 
     protected function createPublisher () :Publisher {
         if (_exportChooser.dir == null || _conf.exports.length == 0) return null;
-        return new Publisher(_exportChooser.dir, _conf);
+        return new Publisher(_exportChooser.dir, _conf, projectName);
     }
 
     protected function setImportDirectory (dir :File) :void {

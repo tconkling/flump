@@ -19,8 +19,9 @@ public class XMLFormat extends PublishFormat
 {
     public static const NAME :String = "XML";
 
-    public function XMLFormat (destDir :File, libs :Vector.<XflLibrary>, conf :ExportConf) {
-        super(destDir, libs, conf);
+    public function XMLFormat (destDir :File, libs :Vector.<XflLibrary>, conf :ExportConf,
+            projectName :String) {
+        super(destDir, libs, conf, projectName);
         _prefix = conf.name + "/" + location + "/";
         _metaFile =  _destDir.resolvePath(_prefix + "resources.xml");
     }

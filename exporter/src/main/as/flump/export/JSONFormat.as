@@ -20,8 +20,9 @@ public class JSONFormat extends PublishFormat
         return JSON.parse(bytes.readUTFBytes(bytes.length))
     }
 
-    public function JSONFormat (destDir :File, libs :Vector.<XflLibrary>, conf :ExportConf) {
-        super(destDir, libs, conf);
+    public function JSONFormat (destDir :File, libs :Vector.<XflLibrary>, conf :ExportConf,
+            projectName :String) {
+        super(destDir, libs, conf, projectName);
         _prefix = conf.name + "/" + location;
         _metaFile =  _destDir.resolvePath(_prefix + "/library.json");
     }

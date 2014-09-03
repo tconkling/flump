@@ -11,8 +11,9 @@ import flump.xfl.XflLibrary;
 
 public class Publisher
 {
-    public function Publisher (exportDir :File, project :ProjectConf) {
+    public function Publisher (exportDir :File, project :ProjectConf, projectName :String) {
         _exportDir = exportDir;
+        _projectName = projectName;
         for each (var export :ExportConf in project.exports) _confs.push(export);
     }
 
@@ -43,15 +44,17 @@ public class Publisher
         const formats :Vector.<PublishFormat> = new <PublishFormat>[];
         for each (var conf :ExportConf in _confs) {
             if (conf.combine && includeCombined) {
-                formats.push(conf.createPublishFormat(_exportDir, libs));
+                formats.push(conf.createPublishFormat(_exportDir, libs, _projectName));
             } else if (!conf.combine && idx >= 0) {
-                formats.push(conf.createPublishFormat(_exportDir, new <XflLibrary>[libs[idx]]))
+                formats.push(conf.createPublishFormat(_exportDir, new <XflLibrary>[libs[idx]],
+                    _projectName))
             }
         }
         return formats;
     }
 
     private var _exportDir :File;
+    private var _projectName :String;
     private const _confs :Vector.<ExportConf> = new <ExportConf>[];
     private static const log :Log = Log.getLog(Publisher);
 }

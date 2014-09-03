@@ -18,7 +18,8 @@ import flump.xfl.XflLibrary;
 
 public class PublishFormat
 {
-    public function PublishFormat (destDir :File, libs :Vector.<XflLibrary>, conf :ExportConf) {
+    public function PublishFormat (destDir :File, libs :Vector.<XflLibrary>, conf :ExportConf,
+            projectName :String) {
         Preconditions.checkArgument(libs.length > 0, "There must be at least one XflLibrary");
         if (libs.length > 1) {
             var frameRate :Number = libs[0].frameRate;
@@ -30,6 +31,7 @@ public class PublishFormat
         _libs = libs;
         _destDir = destDir;
         _conf = conf;
+        _projectName = projectName;
     }
 
     public function get modified () :Boolean { throw new Error("Must be implemented by a subclass"); }
@@ -46,8 +48,8 @@ public class PublishFormat
     }
 
     protected function get location () :String {
-        // for combined libs, use a default name for the resulting export
-        return _libs.length == 1 ? _libs[0].location : "flump_combined";
+        // for combined libs, use the project name for the resulting export
+        return _libs.length == 1 ? _libs[0].location : _projectName;
     }
 
     protected function createAtlases (prefix :String = "") :Vector.<Atlas> {
@@ -128,5 +130,6 @@ public class PublishFormat
     protected var _libs :Vector.<XflLibrary>;
     protected var _destDir :File;
     protected var _conf :ExportConf;
+    protected var _projectName :String;
 }
 }

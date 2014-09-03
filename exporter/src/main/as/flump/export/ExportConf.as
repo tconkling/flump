@@ -85,7 +85,7 @@ public class ExportConf
     }
 
     public function createPublishFormat (exportDir :File,
-            libs :Vector.<XflLibrary>) :PublishFormat {
+            libs :Vector.<XflLibrary>, projectName :String) :PublishFormat {
         var formatClass :Class;
         switch (format.toLowerCase()) {
             case JSONFormat.NAME.toLowerCase(): formatClass = JSONFormat; break;
@@ -96,7 +96,7 @@ public class ExportConf
                 formatClass = JSONZipFormat;
                 break;
         }
-        return new formatClass(exportDir, libs, this);
+        return new formatClass(exportDir, libs, this, projectName);
     }
 
     protected static const log :Log = Log.getLog(ExportConf);

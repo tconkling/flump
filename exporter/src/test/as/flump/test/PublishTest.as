@@ -33,7 +33,7 @@ public class PublishTest
             const project :ProjectConf = new ProjectConf();
             project.exportDir = "starling";
             project.exports = [conf];
-            const pub :Publisher = new Publisher(exportDir, project);
+            const pub :Publisher = new Publisher(exportDir, project, "Test Project");
             assert(pub.modified(_lib), "Lack of output should indicate modified");
             pub.publish(_lib);
             assert(!pub.modified(_lib), "Shouldn't be modified after publishing");
