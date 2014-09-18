@@ -36,7 +36,7 @@ public class JSONZipFormat extends PublishFormat
         zip.loadBytes(Files.read(outputFile));
         const md5File :FZipFile = zip.getFileByName("md5");
         const md5 :String = md5File.content.readUTFBytes(md5File.content.length);
-        return md5 != md5;
+        return md5 != this.md5;
     }
 
     override public function publish() :void {
