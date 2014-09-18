@@ -172,7 +172,11 @@ public class ProjectController
 
     protected function exportAll (modifiedOnly :Boolean) :void {
         // if we have one or more combined export format, publish them
-        if (hasCombinedExportConfig()) exportCombined();
+        if (hasCombinedExportConfig()) {
+            var valid :Boolean = _flashDocsGrid.dataProvider.toArray()
+                .every(function (status :DocStatus,..._) :Boolean { return status.isValid; });
+            if (valid) exportCombined();
+        }
         // now publish any appropriate single formats
         if (hasSingleExportConfig()) {
             for each (var status :DocStatus in _flashDocsGrid.dataProvider.toArray()) {
@@ -301,6 +305,7 @@ public class ProjectController
         }
         _win.formatOverview.text = formatNames.join(", ");
         _win.exportAll.label = hasCombined ? "Export Combined" : "Export All";
+        checkValid();
         _win.exportModified.enabled = !hasCombined;
         _win.export.enabled = !hasCombined;
 
@@ -455,9 +460,10 @@ public class ProjectController
 
         load.succeeded.connect(function (lib :XflLibrary) :void {
             status.lib = lib;
-            checkModified();
             for each (var err :ParseError in lib.getErrors()) _errorsGrid.dataProvider.addItem(err);
             status.updateValid(Ternary.of(lib.valid));
+            checkModified();
+            checkValid();
         });
         load.failed.connect(function (error :Error) :void {
             trace("Failed to load " + file.nativePath + ": " + error);
@@ -486,6 +492,18 @@ public class ProjectController
             var status :DocStatus = _flashDocsGrid.dataProvider[ii];
             status.updateModified(Ternary.of(pub == null || pub.modified(libs, ii)))
         }
+    }
+
+    protected function checkValid () :void {
+        if (getLibs() == null) {
+            _win.exportAll.enabled = false;
+            return;
+        }
+
+        _win.exportAll.enabled = !hasCombinedExportConfig() || _flashDocsGrid.dataProvider.toArray()
+            .every(function (status :DocStatus, ..._) :Boolean {
+                return status.isValid;
+            });
     }
 
     protected function setProjectDirty (val :Boolean) :void {
