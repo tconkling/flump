@@ -174,7 +174,7 @@ internal class Loader {
             _creators[movie.id] = _libLoader.creatorFactory.createMovieCreator(
                 movie, _lib.frameRate);
         }
-        _future.succeed(new LibraryImpl(_baseTextures, _creators));
+        _future.succeed(new LibraryImpl(_baseTextures, _creators, _lib.isNamespaced));
     }
 
     protected function onPngLoadingFailed (e :*) :void {

@@ -171,9 +171,18 @@ public class ProjectController
     }
 
     protected function exportAll (modifiedOnly :Boolean) :void {
-        for each (var status :DocStatus in _flashDocsGrid.dataProvider.toArray()) {
-            if (status.isValid && (!modifiedOnly || status.isModified)) {
-                exportFlashDocument(status);
+        // if we have one or more combined export format, publish them
+        if (hasCombinedExportConfig()) {
+            var valid :Boolean = _flashDocsGrid.dataProvider.toArray()
+                .every(function (status :DocStatus,..._) :Boolean { return status.isValid; });
+            if (valid) exportCombined();
+        }
+        // now publish any appropriate single formats
+        if (hasSingleExportConfig()) {
+            for each (var status :DocStatus in _flashDocsGrid.dataProvider.toArray()) {
+                if (status.isValid && (!modifiedOnly || status.isModified)) {
+                    exportFlashDocument(status);
+                }
             }
         }
     }
@@ -287,18 +296,37 @@ public class ProjectController
         }
 
         var formatNames :Array = [];
+        var hasCombined :Boolean = false;
         if (_conf != null) {
             for each (var export :ExportConf in _conf.exports) {
                 formatNames.push(export.description);
+                hasCombined ||= export.combine;
             }
         }
         _win.formatOverview.text = formatNames.join(", ");
+        _win.exportAll.label = hasCombined ? "Export Combined" : "Export All";
+        checkValid();
+        _win.exportModified.enabled = !hasCombined;
+        _win.export.enabled = !hasCombined;
 
         updateWindowTitle();
     }
 
+    protected function hasCombinedExportConfig () :Boolean {
+        if (_conf == null) return false;
+        for each (var config :ExportConf in _conf.exports) if (config.combine) return true;
+        return false;
+    }
+
+    protected function hasSingleExportConfig () :Boolean {
+        if (_conf == null) return false;
+        for each (var config :ExportConf in _conf.exports) if (!config.combine) return true;
+        return false;
+    }
+
     protected function onSelectedItemChanged (..._) :void {
-        _win.export.enabled = _exportChooser.dir != null && _flashDocsGrid.selectionLength > 0 &&
+        _win.export.enabled = !hasCombinedExportConfig() && _exportChooser.dir != null &&
+            _flashDocsGrid.selectionLength > 0 &&
             _flashDocsGrid.selectedItems.some(function (status :DocStatus, ..._) :Boolean {
                 return status.isValid;
             });
@@ -311,7 +339,7 @@ public class ProjectController
 
     protected function createPublisher () :Publisher {
         if (_exportChooser.dir == null || _conf.exports.length == 0) return null;
-        return new Publisher(_exportChooser.dir, _conf);
+        return new Publisher(_exportChooser.dir, _conf, projectName);
     }
 
     protected function setImportDirectory (dir :File) :void {
@@ -366,13 +394,45 @@ public class ProjectController
             if (_conf.exports.length == 0) {
                 throw new Error("No export formats specified.");
             }
-            createPublisher().publish(status.lib);
+            var published :int = createPublisher().publishSingle(status.lib);
+            if (published == 0) {
+                throw new Error("No suitable formats were found for publishing");
+            }
         } catch (e :Error) {
+            log.warning("publishing failed", e);
             ErrorWindowMgr.showErrorPopup("Publishing Failed", e.message, _win);
         }
 
         stage.quality = prevQuality;
         status.updateModified(Ternary.FALSE);
+    }
+
+    protected function exportCombined () :void {
+        const stage :Stage = NA.activeWindow.stage;
+        const prevQuality :String = stage.quality;
+
+        stage.quality = StageQuality.BEST;
+
+        try {
+            if (_exportChooser.dir == null) {
+                throw new Error("No export directory specified.");
+            }
+            if (_conf.exports.length == 0) {
+                throw new Error("No export formats specified.");
+            }
+            var published :int = createPublisher().publishCombined(getLibs());
+            if (published == 0) {
+                throw new Error("No suitable formats were found for publishing");
+            }
+        } catch (e :Error) {
+            log.warning("publishing failed", e);
+            ErrorWindowMgr.showErrorPopup("Publishing Failed", e.message, _win);
+        }
+
+        stage.quality = prevQuality;
+        for each (var status :DocStatus in _flashDocsGrid.dataProvider) {
+            status.updateModified(Ternary.FALSE);
+        }
     }
 
     protected function addFlashDocument (file :File) :void {
@@ -399,17 +459,51 @@ public class ProjectController
         _flashDocsGrid.dataProvider.addItem(status);
 
         load.succeeded.connect(function (lib :XflLibrary) :void {
-            var pub :Publisher = createPublisher();
             status.lib = lib;
-            status.updateModified(Ternary.of(pub == null || pub.modified(lib)));
             for each (var err :ParseError in lib.getErrors()) _errorsGrid.dataProvider.addItem(err);
             status.updateValid(Ternary.of(lib.valid));
+            checkModified();
+            checkValid();
         });
         load.failed.connect(function (error :Error) :void {
             trace("Failed to load " + file.nativePath + ": " + error);
             status.updateValid(Ternary.FALSE);
             throw error;
         });
+    }
+
+    /** returns all libs if all known flash docs are done loading, else null */
+    protected function getLibs () :Vector.<XflLibrary> {
+        var libs :Vector.<XflLibrary> = new <XflLibrary>[];
+        for each (var status :DocStatus in _flashDocsGrid.dataProvider) {
+            if (status.lib == null) return null; // not done loading yet
+            libs[libs.length] = status.lib;
+        }
+        return libs;
+    }
+
+    protected function checkModified () :void {
+        var libs :Vector.<XflLibrary> = getLibs();
+        if (libs == null) return; // not done loading yet
+
+        // all the docs we know about have been loaded
+        var pub :Publisher = createPublisher();
+        for (var ii :int = 0; ii < libs.length; ii++) {
+            var status :DocStatus = _flashDocsGrid.dataProvider[ii];
+            status.updateModified(Ternary.of(pub == null || pub.modified(libs, ii)))
+        }
+    }
+
+    protected function checkValid () :void {
+        if (getLibs() == null) {
+            _win.exportAll.enabled = false;
+            return;
+        }
+
+        _win.exportAll.enabled = !hasCombinedExportConfig() || _flashDocsGrid.dataProvider.toArray()
+            .every(function (status :DocStatus, ..._) :Boolean {
+                return status.isValid;
+            });
     }
 
     protected function setProjectDirty (val :Boolean) :void {

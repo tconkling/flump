@@ -36,6 +36,8 @@ public class ExportConf
     public var quality :String = StageQuality.BEST;
     /** Whether or not to pretty print the library. */
     public var prettyPrint :Boolean = false;
+    /** Whether or not to combine all FLAs into a single library */
+    public var combine :Boolean = false;
 
     public function get scaleFactorsString () :String {
         return this.additionalScaleFactors.join(",");
@@ -78,10 +80,12 @@ public class ExportConf
         conf.optimize = optional(o, "optimize", OPTIMIZE_MEMORY);
         conf.quality = optional(o, "quality", StageQuality.BEST);
         conf.prettyPrint = optional(o, "prettyPrint", false);
+        conf.combine = optional(o, "combine", false);
         return conf;
     }
 
-    public function createPublishFormat (exportDir :File, lib :XflLibrary) :PublishFormat {
+    public function createPublishFormat (exportDir :File,
+            libs :Vector.<XflLibrary>, projectName :String) :PublishFormat {
         var formatClass :Class;
         switch (format.toLowerCase()) {
             case JSONFormat.NAME.toLowerCase(): formatClass = JSONFormat; break;
@@ -92,7 +96,7 @@ public class ExportConf
                 formatClass = JSONZipFormat;
                 break;
         }
-        return new formatClass(exportDir, lib, this);
+        return new formatClass(exportDir, libs, this, projectName);
     }
 
     protected static const log :Log = Log.getLog(ExportConf);

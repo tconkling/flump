@@ -12,7 +12,13 @@ import flump.xfl.XflLibrary;
  */
 public class TexturePacker
 {
-    public static function withLib (lib :XflLibrary) :TexturePacker { return new TexturePacker(lib); }
+    public static function withLib (lib :XflLibrary) :TexturePacker {
+        return withLibs(new <XflLibrary>[lib]);
+    }
+
+    public static function withLibs (libs :Vector.<XflLibrary>) :TexturePacker {
+        return new TexturePacker(libs);
+    }
 
     public function baseScale (val :Number) :TexturePacker { _baseScale = val; return this; }
     public function scaleFactor (val :int) :TexturePacker {  _scaleFactor = val; return this; }
@@ -23,16 +29,16 @@ public class TexturePacker
     public function filenamePrefix (val :String) :TexturePacker { _filenamePrefix = val; return this; }
 
     public function createAtlases () :Vector.<Atlas> {
-        return new PackerImpl(_lib, _baseScale, _scaleFactor, _borderSize,
+        return new PackerImpl(_libs, _baseScale, _scaleFactor, _borderSize,
             _maxAtlasSize, _optimizeForSpeed, _quality, _filenamePrefix).atlases;
     }
 
     /** @private */
-    public function TexturePacker (lib :XflLibrary) {
-        _lib = lib;
+    public function TexturePacker (libs :Vector.<XflLibrary>) {
+        _libs = libs;
     }
 
-    protected var _lib :XflLibrary;
+    protected var _libs :Vector.<XflLibrary>;
     protected var _baseScale :Number = 1;
     protected var _scaleFactor :int = 1;
     protected var _borderSize :int = 1;
@@ -69,7 +75,7 @@ class PackerImpl
 {
     public const atlases :Vector.<Atlas> = new <Atlas>[];
 
-    public function PackerImpl (lib :XflLibrary, baseScale :Number, scaleFactor :int,
+    public function PackerImpl (libs :Vector.<XflLibrary>, baseScale :Number, scaleFactor :int,
         textureBorderSize :int, maxAtlasSize :int, optimizeForSpeed :Boolean,
         quality :String, filenamePrefix :String) {
 
@@ -80,18 +86,22 @@ class PackerImpl
 
         var scale :Number = baseScale * scaleFactor;
 
-        for each (var tex :XflTexture in lib.textures) {
-            _unpacked.push(SwfTexture.fromTexture(lib.swf, tex, quality, scale));
-        }
-        for each (var movie :MovieMold in lib.movies) {
-            if (!movie.flipbook) continue;
-            for each (var kf :KeyframeMold in movie.layers[0].keyframes) {
-                _unpacked.push(SwfTexture.fromFlipbook(lib, movie, kf.index, quality, scale));
+        var useNamespaces :Boolean = libs.length > 1;
+        for each (var lib :XflLibrary in libs) {
+            for each (var tex :XflTexture in lib.textures) {
+                _unpacked.push(SwfTexture.fromTexture(lib, tex, quality, scale, useNamespaces));
+            }
+            for each (var movie :MovieMold in lib.movies) {
+                if (!movie.flipbook) continue;
+                for each (var kf :KeyframeMold in movie.layers[0].keyframes) {
+                    _unpacked.push(SwfTexture.fromFlipbook(lib, movie, kf.index, quality, scale,
+                        useNamespaces));
+                }
             }
         }
         _unpacked.sort(Comparators.createReverse(Comparators.createFields(["a", "w", "h"])));
 
-        var start :int = flash.utils.getTimer();
+        var start :int = getTimer();
         while (_unpacked.length > 0) {
             // Add a new atlas
             const size :Point = findOptimalSize();
@@ -128,7 +138,7 @@ class PackerImpl
                 "Texture won't fit in newly-created atlas?");
         }
 
-        var totalTime :int = flash.utils.getTimer() - start;
+        var totalTime :int = getTimer() - start;
         log.info("Finished packing", "quality", quality, "scale", scale, "time", totalTime / 1000);
     }
 
@@ -194,7 +204,7 @@ class AtlasImpl
         _height = h;
         _borderSize = borderSize;
         _mask = new BitmapData(_width, _height, true, 0);
-        _mask.lock()
+        _mask.lock();
         _scaleFactor = scaleFactor;
         _quality = quality;
     }

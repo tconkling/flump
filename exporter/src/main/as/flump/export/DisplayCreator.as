@@ -60,6 +60,10 @@ public class DisplayCreator
         return symbols;
     }
 
+    public function get isNamespaced () :Boolean {
+        return false;
+    }
+
     public function createDisplayObject (id :String) :DisplayObject {
         const imageCreator :ImageCreator = ImageCreator(_imageCreators[id]);
         return (imageCreator != null ? imageCreator.create() : createMovie(id));

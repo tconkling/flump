@@ -23,14 +23,10 @@ import flump.executor.Future;
 import flump.executor.FutureTask;
 import flump.executor.load.LoadedSwf;
 import flump.executor.load.SwfLoader;
-import flump.export.Atlas;
-import flump.export.ExportConf;
 import flump.export.Files;
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
-import flump.mold.LibraryMold;
 import flump.mold.MovieMold;
-import flump.mold.TextureGroupMold;
 
 public class XflLibrary
 {
@@ -120,7 +116,7 @@ public class XflLibrary
                     } else if (item is XflTexture) {
                         const tex :XflTexture = XflTexture(item);
                         try {
-                            swfTexture = SwfTexture.fromTexture(this.swf, tex);
+                            swfTexture = SwfTexture.fromTexture(this, tex);
                         } catch (e :Error) {
                             addTopLevelError(ParseError.CRIT, "Error creating texture '" + tex.symbol + "'");
                             swfTexture = null;
@@ -162,21 +158,6 @@ public class XflLibrary
 
     public function addError (location :String, severity :String, message :String, e :Object=null) :void {
         _errors.push(new ParseError(location, severity, message, e));
-    }
-
-    public function toJSONString (atlases :Vector.<Atlas>, conf :ExportConf) :String {
-        return JSON.stringify(toMold(atlases, conf), null, conf.prettyPrint ? "  " : null);
-    }
-
-    public function toMold (atlases :Vector.<Atlas>, conf :ExportConf) :LibraryMold {
-        const mold :LibraryMold = new LibraryMold();
-        mold.frameRate = frameRate;
-        mold.md5 = md5;
-        mold.movies = publishedMovies.map(function (movie :MovieMold, ..._) :MovieMold {
-            return movie.scale(conf.scale);
-        });
-        mold.textureGroups = createTextureGroupMolds(atlases);
-        return mold;
     }
 
     public function loadSWF (path :String, loader :Executor=null) :Future {
@@ -256,7 +237,7 @@ public class XflLibrary
                     return;
                 }
                 var texture :XflTexture = new XflTexture(this, location, xml);
-                if (texture.isValid(swf)) textures.push(texture);
+                if (texture.isValid(this)) textures.push(texture);
                 else addError(location + ":" + texture.symbol, ParseError.CRIT, "Sprite is empty");
 
             } else {
@@ -275,29 +256,6 @@ public class XflLibrary
 
     protected function parseMovie (xml :XML) :void {
         movies.push(XflMovie.parse(this, xml));
-    }
-
-    /** Creates TextureGroupMolds from a list of Atlases */
-    protected static function createTextureGroupMolds (atlases :Vector.<Atlas>) :Vector.<TextureGroupMold> {
-        const groups :Vector.<TextureGroupMold> = new <TextureGroupMold>[];
-        function getGroup (scaleFactor :int) :TextureGroupMold {
-            for each (var group :TextureGroupMold in groups) {
-                if (group.scaleFactor == scaleFactor) {
-                    return group;
-                }
-            }
-            group = new TextureGroupMold();
-            group.scaleFactor = scaleFactor;
-            groups.push(group);
-            return group;
-        }
-
-        for each (var atlas :Atlas in atlases) {
-            var group :TextureGroupMold = getGroup(atlas.scaleFactor);
-            group.atlases.push(atlas.toMold());
-        }
-
-        return groups;
     }
 
     /** Library name to XML for movies in the XFL that are not marked for export */

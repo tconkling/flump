@@ -19,11 +19,15 @@ public class LibraryMold
 
     public var textureGroups :Vector.<TextureGroupMold> = new <TextureGroupMold>[];
 
+    // True if this library is the result of combining multiple source FLAs
+    public var isNamespaced :Boolean = false;
+
     public static function fromJSON (o :Object) :LibraryMold {
         const mold :LibraryMold = new LibraryMold();
         mold.frameRate = require(o, "frameRate");
         mold.md5 = require(o, "md5");
         mold.textureFormat = o["textureFormat"] || "png";
+        mold.isNamespaced = o["isNamespaced"] === true; // default false
         for each (var movie :Object in require(o, "movies")) mold.movies.push(MovieMold.fromJSON(movie));
         for each (var tg :Object in require(o, "textureGroups")) mold.textureGroups.push(TextureGroupMold.fromJSON(tg));
         return mold;
@@ -34,7 +38,8 @@ public class LibraryMold
             frameRate: frameRate,
             md5: md5,
             movies: movies,
-            textureGroups: textureGroups
+            textureGroups: textureGroups,
+            isNamespaced: isNamespaced
         };
     }
 
