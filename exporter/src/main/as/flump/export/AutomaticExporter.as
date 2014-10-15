@@ -158,6 +158,13 @@ public class AutomaticExporter {
             exit("No export directory specified.");
             return;
         }
+        var exportDir :File = _confFile.parent.resolvePath(_conf.exportDir);
+        println("Exporting to " + exportDir.nativePath + "...");
+        if (exportDir.exists && !exportDir.isDirectory) {
+            exit("Configured export directory exists as a file!");
+            return;
+        }
+        if (!exportDir.exists) exportDir.createDirectory();
 
         var hasCombined :Boolean = false;
         var hasSingle :Boolean = false;
@@ -167,7 +174,7 @@ public class AutomaticExporter {
             if (hasCombined && hasSingle) break;
         }
         try {
-            var publisher :Publisher = new Publisher(new File(_conf.exportDir), _conf, projectName);
+            var publisher :Publisher = new Publisher(exportDir, _conf, projectName);
             // if we have one or more combined export format, publish them
             if (hasCombined) {
                 println("Exporting combined formats...");
