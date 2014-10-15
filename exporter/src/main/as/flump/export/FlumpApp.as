@@ -46,7 +46,7 @@ public class FlumpApp
         var launched :Boolean = false;
         NA.addEventListener(InvokeEvent.INVOKE, function (event :InvokeEvent) :void {
             if (event.arguments.length > 1 && event.arguments[0] == "--export") {
-                var headless :HeadlessExporter = new HeadlessExporter(new File(event.arguments[1]));
+                var headless :AutomaticExporter = new AutomaticExporter(new File(event.arguments[1]));
                 headless.complete.connectNotify(function (complete :Boolean) :void {
                     if (!complete) return;
 

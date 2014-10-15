@@ -8,8 +8,14 @@ import flash.filesystem.FileStream;
 import react.BoolValue;
 import react.BoolView;
 
-public class HeadlessExporter {
-    public function HeadlessExporter (project :File) {
+/**
+ * This class expects to be run from the command-line script found at rsrc/flump-export. It sends
+ * output to File.applicationDirectory.nativePath + "/exporter.log" rather than spawning any
+ * UI windows for user interaction, and acts as though the user pressed the export all button, then
+ * shuts down.
+ */
+public class AutomaticExporter {
+    public function AutomaticExporter (project :File) {
         _complete.connect(function (complete :Boolean) :void {
             if (!complete) return;
             if (OUT != null) {
