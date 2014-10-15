@@ -45,6 +45,23 @@ public class FlumpApp
 
         var launched :Boolean = false;
         NA.addEventListener(InvokeEvent.INVOKE, function (event :InvokeEvent) :void {
+            if (event.arguments.length > 1 && event.arguments[0] == "--export") {
+                var headless :HeadlessExporter = new HeadlessExporter(new File(event.arguments[1]));
+                _headlesses[_headlesses.length] = headless;
+                headless.complete.connectNotify(function (complete :Boolean) :void {
+                    if (!complete) return;
+
+                    var idx :int = _headlesses.indexOf(headless);
+                    _headlesses.splice(idx, 1);
+
+                    if (_headlesses.length == 0 && _projects.length == 0) {
+                        // nothing holding us here, force a shut down
+                        NA.exit();
+                    }
+                });
+                return;
+            }
+
             if (event.arguments.length > 0) {
                 // A project file has been double-clicked. Open it.
                 openProject(new File(event.arguments[0]));
@@ -189,6 +206,7 @@ public class FlumpApp
     }
 
     protected var _projects :Array = [];
+    protected var _headlesses :Array = [];
     protected var _previewController :PreviewController;
 
     protected static var _app :FlumpApp;
