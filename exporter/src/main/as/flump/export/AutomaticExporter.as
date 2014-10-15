@@ -209,13 +209,16 @@ public class AutomaticExporter {
         if (err is ParseError) {
             var pe :ParseError = ParseError(err);
             println("[" + pe.severity + "] @ " + pe.location + ": " + pe.message);
-        } else if (err is Error)  {
-            println("Error: " + Error(err).message);
+        } else if (err is Error) {
             println(Error(err).getStackTrace())
         } else if (err is ErrorEvent) {
             println("ErrorEvent: " + ErrorEvent(err).toString());
-            println(UncaughtErrorEvent(err).error.getStackTrace());
-        } else println("" + err);
+            if (err is UncaughtErrorEvent) {
+                println(UncaughtErrorEvent(err).error.getStackTrace());
+            }
+        } else {
+            println("" + err);
+        }
     }
 
     protected function print (message :String) :void {
