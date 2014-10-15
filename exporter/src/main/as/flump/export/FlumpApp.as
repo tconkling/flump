@@ -47,17 +47,13 @@ public class FlumpApp
         NA.addEventListener(InvokeEvent.INVOKE, function (event :InvokeEvent) :void {
             if (event.arguments.length > 1 && event.arguments[0] == "--export") {
                 var headless :HeadlessExporter = new HeadlessExporter(new File(event.arguments[1]));
-                _headlesses[_headlesses.length] = headless;
                 headless.complete.connectNotify(function (complete :Boolean) :void {
                     if (!complete) return;
 
-                    var idx :int = _headlesses.indexOf(headless);
-                    _headlesses.splice(idx, 1);
-
-                    if (_headlesses.length == 0 && _projects.length == 0) {
-                        // nothing holding us here, force a shut down
-                        NA.exit();
-                    }
+                    // Even on Mac, running from the command line spawns a new instance of the app,
+                    // so we can safely assume it's OK to explicitly shut down here (as the command
+                    // line script expects us to).
+                    NA.exit();
                 });
                 return;
             }
@@ -206,7 +202,6 @@ public class FlumpApp
     }
 
     protected var _projects :Array = [];
-    protected var _headlesses :Array = [];
     protected var _previewController :PreviewController;
 
     protected static var _app :FlumpApp;
