@@ -1,5 +1,6 @@
 package flump.export {
 
+import aspire.util.F;
 import aspire.util.StringUtil;
 
 import flash.events.ErrorEvent;
@@ -7,6 +8,7 @@ import flash.events.UncaughtErrorEvent;
 import flash.filesystem.File;
 import flash.filesystem.FileMode;
 import flash.filesystem.FileStream;
+import flash.utils.setTimeout;
 
 import flump.executor.Executor;
 import flump.executor.Future;
@@ -159,13 +161,19 @@ public class AutomaticExporter {
             return;
         }
         var exportDir :File = _confFile.parent.resolvePath(_conf.exportDir);
-        println("Exporting to " + exportDir.nativePath + "...");
+        println("Publishing to " + exportDir.nativePath + "...");
         if (exportDir.exists && !exportDir.isDirectory) {
             exit("Configured export directory exists as a file!");
             return;
         }
         if (!exportDir.exists) exportDir.createDirectory();
 
+        var publisher :Publisher = new Publisher(exportDir, _conf, projectName);
+        // wait a frame for the output to flush before starting the (long frame) publish
+        setTimeout(F.bind(publish, publisher), 0);
+    }
+
+    protected function publish (publisher :Publisher) :void {
         var hasCombined :Boolean = false;
         var hasSingle :Boolean = false;
         for each (var config :ExportConf in _conf.exports) {
@@ -174,7 +182,6 @@ public class AutomaticExporter {
             if (hasCombined && hasSingle) break;
         }
         try {
-            var publisher :Publisher = new Publisher(exportDir, _conf, projectName);
             // if we have one or more combined export format, publish them
             if (hasCombined) {
                 println("Exporting combined formats...");
