@@ -103,10 +103,12 @@ public class AutomaticExporter {
         case "xfl":
             name = name.substr(0, name.lastIndexOf("/"));
             load = new XflLoader().load(name, file.parent);
+            println("Loading XFL: " + name + "...");
             break;
         case "fla":
             name = name.substr(0, name.lastIndexOf("."));
             load = new FlaLoader().load(name, file);
+            println("Loading FLA: " + name + "...");
             break;
         default:
             // Unsupported file type, ignore
@@ -116,6 +118,7 @@ public class AutomaticExporter {
         const status :DocStatus = new DocStatus(name, Ternary.UNKNOWN, Ternary.UNKNOWN, null);
         _statuses[_statuses.length] = status;
         load.succeeded.connect(function (lib :XflLibrary) :void {
+            println("Load completed: " + name + "...");
             status.lib = lib;
             for each (var err :ParseError in lib.getErrors()) printErr(err);
             status.updateValid(Ternary.of(lib.valid));
@@ -148,6 +151,8 @@ public class AutomaticExporter {
             exit();
             return;
         }
+
+        println("\nLoading complete...");
 
         if (_conf.exportDir == null) {
             exit("No export directory specified.");
