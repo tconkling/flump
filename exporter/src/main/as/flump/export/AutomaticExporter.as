@@ -2,8 +2,6 @@ package flump.export {
 
 import aspire.util.StringUtil;
 
-import flash.desktop.NativeApplication;
-import flash.display.StageQuality;
 import flash.events.ErrorEvent;
 import flash.events.UncaughtErrorEvent;
 import flash.filesystem.File;
@@ -161,7 +159,6 @@ public class AutomaticExporter {
             return;
         }
 
-        NativeApplication.nativeApplication.activeWindow.stage.quality = StageQuality.BEST;
         if (_conf.exportDir == null) {
             exit("No export directory specified.");
             return;
