@@ -159,11 +159,6 @@ public class AutomaticExporter {
             return;
         }
 
-        if (_conf.exportDir == null) {
-            exit("No export directory specified.");
-            return;
-        }
-
         var hasCombined :Boolean = false;
         var hasSingle :Boolean = false;
         for each (var config :ExportConf in _conf.exports) {
