@@ -5,6 +5,7 @@ import aspire.util.StringUtil;
 import flash.desktop.NativeApplication;
 import flash.display.StageQuality;
 import flash.events.ErrorEvent;
+import flash.events.UncaughtErrorEvent;
 import flash.filesystem.File;
 import flash.filesystem.FileMode;
 import flash.filesystem.FileStream;
@@ -32,6 +33,9 @@ public class AutomaticExporter {
                 OUT = null;
             }
         });
+
+        FlumpApp.app.loaderInfo.uncaughtErrorEvents
+            .addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, exit);
 
         var outFile :File = new File(File.applicationDirectory.nativePath + "/exporter.log");
         OUT = new FileStream();
@@ -124,10 +128,8 @@ public class AutomaticExporter {
             status.updateValid(Ternary.of(lib.valid));
             checkValid();
         });
-        load.failed.connect(function (error :Error) :void {
-            // any failed load means we can't finish the export
-            exit(error);
-        })
+        // any failed load means we can't finish the export
+        load.failed.connect(exit);
     }
 
     /** returns all libs if all known flash docs are done loading, else null */
@@ -207,13 +209,16 @@ public class AutomaticExporter {
     }
 
     protected function printErr (err :*) :void {
-        if (err is Error) println(Error(err).message);
-        else if (err is ErrorEvent) println(ErrorEvent(err).text);
-        else if (err is ParseError) {
+        if (err is ParseError) {
             var pe :ParseError = ParseError(err);
             println("[" + pe.severity + "] @ " + pe.location + ": " + pe.message);
-        }
-        else println("" + err);
+        } else if (err is Error)  {
+            println("Error: " + Error(err).message);
+            println(Error(err).getStackTrace())
+        } else if (err is ErrorEvent) {
+            println("ErrorEvent: " + ErrorEvent(err).toString());
+            println(UncaughtErrorEvent(err).error.getStackTrace());
+        } else println("" + err);
     }
 
     protected function print (message :String) :void {

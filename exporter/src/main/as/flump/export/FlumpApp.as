@@ -7,6 +7,8 @@ import aspire.util.Arrays;
 import aspire.util.Log;
 
 import flash.desktop.NativeApplication;
+import flash.display.Loader;
+import flash.display.LoaderInfo;
 import flash.display.NativeMenuItem;
 import flash.events.Event;
 import flash.events.InvokeEvent;
@@ -33,7 +35,10 @@ public class FlumpApp
         _app = this;
     }
 
-    public function run () :void {
+    public function get loaderInfo () :LoaderInfo { return _loaderInfo; }
+
+    public function run (loaderInfo :LoaderInfo) :void {
+        _loaderInfo = loaderInfo;
         // Disable sound completely. A SWF that plays sound on its stage will be
         // noisy as soon as we load it.
         SoundMixer.soundTransform = new SoundTransform(0);
@@ -201,6 +206,7 @@ public class FlumpApp
         });
     }
 
+    protected var _loaderInfo :LoaderInfo;
     protected var _projects :Array = [];
     protected var _previewController :PreviewController;
 
