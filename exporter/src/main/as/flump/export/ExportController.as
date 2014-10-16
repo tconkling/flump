@@ -95,8 +95,8 @@ public class ExportController {
 
         const status :DocStatus = new DocStatus(name, Ternary.UNKNOWN, Ternary.UNKNOWN, null);
         addDoc(status);
-        load.succeeded.connect(F.bind(docLoadSucceeded, status, F._1));
-        load.failed.connect(F.bind(docLoadFailed, file, status, F._1));
+        load.succeeded.connect(F.argify(F.bind(docLoadSucceeded, status, F._1), 1));
+        load.failed.connect(F.argify(F.bind(docLoadFailed, file, status, F._1), 1));
     }
 
     protected function docLoadSucceeded (doc :DocStatus, lib :XflLibrary) :void {
@@ -104,7 +104,7 @@ public class ExportController {
         for each (var err :ParseError in lib.getErrors()) handleParseError(err);
         doc.updateValid(Ternary.of(lib.valid));
     }
-    
+
     protected function docLoadFailed (file :File, doc :DocStatus, err :*) :void {
         doc.updateValid(Ternary.FALSE);
     }
