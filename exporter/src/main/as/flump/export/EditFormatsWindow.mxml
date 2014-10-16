@@ -38,7 +38,7 @@
           </s:itemEditor>
         </s:GridColumn>
         <s:GridColumn dataField="scale" headerText="Base Scale"/>
-        <s:GridColumn dataField="scaleFactorsString" headerText="Additional Scale Factors"/>
+        <s:GridColumn dataField="scaleFactorsString" headerText="Scale Factors"/>
         <s:GridColumn dataField="textureBorder" headerText="Texture Border"/>
         <s:GridColumn dataField="maxAtlasSize" headerText="Max Atlas Size"/>
         <s:GridColumn dataField="optimize" headerText="Optimize">
