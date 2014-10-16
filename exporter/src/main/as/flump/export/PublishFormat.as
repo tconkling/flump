@@ -61,8 +61,10 @@ public class PublishFormat
             .quality(_conf.quality)
             .filenamePrefix(prefix);
 
-        var atlases :Vector.<Atlas> = new <Atlas>[];
-        for each (var scaleFactor :int in _conf.scaleFactors) {
+        var atlases :Vector.<Atlas> = packer.scaleFactor(1).createAtlases(); // 1x atlases
+
+        // additional scales
+        for each (var scaleFactor :int in _conf.additionalScaleFactors) {
             atlases = atlases.concat(packer.scaleFactor(scaleFactor).createAtlases());
         }
 
