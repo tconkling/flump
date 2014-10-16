@@ -63,7 +63,9 @@ public class ExportConf
         const scaleString :String = (this.scale * 100).toFixed(0) + "%";
         var scaleFactors :String = "";
         for each (var scaleFactor :int in this.scaleFactors) {
-            scaleFactors += ", " + AtlasMold.scaleFactorSuffix(scaleFactor);
+            scaleFactors += ", ";
+            if (scaleFactor == 1) scaleFactors += "@1x";
+            else scaleFactors += AtlasMold.scaleFactorSuffix(scaleFactor);
         }
 
         return "'" + this.name + "' (" + this.format + ", " + scaleString + scaleFactors + ")";
