@@ -28,8 +28,8 @@ public class ExportConf
     public var textureBorder :int = 1;
     /** The maximum size of the width and height of a generated texture atlas */
     public var maxAtlasSize :int = 2048;
-    /** Additional scaleFactors to output */
-    public var additionalScaleFactors :Array = [];
+    /** Scale factors to output */
+    public var scaleFactors :Array = [ 1 ];
     /** The optimization strategy. */
     public var optimize :String = OPTIMIZE_SPEED;
     /** The stage quality setting (StageQuality). */
@@ -40,29 +40,29 @@ public class ExportConf
     public var combine :Boolean = false;
 
     public function get scaleFactorsString () :String {
-        return this.additionalScaleFactors.join(",");
+        return this.scaleFactors.join(",");
     }
 
     public function set scaleFactorsString (str :String) :void {
         var values :Set = Sets.newSetOf(int);
         for each (var num :String in str.split(",")) {
             try {
-                // additional scale factors must be integers > 1
+                // scale factors must be integers >= 1
                 var scale :int = StringUtil.parseUnsignedInteger(StringUtil.trim(num));
-                if (scale > 1) {
+                if (scale >= 1) {
                     values.add(scale);
                 }
             } catch (e :Error) {}
         }
 
-        this.additionalScaleFactors = values.toArray();
-        this.additionalScaleFactors.sort();
+        this.scaleFactors = values.toArray();
+        this.scaleFactors.sort();
     }
 
     public function get description () :String {
         const scaleString :String = (this.scale * 100).toFixed(0) + "%";
         var scaleFactors :String = "";
-        for each (var scaleFactor :int in this.additionalScaleFactors) {
+        for each (var scaleFactor :int in this.scaleFactors) {
             scaleFactors += ", " + AtlasMold.scaleFactorSuffix(scaleFactor);
         }
 
@@ -76,7 +76,7 @@ public class ExportConf
         conf.format = require(o, "format");
         conf.textureBorder = optional(o, "textureBorder", 1);
         conf.maxAtlasSize = optional(o, "maxAtlasSize", 2048);
-        conf.additionalScaleFactors = optional(o, "additionalScaleFactors", []);
+        conf.scaleFactors = require(o, "scaleFactors");
         conf.optimize = optional(o, "optimize", OPTIMIZE_MEMORY);
         conf.quality = optional(o, "quality", StageQuality.BEST);
         conf.prettyPrint = optional(o, "prettyPrint", false);
