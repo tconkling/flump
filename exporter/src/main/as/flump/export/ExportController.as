@@ -32,7 +32,10 @@ public class ExportController {
         if (_confFile == null) return false;
 
         try {
-            _conf = ProjectConf.fromJSON(JSONFormat.readJSON(_confFile));
+            var projJson :Object = JSONFormat.readJSON(_confFile);
+            var fileVersion :* = projJson["fileVersion"];
+            _conf = ProjectConf.fromJSON(projJson);
+            if (fileVersion != _conf.fileVersion) setProjectDirty(true);
             _importDirectory = new File(_confFile.parent.resolvePath(_conf.importDir).nativePath);
             if (!_importDirectory.exists || !_importDirectory.isDirectory) {
                 handleParseError(new ParseError(_confFile.nativePath, ParseError.CRIT,
@@ -40,12 +43,17 @@ public class ExportController {
                 return false;
             }
         } catch (e :Error) {
+            if (e is ParseError) handleParseError(ParseError(e));
             handleParseError(new ParseError(_confFile.nativePath, ParseError.CRIT,
                 "Unable to read configuration"));
             return false;
         }
 
         return true;
+    }
+
+    protected function setProjectDirty (val :Boolean) :void {
+        _projectDirty = val;
     }
 
     protected function findFlashDocuments (base :File, exec :Executor,
@@ -122,6 +130,8 @@ public class ExportController {
     protected var _confFile :File;
     protected var _conf :ProjectConf;
     protected var _importDirectory :File;
+
+    protected var _projectDirty :Boolean; // true if project has unsaved changes
 
     protected static const log :Log = Log.getLog(ExportController);
 }
