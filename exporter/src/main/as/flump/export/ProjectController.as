@@ -4,7 +4,6 @@
 package flump.export {
 
 import aspire.util.F;
-import aspire.util.Log;
 import aspire.util.StringUtil;
 
 import flash.desktop.NativeApplication;
@@ -29,7 +28,7 @@ import spark.components.DataGrid;
 import spark.components.Window;
 import spark.events.GridSelectionEvent;
 
-public class ProjectController
+public class ProjectController extends ExportController
 {
     public static const NA :NativeApplication = NativeApplication.nativeApplication;
 
@@ -40,23 +39,13 @@ public class ProjectController
         _flashDocsGrid = _win.libraries;
 
         _confFile = configFile;
-        if (_confFile != null) {
-            try {
-                _conf = ProjectConf.fromJSON(JSONFormat.readJSON(_confFile));
-                var dir :String = _confFile.parent.resolvePath(_conf.importDir).nativePath;
-                var dirFile :File = new File(dir);
-                if (!dirFile.exists || !dirFile.isDirectory) {
-                    _errorsGrid.dataProvider.addItem(new ParseError(_confFile.nativePath,
-                        ParseError.CRIT, "Import directory doesn't exist ('" + dir + "')"));
-                    _confFile = null;
-                    _conf = null;
-                } else {
-                    setImportDirectory(dirFile);
-                }
-            } catch (e :Error) {
-                log.warning("Unable to parse conf", e);
-                _errorsGrid.dataProvider.addItem(new ParseError(_confFile.nativePath,
-                    ParseError.CRIT, "Unable to read configuration"));
+        if (_confFile == null) {
+            _conf = new ProjectConf();
+        } else {
+            if (readProjectConfig()) {
+                setImportDirectory(_importDirectory);
+            } else {
+                _importDirectory = null;
                 _confFile = null;
                 _conf = null;
             }
@@ -134,10 +123,6 @@ public class ProjectController
 
     public function get projectDirty () :Boolean {
         return _projectDirty;
-    }
-
-    public function get projectName () :String {
-        return (_confFile != null ? _confFile.name.replace(/\.flump$/i, "") : "Untitled Project");
     }
 
     public function save (onSuccess :Function = null) :void {
@@ -358,29 +343,6 @@ public class ProjectController
         _win.reload.enabled = true;
     }
 
-    protected function findFlashDocuments (base :File, exec :Executor, ignoreXflAtBase :Boolean = false) :void {
-        Files.list(base, exec).succeeded.connect(function (files :Array) :void {
-            if (exec.isShutdown) return;
-            for each (var file :File in files) {
-                if (Files.hasExtension(file, "xfl")) {
-                    if (ignoreXflAtBase) {
-                        _errorsGrid.dataProvider.addItem(new ParseError(base.nativePath,
-                            ParseError.CRIT, "The import directory can't be an XFL directory, did you mean " +
-                            base.parent.nativePath + "?"));
-                    } else addFlashDocument(file);
-                    return;
-                }
-            }
-            for each (file in files) {
-                if (StringUtil.startsWith(file.name, ".", "RECOVER_")) {
-                    continue; // Ignore hidden VCS directories, and recovered backups created by Flash
-                }
-                if (file.isDirectory) findFlashDocuments(file, exec);
-                else addFlashDocument(file);
-            }
-        });
-    }
-
     protected function exportFlashDocument (status :DocStatus) :void {
         const stage :Stage = NA.activeWindow.stage;
         const prevQuality :String = stage.quality;
@@ -435,53 +397,6 @@ public class ProjectController
         }
     }
 
-    protected function addFlashDocument (file :File) :void {
-        var importPathLen :int = _importDirectory.nativePath.length + 1;
-        var name :String = file.nativePath.substring(importPathLen).replace(
-            new RegExp("\\" + File.separator, "g"), "/");
-
-        var load :Future;
-        switch (Files.getExtension(file)) {
-        case "xfl":
-            name = name.substr(0, name.lastIndexOf("/"));
-            load = new XflLoader().load(name, file.parent);
-            break;
-        case "fla":
-            name = name.substr(0, name.lastIndexOf("."));
-            load = new FlaLoader().load(name, file);
-            break;
-        default:
-            // Unsupported file type, ignore
-            return;
-        }
-
-        const status :DocStatus = new DocStatus(name, Ternary.UNKNOWN, Ternary.UNKNOWN, null);
-        _flashDocsGrid.dataProvider.addItem(status);
-
-        load.succeeded.connect(function (lib :XflLibrary) :void {
-            status.lib = lib;
-            for each (var err :ParseError in lib.getErrors()) _errorsGrid.dataProvider.addItem(err);
-            status.updateValid(Ternary.of(lib.valid));
-            checkModified();
-            checkValid();
-        });
-        load.failed.connect(function (error :Error) :void {
-            trace("Failed to load " + file.nativePath + ": " + error);
-            status.updateValid(Ternary.FALSE);
-            throw error;
-        });
-    }
-
-    /** returns all libs if all known flash docs are done loading, else null */
-    protected function getLibs () :Vector.<XflLibrary> {
-        var libs :Vector.<XflLibrary> = new <XflLibrary>[];
-        for each (var status :DocStatus in _flashDocsGrid.dataProvider) {
-            if (status.lib == null) return null; // not done loading yet
-            libs[libs.length] = status.lib;
-        }
-        return libs;
-    }
-
     protected function checkModified () :void {
         var libs :Vector.<XflLibrary> = getLibs();
         if (libs == null) return; // not done loading yet
@@ -513,7 +428,29 @@ public class ProjectController
         }
     }
 
-    protected var _importDirectory :File;
+    override protected function handleParseError (err :ParseError) :void {
+        _errorsGrid.dataProvider.addItem(err);
+    }
+
+    override protected function docLoadSucceeded (doc :DocStatus, lib :XflLibrary) :void {
+        super.docLoadSucceeded(doc, lib);
+        checkModified();
+        checkValid();
+    }
+
+    override protected function docLoadFailed (file :File, doc :DocStatus, err :*) :void {
+        super.docLoadFailed(file, doc, err);
+        trace("Failed to load " + file.nativePath + ": " + err);
+        throw err;
+    }
+
+    override protected function addDoc (status :DocStatus) :void {
+        _flashDocsGrid.dataProvider.addItem(status);
+    }
+
+    override protected function getDocs () :Array {
+        return _flashDocsGrid.dataProvider.toArray();
+    }
 
     protected var _docFinder :Executor;
     protected var _win :ProjectWindow;
@@ -521,12 +458,8 @@ public class ProjectController
     protected var _errorsGrid :DataGrid;
     protected var _exportChooser :DirChooser;
     protected var _importChooser :DirChooser;
-    protected var _conf :ProjectConf = new ProjectConf();
-    protected var _confFile :File;
 
     protected var _projectDirty :Boolean; // true if project has unsaved changes
-
-    private static const log :Log = Log.getLog(ProjectController);
 }
 }
 

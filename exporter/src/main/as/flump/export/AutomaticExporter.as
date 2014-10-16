@@ -1,7 +1,6 @@
 package flump.export {
 
 import aspire.util.F;
-import aspire.util.StringUtil;
 
 import flash.events.ErrorEvent;
 import flash.events.UncaughtErrorEvent;
@@ -11,7 +10,6 @@ import flash.filesystem.FileStream;
 import flash.utils.setTimeout;
 
 import flump.executor.Executor;
-import flump.executor.Future;
 import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;
 
@@ -24,7 +22,8 @@ import react.BoolView;
  * UI windows for user interaction, and acts as though the user pressed the export all button, then
  * shuts down.
  */
-public class AutomaticExporter {
+public class AutomaticExporter extends ExportController
+{
     public function AutomaticExporter (project :File) {
         _complete.connect(function (complete :Boolean) :void {
             if (!complete) return;
@@ -42,105 +41,21 @@ public class AutomaticExporter {
         OUT.open(outFile, FileMode.WRITE);
 
         _confFile = project;
-        exportProject();
-    }
-
-    public function get complete () :BoolView { return _complete; }
-
-    public function get projectName () :String {
-        return (_confFile != null ? _confFile.name.replace(/\.flump$/i, "") : "Untitled Project");
-    }
-
-    protected function exportProject () :void {
         println("Exporting project: " + _confFile.nativePath);
         println();
 
-        try {
-            _conf = ProjectConf.fromJSON(JSONFormat.readJSON(_confFile));
-            _importDirectory = new File(_confFile.parent.resolvePath(_conf.importDir).nativePath);
-            if (!_importDirectory.exists || !_importDirectory.isDirectory) {
-                exit(new ParseError(_confFile.nativePath, ParseError.CRIT,
-                    "Import directory doesn't exist (" + _importDirectory.nativePath + ")"));
-                return;
-            }
-        } catch (e :Error) {
-            exit(new ParseError(_confFile.nativePath, ParseError.CRIT,
-                "Unable to read configuration"));
-            return;
+        if (readProjectConfig()) {
+            var exec :Executor = new Executor();
+            exec.completed.connect(function () :void {
+                // if finding docs generates a crit error, we need to fail immediately
+                if (_handedCritError) exit();
+            });
+            findFlashDocuments(_importDirectory, exec, true);
         }
-
-        findFlashDocuments(_importDirectory, new Executor(), true);
+        else exit();
     }
 
-    protected function findFlashDocuments (base :File, exec :Executor,
-            ignoreXflAtBase :Boolean = false) :void {
-        Files.list(base, exec).succeeded.connect(function (files :Array) :void {
-            for each (var file :File in files) {
-                if (Files.hasExtension(file, "xfl")) {
-                    if (ignoreXflAtBase) {
-                        exit(new ParseError(base.nativePath,
-                            ParseError.CRIT, "The import directory can't be an XFL directory, " +
-                            "did you mean " + base.parent.nativePath + "?"));
-                        return;
-                    } else addFlashDocument(file);
-                    return;
-                }
-            }
-            for each (file in files) {
-                if (StringUtil.startsWith(file.name, ".", "RECOVER_")) {
-                    // Ignore hidden VCS directories, and recovered backups created by Flash
-                    continue;
-                }
-                if (file.isDirectory) findFlashDocuments(file, exec);
-                else addFlashDocument(file);
-            }
-        });
-    }
-
-    protected function addFlashDocument (file :File) :void {
-        var importPathLen :int = _importDirectory.nativePath.length + 1;
-        var name :String = file.nativePath.substring(importPathLen).replace(
-            new RegExp("\\" + File.separator, "g"), "/");
-
-        var load :Future;
-        switch (Files.getExtension(file)) {
-        case "xfl":
-            name = name.substr(0, name.lastIndexOf("/"));
-            load = new XflLoader().load(name, file.parent);
-            println("Loading XFL: " + name + "...");
-            break;
-        case "fla":
-            name = name.substr(0, name.lastIndexOf("."));
-            load = new FlaLoader().load(name, file);
-            println("Loading FLA: " + name + "...");
-            break;
-        default:
-            // Unsupported file type, ignore
-            return;
-        }
-
-        const status :DocStatus = new DocStatus(name, Ternary.UNKNOWN, Ternary.UNKNOWN, null);
-        _statuses[_statuses.length] = status;
-        load.succeeded.connect(function (lib :XflLibrary) :void {
-            println("Load completed: " + name + "...");
-            status.lib = lib;
-            for each (var err :ParseError in lib.getErrors()) printErr(err);
-            status.updateValid(Ternary.of(lib.valid));
-            checkValid();
-        });
-        // any failed load means we can't finish the export
-        load.failed.connect(exit);
-    }
-
-    /** returns all libs if all known flash docs are done loading, else null */
-    protected function getLibs () :Vector.<XflLibrary> {
-        var libs :Vector.<XflLibrary> = new <XflLibrary>[];
-        for each (var status :DocStatus in _statuses) {
-            if (status.lib == null) return null; // not done loading yet
-            libs[libs.length] = status.lib;
-        }
-        return libs;
-    }
+    public function get complete () :BoolView { return _complete; }
 
     protected function checkValid () :void {
         if (getLibs() == null) return; // not done loading yet
@@ -214,6 +129,32 @@ public class AutomaticExporter {
         exit();
     }
 
+    override protected function handleParseError (err :ParseError) :void {
+        if (err.severity == ParseError.CRIT) _handedCritError = true;
+        printErr(err);
+    }
+
+    override protected function addDoc (status :DocStatus) :void {
+        _statuses[_statuses.length] = status;
+        println("Loading document: " + status.path + "...");
+    }
+
+    override protected function getDocs () :Array {
+        return _statuses;
+    }
+
+    override protected function docLoadSucceeded (doc :DocStatus, lib :XflLibrary) :void {
+        super.docLoadSucceeded(doc, lib);
+        println("Load completed: " + doc.path + "...");
+        checkValid();
+    }
+
+    override protected function docLoadFailed (file :File, doc :DocStatus, err :*) :void {
+        super.docLoadFailed(file, doc, err);
+        // this is a serious failure - simple parse errors are handled separately
+        exit(err);
+    }
+
     protected function printErr (err :*) :void {
         if (err is ParseError) {
             var pe :ParseError = ParseError(err);
@@ -247,9 +188,7 @@ public class AutomaticExporter {
 
     protected var OUT :FileStream;
 
-    protected var _confFile :File;
-    protected var _conf :ProjectConf;
-    protected var _importDirectory :File;
+    protected var _handedCritError :Boolean = false;
     protected var _statuses :Array = [];
 }
 }
