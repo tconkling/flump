@@ -421,9 +421,11 @@ public class ProjectController extends ExportController
             });
     }
 
-    override protected function setProjectDirty (val :Boolean) :void {
-        super.setProjectDirty(val);
-        updateWindowTitle();
+    protected function setProjectDirty (val :Boolean) :void {
+        if (_projectDirty != val) {
+            _projectDirty = val;
+            updateWindowTitle();
+        }
     }
 
     override protected function handleParseError (err :ParseError) :void {
@@ -456,6 +458,8 @@ public class ProjectController extends ExportController
     protected var _errorsGrid :DataGrid;
     protected var _exportChooser :DirChooser;
     protected var _importChooser :DirChooser;
+
+    protected var _projectDirty :Boolean; // true if project has unsaved changes
 }
 }
 
