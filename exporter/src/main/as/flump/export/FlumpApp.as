@@ -7,6 +7,8 @@ import aspire.util.Arrays;
 import aspire.util.Log;
 
 import flash.desktop.NativeApplication;
+import flash.display.Loader;
+import flash.display.LoaderInfo;
 import flash.display.NativeMenuItem;
 import flash.events.Event;
 import flash.events.InvokeEvent;
@@ -33,7 +35,10 @@ public class FlumpApp
         _app = this;
     }
 
-    public function run () :void {
+    public function get loaderInfo () :LoaderInfo { return _loaderInfo; }
+
+    public function run (loaderInfo :LoaderInfo) :void {
+        _loaderInfo = loaderInfo;
         // Disable sound completely. A SWF that plays sound on its stage will be
         // noisy as soon as we load it.
         SoundMixer.soundTransform = new SoundTransform(0);
@@ -45,6 +50,19 @@ public class FlumpApp
 
         var launched :Boolean = false;
         NA.addEventListener(InvokeEvent.INVOKE, function (event :InvokeEvent) :void {
+            if (event.arguments.length > 1 && event.arguments[0] == "--export") {
+                var headless :AutomaticExporter = new AutomaticExporter(new File(event.arguments[1]));
+                headless.complete.connectNotify(function (complete :Boolean) :void {
+                    if (!complete) return;
+
+                    // Even on Mac, running from the command line spawns a new instance of the app,
+                    // so we can safely assume it's OK to explicitly shut down here (as the command
+                    // line script expects us to).
+                    NA.exit();
+                });
+                return;
+            }
+
             if (event.arguments.length > 0) {
                 // A project file has been double-clicked. Open it.
                 openProject(new File(event.arguments[0]));
@@ -188,6 +206,7 @@ public class FlumpApp
         });
     }
 
+    protected var _loaderInfo :LoaderInfo;
     protected var _projects :Array = [];
     protected var _previewController :PreviewController;
 

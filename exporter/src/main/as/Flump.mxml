@@ -6,7 +6,7 @@
     <fx:Script>
         <![CDATA[
             import flump.export.FlumpApp;
-            private function init () :void { _app.run(); }
+            private function init () :void { _app.run(loaderInfo); }
             private var _app :FlumpApp = new FlumpApp();
         ]]>
     </fx:Script>
