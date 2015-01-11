@@ -77,35 +77,19 @@ public class AtlasImpl implements Atlas
         return _bitmapData;
     }
 
-    // Try to place a texture in this atlas, return true if it fit
-    public function place (tex :SwfTexture) :Boolean {
+    // Try to place a texture in this atlas
+    public function place (tex :SwfTexture, xx :uint, yy :uint) :void {
         var w :int = tex.w + (_borderSize * 2);
         var h :int = tex.h + (_borderSize * 2);
         if (w > _width || h > _height) {
-            return false;
+            throw new Error("Tried to place a texture outside of the atlas. This is a bug.");
         }
-
-        var found :Boolean = false;
-        for (var yy :int = 0; yy <= _height - h && !found; ++yy) {
-            for (var xx :int = 0; xx <= _width - w; ++xx) {
-                // if our right-most pixel is masked, jump ahead by that much
-                if (maskAt(xx + w - 1, yy)) {
-                    xx += w;
-                    continue;
-                }
-
-                if (!isMasked(xx, yy, w, h)) {
-                    var node :Node = new Node(xx, yy, _borderSize, tex);
-                    _nodes.push(node);
-                    setMasked(node.paddedBounds.x, node.paddedBounds.y,
-                            node.paddedBounds.width, node.paddedBounds.height);
-                    found = true;
-                    break;
-                }
-            }
+        if (isMasked(xx, yy, w, h)) {
+            throw new Error("Tried to place a texture over another texture. This is a bug.");
         }
-
-        return found;
+        var node :Node = new Node(xx, yy, _borderSize, tex);
+        _nodes.push(node);
+        setMasked(node.paddedBounds.x, node.paddedBounds.y, node.paddedBounds.width, node.paddedBounds.height);
     }
 
     protected static var _isMaskedPoint:Point = new Point();
