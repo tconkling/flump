@@ -1,22 +1,18 @@
 <s:Window
     xmlns:fx="http://ns.adobe.com/mxml/2009"
-    xmlns:mx="library://ns.adobe.com/flex/mx"
     xmlns:s="library://ns.adobe.com/flex/spark"
     creationComplete="init();"
     alpha="0"
     renderMode="direct"
-    width="480" height="720">
+    width="480" height="720" showStatusBar="false">
 
   <!-- I'd like to use visible="false" on the window and then set visible to true in init to hide
        the move to the top-left. If I do that, the window appears in the proper location and then
        disappears.  -->
    <fx:Script>
         <![CDATA[
-            import flash.events.Event;
-            import flash.geom.Rectangle;
-
-            import starling.core.Starling;
-            import starling.display.Sprite;
+        import starling.core.Starling;
+        import starling.display.Sprite;
 
         public var started :Function;
 
@@ -28,6 +24,7 @@
           _starling.juggler.delayCall(function() :void { started(_starling.stage.getChildAt(0)) },
             0);
           _starling.start();
+          _starling.showStats = true;
 
           nativeWindow.stage.addEventListener(Event.RESIZE, function (..._) :void {
             var w :int = nativeWindow.stage.stageWidth;

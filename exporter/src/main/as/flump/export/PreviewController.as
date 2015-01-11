@@ -114,7 +114,6 @@ public class PreviewController
         const atlases :Vector.<Atlas> = TexturePacker.withLib(_lib)
             .baseScale(scale)
             .borderSize(border)
-            .optimizeForSpeed(exportConf.optimize == ExportConf.OPTIMIZE_SPEED)
             .quality(exportConf.quality)
             .createAtlases();
 
