@@ -94,7 +94,7 @@ public class SwfTexture
 
     public function toBitmapData (borderPadding :int = 0) :BitmapData {
         // render with vector renderer
-        var bmd :BitmapData = new BitmapData(Math.ceil(_w), Math.ceil(_h), true, 0x00);
+        var bmd :BitmapData = new BitmapData(_w, _h, true, 0x00);
         const m :Matrix = new Matrix();
         m.translate(_origin.x, _origin.y);
         bmd.drawWithQuality(_disp, m, null, null, null, true, this.quality);
@@ -135,8 +135,8 @@ public class SwfTexture
 
         // calculate derivative info
         _origin = new Point(-_visualBounds.x, -_visualBounds.y);
-        _w = _visualBounds.width;
-        _h = _visualBounds.height;
+        _w = Math.ceil(_visualBounds.width);
+        _h = Math.ceil(_visualBounds.height);
     }
 
     private function hasPotentiallySizeAlteringFilters (dObj :DisplayObject) :Boolean {

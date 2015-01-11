@@ -19,6 +19,8 @@ import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;
 
+import mx.controls.Alert;
+
 import mx.core.UIComponent;
 
 import spark.components.Group;
@@ -111,13 +113,18 @@ public class PreviewController
         const scale :Number = MathUtil.clamp(Number(_atlasPreviewWindow.scale.text), 0.001, 1);
         const border :int = Math.max(0, int(_atlasPreviewWindow.border.text));
 
-        const atlases :Vector.<Atlas> = TexturePacker.withLib(_lib)
-            .baseScale(scale)
-            .borderSize(border)
-            .optimizeForSpeed(exportConf.optimize == ExportConf.OPTIMIZE_SPEED)
-            .quality(exportConf.quality)
-            .createAtlases();
-
+        try {
+            const atlases:Vector.<Atlas> = TexturePacker.withLib(_lib)
+                    .baseScale(scale)
+                    .borderSize(border)
+                    .quality(exportConf.quality)
+                    .maxAtlasSize(exportConf.maxAtlasSize)
+                    .createAtlases();
+        }
+        catch (err : Error) {
+            ErrorWindowMgr.showErrorPopup("Error", err.toString(), _atlasPreviewWindow);
+            return;
+        }
         const sprite :flash.display.Sprite = new flash.display.Sprite();
         for (var ii :int = 0; ii < atlases.length; ++ii) {
             var atlas :Atlas = atlases[ii];
