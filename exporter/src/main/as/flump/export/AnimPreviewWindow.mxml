@@ -1,10 +1,10 @@
 <s:Window
     xmlns:fx="http://ns.adobe.com/mxml/2009"
-    xmlns:mx="library://ns.adobe.com/flex/mx"
     xmlns:s="library://ns.adobe.com/flex/spark"
     creationComplete="init();"
     alpha="0"
     renderMode="direct"
+    showStatusBar="false"
     width="480" height="720">
 
   <!-- I'd like to use visible="false" on the window and then set visible to true in init to hide
