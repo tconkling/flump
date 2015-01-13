@@ -206,5 +206,12 @@ public class Util
         quad.pivotY = height / 2;
         return quad;
     }
+
+    /** Returns the smallest number >= n that is a power of two. */
+    public static function nextPowerOfTwo (n :int) :int {
+        var p :int = 1;
+        while (p < n) p *= 2;
+        return p;
+    }
 }
 }

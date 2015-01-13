@@ -10,6 +10,7 @@ import flash.utils.Dictionary;
 
 import flump.display.Library;
 import flump.display.Movie;
+import flump.export.texturepacker.TexturePacker;
 import flump.mold.AtlasMold;
 import flump.mold.AtlasTextureMold;
 import flump.mold.KeyframeMold;

@@ -25,8 +25,8 @@
           nativeWindow.y = 0;
 
           _starling = new Starling(starling.display.Sprite, nativeWindow.stage);
-          _starling.juggler.delayCall(function() :void { started(_starling.stage.getChildAt(0)) },
-            0);
+          _starling.juggler.delayCall(function() :void { started(_starling.stage.getChildAt(0)) }, 0);
+          _starling.showStats = true;
           _starling.start();
 
           nativeWindow.stage.addEventListener(Event.RESIZE, function (..._) :void {
