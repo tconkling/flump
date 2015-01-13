@@ -27,23 +27,21 @@ public class MaxRectMultiPacker {
         _filenamePrefix = filenamePrefix;
 
         atlases = new Vector.<Atlas>();
-        var minAtlasSize :uint = calculateMinimumSize(0);
-        packIntoAtlas(minAtlasSize, 0);
+        packIntoAtlas(calculateMinimumSize());
         return atlases;
     }
 
-    private function packIntoAtlas(atlasSize : uint, currentPos : uint) : void {
-        log.info("Starting to pack into a " + atlasSize + "x" + atlasSize + " atlas from item " + currentPos);
-        var itemsInAtlas : uint = 0;
+    private function packIntoAtlas(atlasSize : uint) : void {
+        log.info("Starting to pack into a " + atlasSize + "x" + atlasSize + " atlas");
         var atlas : AtlasImpl = new AtlasImpl(
                 _filenamePrefix + "atlas" + atlases.length,
                 atlasSize, atlasSize,
                 _borderSize,
                 _scaleFactor,
                 _quality);
-        // try to pack it into the given (minimum possible) size
+        // try to pack it into the given size
         var packer : MaxRectPackerImpl = new MaxRectPackerImpl(atlasSize, atlasSize);
-        for (var i:int = currentPos; i < _unpacked.length; i++) {
+        for (var i:int = 0; i < _unpacked.length; i++) {
             var swfTexture:SwfTexture = _unpacked[i];
             var w : int = swfTexture.w + (_borderSize * 2);
             var h : int = swfTexture.h + (_borderSize * 2);
@@ -51,37 +49,29 @@ public class MaxRectMultiPacker {
             if (rect == null) {
                 if (Util.nextPowerOfTwo(atlasSize + 1) < _maxAtlasSize) {
                     // everything does not fit, try with a 2x big one.
-                    log.debug("Element " + currentPos + " does not fit, trying with a " + Util.nextPowerOfTwo(atlasSize + 1) + " texture");
-                    packIntoAtlas(Util.nextPowerOfTwo(atlasSize + 1), currentPos);
-                    return;
-                }
-                else {
-                    // The texture size cannot grow, make a new atlas
-                    atlases.push(atlas);
-                    currentPos = currentPos + itemsInAtlas;
-                    log.debug("Texture size " + atlasSize + " cannot grow because max size is " + _maxAtlasSize + ". Creating new atlas from pos" + currentPos);
-                    packIntoAtlas(calculateMinimumSize(currentPos), currentPos);
+                    log.debug("Element " + i + " does not fit, trying with a " + Util.nextPowerOfTwo(atlasSize + 1) + " texture");
+                    packIntoAtlas(Util.nextPowerOfTwo(atlasSize + 1));
                     return;
                 }
             }
             else {
                 // it fits, put into the atlas
                 atlas.place(swfTexture, rect.x, rect.y);
-
-                itemsInAtlas++;
-                if (i == _unpacked.length - 1) {
-                    atlases.push(atlas);
-                    log.debug("Packed everything, num atlases:",atlases.length);
-                }
+                _unpacked.splice(i, 1);
+                i--;
             }
+        }
+        atlases.push(atlas);
+        if (_unpacked.length > 0) {
+            packIntoAtlas(calculateMinimumSize());
         }
     }
 
     // Calculates the minimum possible size to speed up calculation.
-    private function calculateMinimumSize(offset : uint) :uint {
-        var minSize : uint = 2;
+    private function calculateMinimumSize() :uint {
+        var minSize : uint = 64;
         var area : uint = 0;
-        for (var i:int = offset; i < _unpacked.length; i++) {
+        for (var i:int = 0; i < _unpacked.length; i++) {
             var texture:SwfTexture = _unpacked[i];
             var w : int = texture.w + (_borderSize * 2);
             var h : int = texture.h + (_borderSize * 2);
