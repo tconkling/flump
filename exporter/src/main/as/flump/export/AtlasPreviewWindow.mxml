@@ -12,14 +12,14 @@
       <s:Label text="Border:" verticalAlign="middle" width="50" height="100%" />
       <s:TextInput id="border" widthInChars="3" restrict="0123456789" text="1"/>
       <s:Label text="Optimization method:" verticalAlign="middle" height="100%" />
-      <s:ComboBox id="optimizeBox" selectedIndex="0" requireSelection="true">
+      <s:DropDownList id="optimizeBox" selectedIndex="0" requireSelection="true">
           <s:dataProvider>
               <s:ArrayList>
                   <fx:String>{ExportConf.OPTIMIZE_MEMORY}</fx:String>
                   <fx:String>{ExportConf.OPTIMIZE_SPEED}</fx:String>
               </s:ArrayList>
           </s:dataProvider>
-      </s:ComboBox>
+      </s:DropDownList>
       <s:Button id="preview" label="Preview"/>
     </s:HGroup>
     <s:Scroller id="scroller" width="100%" height="100%" horizontalScrollPolicy="auto" verticalScrollPolicy="auto">

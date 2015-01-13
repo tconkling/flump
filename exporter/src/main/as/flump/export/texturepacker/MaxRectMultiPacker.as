@@ -1,5 +1,4 @@
 package flump.export.texturepacker {
-import flump.export.*;
 
 import aspire.util.Log;
 
@@ -7,12 +6,14 @@ import flash.geom.Rectangle;
 
 import flump.SwfTexture;
 import flump.Util;
+import flump.export.Atlas;
+import flump.export.AtlasImpl;
 
 // Packer that tries to use as few atlases as possible
-public class MaxRectMultiPacker {
+public class MaxRectMultiPacker extends MultiPackerBase {
 
     // TODO the last 3 parameters are not needed for this class
-    public function pack(textures :Vector.<SwfTexture>,
+    override public function pack(textures :Vector.<SwfTexture>,
                          maxAtlasSize :uint,
                          borderSize :uint,
                          scaleFactor :int,
@@ -27,7 +28,7 @@ public class MaxRectMultiPacker {
         _filenamePrefix = filenamePrefix;
 
         atlases = new Vector.<Atlas>();
-        packIntoAtlas(calculateMinimumSize());
+        packIntoAtlas(calculateMinimumSize(_unpacked, _borderSize, _maxAtlasSize));
         return atlases;
     }
 
@@ -41,6 +42,7 @@ public class MaxRectMultiPacker {
                 _quality);
         // try to pack it into the given size
         var packer : MaxRectPackerImpl = new MaxRectPackerImpl(atlasSize, atlasSize);
+        var placed : Vector.<SwfTexture> = new Vector.<SwfTexture>();
         for (var i:int = 0; i < _unpacked.length; i++) {
             var swfTexture:SwfTexture = _unpacked[i];
             var w : int = swfTexture.w + (_borderSize * 2);
@@ -57,29 +59,16 @@ public class MaxRectMultiPacker {
             else {
                 // it fits, put into the atlas
                 atlas.place(swfTexture, rect.x, rect.y);
-                _unpacked.splice(i, 1);
-                i--;
+                placed.push(swfTexture);
             }
+        }
+        while (placed.length > 0) {
+            _unpacked.splice(_unpacked.indexOf(placed.pop()),1);
         }
         atlases.push(atlas);
         if (_unpacked.length > 0) {
-            packIntoAtlas(calculateMinimumSize());
+            packIntoAtlas(calculateMinimumSize(_unpacked, _borderSize, _maxAtlasSize));
         }
-    }
-
-    // Calculates the minimum possible size to speed up calculation.
-    private function calculateMinimumSize() :uint {
-        var minSize : uint = 64;
-        var area : uint = 0;
-        for (var i:int = 0; i < _unpacked.length; i++) {
-            var texture:SwfTexture = _unpacked[i];
-            var w : int = texture.w + (_borderSize * 2);
-            var h : int = texture.h + (_borderSize * 2);
-            minSize = Math.max(minSize, w, h);
-            area += w * h;
-        }
-        var minPossibleSize : uint = Util.nextPowerOfTwo( Math.max(minSize, Math.sqrt(area)) );
-        return Math.min(_maxAtlasSize, minPossibleSize);
     }
 
     private static const log :Log = Log.getLog(MaxRectMultiPacker);

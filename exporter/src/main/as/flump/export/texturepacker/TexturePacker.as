@@ -5,13 +5,10 @@ package flump.export.texturepacker {
 import flump.export.*;
 
 import aspire.util.Comparators;
-import aspire.util.Log;
 
 import flash.display.StageQuality;
-import flash.geom.Rectangle;
 
 import flump.SwfTexture;
-import flump.Util;
 import flump.mold.KeyframeMold;
 import flump.mold.MovieMold;
 
