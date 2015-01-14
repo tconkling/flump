@@ -9,6 +9,8 @@ import com.adobe.crypto.MD5;
 
 import flash.filesystem.File;
 
+import flump.export.texturepacker.TexturePacker;
+
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
 import flump.mold.LibraryMold;
