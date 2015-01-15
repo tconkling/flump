@@ -84,6 +84,14 @@ public class Movie extends Sprite
         return getFrameForLabel(label) >= 0;
     }
 
+    /** @return the frame index for the given label, or -1 if the label doesn't exist. */
+    public function getFrameForLabel (label :String) :int {
+        for (var ii :int = 0; ii < _labels.length; ii++) {
+            if (_labels[ii] != null && _labels[ii].indexOf(label) != -1) return ii;
+        }
+        return -1;
+    }
+
     /** Plays the movie from its current frame. The movie will loop forever.  */
     public function loop () :Movie {
         _state = PLAYING;
@@ -252,18 +260,6 @@ public class Movie extends Sprite
             throw new Error("No such label '" + label + "'");
         }
         return frame;
-    }
-
-    /**
-     * @private
-     *
-     * Returns the frame index for the given label, or -1 if the label doesn't exist.
-     */
-    protected function getFrameForLabel (label :String) :int {
-        for (var ii :int = 0; ii < _labels.length; ii++) {
-            if (_labels[ii] != null && _labels[ii].indexOf(label) != -1) return ii;
-        }
-        return -1;
     }
 
     /**
