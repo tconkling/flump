@@ -2,6 +2,8 @@
 // Flump - Copyright 2013 Flump Authors
 
 package flump.export.texturepacker {
+import flash.utils.getTimer;
+
 import flump.export.*;
 
 import aspire.util.Comparators;
@@ -68,13 +70,14 @@ public class TexturePacker
                                  w + "x" + h + ")");
             }
         }
-
+        var t1 : Number = getTimer();
         var atlases : Vector.<Atlas>;
         if (_optimizeForSpeed) {
             atlases = new MaxRectMultiPacker().pack(_unpacked, _maxAtlasSize, _borderSize, _scaleFactor, _quality, _filenamePrefix);
         } else {
             atlases = new SpaceSavingMultiPacker().pack(_unpacked, _maxAtlasSize, _borderSize, _scaleFactor, _quality, _filenamePrefix);
         }
+        trace("Pack time:", (getTimer() - t1), "ms");
         return atlases;
     }
 

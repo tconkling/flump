@@ -2,6 +2,8 @@ package flump.export.texturepacker {
 
 import aspire.util.Log;
 
+import flash.geom.Point;
+
 import flash.geom.Rectangle;
 
 import flump.SwfTexture;
@@ -32,16 +34,16 @@ public class MaxRectMultiPacker extends MultiPackerBase {
         return atlases;
     }
 
-    private function packIntoAtlas(atlasSize : uint) : void {
-        log.info("Starting to pack into a " + atlasSize + "x" + atlasSize + " atlas");
+    private function packIntoAtlas(atlasSize : Point) : void {
+        log.info("Starting to pack into a " + atlasSize.x + "x" + atlasSize.y + " atlas");
         var atlas : AtlasImpl = new AtlasImpl(
                 _filenamePrefix + "atlas" + atlases.length,
-                atlasSize, atlasSize,
+                atlasSize.x, atlasSize.y,
                 _borderSize,
                 _scaleFactor,
                 _quality);
         // try to pack it into the given size
-        var packer : MaxRectPackerImpl = new MaxRectPackerImpl(atlasSize, atlasSize);
+        var packer : MaxRectPackerImpl = new MaxRectPackerImpl(atlasSize.x, atlasSize.y);
         var placed : Vector.<SwfTexture> = new Vector.<SwfTexture>();
         for (var i:int = 0; i < _unpacked.length; i++) {
             var swfTexture:SwfTexture = _unpacked[i];
@@ -49,10 +51,12 @@ public class MaxRectMultiPacker extends MultiPackerBase {
             var h : int = swfTexture.h + (_borderSize * 2);
             var rect : Rectangle = packer.quickInsert(w,h);
             if (rect == null) {
-                if (Util.nextPowerOfTwo(atlasSize + 1) < _maxAtlasSize) {
-                    // everything does not fit, try with a 2x big one.
-                    log.debug("Element " + i + " does not fit, trying with a " + Util.nextPowerOfTwo(atlasSize + 1) + " texture");
-                    packIntoAtlas(Util.nextPowerOfTwo(atlasSize + 1));
+                if (Util.nextPowerOfTwo(atlasSize.x + 1) < _maxAtlasSize ||
+                    Util.nextPowerOfTwo(atlasSize.y + 1) < _maxAtlasSize) {
+                    if (atlasSize.x < atlasSize.x) atlasSize.x = atlasSize.x * 2;
+                    else atlasSize.y = atlasSize.y * 2;
+                    log.debug("Element " + swfTexture.symbol + " does not fit, trying with a " + atlasSize + " texture");
+                    packIntoAtlas(atlasSize);
                     return;
                 }
             }
