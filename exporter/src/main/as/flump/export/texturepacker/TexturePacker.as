@@ -70,14 +70,12 @@ public class TexturePacker
                                  w + "x" + h + ")");
             }
         }
-        var t1 : Number = getTimer();
         var atlases : Vector.<Atlas>;
         if (_optimizeForSpeed) {
             atlases = new MaxRectMultiPacker().pack(_unpacked, _maxAtlasSize, _borderSize, _scaleFactor, _quality, _filenamePrefix);
         } else {
             atlases = new SpaceSavingMultiPacker().pack(_unpacked, _maxAtlasSize, _borderSize, _scaleFactor, _quality, _filenamePrefix);
         }
-        trace("Pack time:", (getTimer() - t1), "ms");
         return atlases;
     }
 

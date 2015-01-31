@@ -35,7 +35,7 @@ public class MaxRectMultiPacker extends MultiPackerBase {
     }
 
     private function packIntoAtlas(atlasSize : Point) : void {
-        log.info("Starting to pack into a " + atlasSize.x + "x" + atlasSize.y + " atlas");
+        //log.info("Starting to pack into a " + atlasSize.x + "x" + atlasSize.y + " atlas");
         var atlas : AtlasImpl = new AtlasImpl(
                 _filenamePrefix + "atlas" + atlases.length,
                 atlasSize.x, atlasSize.y,
@@ -51,11 +51,11 @@ public class MaxRectMultiPacker extends MultiPackerBase {
             var h : int = swfTexture.h + (_borderSize * 2);
             var rect : Rectangle = packer.quickInsert(w,h);
             if (rect == null) {
-                if (Util.nextPowerOfTwo(atlasSize.x + 1) < _maxAtlasSize ||
-                    Util.nextPowerOfTwo(atlasSize.y + 1) < _maxAtlasSize) {
-                    if (atlasSize.x < atlasSize.x) atlasSize.x = atlasSize.x * 2;
+                if (Util.nextPowerOfTwo(atlasSize.x + 1) <= _maxAtlasSize ||
+                    Util.nextPowerOfTwo(atlasSize.y + 1) <= _maxAtlasSize) {
+                    if (atlasSize.x < atlasSize.y) atlasSize.x = atlasSize.x * 2;
                     else atlasSize.y = atlasSize.y * 2;
-                    log.debug("Element " + swfTexture.symbol + " does not fit, trying with a " + atlasSize + " texture");
+                    //log.debug("Element " + swfTexture.symbol + " does not fit, trying with a " + atlasSize + " texture. Max size is: " + _maxAtlasSize);
                     packIntoAtlas(atlasSize);
                     return;
                 }

@@ -9,7 +9,7 @@ import flump.export.Atlas;
 
 public class MultiPackerBase {
 
-    public static const MIN_SIZE : uint = 64;
+    public static const MIN_SIZE : uint = 128;
 
     public function pack(textures :Vector.<SwfTexture>,
                          maxAtlasSize :uint,

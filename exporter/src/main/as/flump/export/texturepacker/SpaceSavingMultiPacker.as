@@ -28,7 +28,7 @@ public class SpaceSavingMultiPacker extends MultiPackerBase {
             if (atlasSize.x < 2048 || atlasSize.y < 2048) {
                 // if the filled area is less than FILL_THRESHOLD try to fit them into a smaller texture
                 var atlasArea : Number = atlasSize.x * atlasSize.y;
-                const FILL_THRESHOLD : Number = 0.8; // TODO this could be moved to a parameter in the UI
+                const FILL_THRESHOLD : Number = 0.75; // TODO this could be moved to a parameter in the UI
                 if (calculateArea(textures, borderSize) / atlasArea < FILL_THRESHOLD) {
                     var smallestArea : Point = calculateMinimumDimensions(textures, borderSize);
                     if (smallestArea.x < atlasSize.x && atlasSize.x < atlasSize.y) atlasSize.x = atlasSize.x / 2;
@@ -37,7 +37,7 @@ public class SpaceSavingMultiPacker extends MultiPackerBase {
                     else if (smallestArea.y < atlasSize.y) atlasSize.y = atlasSize.y / 2;
                 }
             }
-            log.info("There are " + textures.length + " unpacked textures, creating new atlas with size " + atlasSize);
+            //log.info("There are " + textures.length + " unpacked textures, creating new atlas with size " + atlasSize);
             var atlas : AtlasImpl = new AtlasImpl(
                     filenamePrefix + "atlas" + atlases.length,
                     atlasSize.x, atlasSize.y,
