@@ -1,6 +1,22 @@
 Flump: Changelog
 ================
 
+version 1.4 - 2015-04-25
+------------------------
+
+Runtime:
+- License changed to ever-so-slightly more permissive MIT (from BSD)
+
+Exporter:
+- added: "Combine" project option. This lets you combine a project's output into a single texture atlas/JSON combo, which is especially useful for mobile games, where avoiding GPU state changes can result in much better performance. (Thanks, Nathan Curtis.)
+
+* added: Mac command line exporting. There's a bash script in the Exporter's rsrc/ directory that launches Flump and exports the given .flump project, so Flump can be part of your automated build process. (Thanks, Nathan Curtis.)
+
+* added: The "additionalScaleFactors" project setting is replaced with "scaleFactors." This allows you to, e.g., just export @2X textures without getting 1X textures as well. (Thanks, Nathan Curtis.)
+
+* updated: Use the MaxRect algorithm for texture packing. This speeds up the export process a bit. (Thanks, matyasatfp.)
+
+
 version 1.3 - 2014-02-08
 ------------------------
 
