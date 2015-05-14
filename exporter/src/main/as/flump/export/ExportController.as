@@ -1,6 +1,7 @@
 package flump.export {
 
 import aspire.util.F;
+import aspire.util.Joiner;
 import aspire.util.Log;
 import aspire.util.StringUtil;
 
@@ -20,11 +21,11 @@ public class ExportController {
         throw new Error("abstract");
     }
 
-    protected function addDoc (status :DocStatus) :void {
+    protected function addDocStatus (status :DocStatus) :void {
         throw new Error("abstract");
     }
 
-    protected function getDocs () :Array {
+    protected function getDocStatuses () :Array {
         throw new Error("abstract");
     }
 
@@ -102,15 +103,36 @@ public class ExportController {
         }
 
         const status :DocStatus = new DocStatus(name, Ternary.UNKNOWN, Ternary.UNKNOWN, null);
-        addDoc(status);
+        addDocStatus(status);
         load.succeeded.connect(F.argify(F.bind(docLoadSucceeded, status, F._1), 1));
         load.failed.connect(F.argify(F.bind(docLoadFailed, file, status, F._1), 1));
     }
 
     protected function docLoadSucceeded (doc :DocStatus, lib :XflLibrary) :void {
+        var err :ParseError;
+
         doc.lib = lib;
-        for each (var err :ParseError in lib.getErrors()) handleParseError(err);
+
+        for each (err in lib.getErrors()) handleParseError(err);
         doc.updateValid(Ternary.of(lib.valid));
+
+        // validate our exportConfs when all docs have loaded
+        if (this.allDocsLoaded && this.hasCombinedExportConfig()) {
+            var docStatuses :Array = getDocStatuses();
+            if (docStatuses.length > 0) {
+                var frameRate :Number = DocStatus(docStatuses[0]).lib.frameRate;
+                for each (var docStatus :DocStatus in docStatuses) {
+                    if (docStatus.lib.frameRate != frameRate) {
+                        err = docStatus.lib.addTopLevelError(ParseError.CRIT, Joiner.pairs(
+                            "Invalid framerate (all XflLibraries within a combined publish must use the same framerate)",
+                            "framerate", docStatus.lib.frameRate,
+                            "expectedFramerate", frameRate));
+                        handleParseError(err);
+                        docStatus.updateValid(Ternary.of(docStatus.lib.valid));
+                    }
+                }
+            }
+        }
     }
 
     protected function docLoadFailed (file :File, doc :DocStatus, err :*) :void {
@@ -119,12 +141,34 @@ public class ExportController {
 
     /** returns all libs if all known flash docs are done loading, else null */
     protected function getLibs () :Vector.<XflLibrary> {
+        if (!this.allDocsLoaded) {
+            return null;
+        }
+
         var libs :Vector.<XflLibrary> = new <XflLibrary>[];
-        for each (var status :DocStatus in getDocs()) {
-            if (status.lib == null) return null; // not done loading yet
+        for each (var status :DocStatus in getDocStatuses()) {
             libs[libs.length] = status.lib;
         }
         return libs;
+    }
+
+    protected function get allDocsLoaded () :Boolean {
+        for each (var status :DocStatus in getDocStatuses()) {
+            if (status.lib == null) return false; // not done loading yet
+        }
+        return true;
+    }
+
+    protected function hasCombinedExportConfig () :Boolean {
+        if (_conf == null) return false;
+        for each (var config :ExportConf in _conf.exports) if (config.combine) return true;
+        return false;
+    }
+
+    protected function hasSingleExportConfig () :Boolean {
+        if (_conf == null) return false;
+        for each (var config :ExportConf in _conf.exports) if (!config.combine) return true;
+        return false;
     }
 
     protected var _confFile :File;

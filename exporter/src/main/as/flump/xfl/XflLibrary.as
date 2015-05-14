@@ -152,12 +152,14 @@ public class XflLibrary
 
     public function get valid () :Boolean { return getErrors(ParseError.CRIT).length == 0; }
 
-    public function addTopLevelError (severity :String, message :String, e :Object=null) :void {
-        addError(location, severity, message, e);
+    public function addTopLevelError (severity :String, message :String, e :Object=null) :ParseError {
+        return addError(location, severity, message, e);
     }
 
-    public function addError (location :String, severity :String, message :String, e :Object=null) :void {
-        _errors.push(new ParseError(location, severity, message, e));
+    public function addError (location :String, severity :String, message :String, e :Object=null) :ParseError {
+        var err :ParseError = new ParseError(location, severity, message, e);
+        _errors.push(err);
+        return err;
     }
 
     public function loadSWF (path :String, loader :Executor=null) :Future {

@@ -296,18 +296,6 @@ public class ProjectController extends ExportController
         updateWindowTitle();
     }
 
-    protected function hasCombinedExportConfig () :Boolean {
-        if (_conf == null) return false;
-        for each (var config :ExportConf in _conf.exports) if (config.combine) return true;
-        return false;
-    }
-
-    protected function hasSingleExportConfig () :Boolean {
-        if (_conf == null) return false;
-        for each (var config :ExportConf in _conf.exports) if (!config.combine) return true;
-        return false;
-    }
-
     protected function onSelectedItemChanged (..._) :void {
         _win.export.enabled = !hasCombinedExportConfig() && _exportChooser.dir != null &&
             _flashDocsGrid.selectionLength > 0 &&
@@ -441,11 +429,11 @@ public class ProjectController extends ExportController
         throw err;
     }
 
-    override protected function addDoc (status :DocStatus) :void {
+    override protected function addDocStatus (status :DocStatus) :void {
         _flashDocsGrid.dataProvider.addItem(status);
     }
 
-    override protected function getDocs () :Array {
+    override protected function getDocStatuses () :Array {
         return _flashDocsGrid.dataProvider.toArray();
     }
 

@@ -10,7 +10,6 @@ import com.adobe.crypto.MD5;
 import flash.filesystem.File;
 
 import flump.export.texturepacker.TexturePacker;
-
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
 import flump.mold.LibraryMold;
@@ -20,16 +19,8 @@ import flump.xfl.XflLibrary;
 
 public class PublishFormat
 {
-    public function PublishFormat (destDir :File, libs :Vector.<XflLibrary>, conf :ExportConf,
-            projectName :String) {
+    public function PublishFormat (destDir :File, libs :Vector.<XflLibrary>, conf :ExportConf, projectName :String) {
         Preconditions.checkArgument(libs.length > 0, "There must be at least one XflLibrary");
-        if (libs.length > 1) {
-            var frameRate :Number = libs[0].frameRate;
-            for (var ii :int = 1; ii < libs.length; ii++) {
-                Preconditions.checkArgument(frameRate == libs[ii].frameRate,
-                    "All XflLibraries within a combined publish must use the same framerate");
-            }
-        }
         _libs = libs;
         _destDir = destDir;
         _conf = conf;

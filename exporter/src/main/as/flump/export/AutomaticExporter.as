@@ -134,12 +134,12 @@ public class AutomaticExporter extends ExportController
         printErr(err);
     }
 
-    override protected function addDoc (status :DocStatus) :void {
+    override protected function addDocStatus (status :DocStatus) :void {
         _statuses[_statuses.length] = status;
         println("Loading document: " + status.path + "...");
     }
 
-    override protected function getDocs () :Array {
+    override protected function getDocStatuses () :Array {
         return _statuses;
     }
 
