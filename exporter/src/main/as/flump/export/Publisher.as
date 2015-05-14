@@ -3,8 +3,6 @@
 
 package flump.export {
 
-import aspire.util.Log;
-
 import flash.filesystem.File;
 
 import flump.xfl.XflLibrary;
@@ -14,14 +12,14 @@ public class Publisher
     public function Publisher (exportDir :File, project :ProjectConf, projectName :String) {
         _exportDir = exportDir;
         _projectName = projectName;
-        for each (var export :ExportConf in project.exports) _confs.push(export);
+        for each (var conf :ExportConf in project.exports) _confs.push(conf);
     }
 
     public function modified (libs :Vector.<XflLibrary>, idx :int = -1) :Boolean {
         // Instantiate all formats and check for modified. For a ProjectConf that contains combined
         // exports, all individual libs will check as modified if any single lib is modified
-        return instantiate(libs, idx).some(function (export :PublishFormat, ..._) :Boolean {
-            return export.modified;
+        return instantiate(libs, idx).some(function (conf :PublishFormat, ..._) :Boolean {
+            return conf.modified;
         });
     }
 
@@ -56,6 +54,5 @@ public class Publisher
     private var _exportDir :File;
     private var _projectName :String;
     private const _confs :Vector.<ExportConf> = new <ExportConf>[];
-    private static const log :Log = Log.getLog(Publisher);
 }
 }
