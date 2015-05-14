@@ -17,7 +17,6 @@ import flash.filesystem.File;
 import flash.utils.IDataOutput;
 
 import flump.executor.Executor;
-import flump.executor.Future;
 import flump.xfl.ParseError;
 import flump.xfl.XflLibrary;
 
@@ -283,9 +282,9 @@ public class ProjectController extends ExportController
         var formatNames :Array = [];
         var hasCombined :Boolean = false;
         if (_conf != null) {
-            for each (var export :ExportConf in _conf.exports) {
-                formatNames.push(export.description);
-                hasCombined ||= export.combine;
+            for each (var exportConf :ExportConf in _conf.exports) {
+                formatNames.push(exportConf.description);
+                hasCombined ||= exportConf.combine;
             }
         }
         _win.formatOverview.text = formatNames.join(", ");
