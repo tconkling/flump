@@ -124,7 +124,7 @@ public class Executor
         var removed :Boolean = false;
         for (var ii :int = 0; ii < _running.length && !removed; ii++) {
             if (_running[ii] == f) {
-                _running.splice(ii--, 1);
+                _running.removeAt(ii--);
                 removed = true;
             }
         }
