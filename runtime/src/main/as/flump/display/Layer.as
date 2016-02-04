@@ -18,7 +18,6 @@ import starling.display.Sprite;
  * this layer on each frame.
  */
 internal class Layer
-    implements IAnimatable
 {
     public function Layer (movie :Movie, src :LayerMold, library :Library, flipbook :Boolean) {
         _keyframes = src.keyframes;
@@ -28,7 +27,7 @@ internal class Layer
         const lastKf :KeyframeMold = _keyframes[_keyframes.length - 1];
         _numFrames = lastKf.index + lastKf.duration;
 
-        var lastItem :String;
+        var lastItem :String = null;
         for (var ii :int = 0; ii < _keyframes.length && lastItem == null; ii++) {
             lastItem = _keyframes[ii].ref;
         }
