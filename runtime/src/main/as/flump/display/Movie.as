@@ -365,7 +365,7 @@ public class Movie extends Sprite
     /** @private */
     protected var _frame :int = NO_FRAME, _stopFrame :int = NO_FRAME;
     /** @private */
-    protected var _state :int = PLAYING;
+    protected var _state :String = PLAYING;
     /** @private */
     protected var _playTime :Number = 0;
     /** @private */
@@ -388,9 +388,9 @@ public class Movie extends Sprite
 
     private static const NO_FRAME :int = -1;
 
-    private static const STOPPED :int = 0;
-    private static const PLAYING_CHILDREN_ONLY :int = 1;
-    private static const PLAYING :int = 2;
+    private static const STOPPED :String = "STOPPED";
+    private static const PLAYING_CHILDREN_ONLY :String = "PLAYING_CHILDREN_ONLY";
+    private static const PLAYING :String = "PLAYING";
 }
 }
 
