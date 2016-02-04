@@ -8,7 +8,6 @@ import flash.geom.Rectangle;
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
 
-import starling.animation.IAnimatable;
 import starling.display.DisplayObject;
 import starling.display.Sprite;
 
@@ -59,13 +58,6 @@ internal class Layer
         }
 
         _currentDisplay.name = _name;
-    }
-
-    /** Advances the playhead by the give number of seconds. From IAnimatable. */
-    public function advanceTime (dt :Number) :void {
-        if (_currentDisplay is IAnimatable) {
-            IAnimatable(_currentDisplay).advanceTime(dt);
-        }
     }
 
     public function drawFrame (frame :int) :void {
@@ -172,7 +164,7 @@ internal class Layer
     // Stores this layer's DisplayObjects indexed by keyframe.
     protected var _displays :Vector.<DisplayObject>;
     // The current DisplayObject being rendered for this layer
-    protected var _currentDisplay :DisplayObject;
+    internal var _currentDisplay :DisplayObject;
     protected var _movie :Movie; // The movie this layer belongs to
     // The index of the last keyframe drawn in drawFrame.
     protected var _keyframeIdx :int;

@@ -117,7 +117,52 @@ public class Movie extends Sprite
      */
     public function goTo (position :Object) :Movie {
         const frame :int = extractFrame(position);
-        updateFrame(frame, 0);
+        return goToInternal(frame, false);
+    }
+
+    /**
+     * Calls goTo on this Movie and all its descendent Movies.
+     * If the given frame doesn't exist in a descendent movie, that movie will be advanced
+     * to its final frame.
+     *
+     * @param position the int frame or String label to goto.
+     *
+     * @return this movie for chaining
+     *
+     * @throws Error if position isn't an int or String, or if it is a String and that String isn't
+     * a label on this movie
+     */
+    public function recursiveGoTo (position :Object) :Movie {
+        const frame :int = extractFrame(position);
+        return goToInternal(frame, true);
+    }
+
+    /**
+     * @private
+     *
+     * Helper function for goTo(). Saves us from calling extractFrame() multiple times.
+     */
+    protected function goToInternal (requestedFrame :int, recursive :Boolean) :Movie {
+        if (_isUpdatingFrame) {
+            _pendingGoToFrame = requestedFrame;
+
+        } else {
+            var ourFrame :int = requestedFrame;
+            if (ourFrame >= _numFrames) {
+                ourFrame = _numFrames;
+            }
+            _playTime = ourFrame / _frameRate;
+            updateFrame(ourFrame, 0);
+
+            if (recursive) {
+                for each (var layer :Layer in _layers) {
+                    var childMovie :Movie = (layer._currentDisplay as Movie);
+                    if (childMovie != null) {
+                        childMovie.goToInternal(requestedFrame, recursive);
+                    }
+                }
+            }
+        }
         return this;
     }
 
@@ -223,7 +268,10 @@ public class Movie extends Sprite
         }
 
         for each (var layer :Layer in _layers) {
-            layer.advanceTime(dt);
+            var childMovie :Movie = (layer._currentDisplay as Movie);
+            if (childMovie != null) {
+                childMovie.advanceTime(dt);
+            }
         }
     }
 
@@ -266,18 +314,26 @@ public class Movie extends Sprite
 
     /** @private */
     protected function extractFrame (position :Object) :int {
-        if (position is int) return int(position);
-        if (!(position is String)) throw new Error("Movie position must be an int frame or String label");
-        const label :String = String(position);
-        var frame :int = getFrameForLabel(label);
-        if (frame < 0) {
-            throw new Error("No such label '" + label + "'");
+        if (position is int) {
+            return int(position);
+        } else if (position is String) {
+            const label :String = String(position);
+            var frame :int = getFrameForLabel(label);
+            if (frame < 0) {
+                throw new Error("No such label '" + label + "'");
+            }
+            return frame;
+        } else {
+            throw new Error("Movie position must be an int frame or String label");
         }
-        return frame;
     }
 
     /**
      * @private
+     *
+     * Fires label signals and updates layers for the given frame.
+     * We don't handle updating any child movies in this function - child moving updating
+     * is handled in advanceTime() and goTo(), both of which call updateFrame().
      *
      * @param dt the timeline's elapsed time since the last update. This should be 0
      * for updates that are the result of a "goTo" call.
@@ -288,41 +344,31 @@ public class Movie extends Sprite
         }
 
         if (_isUpdatingFrame) {
-            _pendingFrame = newFrame;
-            return;
+            // This should never happen.
+            // (goTo() should set _pendingGoToFrame if _isUpdatingFrame == true)
+            throw new Error("updateFrame called recursively");
         }
 
-        _pendingFrame = NO_FRAME;
+        _pendingGoToFrame = NO_FRAME;
         _isUpdatingFrame = true;
-
-        const isGoTo :Boolean = (dt <= 0);
-        const wrapped :Boolean = (dt >= _duration) || (newFrame < _frame);
-
-        if (newFrame != _frame) {
-            for each (var layer :Layer in _layers) {
-                layer.drawFrame(newFrame);
-            }
-        }
-
-        if (isGoTo) {
-            _playTime = newFrame / _frameRate;
-        }
 
         // Update the frame before firing frame label signals, so if firing changes the frame,
         // it sticks.
-        const oldFrame :int = _frame;
+        const prevFrame :int = _frame;
         _frame = newFrame;
 
         // determine which labels to fire signals for
         var startFrame :int;
         var frameCount :int;
-        if (isGoTo) {
+        if (dt <= 0) {
+            // if dt <= 0, we're here because of a goTo
             startFrame = newFrame;
             frameCount = 1;
         } else {
-            startFrame = (oldFrame + 1 < _numFrames ? oldFrame + 1 : 0);
-            frameCount = (_frame - oldFrame);
-            if (wrapped) {
+            startFrame = (prevFrame + 1 < _numFrames ? prevFrame + 1 : 0);
+            frameCount = (_frame - prevFrame);
+            if ((dt >= _duration) || (newFrame < _frame)) {
+                // we wrapped
                 frameCount += _numFrames;
             }
         }
@@ -331,12 +377,16 @@ public class Movie extends Sprite
         // has called goTo()
         var frameIdx :int = startFrame;
         for (var ii :int = 0; ii < frameCount; ++ii) {
-            if (_pendingFrame != NO_FRAME) break;
+            if (_pendingGoToFrame != NO_FRAME) {
+                break;
+            }
 
             if (_labels[frameIdx] != null) {
                 for each (var label :String in _labels[frameIdx]) {
                     labelPassed.emit(label);
-                    if (_pendingFrame != NO_FRAME) break;
+                    if (_pendingGoToFrame != NO_FRAME) {
+                        break;
+                    }
                 }
             }
 
@@ -347,10 +397,18 @@ public class Movie extends Sprite
         }
 
         _isUpdatingFrame = false;
-        // If we were interrupted by a goTo(), update to that frame now.
-        if (_pendingFrame != NO_FRAME) {
-            newFrame = _pendingFrame;
-            updateFrame(newFrame, 0);
+
+        // If we were interrupted by a goTo(), go to that frame now.
+        // Otherwise, draw our new frame.
+        if (_pendingGoToFrame != NO_FRAME) {
+            var pending :int = _pendingGoToFrame;
+            _pendingGoToFrame = NO_FRAME;
+            goTo(pending);
+
+        } else if (newFrame != prevFrame) {
+            for each (var layer :Layer in _layers) {
+                layer.drawFrame(newFrame);
+            }
         }
     }
 
@@ -361,7 +419,7 @@ public class Movie extends Sprite
     /** @private */
     protected var _isUpdatingFrame :Boolean;
     /** @private */
-    protected var _pendingFrame :int = NO_FRAME;
+    protected var _pendingGoToFrame :int = NO_FRAME;
     /** @private */
     protected var _frame :int = NO_FRAME, _stopFrame :int = NO_FRAME;
     /** @private */
