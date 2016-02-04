@@ -178,20 +178,34 @@ public class Movie extends Sprite
 
     /** Advances the playhead by the give number of seconds. From IAnimatable. */
     public function advanceTime (dt :Number) :void {
-        if (dt < 0) throw new Error("Invalid time [dt=" + dt + "]");
-        if (_skipAdvanceTime) { _skipAdvanceTime = false; return; }
-        if (_state == STOPPED) return;
+        if (dt < 0) {
+            throw new Error("Invalid time [dt=" + dt + "]");
+        }
+
+        if (_skipAdvanceTime) {
+            _skipAdvanceTime = false;
+            return;
+        }
+
+        if (_state == STOPPED) {
+            return;
+        }
 
         if (_state == PLAYING && _numFrames > 1) {
             _playTime += dt;
             var actualPlaytime :Number = _playTime;
-            if (_playTime >= _duration) _playTime %= _duration;
+            if (_playTime >= _duration) {
+                _playTime %= _duration;
+            }
 
             // If _playTime is very close to _duration, rounding error can cause us to
             // land on lastFrame + 1. Protect against that.
             var newFrame :int = int(_playTime * _frameRate);
-            if (newFrame < 0) newFrame = 0;
-            if (newFrame >= _numFrames) newFrame = _numFrames - 1;
+            if (newFrame < 0) {
+                newFrame = 0;
+            } else if (newFrame >= _numFrames) {
+                newFrame = _numFrames - 1;
+            }
 
             // If the update crosses or goes to the stopFrame:
             // go to the stopFrame, stop the movie, clear the stopFrame
@@ -233,8 +247,8 @@ public class Movie extends Sprite
         // if no contents exist, simply include this movie's position in the bounds
         if (resultRect.isEmpty()) {
             getTransformationMatrix(targetSpace, IDENTITY_MATRIX);
-            MatrixUtil.transformCoords(IDENTITY_MATRIX, 0.0, 0.0, _s_helperPoint);
-            resultRect.setTo(_s_helperPoint.x, _s_helperPoint.y, 0, 0);
+            MatrixUtil.transformCoords(IDENTITY_MATRIX, 0.0, 0.0, HELPER_POINT);
+            resultRect.setTo(HELPER_POINT.x, HELPER_POINT.y, 0, 0);
         }
 
         return resultRect;
@@ -270,17 +284,16 @@ public class Movie extends Sprite
      */
     protected function updateFrame (newFrame :int, dt :Number) :void {
         if (newFrame < 0 || newFrame >= _numFrames) {
-            throw new Error("Invalid frame [frame=" + newFrame,
-                " validRange=0-" + (_numFrames - 1) + "]");
+            throw new Error("Invalid frame [frame=" + newFrame + ", validRange=0-" + (_numFrames - 1) + "]");
         }
 
         if (_isUpdatingFrame) {
             _pendingFrame = newFrame;
             return;
-        } else {
-            _pendingFrame = NO_FRAME;
-            _isUpdatingFrame = true;
         }
+
+        _pendingFrame = NO_FRAME;
+        _isUpdatingFrame = true;
 
         const isGoTo :Boolean = (dt <= 0);
         const wrapped :Boolean = (dt >= _duration) || (newFrame < _frame);
@@ -291,7 +304,9 @@ public class Movie extends Sprite
             }
         }
 
-        if (isGoTo) _playTime = newFrame / _frameRate;
+        if (isGoTo) {
+            _playTime = newFrame / _frameRate;
+        }
 
         // Update the frame before firing frame label signals, so if firing changes the frame,
         // it sticks.
@@ -307,7 +322,9 @@ public class Movie extends Sprite
         } else {
             startFrame = (oldFrame + 1 < _numFrames ? oldFrame + 1 : 0);
             frameCount = (_frame - oldFrame);
-            if (wrapped) frameCount += _numFrames;
+            if (wrapped) {
+                frameCount += _numFrames;
+            }
         }
 
         // Fire signals. Stop if pendingFrame is updated, which indicates that the client
@@ -350,7 +367,9 @@ public class Movie extends Sprite
     /** @private */
     protected var _state :int = PLAYING;
     /** @private */
-    protected var _playTime :Number, _duration :Number;
+    protected var _playTime :Number = 0;
+    /** @private */
+    protected var _duration :Number;
     /** @private */
     protected var _layers :Vector.<Layer>;
     /** @private */
@@ -363,9 +382,8 @@ public class Movie extends Sprite
     private var _skipAdvanceTime :Boolean = false;
     /** @private */
     internal var _playerData :MoviePlayerNode;
-    /** @private */
-    private static var _s_helperPoint :Point = new Point();
 
+    private static const HELPER_POINT :Point = new Point();
     private static const IDENTITY_MATRIX :Matrix = new Matrix();
 
     private static const NO_FRAME :int = -1;
