@@ -286,12 +286,9 @@ public class Movie extends Sprite
         const wrapped :Boolean = (dt >= _duration) || (newFrame < _frame);
 
         if (newFrame != _frame) {
-            if (wrapped) {
-                for each (var layer :Layer in _layers) {
-                    layer.movieLooped();
-                }
+            for each (var layer :Layer in _layers) {
+                layer.drawFrame(newFrame);
             }
-            for each (layer in _layers) layer.drawFrame(newFrame);
         }
 
         if (isGoTo) _playTime = newFrame / _frameRate;

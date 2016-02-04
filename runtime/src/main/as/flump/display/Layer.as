@@ -61,12 +61,6 @@ internal class Layer
         _currentDisplay.name = _name;
     }
 
-    /** Called by Movie when we loop. */
-    public function movieLooped () :void {
-        _needsKeyframeUpdate = true;
-        _keyframeIdx = 0;
-    }
-
     /** Advances the playhead by the give number of seconds. From IAnimatable. */
     public function advanceTime (dt :Number) :void {
         if (_currentDisplay is IAnimatable) {
@@ -80,34 +74,36 @@ internal class Layer
             return;
 
         } else if (frame >= _numFrames) {
-            // We've overshot our final frame. Hide the display
+            // We've overshot our final frame. Hide the display.
             _currentDisplay.visible = false;
-            // keep our keyframeIdx updated
             _keyframeIdx = _keyframes.length - 1;
-            _needsKeyframeUpdate = true;
             return;
         }
 
+        // Update our keyframeIdx.
+        // If our new frame appears before our previous keyframe in the timeline, we
+        // reset our keyframeIdx to 0.
+        if (_keyframes[_keyframeIdx].index > frame) {
+            _keyframeIdx = 0;
+        }
+        // Next, we iterate keyframes, starting at keyframeIdx, until we find the keyframe
+        // that contains our new frame.
         while (_keyframeIdx < _keyframes.length - 1 && _keyframes[_keyframeIdx + 1].index <= frame) {
             _keyframeIdx++;
-            _needsKeyframeUpdate = true;
         }
 
-        if (_needsKeyframeUpdate) {
-            // Swap in the proper DisplayObject for this keyframe.
-            const disp :DisplayObject = _displays[_keyframeIdx];
-            if (_currentDisplay != disp) {
-                _currentDisplay.name = null;
-                _currentDisplay.visible = false;
-                // If we're swapping in a Movie, reset its timeline.
-                if (disp is Movie) {
-                    Movie(disp).addedToLayer();
-                }
-                _currentDisplay = disp;
-                _currentDisplay.name = _name;
+        // Swap in the proper DisplayObject for this keyframe.
+        const disp :DisplayObject = _displays[_keyframeIdx];
+        if (_currentDisplay != disp) {
+            _currentDisplay.name = null;
+            _currentDisplay.visible = false;
+            // If we're swapping in a Movie, reset its timeline.
+            if (disp is Movie) {
+                Movie(disp).addedToLayer();
             }
+            _currentDisplay = disp;
+            _currentDisplay.name = _name;
         }
-        _needsKeyframeUpdate = false;
 
         const kf :KeyframeMold = _keyframes[_keyframeIdx];
         const layer :DisplayObject = _currentDisplay;
@@ -178,11 +174,8 @@ internal class Layer
     // The current DisplayObject being rendered for this layer
     protected var _currentDisplay :DisplayObject;
     protected var _movie :Movie; // The movie this layer belongs to
-    // The index of the last keyframe drawn in drawFrame. Updated in drawFrame. When the parent
-    // movie loops, it resets all of its layers' keyframeIdx's to 0.
+    // The index of the last keyframe drawn in drawFrame.
     protected var _keyframeIdx :int;
-    // true if the keyframe has changed since the last drawFrame
-    protected var _needsKeyframeUpdate :Boolean;
     // name of the layer
     protected var _name :String;
 }
