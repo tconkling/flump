@@ -5,6 +5,10 @@ package flump.mold {
 /** @private */
 public class KeyframeMold
 {
+    /**
+     * The index of the first frame in the keyframe.
+     * (Equivalent to prevKeyframe.index + prevKeyframe.duration)
+     */
     public var index :int;
 
     /** The length of this keyframe in frames. */
