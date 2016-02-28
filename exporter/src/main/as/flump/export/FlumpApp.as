@@ -7,7 +7,6 @@ import aspire.util.Arrays;
 import aspire.util.Log;
 
 import flash.desktop.NativeApplication;
-import flash.display.Loader;
 import flash.display.LoaderInfo;
 import flash.display.NativeMenuItem;
 import flash.events.Event;
