@@ -41,7 +41,7 @@ public class AutomaticExporter extends ExportController
         OUT.open(outFile, FileMode.WRITE);
 
         _confFile = project;
-        println("Exporting project: " + _confFile.nativePath);
+        println("Exporting project: '" + _confFile.nativePath + "'");
         println();
 
         if (readProjectConfig()) {
@@ -69,7 +69,7 @@ public class AutomaticExporter extends ExportController
             return;
         }
 
-        println("\nLoading complete...");
+        println("\nLoading complete.");
 
         if (_conf.exportDir == null) {
             exit("No export directory specified.");
@@ -97,26 +97,31 @@ public class AutomaticExporter extends ExportController
             if (hasCombined && hasSingle) break;
         }
         try {
+            var libs :Vector.<XflLibrary> = getLibs();
             // if we have one or more combined export format, publish them
             if (hasCombined) {
                 println("Exporting combined formats...");
-                var numPublished :int = publisher.publishCombined(getLibs());
+                var numPublished :int = publisher.publishCombined(libs);
                 if (numPublished == 0) {
-                    printErr("No suitable formats were found for combined publishing");
+                    printErr("No suitable formats were found for combined publishing.");
                 } else {
-                    println("" + numPublished + " combined formats published...");
+                    println("" + numPublished + " combined formats published.");
                 }
             }
 
             // now publish any appropriate single formats
             if (hasSingle) {
                 for each (var status :DocStatus in _statuses) {
-                    println("Exporting document " + status.path + "...");
-                    numPublished = publisher.publishSingle(status.lib);
-                    if (numPublished == 0) {
-                        printErr("No suitable formats were found for single publishing");
+                    if (publisher.modified(new <XflLibrary>[status.lib], 0)) {
+                        println("Exporting '" + status.path + "'...");
+                        numPublished = publisher.publishSingle(status.lib);
+                        if (numPublished == 0) {
+                            printErr("No suitable formats were found for single publishing.");
+                        } else {
+                            println("" + numPublished + " formats published.");
+                        }
                     } else {
-                        println("" + numPublished + " formats published...");
+                        println("Skipping unmodified '" + status.path + "'.")
                     }
                 }
             }
@@ -125,7 +130,7 @@ public class AutomaticExporter extends ExportController
             return;
         }
 
-        println("\nPublishing complete...");
+        println("\nPublishing complete!");
         exit();
     }
 
@@ -136,7 +141,7 @@ public class AutomaticExporter extends ExportController
 
     override protected function addDocStatus (status :DocStatus) :void {
         _statuses[_statuses.length] = status;
-        println("Loading document: " + status.path + "...");
+        println("Loading document: '" + status.path + "'...");
     }
 
     override protected function getDocStatuses () :Array {
@@ -145,7 +150,7 @@ public class AutomaticExporter extends ExportController
 
     override protected function docLoadSucceeded (doc :DocStatus, lib :XflLibrary) :void {
         super.docLoadSucceeded(doc, lib);
-        println("Load completed: " + doc.path + "...");
+        println("Load complete: '" + doc.path + "'.");
         checkValid();
     }
 

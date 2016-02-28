@@ -2,7 +2,7 @@
 
 print_help() {
     echo "$0 <path to .flump>";
-    echo "    Exports the given .flump project as if the \"Export All\" or \"Export Combined\"";
+    echo "    Exports the given .flump project as if the \"Export Modified\" or \"Export Combined\"";
     echo "    button were pressed in the UI";
 }
 
