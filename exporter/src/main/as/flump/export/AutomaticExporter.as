@@ -48,7 +48,7 @@ public class AutomaticExporter extends ExportController
             var exec :Executor = new Executor();
             exec.completed.connect(function () :void {
                 // if finding docs generates a crit error, we need to fail immediately
-                if (_handedCritError) exit();
+                if (_handledCritError) exit();
             });
             findFlashDocuments(_importDirectory, exec, true);
         }
@@ -69,7 +69,7 @@ public class AutomaticExporter extends ExportController
             return;
         }
 
-        println("\nLoading complete.");
+        println("Loading complete.\n");
 
         if (_conf.exportDir == null) {
             exit("No export directory specified.");
@@ -100,12 +100,16 @@ public class AutomaticExporter extends ExportController
             var libs :Vector.<XflLibrary> = getLibs();
             // if we have one or more combined export format, publish them
             if (hasCombined) {
-                println("Exporting combined formats...");
-                var numPublished :int = publisher.publishCombined(libs);
-                if (numPublished == 0) {
-                    printErr("No suitable formats were found for combined publishing.");
+                if (publisher.modified(libs)) {
+                    println("Exporting combined formats...");
+                    var numPublished :int = publisher.publishCombined(libs);
+                    if (numPublished == 0) {
+                        printErr("No suitable formats were found for combined publishing.");
+                    } else {
+                        println("" + numPublished + " combined formats published.");
+                    }
                 } else {
-                    println("" + numPublished + " combined formats published.");
+                    println("Skipping 'Export Combined' (files are unmodified).");
                 }
             }
 
@@ -130,12 +134,12 @@ public class AutomaticExporter extends ExportController
             return;
         }
 
-        println("\nPublishing complete!");
+        println("Publishing complete.\n");
         exit();
     }
 
     override protected function handleParseError (err :ParseError) :void {
-        if (err.severity == ParseError.CRIT) _handedCritError = true;
+        if (err.severity == ParseError.CRIT) _handledCritError = true;
         printErr(err);
     }
 
@@ -193,7 +197,7 @@ public class AutomaticExporter extends ExportController
 
     protected var OUT :FileStream;
 
-    protected var _handedCritError :Boolean = false;
+    protected var _handledCritError :Boolean = false;
     protected var _statuses :Array = [];
 }
 }
