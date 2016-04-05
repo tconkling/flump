@@ -100,4 +100,5 @@ A list of known Flump runtime implementations for different languages and framew
 * [Flump (Starling/AS3)](https://github.com/tconkling/flump) (the reference runtime, contained here)
 * [Flambe (Haxe)](https://github.com/aduros/flambe)
 * [pixi-flump-runtime (Haxe/PixiJs)](https://github.com/jackwlee01/pixi-flump-runtime)
+* [StageXL_Flump](https://github.com/bp74/StageXL_Flump) (Dart / HTML5 / WebGL / Canvas)
 * [Betwixt (Sparrow/Objective-C)](https://github.com/threerings/betwixt) (no longer maintained)
