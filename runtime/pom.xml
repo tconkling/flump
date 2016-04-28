@@ -4,7 +4,7 @@
   <groupId>com.threerings.flump</groupId>
   <artifactId>flump-runtime</artifactId>
   <packaging>swc</packaging>
-  <version>1.4.2-SNAPSHOT</version>
+  <version>1.4.2</version>
   <repositories>
     <repository>
       <id>tconkling</id>
