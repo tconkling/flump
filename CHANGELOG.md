@@ -1,6 +1,24 @@
 Flump: Changelog
 ================
 
+
+version 1.4.3 - 2016-06-07
+--------------------------
+Runtime:
+- Fixed: MoviePlayer better detects whether it should manage a Movie or not
+- Added: Library.getSymbolCreator()
+
+
+version 1.4.2 - 2016-04-28
+--------------------------
+Exporter:
+- Changed: command-line exporter doesn't publish "combined" formats if they haven't been modified
+
+Runtime:
+- Added: Movie.recursiveGoTo()
+- Changed: build against Starling 1.8
+
+
 version 1.4.1 - 2015-05-14
 --------------------------
 
