@@ -5,7 +5,6 @@ package flump.mold {
 
 import flump.display.Movie;
 
-/** @private */
 public class MovieMold
 {
     public var id :String;
@@ -25,7 +24,9 @@ public class MovieMold
         return frames;
     }
 
-    public function get flipbook () :Boolean { return (layers.length > 0 && layers[0].flipbook); }
+    public function get flipbook () :Boolean {
+        return (layers.length > 0 && layers[0].flipbook);
+    }
 
     public function fillLabels () :void {
         labels = new Vector.<Vector.<String>>(frames, true);

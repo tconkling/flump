@@ -2,6 +2,8 @@ package flump.display {
 
 import flash.utils.Dictionary;
 
+import flump.mold.MovieMold;
+
 import starling.display.DisplayObject;
 import starling.display.Image;
 import starling.textures.Texture;
@@ -16,6 +18,10 @@ internal class LibraryImpl implements Library {
 
     public function createMovie (symbol :String) :Movie {
         return Movie(createDisplayObject(symbol));
+    }
+
+    public function getSymbolCreator (symbol :String) :SymbolCreator {
+        return requireSymbolCreator(symbol);
     }
 
     public function createImage (symbol :String) :Image {
