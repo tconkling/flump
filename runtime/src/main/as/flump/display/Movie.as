@@ -64,11 +64,24 @@ public class Movie extends Sprite
         _duration = _numFrames / _frameRate;
         updateFrame(0, 0);
 
-        // When we're removed from the stage, remove ourselves from any juggler animating us.
-        addEventListener(Event.REMOVED_FROM_STAGE, function (..._) :void {
-            dispatchEventWith(Event.REMOVE_FROM_JUGGLER);
-        });
+        addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
     }
+
+    /** Called when our REMOVED_FROM_STAGE event is fired. */
+    protected function onRemovedFromStage (e :Event) :void {
+        // When we're removed from the stage, remove ourselves from any juggler animating us,
+        // and note that we're no longer managed by a parent Movie's layer
+        dispatchEventWith(Event.REMOVE_FROM_JUGGLER);
+        _isManagedByParentMovie = false;
+    }
+
+    /**
+     * @return true if we're being managed by another movie.
+     * This is only the case if this Movie was created by its parent and has never been removed
+     * from it. (A Movie that's added to another Movie after creation is *not* managed by its
+     * parent.)
+     */
+    public function get isManagedByParentMovie () :Boolean { return _isManagedByParentMovie; }
 
     /** @return the frame being displayed. */
     public function get frame () :int { return _frame; }
@@ -312,6 +325,10 @@ public class Movie extends Sprite
         _skipAdvanceTime = true;
     }
 
+    internal function setParentMovie (movie :Movie) :void {
+        _isManagedByParentMovie = true;
+    }
+
     /** @private */
     protected function extractFrame (position :Object) :int {
         if (position is int) {
@@ -416,30 +433,19 @@ public class Movie extends Sprite
         return new Layer(movie, src, library, flipbook);
     }
 
-    /** @private */
     protected var _isUpdatingFrame :Boolean;
-    /** @private */
     protected var _pendingGoToFrame :int = NO_FRAME;
-    /** @private */
     protected var _frame :int = NO_FRAME, _stopFrame :int = NO_FRAME;
-    /** @private */
     protected var _state :String = PLAYING;
-    /** @private */
     protected var _playTime :Number = 0;
-    /** @private */
     protected var _duration :Number;
-    /** @private */
     protected var _layers :Vector.<Layer>;
-    /** @private */
     protected var _numFrames :int;
-    /** @private */
     protected var _frameRate :Number;
-    /** @private */
     protected var _labels :Vector.<Vector.<String>>;
-    /** @private */
     private var _skipAdvanceTime :Boolean = false;
-    /** @private */
     internal var _playerData :MoviePlayerNode;
+    private var _isManagedByParentMovie :Boolean;
 
     private static const HELPER_POINT :Point = new Point();
     private static const IDENTITY_MATRIX :Matrix = new Matrix();

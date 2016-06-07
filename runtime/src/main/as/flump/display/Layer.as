@@ -48,6 +48,10 @@ internal class Layer
                     display = new Sprite();
                 } else {
                     display = library.createDisplayObject(kf.ref);
+                    var childMovie :Movie = (display as Movie);
+                    if (childMovie != null) {
+                        childMovie.setParentMovie(_movie);
+                    }
                 }
                 _displays[ii] = display;
                 display.visible = false;
