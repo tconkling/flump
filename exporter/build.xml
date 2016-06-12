@@ -6,7 +6,7 @@
   <property name="keystore" location="etc/${ant.project.name}.pfx"/>
   <property name="PASSWORD" value="pass"/>
   <property name="tsa" value="https://timestamp.geotrust.com/tsa"/>
-  <property name="swf.version" value="20"/>
+  <property name="swf.version" value="30"/>
 
   <property name="ooo-build.vers" value="2.5"/>
   <ant antfile="../etc/bootstrap.xml"/>
