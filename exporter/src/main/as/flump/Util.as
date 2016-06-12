@@ -83,7 +83,6 @@ public class Util
         originIcon.addChild(fillRect(7, 3, 0xffffff));
         originIcon.addChild(fillRect(1, 9, 0x000000));
         originIcon.addChild(fillRect(9, 1, 0x000000));
-        originIcon.flatten();
         return originIcon;
     }
 

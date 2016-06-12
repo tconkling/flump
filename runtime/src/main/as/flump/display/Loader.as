@@ -115,10 +115,8 @@ internal class Loader {
         ByteArray(bytes).position = 0; // reset the read head
         var scale :Number = atlas.scaleFactor;
         if (_lib.textureFormat == "atf") {
+            // we do not dipose of the ByteArray so that Starling will handle a context loss.
             baseTextureLoaded(Texture.fromAtfData(bytes, scale, _libLoader.generateMipMaps), atlas);
-            if (!Starling.handleLostContext) {
-                ByteArray(bytes).clear();
-            }
         } else {
             const atlasFuture :Future = loader.loadFromBytes(bytes, _pngLoaders);
             atlasFuture.failed.connect(onPngLoadingFailed);
@@ -129,9 +127,8 @@ internal class Loader {
                     _libLoader.generateMipMaps,
                     false,  // optimizeForRenderToTexture
                     scale), atlas);
-                if (!Starling.handleLostContext) {
-                    img.bitmapData.dispose();
-                }
+                // We dispose of the ByteArray, but not the BitmapData,
+                // so that Starling will handle a context loss.
                 ByteArray(bytes).clear();
             });
 

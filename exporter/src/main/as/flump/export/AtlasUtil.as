@@ -3,14 +3,13 @@
 
 package flump.export {
 
+import com.adobe.images.PNGEncoder;
+
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.utils.IDataOutput;
 
-import com.adobe.images.PNGEncoder;
-
-import starling.core.Starling;
 import starling.textures.Texture;
 
 public class AtlasUtil
@@ -22,9 +21,8 @@ public class AtlasUtil
     public static function toTexture (atlas :Atlas) :Texture {
         var bmd :BitmapData = atlas.toBitmap();
         var tex :Texture = Texture.fromBitmapData(bmd);
-        if (!Starling.handleLostContext) {
-            bmd.dispose();
-        }
+        // we do not dispose the BitmapData, so that Starling will restore it on
+        // context loss
         return tex;
     }
 
