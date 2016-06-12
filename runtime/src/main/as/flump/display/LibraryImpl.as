@@ -2,8 +2,6 @@ package flump.display {
 
 import flash.utils.Dictionary;
 
-import flump.mold.MovieMold;
-
 import starling.display.DisplayObject;
 import starling.display.Image;
 import starling.textures.Texture;
