@@ -1,6 +1,11 @@
 Flump: Changelog
 ================
 
+version 1.5.0 - 2016-06-12
+--------------------------
+Runtime:
+- Changed: build against Starling 2.0.1
+
 
 version 1.4.3 - 2016-06-07
 --------------------------
