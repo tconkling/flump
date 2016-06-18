@@ -4,11 +4,10 @@ import flash.geom.Point;
 
 import flump.SwfTexture;
 import flump.Util;
-import flump.Util;
 import flump.export.Atlas;
 
-public class MultiPackerBase {
-
+public class MultiPackerBase
+{
     public static const MIN_SIZE : uint = 128;
 
     public function pack(textures :Vector.<SwfTexture>,
@@ -17,11 +16,12 @@ public class MultiPackerBase {
                          scaleFactor :int,
                          quality :String,
                          filenamePrefix :String) : Vector.<Atlas> {
+
         throw new Error("Abstract function")
     }
 
     // Estimate the optimal size for the next atlas
-    protected function calculateMinimumSize(textures :Vector.<SwfTexture>, borderSize :uint, maxAtlasSize :uint) :Point {
+    protected static function calculateMinimumSize (textures :Vector.<SwfTexture>, borderSize :uint, maxAtlasSize :uint) :Point {
         var area :int = 0;
         var maxW :int = MIN_SIZE;
         var maxH :int = MIN_SIZE;
@@ -47,6 +47,5 @@ public class MultiPackerBase {
 
         return size;
     }
-
 }
 }
