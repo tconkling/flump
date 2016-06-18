@@ -2,18 +2,17 @@
 // Flump - Copyright 2013 Flump Authors
 
 package flump.export.texturepacker {
-import flash.utils.getTimer;
-
-import flump.export.*;
 
 import aspire.util.Comparators;
 
 import flash.display.StageQuality;
 
 import flump.SwfTexture;
+import flump.Util;
+import flump.export.Atlas;
+import flump.export.AtlasImpl;
 import flump.mold.KeyframeMold;
 import flump.mold.MovieMold;
-
 import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;
 
@@ -44,39 +43,62 @@ public class TexturePacker
     public function filenamePrefix (val :String) :TexturePacker { _filenamePrefix = val; return this; }
 
     public function createAtlases () :Vector.<Atlas> {
-        const _unpacked :Vector.<SwfTexture> = new <SwfTexture>[];
+        const unpackedTextures :Vector.<SwfTexture> = new <SwfTexture>[];
         var scale :Number = _baseScale * _scaleFactor;
         var useNamespaces :Boolean = _libs.length > 1;
         for each (var lib :XflLibrary in _libs) {
             for each (var tex :XflTexture in lib.textures) {
-                _unpacked.push(SwfTexture.fromTexture(lib, tex, _quality, scale, useNamespaces));
+                unpackedTextures.push(SwfTexture.fromTexture(lib, tex, _quality, scale, useNamespaces));
             }
             for each (var movie :MovieMold in lib.movies) {
                 if (!movie.flipbook) continue;
                 for each (var kf :KeyframeMold in movie.layers[0].keyframes) {
-                    _unpacked.push(SwfTexture.fromFlipbook(lib, movie, kf.index, _quality, scale,
+                    unpackedTextures.push(SwfTexture.fromFlipbook(lib, movie, kf.index, _quality, scale,
                             useNamespaces));
                 }
             }
         }
 
-        _unpacked.sort(Comparators.createReverse(Comparators.createFields(["a", "w", "h"])));
+        var w :int;
+        var h :int;
 
-        for each (var unpacked : SwfTexture in _unpacked) {
-            var w :int = unpacked.w + (_borderSize * 2);
-            var h :int = unpacked.h + (_borderSize * 2);
+        // Special-case if we have just a single texture.
+        // If the texture will fit exactly in an atlas, width- or height-wise, we don't pad it
+        if (unpackedTextures.length == 1) {
+            var singleTex :SwfTexture = unpackedTextures[0];
+            w = Util.nextPowerOfTwo(singleTex.w);
+            h = Util.nextPowerOfTwo(singleTex.h);
+            if (w <= _maxAtlasSize && h <= _maxAtlasSize) {
+                var xPad :int = (w == singleTex.w ? 0 : _borderSize);
+                var yPad :int = (h == singleTex.h ? 0 : _borderSize);
+
+                var singleAtlas :AtlasImpl = new AtlasImpl(
+                    _filenamePrefix + "atlas0",
+                    w, h,
+                    xPad, yPad,
+                    _scaleFactor,
+                    _quality);
+                singleAtlas.place(singleTex, 0, 0);
+                return new <Atlas>[singleAtlas];
+            }
+        }
+
+        for each (var unpacked : SwfTexture in unpackedTextures) {
+            w = unpacked.w + (_borderSize * 2);
+            h = unpacked.h + (_borderSize * 2);
             if (w > _maxAtlasSize || h > _maxAtlasSize) {
                 throw new Error("Too large to fit in an atlas: '" + unpacked.symbol + "' (" +
                                  w + "x" + h + ")");
             }
         }
-        var atlases : Vector.<Atlas>;
-        if (_optimizeForSpeed) {
-            atlases = new MaxRectMultiPacker().pack(_unpacked, _maxAtlasSize, _borderSize, _scaleFactor, _quality, _filenamePrefix);
-        } else {
-            atlases = new SpaceSavingMultiPacker().pack(_unpacked, _maxAtlasSize, _borderSize, _scaleFactor, _quality, _filenamePrefix);
-        }
-        return atlases;
+
+        unpackedTextures.sort(Comparators.createReverse(Comparators.createFields(["a", "w", "h"])));
+
+        var packer :MultiPackerBase = (_optimizeForSpeed ?
+            new MaxRectMultiPacker() :
+            new SpaceSavingMultiPacker());
+
+        return packer.pack(unpackedTextures, _maxAtlasSize, _borderSize, _scaleFactor, _quality, _filenamePrefix);
     }
 
     protected var _libs :Vector.<XflLibrary>;

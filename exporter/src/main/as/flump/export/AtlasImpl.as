@@ -16,11 +16,12 @@ public class AtlasImpl implements Atlas
 {
     public var name :String;
 
-    public function AtlasImpl (name :String, w :int, h :int, borderSize :int, scaleFactor :int, quality :String) {
+    public function AtlasImpl (name :String, w :int, h :int, xBorderSize :int, yBorderSize :int, scaleFactor :int, quality :String) {
         this.name = name;
         _width = w;
         _height = h;
-        _borderSize = borderSize;
+        _xBorderSize = xBorderSize;
+        _yBorderSize = yBorderSize;
         _mask = new BitmapData(_width, _height, true, 0);
         _mask.lock();
         _scaleFactor = scaleFactor;
@@ -62,7 +63,7 @@ public class AtlasImpl implements Atlas
             var constructed :Sprite = new Sprite();
             var collapsedBounds :Rectangle = new Rectangle();
             _nodes.forEach(function (node :Node, ..._) :void {
-                const bm :Bitmap = new Bitmap(node.texture.toBitmapData(_borderSize), "auto", true);
+                const bm :Bitmap = new Bitmap(node.texture.toBitmapData(_xBorderSize, _yBorderSize), "auto", true);
                 constructed.addChild(bm);
                 bm.x = node.paddedBounds.x;
                 bm.y = node.paddedBounds.y;
@@ -78,15 +79,15 @@ public class AtlasImpl implements Atlas
 
     // Try to place a texture in this atlas
     public function place (tex :SwfTexture, xx :uint, yy :uint) :void {
-        var w :int = tex.w + (_borderSize * 2);
-        var h :int = tex.h + (_borderSize * 2);
+        var w :int = tex.w + (_xBorderSize * 2);
+        var h :int = tex.h + (_yBorderSize * 2);
         if (w > _width || h > _height) {
             throw new Error("Tried to place a texture outside of the atlas. This is a bug.");
         }
         if (isMasked(xx, yy, w, h)) {
             throw new Error("Tried to place a texture over another texture. This is a bug.");
         }
-        var node :Node = new Node(xx, yy, _borderSize, tex);
+        var node :Node = new Node(xx, yy, _xBorderSize, _yBorderSize, tex);
         _nodes.push(node);
         setMasked(node.paddedBounds.x, node.paddedBounds.y, node.paddedBounds.width, node.paddedBounds.height);
     }
@@ -107,7 +108,8 @@ public class AtlasImpl implements Atlas
     protected var _nodes :Array = [];
     protected var _width :int;
     protected var _height :int;
-    protected var _borderSize :int;
+    protected var _xBorderSize :int;
+    protected var _yBorderSize :int;
     protected var _mask :BitmapData;
     protected var _bitmapData :BitmapData;
     protected var _scaleFactor :int;
@@ -125,12 +127,12 @@ class Node
     public var paddedBounds :Rectangle;
     public var texture :SwfTexture;
 
-    public function Node (x :int, y :int, borderSize :int, texture :SwfTexture) {
+    public function Node (x :int, y :int, xBorderSize :int, yBorderSize :int, texture :SwfTexture) {
         this.texture = texture;
-        this.bounds = new Rectangle(x + borderSize, y + borderSize, texture.w, texture.h);
+        this.bounds = new Rectangle(x + xBorderSize, y + yBorderSize, texture.w, texture.h);
         this.paddedBounds = new Rectangle(x, y,
-                texture.w + (borderSize * 2),
-                texture.h + (borderSize * 2));
+                texture.w + (xBorderSize * 2),
+                texture.h + (yBorderSize * 2));
     }
 }
 

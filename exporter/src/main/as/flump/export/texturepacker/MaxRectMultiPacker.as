@@ -37,7 +37,7 @@ public class MaxRectMultiPacker extends MultiPackerBase
         var atlas : AtlasImpl = new AtlasImpl(
                 _filenamePrefix + "atlas" + _atlases.length,
                 atlasSize.x, atlasSize.y,
-                _borderSize,
+                _borderSize, _borderSize,
                 _scaleFactor,
                 _quality);
 
