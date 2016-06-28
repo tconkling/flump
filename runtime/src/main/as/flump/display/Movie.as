@@ -400,7 +400,7 @@ public class Movie extends Sprite
 
             if (_labels[frameIdx] != null) {
                 for each (var label :String in _labels[frameIdx]) {
-                    labelPassed.emit(label);
+                    this.labelPassed.emit(label);
                     if (_pendingGoToFrame != NO_FRAME) {
                         break;
                     }
