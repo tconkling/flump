@@ -20,7 +20,6 @@ internal class Layer
 {
     public function Layer (movie :Movie, src :LayerMold, library :Library, flipbook :Boolean) {
         _keyframes = src.keyframes;
-        _movie = movie;
         _name = src.name;
 
         const lastKf :KeyframeMold = _keyframes[_keyframes.length - 1];
@@ -33,7 +32,7 @@ internal class Layer
         if (!flipbook && lastItem == null) {
             // The layer is empty.
             _currentDisplay = new Sprite();
-            _movie.addChild(_currentDisplay);
+            movie.addChild(_currentDisplay);
         } else {
             // Create the display objects for each keyframe.
             // If multiple consecutive keyframes refer to the same library item,
@@ -50,12 +49,12 @@ internal class Layer
                     display = library.createDisplayObject(kf.ref);
                     var childMovie :Movie = (display as Movie);
                     if (childMovie != null) {
-                        childMovie.setParentMovie(_movie);
+                        childMovie.setParentMovie(movie);
                     }
                 }
                 _displays[ii] = display;
                 display.visible = false;
-                _movie.addChild(display);
+                movie.addChild(display);
             }
             _currentDisplay = _displays[0];
             _currentDisplay.visible = true;
@@ -169,7 +168,6 @@ internal class Layer
     protected var _displays :Vector.<DisplayObject>;
     // The current DisplayObject being rendered for this layer
     internal var _currentDisplay :DisplayObject;
-    protected var _movie :Movie; // The movie this layer belongs to
     // The index of the last keyframe drawn in drawFrame.
     protected var _keyframeIdx :int;
     // name of the layer
