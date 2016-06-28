@@ -51,11 +51,11 @@ public class Movie extends Sprite
         _labels = src.labels;
         _frameRate = frameRate;
         if (src.flipbook) {
-            _layers = new Vector.<Layer>(1, true);
+            _layers = new Vector.<Layer>(1);
             _layers[0] = createLayer(this, src.layers[0], library, /*flipbook=*/true);
             _numFrames = src.layers[0].frames;
         } else {
-            _layers = new Vector.<Layer>(src.layers.length, true);
+            _layers = new Vector.<Layer>(src.layers.length);
             for (var ii :int = 0; ii < _layers.length; ii++) {
                 _layers[ii] = createLayer(this, src.layers[ii], library, /*flipbook=*/false);
                 _numFrames = Math.max(src.layers[ii].frames, _numFrames);
@@ -148,6 +148,55 @@ public class Movie extends Sprite
     public function recursiveGoTo (position :Object) :Movie {
         const frame :int = extractFrame(position);
         return goToInternal(frame, true);
+    }
+
+    /**
+     * Removes a layer from the Movie.
+     *
+     * @param name the name of the layer to remove. If there are multiple layers with the given
+     * name, only the first (the "lowest") will be removed.
+     *
+     * @return true if a layer was removed; or false if no layer with that name exists.
+     *
+     * @throws Error if the Movie is being updated.
+     */
+    public function removeLayer (name :String) :Boolean {
+        if (_isUpdatingFrame) {
+            throw new Error("Can't remove a layer while the Movie is being updated.");
+        }
+
+        for (var ii :int = 0; ii < _layers.length; ++ii) {
+            var layer :Layer = _layers[ii];
+            if (layer.name == name) {
+                _layers.removeAt(ii);
+                layer.removeFromParent();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns the names of this Movie's layers.
+     *
+     * @param out (optional) an existing Array to use.
+     * If this is omitted, a new Array will be created.
+     *
+     * @return an Array containing the Movie's layer names
+     */
+    public function getLayerNames (out :Array = null) :Array {
+        if (out == null) {
+            out = [];
+        } else {
+            out.length = 0;
+        }
+
+        for each (var layer :Layer in _layers) {
+            out[out.length] = layer.name;
+        }
+
+        return out;
     }
 
     /**

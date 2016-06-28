@@ -63,6 +63,23 @@ internal class Layer
         _currentDisplay.name = _name;
     }
 
+    /**
+     * Removes the Layer from its parent Movie.
+     * It's an error to use the Layer after it's been removed.
+     */
+    public function removeFromParent () :void {
+        for each (var disp :DisplayObject in _displays) {
+            disp.removeFromParent(true);
+        }
+        _displays = null;
+        _currentDisplay = null;
+    }
+
+    /** This Layer's name */
+    public function get name () :String {
+        return _name;
+    }
+
     public function drawFrame (frame :int) :void {
         if (_displays == null) {
             // We have nothing to display.
@@ -162,6 +179,7 @@ internal class Layer
         return resultRect;
     }
 
+    protected var _name :String;
     protected var _keyframes :Vector.<KeyframeMold>;
     protected var _numFrames :int;
     // Stores this layer's DisplayObjects indexed by keyframe.
@@ -170,7 +188,5 @@ internal class Layer
     internal var _currentDisplay :DisplayObject;
     // The index of the last keyframe drawn in drawFrame.
     protected var _keyframeIdx :int;
-    // name of the layer
-    protected var _name :String;
 }
 }
