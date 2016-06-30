@@ -103,3 +103,4 @@ A list of known Flump runtime implementations for different languages and framew
 * [StageXL_Flump](https://github.com/bp74/StageXL_Flump) (Dart / HTML5 / WebGL / Canvas)
 * [Betwixt (Sparrow/Objective-C)](https://github.com/threerings/betwixt) (no longer maintained)
 * [pixi-flump](https://github.com/mientjan/pixi-flump) (Javascript/PixiJs)
+* [Lump (LÖVE2D)](https://github.com/sixFingers/lump) (Lua)
