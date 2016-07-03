@@ -81,7 +81,7 @@ internal class Layer
     }
 
     public function drawFrame (frame :int) :void {
-        if (_displays == null) {
+        if (_displays == null || _disabled) {
             // We have nothing to display.
             return;
 
@@ -184,9 +184,12 @@ internal class Layer
     protected var _numFrames :int;
     // Stores this layer's DisplayObjects indexed by keyframe.
     protected var _displays :Vector.<DisplayObject>;
-    // The current DisplayObject being rendered for this layer
-    internal var _currentDisplay :DisplayObject;
     // The index of the last keyframe drawn in drawFrame.
     protected var _keyframeIdx :int;
+
+    // The current DisplayObject being rendered for this layer
+    internal var _currentDisplay :DisplayObject;
+    // If true, the Layer is not being updated by its parent movie. (Managed by Movie)
+    internal var _disabled :Boolean;
 }
 }

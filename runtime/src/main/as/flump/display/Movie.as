@@ -151,6 +151,47 @@ public class Movie extends Sprite
     }
 
     /**
+     * Enables or disables a layer in the Movie.
+     *
+     * While a layer is disabled, it will not be updated by the Movie. It will still be drawn
+     * in its current state, however; this function returns the DisplayObject attached to
+     * the given layer, so that it can be hidden (for example) after its layer is disabled.
+     *
+     * @param name the name of the layer to enable/disable. If there are multiple layers with the
+     * given name, only the first (the "lowest") will be modified.
+     *
+     * @param enabled whether to enable the layer.
+     *
+     * @return the DisplayObject attached to the layer (or null if no layer with that name exists).
+     */
+    public function setLayerEnabled (name :String, enabled :Boolean) :DisplayObject {
+        for each (var layer :Layer in _layers) {
+            if (layer.name == name) {
+                layer._disabled = !enabled;
+                return layer._currentDisplay;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the value of a layer's 'enabled' flag.
+     *
+     * @param name the name of the layer to query.
+     *
+     * @return True if the layer is enabled; false if it's disabled or if no such layer exists.
+     */
+    public function isLayerEnabled (name :String) :Boolean {
+        for each (var layer :Layer in _layers) {
+            if (layer.name == name) {
+                return !layer._disabled;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Removes a layer from the Movie.
      *
      * @param name the name of the layer to remove. If there are multiple layers with the given
