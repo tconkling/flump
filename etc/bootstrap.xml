@@ -23,7 +23,7 @@
   <condition property="ooo-build.exists"><available file="${ooo-build.local.file}"/></condition>
   <target name="-download-ooo-build" unless="ooo-build.exists">
     <mkdir dir="${ooo-build.local.dir}"/>
-    <get src="http://ooo-maven.googlecode.com/hg/repository/${ooo-build.path}/${ooo-build.jar}"
+    <get src="https://raw.githubusercontent.com/tconkling/ooo-maven/master/repository/${ooo-build.path}/${ooo-build.jar}"
       dest="${ooo-build.local.file}" usetimestamp="true"/>
   </target>
 
