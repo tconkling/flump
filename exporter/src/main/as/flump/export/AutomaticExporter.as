@@ -100,7 +100,9 @@ public class AutomaticExporter extends ExportController
             var libs :Vector.<XflLibrary> = getLibs();
             // if we have one or more combined export format, publish them
             if (hasCombined) {
-                if (publisher.modified(libs)) {
+                // TODO: publisher.modified checks for SWF modifications, but ignores
+                // FLA modifications, which leads to false negatives.
+                if (true || publisher.modified(libs)) {
                     println("Exporting combined formats...");
                     var numPublished :int = publisher.publishCombined(libs);
                     if (numPublished == 0) {
@@ -116,7 +118,7 @@ public class AutomaticExporter extends ExportController
             // now publish any appropriate single formats
             if (hasSingle) {
                 for each (var status :DocStatus in _statuses) {
-                    if (publisher.modified(new <XflLibrary>[status.lib], 0)) {
+                    if (true || publisher.modified(new <XflLibrary>[status.lib], 0)) {
                         println("Exporting '" + status.path + "'...");
                         numPublished = publisher.publishSingle(status.lib);
                         if (numPublished == 0) {
