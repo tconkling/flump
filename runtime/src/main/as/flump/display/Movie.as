@@ -392,7 +392,13 @@ public class Movie extends Sprite
 
         // get bounds from layer contents
         for each (var layer :Layer in _layers) {
-            layer.expandBounds(targetSpace, resultRect);
+            // Ensure that the layer has been fiddled with. If someone has reparented
+            // the layer's currentDisplay, we can't get its bounds without running
+            // the risk of an exception being thrown.
+            // TODO: emit a warning in this circumstance?
+            if (layer._currentDisplay.parent == this) {
+                layer.expandBounds(targetSpace, resultRect);
+            }
         }
 
         // if no contents exist, simply include this movie's position in the bounds
