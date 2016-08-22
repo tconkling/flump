@@ -49,4 +49,9 @@
     description="Deploys build artifacts to a Maven repository.">
     <mavendeploy file="${deploy.dir}/${ant.project.name}.swc" pom="pom.xml" srcdir="${asrc.dir}"/>
   </target>
+
+  <target name="maven-install" depends="swc"
+    description="Installs the build artifact to the local Maven repository">
+    <maveninstall file="${deploy.dir}/${ant.project.name}.swc" pom="pom.xml"/>
+  </target>
 </project>
