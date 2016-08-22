@@ -19,6 +19,7 @@ import starling.display.Sprite;
 internal class Layer
 {
     public function Layer (movie :Movie, src :LayerMold, library :Library, flipbook :Boolean) {
+        _movie = movie;
         _keyframes = src.keyframes;
         _name = src.name;
 
@@ -29,10 +30,13 @@ internal class Layer
         for (var ii :int = 0; ii < _keyframes.length && lastItem == null; ii++) {
             lastItem = _keyframes[ii].ref;
         }
+
         if (!flipbook && lastItem == null) {
             // The layer is empty.
             _currentDisplay = new Sprite();
             movie.addChild(_currentDisplay);
+            _numDisplays = 1;
+
         } else {
             // Create the display objects for each keyframe.
             // If multiple consecutive keyframes refer to the same library item,
@@ -42,20 +46,27 @@ internal class Layer
                 var kf :KeyframeMold = _keyframes[ii];
                 var display :DisplayObject = null;
                 if (ii > 0 && _keyframes[ii - 1].ref == kf.ref) {
+                    // Reuse previous frame's DisplayObject
                     display = _displays[ii - 1];
-                } else if (kf.ref == null) {
-                    display = new Sprite();
                 } else {
-                    display = library.createDisplayObject(kf.ref);
-                    var childMovie :Movie = (display as Movie);
-                    if (childMovie != null) {
-                        childMovie.setParentMovie(movie);
+                    // Create a new DisplayObject
+                    _numDisplays++;
+                    if (kf.ref == null) {
+                        display = new Sprite();
+                    } else {
+                        display = library.createDisplayObject(kf.ref);
+                        var childMovie :Movie = (display as Movie);
+                        if (childMovie != null) {
+                            childMovie.setParentMovie(movie);
+                        }
                     }
                 }
+
                 _displays[ii] = display;
                 display.visible = false;
                 movie.addChild(display);
             }
+
             _currentDisplay = _displays[0];
             _currentDisplay.visible = true;
         }
@@ -63,16 +74,19 @@ internal class Layer
         _currentDisplay.name = _name;
     }
 
-    /**
-     * Removes the Layer from its parent Movie.
-     * It's an error to use the Layer after it's been removed.
-     */
-    public function removeFromParent () :void {
-        for each (var disp :DisplayObject in _displays) {
-            disp.removeFromParent(true);
+    public function get numDisplays () :int {
+        return _numDisplays;
+    }
+
+    /** See Movie.removeChildAt */
+    public function replaceCurrentDisplay (disp :DisplayObject) :void {
+        _currentDisplay = disp;
+        for (var ii :int = 0; ii < _displays.length; ++ii) {
+            if (_displays[ii] == _currentDisplay) {
+                _displays[ii] = disp;
+            }
         }
-        _displays = null;
-        _currentDisplay = null;
+        _currentDisplay = disp;
     }
 
     /** This Layer's name */
@@ -179,6 +193,7 @@ internal class Layer
         return resultRect;
     }
 
+    protected var _movie :Movie; // our parent Movie
     protected var _name :String;
     protected var _keyframes :Vector.<KeyframeMold>;
     protected var _numFrames :int;
@@ -191,5 +206,7 @@ internal class Layer
     internal var _currentDisplay :DisplayObject;
     // If true, the Layer is not being updated by its parent movie. (Managed by Movie)
     internal var _disabled :Boolean;
+    // The number of DisplayObjects we're managing
+    protected var _numDisplays :int;
 }
 }

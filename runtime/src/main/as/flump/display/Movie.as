@@ -192,30 +192,62 @@ public class Movie extends Sprite
     }
 
     /**
-     * Removes a layer from the Movie.
-     *
-     * @param name the name of the layer to remove. If there are multiple layers with the given
-     * name, only the first (the "lowest") will be removed.
-     *
-     * @return true if a layer was removed; or false if no layer with that name exists.
-     *
-     * @throws Error if the Movie is being updated.
+     * Removes the child at the given index.
+     * If that child is on a Layer we manage, and the Layer contains no other DisplayObjects,
+     * the entire Layer will be removed from the Movie.
      */
-    public function removeLayer (name :String) :Boolean {
+    override public function removeChildAt (index :int, dispose :Boolean = false) :DisplayObject {
         if (_isUpdatingFrame) {
             throw new Error("Can't remove a layer while the Movie is being updated.");
         }
 
-        for (var ii :int = 0; ii < _layers.length; ++ii) {
-            var layer :Layer = _layers[ii];
-            if (layer.name == name) {
-                _layers.removeAt(ii);
-                layer.removeFromParent();
-                return true;
+        if (index < 0) {
+            index = this.numChildren - index;
+        }
+
+        var child :DisplayObject = super.getChildAt(index);
+
+        // Discover if our child is on a managed Layer
+        var childLayerIdx :int = -1;
+        if (index < _layers.length && _layers[index]._currentDisplay == child) {
+            // Common case
+            childLayerIdx = index;
+        } else {
+            for (var ii :int = 0; ii < _layers.length; ++ii) {
+                if (_layers[ii]._currentDisplay == child) {
+                    childLayerIdx = ii;
+                    break;
+                }
             }
         }
 
-        return false;
+        var addReplacementDisplayObject :Boolean;
+        if (childLayerIdx >= 0) {
+            // Child is no longer managed by this Movie
+            var childMovie :Movie = (child as Movie);
+            if (childMovie != null) {
+                childMovie.setParentMovie(null);
+            }
+
+            if (_layers[childLayerIdx].numDisplays == 1) {
+                // We're removing the only DisplayObject on the layer, which means we can
+                // remove the entire layer.
+                _layers.removeAt(childLayerIdx);
+            } else {
+                // The Layer has other DisplayObjects; we need to swap in a replacement
+                addReplacementDisplayObject = true;
+            }
+        }
+
+        super.removeChildAt(index, dispose);
+
+        if (addReplacementDisplayObject) {
+            var replacement :DisplayObject = new Sprite();
+            addChildAt(replacement, index);
+            _layers[childLayerIdx].replaceCurrentDisplay(replacement);
+        }
+
+        return child;
     }
 
     /**
