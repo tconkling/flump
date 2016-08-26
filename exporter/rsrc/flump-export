@@ -6,7 +6,7 @@ print_help() {
     echo "    button were pressed in the UI";
 }
 
-if [[ $# -ne 1 ]]; then
+if [[ $# -lt 1 ]]; then
     print_help
     exit 0
 fi
@@ -35,7 +35,11 @@ echo -n "" > exporter.log
 tail -F exporter.log &
 TAIL_PID=$!
 
-$FLUMP_HOME/Contents/MacOS/Flump --export $project
+# eat the $1 relative filename argument
+shift
+
+# execute flump, passing any remaining arguments to it
+$FLUMP_HOME/Contents/MacOS/Flump --export $project "$@"
 
 # give it a second to make sure we caught all the output
 sleep 1

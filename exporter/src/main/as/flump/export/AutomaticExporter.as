@@ -24,7 +24,18 @@ import react.BoolView;
  */
 public class AutomaticExporter extends ExportController
 {
-    public function AutomaticExporter (project :File) {
+    /**
+     * Constructs a new AutomaticExporter
+     *
+     * @param project the project to export
+     *
+     * @param exportUnmodified if false, files that are unmodified (their SWFs MD5 hashes
+     * haven't changed since the previous export) will be skipped. If true, all files
+     * in the project will be exported regardless of whether they've been modified.
+     */
+    public function AutomaticExporter (project :File, exportUnmodified :Boolean) {
+        _exportIfUnmodified = exportUnmodified;
+
         _complete.connect(function (complete :Boolean) :void {
             if (!complete) return;
             if (OUT != null) {
@@ -41,7 +52,8 @@ public class AutomaticExporter extends ExportController
         OUT.open(outFile, FileMode.WRITE);
 
         _confFile = project;
-        println("Exporting project: '" + _confFile.nativePath + "'");
+        println("Exporting project: '" + _confFile.nativePath + "'" +
+            (_exportIfUnmodified ? " (exportUnmodified=true)" : ""));
         println();
 
         if (readProjectConfig()) {
@@ -100,7 +112,7 @@ public class AutomaticExporter extends ExportController
             var libs :Vector.<XflLibrary> = getLibs();
             // if we have one or more combined export format, publish them
             if (hasCombined) {
-                if (publisher.modified(libs)) {
+                if (_exportIfUnmodified || publisher.modified(libs)) {
                     println("Exporting combined formats...");
                     var numPublished :int = publisher.publishCombined(libs);
                     if (numPublished == 0) {
@@ -116,7 +128,7 @@ public class AutomaticExporter extends ExportController
             // now publish any appropriate single formats
             if (hasSingle) {
                 for each (var status :DocStatus in _statuses) {
-                    if (publisher.modified(new <XflLibrary>[status.lib], 0)) {
+                    if (_exportIfUnmodified || publisher.modified(new <XflLibrary>[status.lib], 0)) {
                         println("Exporting '" + status.path + "'...");
                         numPublished = publisher.publishSingle(status.lib);
                         if (numPublished == 0) {
@@ -194,6 +206,7 @@ public class AutomaticExporter extends ExportController
     }
 
     protected const _complete :BoolValue = new BoolValue(false);
+    protected var _exportIfUnmodified :Boolean;
 
     protected var OUT :FileStream;
 
