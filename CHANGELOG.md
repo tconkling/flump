@@ -1,6 +1,18 @@
 Flump: Changelog
 ================
 
+version 1.5.1 - 2016-09-30
+--------------------------
+Exporter:
+- Fixed: Don't pad single textures that fit exactly in an atlas
+- Added: AutomaticExporter: '--unmodified' flag to force exporting regardless of 'modified' status
+
+Runtime:
+- Added: Movie.setLayerEnabled()
+- Fixed: proper handling of Movie.removeChild()
+- Changed: Build against Starling 2.1
+
+
 version 1.5.0 - 2016-06-12
 --------------------------
 Runtime:
