@@ -51,11 +51,11 @@ public class Movie extends Sprite
         _labels = src.labels;
         _frameRate = frameRate;
         if (src.flipbook) {
-            _layers = new Vector.<Layer>(1, true);
+            _layers = new Vector.<Layer>(1);
             _layers[0] = createLayer(this, src.layers[0], library, /*flipbook=*/true);
             _numFrames = src.layers[0].frames;
         } else {
-            _layers = new Vector.<Layer>(src.layers.length, true);
+            _layers = new Vector.<Layer>(src.layers.length);
             for (var ii :int = 0; ii < _layers.length; ii++) {
                 _layers[ii] = createLayer(this, src.layers[ii], library, /*flipbook=*/false);
                 _numFrames = Math.max(src.layers[ii].frames, _numFrames);
@@ -64,11 +64,24 @@ public class Movie extends Sprite
         _duration = _numFrames / _frameRate;
         updateFrame(0, 0);
 
-        // When we're removed from the stage, remove ourselves from any juggler animating us.
-        addEventListener(Event.REMOVED_FROM_STAGE, function (..._) :void {
-            dispatchEventWith(Event.REMOVE_FROM_JUGGLER);
-        });
+        addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
     }
+
+    /** Called when our REMOVED_FROM_STAGE event is fired. */
+    protected function onRemovedFromStage (e :Event) :void {
+        // When we're removed from the stage, remove ourselves from any juggler animating us,
+        // and note that we're no longer managed by a parent Movie's layer
+        dispatchEventWith(Event.REMOVE_FROM_JUGGLER);
+        _isManagedByParentMovie = false;
+    }
+
+    /**
+     * @return true if we're being managed by another movie.
+     * This is only the case if this Movie was created by its parent and has never been removed
+     * from it. (A Movie that's added to another Movie after creation is *not* managed by its
+     * parent.)
+     */
+    public function get isManagedByParentMovie () :Boolean { return _isManagedByParentMovie; }
 
     /** @return the frame being displayed. */
     public function get frame () :int { return _frame; }
@@ -117,7 +130,174 @@ public class Movie extends Sprite
      */
     public function goTo (position :Object) :Movie {
         const frame :int = extractFrame(position);
-        updateFrame(frame, 0);
+        return goToInternal(frame, false);
+    }
+
+    /**
+     * Calls goTo on this Movie and all its descendent Movies.
+     * If the given frame doesn't exist in a descendent movie, that movie will be advanced
+     * to its final frame.
+     *
+     * @param position the int frame or String label to goto.
+     *
+     * @return this movie for chaining
+     *
+     * @throws Error if position isn't an int or String, or if it is a String and that String isn't
+     * a label on this movie
+     */
+    public function recursiveGoTo (position :Object) :Movie {
+        const frame :int = extractFrame(position);
+        return goToInternal(frame, true);
+    }
+
+    /**
+     * Enables or disables a layer in the Movie.
+     *
+     * While a layer is disabled, it will not be updated by the Movie. It will still be drawn
+     * in its current state, however; this function returns the DisplayObject attached to
+     * the given layer, so that it can be hidden (for example) after its layer is disabled.
+     *
+     * @param name the name of the layer to enable/disable. If there are multiple layers with the
+     * given name, only the first (the "lowest") will be modified.
+     *
+     * @param enabled whether to enable the layer.
+     *
+     * @return the DisplayObject attached to the layer (or null if no layer with that name exists).
+     */
+    public function setLayerEnabled (name :String, enabled :Boolean) :DisplayObject {
+        for each (var layer :Layer in _layers) {
+            if (layer.name == name) {
+                layer._disabled = !enabled;
+                return layer._currentDisplay;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the value of a layer's 'enabled' flag.
+     *
+     * @param name the name of the layer to query.
+     *
+     * @return True if the layer is enabled; false if it's disabled or if no such layer exists.
+     */
+    public function isLayerEnabled (name :String) :Boolean {
+        for each (var layer :Layer in _layers) {
+            if (layer.name == name) {
+                return !layer._disabled;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Removes the child at the given index.
+     * If that child is on a Layer we manage, and the Layer contains no other DisplayObjects,
+     * the entire Layer will be removed from the Movie.
+     */
+    override public function removeChildAt (index :int, dispose :Boolean = false) :DisplayObject {
+        if (_isUpdatingFrame) {
+            throw new Error("Can't remove a layer while the Movie is being updated.");
+        }
+
+        if (index < 0) {
+            index = this.numChildren - index;
+        }
+
+        var child :DisplayObject = super.getChildAt(index);
+
+        // Discover if our child is on a managed Layer
+        var childLayerIdx :int = -1;
+        if (index < _layers.length && _layers[index]._currentDisplay == child) {
+            // Common case
+            childLayerIdx = index;
+        } else {
+            for (var ii :int = 0; ii < _layers.length; ++ii) {
+                if (_layers[ii]._currentDisplay == child) {
+                    childLayerIdx = ii;
+                    break;
+                }
+            }
+        }
+
+        var addReplacementDisplayObject :Boolean;
+        if (childLayerIdx >= 0) {
+            // Child is no longer managed by this Movie
+            var childMovie :Movie = (child as Movie);
+            if (childMovie != null) {
+                childMovie.setParentMovie(null);
+            }
+
+            if (_layers[childLayerIdx].numDisplays == 1) {
+                // We're removing the only DisplayObject on the layer, which means we can
+                // remove the entire layer.
+                _layers.removeAt(childLayerIdx);
+            } else {
+                // The Layer has other DisplayObjects; we need to swap in a replacement
+                addReplacementDisplayObject = true;
+            }
+        }
+
+        super.removeChildAt(index, dispose);
+
+        if (addReplacementDisplayObject) {
+            var replacement :DisplayObject = new Sprite();
+            addChildAt(replacement, index);
+            _layers[childLayerIdx].replaceCurrentDisplay(replacement);
+        }
+
+        return child;
+    }
+
+    /**
+     * Returns the names of this Movie's layers.
+     *
+     * @param out (optional) an existing Array to use.
+     * If this is omitted, a new Array will be created.
+     *
+     * @return an Array containing the Movie's layer names
+     */
+    public function getLayerNames (out :Array = null) :Array {
+        if (out == null) {
+            out = [];
+        } else {
+            out.length = 0;
+        }
+
+        for each (var layer :Layer in _layers) {
+            out[out.length] = layer.name;
+        }
+
+        return out;
+    }
+
+    /**
+     * @private
+     *
+     * Helper function for goTo(). Saves us from calling extractFrame() multiple times.
+     */
+    protected function goToInternal (requestedFrame :int, recursive :Boolean) :Movie {
+        if (_isUpdatingFrame) {
+            _pendingGoToFrame = requestedFrame;
+
+        } else {
+            var ourFrame :int = requestedFrame;
+            if (ourFrame >= _numFrames) {
+                ourFrame = _numFrames;
+            }
+            _playTime = ourFrame / _frameRate;
+            updateFrame(ourFrame, 0);
+
+            if (recursive) {
+                for each (var layer :Layer in _layers) {
+                    var childMovie :Movie = (layer._currentDisplay as Movie);
+                    if (childMovie != null) {
+                        childMovie.goToInternal(requestedFrame, recursive);
+                    }
+                }
+            }
+        }
         return this;
     }
 
@@ -178,20 +358,34 @@ public class Movie extends Sprite
 
     /** Advances the playhead by the give number of seconds. From IAnimatable. */
     public function advanceTime (dt :Number) :void {
-        if (dt < 0) throw new Error("Invalid time [dt=" + dt + "]");
-        if (_skipAdvanceTime) { _skipAdvanceTime = false; return; }
-        if (_state == STOPPED) return;
+        if (dt < 0) {
+            throw new Error("Invalid time [dt=" + dt + "]");
+        }
+
+        if (_skipAdvanceTime) {
+            _skipAdvanceTime = false;
+            return;
+        }
+
+        if (_state == STOPPED) {
+            return;
+        }
 
         if (_state == PLAYING && _numFrames > 1) {
             _playTime += dt;
             var actualPlaytime :Number = _playTime;
-            if (_playTime >= _duration) _playTime %= _duration;
+            if (_playTime >= _duration) {
+                _playTime %= _duration;
+            }
 
             // If _playTime is very close to _duration, rounding error can cause us to
             // land on lastFrame + 1. Protect against that.
             var newFrame :int = int(_playTime * _frameRate);
-            if (newFrame < 0) newFrame = 0;
-            if (newFrame >= _numFrames) newFrame = _numFrames - 1;
+            if (newFrame < 0) {
+                newFrame = 0;
+            } else if (newFrame >= _numFrames) {
+                newFrame = _numFrames - 1;
+            }
 
             // If the update crosses or goes to the stopFrame:
             // go to the stopFrame, stop the movie, clear the stopFrame
@@ -209,7 +403,10 @@ public class Movie extends Sprite
         }
 
         for each (var layer :Layer in _layers) {
-            layer.advanceTime(dt);
+            var childMovie :Movie = (layer._currentDisplay as Movie);
+            if (childMovie != null) {
+                childMovie.advanceTime(dt);
+            }
         }
     }
 
@@ -233,8 +430,8 @@ public class Movie extends Sprite
         // if no contents exist, simply include this movie's position in the bounds
         if (resultRect.isEmpty()) {
             getTransformationMatrix(targetSpace, IDENTITY_MATRIX);
-            MatrixUtil.transformCoords(IDENTITY_MATRIX, 0.0, 0.0, _s_helperPoint);
-            resultRect.setTo(_s_helperPoint.x, _s_helperPoint.y, 0, 0);
+            MatrixUtil.transformCoords(IDENTITY_MATRIX, 0.0, 0.0, HELPER_POINT);
+            resultRect.setTo(HELPER_POINT.x, HELPER_POINT.y, 0, 0);
         }
 
         return resultRect;
@@ -250,79 +447,85 @@ public class Movie extends Sprite
         _skipAdvanceTime = true;
     }
 
+    internal function setParentMovie (movie :Movie) :void {
+        _isManagedByParentMovie = true;
+    }
+
     /** @private */
     protected function extractFrame (position :Object) :int {
-        if (position is int) return int(position);
-        if (!(position is String)) throw new Error("Movie position must be an int frame or String label");
-        const label :String = String(position);
-        var frame :int = getFrameForLabel(label);
-        if (frame < 0) {
-            throw new Error("No such label '" + label + "'");
+        if (position is int) {
+            return int(position);
+        } else if (position is String) {
+            const label :String = String(position);
+            var frame :int = getFrameForLabel(label);
+            if (frame < 0) {
+                throw new Error("No such label '" + label + "'");
+            }
+            return frame;
+        } else {
+            throw new Error("Movie position must be an int frame or String label");
         }
-        return frame;
     }
 
     /**
      * @private
+     *
+     * Fires label signals and updates layers for the given frame.
+     * We don't handle updating any child movies in this function - child moving updating
+     * is handled in advanceTime() and goTo(), both of which call updateFrame().
      *
      * @param dt the timeline's elapsed time since the last update. This should be 0
      * for updates that are the result of a "goTo" call.
      */
     protected function updateFrame (newFrame :int, dt :Number) :void {
         if (newFrame < 0 || newFrame >= _numFrames) {
-            throw new Error("Invalid frame [frame=" + newFrame,
-                " validRange=0-" + (_numFrames - 1) + "]");
+            throw new Error("Invalid frame [frame=" + newFrame + ", validRange=0-" + (_numFrames - 1) + "]");
         }
 
         if (_isUpdatingFrame) {
-            _pendingFrame = newFrame;
-            return;
-        } else {
-            _pendingFrame = NO_FRAME;
-            _isUpdatingFrame = true;
+            // This should never happen.
+            // (goTo() should set _pendingGoToFrame if _isUpdatingFrame == true)
+            throw new Error("updateFrame called recursively");
         }
 
-        const isGoTo :Boolean = (dt <= 0);
-        const wrapped :Boolean = (dt >= _duration) || (newFrame < _frame);
-
-        if (newFrame != _frame) {
-            if (wrapped) {
-                for each (var layer :Layer in _layers) {
-                    layer.movieLooped();
-                }
-            }
-            for each (layer in _layers) layer.drawFrame(newFrame);
-        }
-
-        if (isGoTo) _playTime = newFrame / _frameRate;
+        _pendingGoToFrame = NO_FRAME;
+        _isUpdatingFrame = true;
 
         // Update the frame before firing frame label signals, so if firing changes the frame,
         // it sticks.
-        const oldFrame :int = _frame;
+        const prevFrame :int = _frame;
         _frame = newFrame;
 
         // determine which labels to fire signals for
         var startFrame :int;
         var frameCount :int;
-        if (isGoTo) {
+        if (dt <= 0) {
+            // if dt <= 0, we're here because of a goTo
             startFrame = newFrame;
             frameCount = 1;
         } else {
-            startFrame = (oldFrame + 1 < _numFrames ? oldFrame + 1 : 0);
-            frameCount = (_frame - oldFrame);
-            if (wrapped) frameCount += _numFrames;
+            startFrame = (prevFrame + 1 < _numFrames ? prevFrame + 1 : 0);
+            frameCount = (_frame - prevFrame);
+            if ((dt >= _duration) || (newFrame < _frame)) {
+                // we wrapped
+                frameCount += _numFrames;
+            }
         }
 
         // Fire signals. Stop if pendingFrame is updated, which indicates that the client
         // has called goTo()
         var frameIdx :int = startFrame;
         for (var ii :int = 0; ii < frameCount; ++ii) {
-            if (_pendingFrame != NO_FRAME) break;
+            if (_pendingGoToFrame != NO_FRAME) {
+                break;
+            }
 
             if (_labels[frameIdx] != null) {
                 for each (var label :String in _labels[frameIdx]) {
-                    labelPassed.emit(label);
-                    if (_pendingFrame != NO_FRAME) break;
+                    this.labelPassed.emit(label);
+                    if (_pendingGoToFrame != NO_FRAME) {
+                        break;
+                    }
                 }
             }
 
@@ -333,10 +536,18 @@ public class Movie extends Sprite
         }
 
         _isUpdatingFrame = false;
-        // If we were interrupted by a goTo(), update to that frame now.
-        if (_pendingFrame != NO_FRAME) {
-            newFrame = _pendingFrame;
-            updateFrame(newFrame, 0);
+
+        // If we were interrupted by a goTo(), go to that frame now.
+        // Otherwise, draw our new frame.
+        if (_pendingGoToFrame != NO_FRAME) {
+            var pending :int = _pendingGoToFrame;
+            _pendingGoToFrame = NO_FRAME;
+            goTo(pending);
+
+        } else if (newFrame != prevFrame) {
+            for each (var layer :Layer in _layers) {
+                layer.drawFrame(newFrame);
+            }
         }
     }
 
@@ -344,38 +555,28 @@ public class Movie extends Sprite
         return new Layer(movie, src, library, flipbook);
     }
 
-    /** @private */
     protected var _isUpdatingFrame :Boolean;
-    /** @private */
-    protected var _pendingFrame :int = NO_FRAME;
-    /** @private */
+    protected var _pendingGoToFrame :int = NO_FRAME;
     protected var _frame :int = NO_FRAME, _stopFrame :int = NO_FRAME;
-    /** @private */
-    protected var _state :int = PLAYING;
-    /** @private */
-    protected var _playTime :Number, _duration :Number;
-    /** @private */
+    protected var _state :String = PLAYING;
+    protected var _playTime :Number = 0;
+    protected var _duration :Number;
     protected var _layers :Vector.<Layer>;
-    /** @private */
     protected var _numFrames :int;
-    /** @private */
     protected var _frameRate :Number;
-    /** @private */
     protected var _labels :Vector.<Vector.<String>>;
-    /** @private */
     private var _skipAdvanceTime :Boolean = false;
-    /** @private */
     internal var _playerData :MoviePlayerNode;
-    /** @private */
-    private static var _s_helperPoint :Point = new Point();
+    private var _isManagedByParentMovie :Boolean;
 
+    private static const HELPER_POINT :Point = new Point();
     private static const IDENTITY_MATRIX :Matrix = new Matrix();
 
     private static const NO_FRAME :int = -1;
 
-    private static const STOPPED :int = 0;
-    private static const PLAYING_CHILDREN_ONLY :int = 1;
-    private static const PLAYING :int = 2;
+    private static const STOPPED :String = "STOPPED";
+    private static const PLAYING_CHILDREN_ONLY :String = "PLAYING_CHILDREN_ONLY";
+    private static const PLAYING :String = "PLAYING";
 }
 }
 

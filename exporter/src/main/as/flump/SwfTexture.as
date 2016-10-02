@@ -15,7 +15,6 @@ import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
-import flump.executor.load.LoadedSwf;
 import flump.mold.MovieMold;
 import flump.xfl.XflLibrary;
 import flump.xfl.XflTexture;
@@ -24,10 +23,10 @@ public class SwfTexture
 {
     public var symbol :String;
     public var quality :String;
-    public function get origin() :Point { return new Point(_origin.x * _scale, _origin.y * _scale); }
-    public function get w() :int { return Math.ceil(_w * _scale); }
-    public function get h() :int { return Math.ceil(_h * _scale); }
-    public function get a() :int { return this.w * this.h; }
+    public function get origin () :Point { return new Point(_origin.x * _scale, _origin.y * _scale); }
+    public function get w () :int { return Math.ceil(_w * _scale); }
+    public function get h () :int { return Math.ceil(_h * _scale); }
+    public function get a () :int { return this.w * this.h; }
 
     public static function fromFlipbook (lib :XflLibrary, movie :MovieMold, frame :int,
             quality :String = StageQuality.BEST, scale :Number = 1,
@@ -41,8 +40,8 @@ public class SwfTexture
     }
 
     public static function fromTexture (lib :XflLibrary, tex :XflTexture,
-            quality :String = StageQuality.BEST, scale :Number = 1,
-            useNamespace :Boolean = false) :SwfTexture {
+                                        quality :String = StageQuality.BEST, scale :Number = 1,
+                                        useNamespace :Boolean = false) :SwfTexture {
         const klass :Class = Class(lib.swf.getSymbol(tex.symbol));
         const instance :Object = new klass();
         const ns :String = useNamespace ? lib.location + "/" : "";
@@ -92,7 +91,7 @@ public class SwfTexture
         }
     }
 
-    public function toBitmapData (borderPadding :int = 0) :BitmapData {
+    public function toBitmapData (xPad :int, yPad :int) :BitmapData {
         // render with vector renderer
         var bmd :BitmapData = new BitmapData(_w, _h, true, 0x00);
         const m :Matrix = new Matrix();
@@ -105,7 +104,7 @@ public class SwfTexture
         }
 
         // add padding if necessary
-        return (borderPadding > 0 ? Util.padBitmapBorder(bmd, borderPadding) : bmd);
+        return (xPad > 0 || yPad > 0 ? Util.padBitmapBorder(bmd, xPad, yPad) : bmd);
     }
 
     public function toString () :String { return "a " + this.a + " w " + this.w + " h " + this.h; }

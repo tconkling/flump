@@ -18,6 +18,10 @@ internal class LibraryImpl implements Library {
         return Movie(createDisplayObject(symbol));
     }
 
+    public function getSymbolCreator (symbol :String) :SymbolCreator {
+        return requireSymbolCreator(symbol);
+    }
+
     public function createImage (symbol :String) :Image {
         const disp :DisplayObject = createDisplayObject(symbol);
         if (disp is Movie) throw new Error(symbol + " is not an Image");

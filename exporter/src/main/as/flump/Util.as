@@ -83,7 +83,6 @@ public class Util
         originIcon.addChild(fillRect(7, 3, 0xffffff));
         originIcon.addChild(fillRect(1, 9, 0x000000));
         originIcon.addChild(fillRect(9, 1, 0x000000));
-        originIcon.flatten();
         return originIcon;
     }
 
@@ -92,16 +91,16 @@ public class Util
      * (We do this to textures in an atlas in order to prevent artifacts that come from
      * the GPU sampling just beyond a texture's bounds.)
      */
-    public static function padBitmapBorder (src :IBitmapDrawable, paddingSize :int) :BitmapData {
+    public static function padBitmapBorder (src :IBitmapDrawable, xPad :int, yPad :int) :BitmapData {
         var srcBounds :Rectangle = getBitmapDrawableBounds(src);
         var w :int = Math.ceil(srcBounds.width);
         var h :int = Math.ceil(srcBounds.height);
 
-        var bmd :BitmapData = new BitmapData(w + (paddingSize * 2), h + (paddingSize * 2), true, 0x00);
+        var bmd :BitmapData = new BitmapData(w + (xPad * 2), h + (yPad * 2), true, 0x00);
 
         // draw the original bitmap
         var m :Matrix = new Matrix();
-        m.translate(-srcBounds.x + paddingSize, -srcBounds.y + paddingSize);
+        m.translate(-srcBounds.x + xPad, -srcBounds.y + yPad);
         bmd.draw(src, m, null, null, null, /*smoothing=*/false);
 
         var srcRect :Rectangle = new Rectangle();
@@ -110,46 +109,46 @@ public class Util
         var xx :int;
 
         // copy top row
-        srcRect.x = paddingSize;
-        srcRect.y = paddingSize;
+        srcRect.x = xPad;
+        srcRect.y = yPad;
         srcRect.width = w;
         srcRect.height = 1;
-        dst.x = paddingSize;
-        for (yy = 0; yy < paddingSize; ++yy) {
+        dst.x = xPad;
+        for (yy = 0; yy < yPad; ++yy) {
             dst.y = yy;
             bmd.copyPixels(bmd, srcRect, dst);
         }
 
         // copy bottom row
-        srcRect.x = paddingSize;
-        srcRect.y = h + paddingSize - 1;
+        srcRect.x = xPad;
+        srcRect.y = h + yPad - 1;
         srcRect.width = w;
         srcRect.height = 1;
-        dst.x = paddingSize;
-        for (yy = 0; yy < paddingSize; ++yy) {
-            dst.y = h + paddingSize + yy;
+        dst.x = xPad;
+        for (yy = 0; yy < yPad; ++yy) {
+            dst.y = h + yPad + yy;
             bmd.copyPixels(bmd, srcRect, dst);
         }
 
         // copy left column
-        srcRect.x = paddingSize;
-        srcRect.y = paddingSize;
+        srcRect.x = xPad;
+        srcRect.y = yPad;
         srcRect.width = 1;
         srcRect.height = h;
-        dst.y = paddingSize;
-        for (xx = 0; xx < paddingSize; ++xx) {
+        dst.y = yPad;
+        for (xx = 0; xx < xPad; ++xx) {
             dst.x = xx;
             bmd.copyPixels(bmd, srcRect, dst);
         }
 
         // copy right column
-        srcRect.x = w + paddingSize - 1;
-        srcRect.y = paddingSize;
+        srcRect.x = w + xPad - 1;
+        srcRect.y = yPad;
         srcRect.width = 1;
         srcRect.height = h;
-        dst.y = paddingSize;
-        for (xx = 0; xx < paddingSize; ++xx) {
-            dst.x = w + paddingSize + xx;
+        dst.y = yPad;
+        for (xx = 0; xx < xPad; ++xx) {
+            dst.x = w + xPad + xx;
             bmd.copyPixels(bmd, srcRect, dst);
         }
 

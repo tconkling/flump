@@ -1,7 +1,5 @@
 package flump.export.texturepacker {
 
-import aspire.util.Log;
-
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
@@ -11,15 +9,14 @@ import flump.export.Atlas;
 import flump.export.AtlasImpl;
 
 // packer that tries to use as small total atlas area as possible
-public class SpaceSavingMultiPacker extends MultiPackerBase {
-
-    // TODO the last 3 parameters are not needed for this class
+public class SpaceSavingMultiPacker extends MultiPackerBase
+{
     override public function pack(textures :Vector.<SwfTexture>,
-                         maxAtlasSize :uint,
-                         borderSize :uint,
-                         scaleFactor :int,
-                         quality :String,
-                         filenamePrefix :String) : Vector.<Atlas> {
+                                  maxAtlasSize :uint,
+                                  borderSize :uint,
+                                  scaleFactor :int,
+                                  quality :String,
+                                  filenamePrefix :String) : Vector.<Atlas> {
 
         var atlases :Vector.<Atlas> = new Vector.<Atlas>();
         while (textures.length > 0) {
@@ -39,15 +36,15 @@ public class SpaceSavingMultiPacker extends MultiPackerBase {
             }
             //log.info("There are " + textures.length + " unpacked textures, creating new atlas with size " + atlasSize);
             var atlas : AtlasImpl = new AtlasImpl(
-                    filenamePrefix + "atlas" + atlases.length,
-                    atlasSize.x, atlasSize.y,
-                    borderSize,
-                    scaleFactor,
-                    quality);
+                filenamePrefix + "atlas" + atlases.length,
+                atlasSize.x, atlasSize.y,
+                borderSize, borderSize,
+                scaleFactor,
+                quality);
             atlases.push(atlas);
 
             // try to put every texture into it
-            var packer : MaxRectPackerImpl = new MaxRectPackerImpl(atlasSize.x, atlasSize.y);
+            var packer :MaxRectPackerImpl = new MaxRectPackerImpl(atlasSize.x, atlasSize.y);
             for (var i:int = 0; i < textures.length; i++) {
                 var swfTexture:SwfTexture = textures[i];
                 var w : int = swfTexture.w + (borderSize * 2);
@@ -63,7 +60,7 @@ public class SpaceSavingMultiPacker extends MultiPackerBase {
         return atlases;
     }
 
-    protected function calculateArea(textures :Vector.<SwfTexture>, borderSize :uint) :int {
+    protected function calculateArea (textures :Vector.<SwfTexture>, borderSize :uint) :int {
         var area :int = 0;
         for each (var tex :SwfTexture in textures) {
             const w :int = tex.w + (borderSize * 2);
@@ -73,7 +70,7 @@ public class SpaceSavingMultiPacker extends MultiPackerBase {
         return area;
     }
 
-    protected function calculateMinimumDimensions(textures :Vector.<SwfTexture>, borderSize :uint) :Point {
+    protected function calculateMinimumDimensions (textures :Vector.<SwfTexture>, borderSize :uint) :Point {
         var minSize : Point = new Point(MIN_SIZE, MIN_SIZE);
         for each (var tex :SwfTexture in textures) {
             const w :int = tex.w + (borderSize * 2);
@@ -85,7 +82,5 @@ public class SpaceSavingMultiPacker extends MultiPackerBase {
         minSize.y = Util.nextPowerOfTwo(minSize.y);
         return minSize;
     }
-
-    private static const log :Log = Log.getLog(SpaceSavingMultiPacker);
 }
 }

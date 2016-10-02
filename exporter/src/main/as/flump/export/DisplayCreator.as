@@ -8,8 +8,12 @@ import aspire.util.maps.ValueComputingMap;
 
 import flash.utils.Dictionary;
 
+import flump.display.ImageCreator;
+
 import flump.display.Library;
 import flump.display.Movie;
+import flump.display.MovieCreator;
+import flump.display.SymbolCreator;
 import flump.export.texturepacker.TexturePacker;
 import flump.mold.AtlasMold;
 import flump.mold.AtlasTextureMold;
@@ -31,16 +35,22 @@ public class DisplayCreator
 
         const atlases :Vector.<Atlas> = TexturePacker.withLib(lib).createAtlases();
         for each (var atlas :Atlas in atlases) {
-            var mold :AtlasMold = atlas.toMold();
+            var atlastMold :AtlasMold = atlas.toMold();
             var baseTexture :Texture = AtlasUtil.toTexture(atlas);
             _baseTextures.push(baseTexture);
-            for each (var atlasTexture :AtlasTextureMold in mold.textures) {
+            for each (var atlasTexture :AtlasTextureMold in atlastMold.textures) {
                 var tex :Texture = Texture.fromTexture(baseTexture, atlasTexture.bounds);
-                var creator :ImageCreator =
-                    new ImageCreator(tex, atlasTexture.origin, atlasTexture.symbol);
-                _imageCreators[atlasTexture.symbol] = creator;
+                _creators[atlasTexture.symbol] = new ImageCreator(tex, atlasTexture.origin, atlasTexture.symbol);
             }
         }
+
+        for each (var movieMold :MovieMold in lib.movies) {
+            _creators[movieMold.id] = new MovieCreator(movieMold, lib.frameRate);
+        }
+    }
+
+    public function getSymbolCreator (symbol :String) :SymbolCreator {
+        return _creators[symbol];
     }
 
     public function get imageSymbols () :Vector.<String> {
@@ -66,8 +76,8 @@ public class DisplayCreator
     }
 
     public function createDisplayObject (id :String) :DisplayObject {
-        const imageCreator :ImageCreator = ImageCreator(_imageCreators[id]);
-        return (imageCreator != null ? imageCreator.create() : createMovie(id));
+        var creator :SymbolCreator = _creators[id];
+        return creator.create(this);
     }
 
     public function createImage (id :String) :Image {
@@ -75,7 +85,7 @@ public class DisplayCreator
     }
 
     public function getImageTexture (id :String) :Texture {
-        return ImageCreator(_imageCreators[id]).texture;
+        return ImageCreator(_creators[id]).texture;
     }
 
     public function createMovie (name :String) :Movie {
@@ -108,7 +118,7 @@ public class DisplayCreator
                 tex.dispose();
             }
             _baseTextures = null;
-            _imageCreators = null;
+            _creators = null;
         }
     }
 
@@ -121,7 +131,7 @@ public class DisplayCreator
     public function getMaxDrawn (id :String) :int { return _maxDrawn.get(id); }
 
     protected function loadTexture (symbol :String) :DisplayObject {
-        return ImageCreator(_imageCreators[symbol]).create();
+        return ImageCreator(_creators[symbol]).create(this);
     }
 
     protected function calcMaxDrawn (id :String) :int {
@@ -144,41 +154,13 @@ public class DisplayCreator
     }
 
     private function getStarlingTexture (symbol :String) :Texture {
-        if (!_imageCreators.hasOwnProperty(symbol)) {
-            return null;
-        }
-        return ImageCreator(_imageCreators[symbol]).texture;
+        var imageCreator :ImageCreator = _creators[symbol] as ImageCreator;
+        return (imageCreator != null ? imageCreator.texture : null);
     }
 
     protected const _maxDrawn :Map = ValueComputingMap.newMapOf(String, calcMaxDrawn);
     protected var _baseTextures :Vector.<Texture> = new <Texture>[];
-    protected var _imageCreators :Dictionary = new Dictionary(); //<name, ImageCreator>
+    protected var _creators :Dictionary = new Dictionary(); // <name, ImageCreator|MovieCreator>
     protected var _lib :XflLibrary;
 }
-}
-
-import flash.geom.Point;
-
-import starling.display.DisplayObject;
-import starling.display.Image;
-import starling.textures.Texture;
-
-class ImageCreator {
-    public var texture :Texture;
-    public var origin :Point;
-    public var symbol :String;
-
-    public function ImageCreator (texture :Texture, origin :Point, symbol :String) {
-        this.texture = texture;
-        this.origin = origin;
-        this.symbol = symbol;
-    }
-
-    public function create () :DisplayObject {
-        const image :Image = new Image(texture);
-        image.pivotX = origin.x;
-        image.pivotY = origin.y;
-        image.name = symbol;
-        return image;
-    }
 }

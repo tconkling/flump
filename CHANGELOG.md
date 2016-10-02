@@ -1,6 +1,41 @@
 Flump: Changelog
 ================
 
+version 1.5.1 - 2016-09-30
+--------------------------
+Exporter:
+- Fixed: Don't pad single textures that fit exactly in an atlas
+- Added: AutomaticExporter: '--unmodified' flag to force exporting regardless of 'modified' status
+
+Runtime:
+- Added: Movie.setLayerEnabled()
+- Fixed: proper handling of Movie.removeChild()
+- Changed: Build against Starling 2.1
+
+
+version 1.5.0 - 2016-06-12
+--------------------------
+Runtime:
+- Changed: build against Starling 2.0.1
+
+
+version 1.4.3 - 2016-06-07
+--------------------------
+Runtime:
+- Fixed: MoviePlayer better detects whether it should manage a Movie or not
+- Added: Library.getSymbolCreator()
+
+
+version 1.4.2 - 2016-04-28
+--------------------------
+Exporter:
+- Changed: command-line exporter doesn't publish "combined" formats if they haven't been modified
+
+Runtime:
+- Added: Movie.recursiveGoTo()
+- Changed: build against Starling 1.8
+
+
 version 1.4.1 - 2015-05-14
 --------------------------
 

@@ -2,8 +2,9 @@
 <project name="flump-demo" default="swf" basedir=".">
   <property name="asrc.dir" location="src/main/as"/>
   <property name="deploy.dir" location="dist"/>
+  <property name="swf.version" value="30"/>
 
-  <property name="ooo-build.vers" value="2.5"/>
+  <property name="ooo-build.vers" value="2.10"/>
   <ant antfile="../etc/bootstrap.xml"/>
   <import file="${user.home}/.m2/ooo-build/${ooo-build.vers}/ooo-build.xml"/>
 
@@ -18,7 +19,7 @@
     <mxmlc srcdir="${asrc.dir}" libpath="${aslib.path}"
       dest="${deploy.dir}/${ant.project.name}.swf"
       main="flump/demo/Demo.as">
-      <arg value="-swf-version=13"/>
+      <arg value="-swf-version=${swf.version}"/>
     </mxmlc>
   </target>
 </project>

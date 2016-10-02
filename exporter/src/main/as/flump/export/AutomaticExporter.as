@@ -24,7 +24,18 @@ import react.BoolView;
  */
 public class AutomaticExporter extends ExportController
 {
-    public function AutomaticExporter (project :File) {
+    /**
+     * Constructs a new AutomaticExporter
+     *
+     * @param project the project to export
+     *
+     * @param exportUnmodified if false, files that are unmodified (their SWFs MD5 hashes
+     * haven't changed since the previous export) will be skipped. If true, all files
+     * in the project will be exported regardless of whether they've been modified.
+     */
+    public function AutomaticExporter (project :File, exportUnmodified :Boolean) {
+        _exportIfUnmodified = exportUnmodified;
+
         _complete.connect(function (complete :Boolean) :void {
             if (!complete) return;
             if (OUT != null) {
@@ -41,14 +52,15 @@ public class AutomaticExporter extends ExportController
         OUT.open(outFile, FileMode.WRITE);
 
         _confFile = project;
-        println("Exporting project: " + _confFile.nativePath);
+        println("Exporting project: '" + _confFile.nativePath + "'" +
+            (_exportIfUnmodified ? " (exportUnmodified=true)" : ""));
         println();
 
         if (readProjectConfig()) {
             var exec :Executor = new Executor();
             exec.completed.connect(function () :void {
                 // if finding docs generates a crit error, we need to fail immediately
-                if (_handedCritError) exit();
+                if (_handledCritError) exit();
             });
             findFlashDocuments(_importDirectory, exec, true);
         }
@@ -69,7 +81,7 @@ public class AutomaticExporter extends ExportController
             return;
         }
 
-        println("\nLoading complete...");
+        println("Loading complete.\n");
 
         if (_conf.exportDir == null) {
             exit("No export directory specified.");
@@ -97,26 +109,35 @@ public class AutomaticExporter extends ExportController
             if (hasCombined && hasSingle) break;
         }
         try {
+            var libs :Vector.<XflLibrary> = getLibs();
             // if we have one or more combined export format, publish them
             if (hasCombined) {
-                println("Exporting combined formats...");
-                var numPublished :int = publisher.publishCombined(getLibs());
-                if (numPublished == 0) {
-                    printErr("No suitable formats were found for combined publishing");
+                if (_exportIfUnmodified || publisher.modified(libs)) {
+                    println("Exporting combined formats...");
+                    var numPublished :int = publisher.publishCombined(libs);
+                    if (numPublished == 0) {
+                        printErr("No suitable formats were found for combined publishing.");
+                    } else {
+                        println("" + numPublished + " combined formats published.");
+                    }
                 } else {
-                    println("" + numPublished + " combined formats published...");
+                    println("Skipping 'Export Combined' (files are unmodified).");
                 }
             }
 
             // now publish any appropriate single formats
             if (hasSingle) {
                 for each (var status :DocStatus in _statuses) {
-                    println("Exporting document " + status.path + "...");
-                    numPublished = publisher.publishSingle(status.lib);
-                    if (numPublished == 0) {
-                        printErr("No suitable formats were found for single publishing");
+                    if (_exportIfUnmodified || publisher.modified(new <XflLibrary>[status.lib], 0)) {
+                        println("Exporting '" + status.path + "'...");
+                        numPublished = publisher.publishSingle(status.lib);
+                        if (numPublished == 0) {
+                            printErr("No suitable formats were found for single publishing.");
+                        } else {
+                            println("" + numPublished + " formats published.");
+                        }
                     } else {
-                        println("" + numPublished + " formats published...");
+                        println("Skipping unmodified '" + status.path + "'.")
                     }
                 }
             }
@@ -125,18 +146,18 @@ public class AutomaticExporter extends ExportController
             return;
         }
 
-        println("\nPublishing complete...");
+        println("Publishing complete.\n");
         exit();
     }
 
     override protected function handleParseError (err :ParseError) :void {
-        if (err.severity == ParseError.CRIT) _handedCritError = true;
+        if (err.severity == ParseError.CRIT) _handledCritError = true;
         printErr(err);
     }
 
     override protected function addDocStatus (status :DocStatus) :void {
         _statuses[_statuses.length] = status;
-        println("Loading document: " + status.path + "...");
+        println("Loading document: '" + status.path + "'...");
     }
 
     override protected function getDocStatuses () :Array {
@@ -145,7 +166,7 @@ public class AutomaticExporter extends ExportController
 
     override protected function docLoadSucceeded (doc :DocStatus, lib :XflLibrary) :void {
         super.docLoadSucceeded(doc, lib);
-        println("Load completed: " + doc.path + "...");
+        println("Load complete: '" + doc.path + "'.");
         checkValid();
     }
 
@@ -185,10 +206,11 @@ public class AutomaticExporter extends ExportController
     }
 
     protected const _complete :BoolValue = new BoolValue(false);
+    protected var _exportIfUnmodified :Boolean;
 
     protected var OUT :FileStream;
 
-    protected var _handedCritError :Boolean = false;
+    protected var _handledCritError :Boolean = false;
     protected var _statuses :Array = [];
 }
 }

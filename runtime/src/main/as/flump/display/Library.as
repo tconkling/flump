@@ -23,7 +23,14 @@ public interface Library
     function get isNamespaced () :Boolean;
 
     /**
-     * Creates a movie for the given symbol.
+     * @return the SymbolCreator for the given symbol name.
+     *
+     * @throws Error if there is no such symbol in these resources.
+     */
+    function getSymbolCreator (symbolName :String) :SymbolCreator;
+
+    /**
+     * Creates a Movie for the given symbol.
      *
      * @param symbolName the symbol name of the movie to be created
      *

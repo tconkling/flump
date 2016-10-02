@@ -56,9 +56,9 @@ public class MoviePlayer
     protected function addMovies (disp :DisplayObject) :void {
         var movie :Movie = disp as Movie;
         if (movie != null) {
-            // Add this movie to our list if it's not already in a MoviePlayer, and if its
-            // parent isn't a Movie (parent Movies control their children).
-            if (!(movie.parent is Movie) && movie._playerData == null) {
+            // Add this movie to our list if it's not already in a MoviePlayer,
+            // and if it's not already managed by another Movie who will be handling its updating.
+            if (!movie.isManagedByParentMovie && movie._playerData == null) {
                 var node :MoviePlayerNode = new MoviePlayerNode(movie, this);
                 movie._playerData = node;
 

@@ -7,7 +7,6 @@ import aspire.util.Arrays;
 import aspire.util.Log;
 
 import flash.desktop.NativeApplication;
-import flash.display.Loader;
 import flash.display.LoaderInfo;
 import flash.display.NativeMenuItem;
 import flash.events.Event;
@@ -50,8 +49,10 @@ public class FlumpApp
 
         var launched :Boolean = false;
         NA.addEventListener(InvokeEvent.INVOKE, function (event :InvokeEvent) :void {
-            if (event.arguments.length > 1 && event.arguments[0] == "--export") {
-                var headless :AutomaticExporter = new AutomaticExporter(new File(event.arguments[1]));
+            if (hasValueArgument(event.arguments, "--export")) {
+                var projectName :String = popValueArgument(event.arguments, "--export");
+                var exportUnmodified :Boolean = popFlagArgument(event.arguments, "--unmodified");
+                var headless :AutomaticExporter = new AutomaticExporter(new File(projectName), exportUnmodified);
                 headless.complete.connectNotify(function (complete :Boolean) :void {
                     if (!complete) return;
 
@@ -204,6 +205,44 @@ public class FlumpApp
                 project.saveAs();
             }
         });
+    }
+
+    /**
+     * If the given flag argument (e.g. "--unmodified") is set in the args list, it is removed
+     * from the list and 'true' is returned.
+     */
+    protected static function popFlagArgument (args :Array, argName :String) :Boolean {
+        var idx :int = args.indexOf(argName);
+        if (idx >= 0) {
+            args.removeAt(idx);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * If the given value argument pair (e.g. "--export myproject.flump") is set in the args list,
+     * it is removed from the list and its value is returned.
+     */
+    protected static function popValueArgument (args :Array, argName :String) :String {
+        var idx :int = args.indexOf(argName);
+        if (idx >= 0 && idx <= args.length - 2) {
+            var value :String = args[idx + 1];
+            args.splice(idx, 2);
+            return value;
+        } else {
+            return null;
+        }
+    }
+
+    protected static function hasFlagArgument (args :Array, argName :String) :Boolean {
+        return (args.indexOf(argName) >= 0);
+    }
+
+    protected static function hasValueArgument (args :Array, argName :String) :Boolean {
+        var idx :int = args.indexOf(argName);
+        return (idx >= 0 && idx <= args.length - 2);
     }
 
     protected var _loaderInfo :LoaderInfo;

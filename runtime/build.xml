@@ -3,7 +3,7 @@
   <property name="asrc.dir" location="src/main/as"/>
   <property name="deploy.dir" location="dist"/>
 
-  <property name="ooo-build.vers" value="2.5"/>
+  <property name="ooo-build.vers" value="2.10"/>
   <ant antfile="../etc/bootstrap.xml"/>
   <import file="${user.home}/.m2/ooo-build/${ooo-build.vers}/ooo-build.xml"/>
 
@@ -48,5 +48,10 @@
   <target name="maven-deploy" depends="swc"
     description="Deploys build artifacts to a Maven repository.">
     <mavendeploy file="${deploy.dir}/${ant.project.name}.swc" pom="pom.xml" srcdir="${asrc.dir}"/>
+  </target>
+
+  <target name="maven-install" depends="swc"
+    description="Installs the build artifact to the local Maven repository">
+    <maveninstall file="${deploy.dir}/${ant.project.name}.swc" pom="pom.xml"/>
   </target>
 </project>
