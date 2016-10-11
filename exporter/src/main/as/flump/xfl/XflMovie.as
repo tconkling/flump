@@ -44,9 +44,9 @@ public class XflMovie extends XflSymbol
         const exportName :String = XmlUtil.getStringAttr(xml, EXPORT_CLASS_NAME, null);
         movie.id = lib.createId(movie, name, exportName);
         const location :String = lib.location + ":" + movie.id;
-
+		
         const layerEls :XMLList = xml.timeline.DOMTimeline[0].layers.DOMLayer;
-        if (XmlUtil.getStringAttr(layerEls[0], XflLayer.NAME) == "flipbook") {
+        if (XmlUtil.getStringAttr(xml, EXPORT_BASE_CLASS_NAME, null)=="Flipbook" || XmlUtil.getStringAttr(layerEls[0], XflLayer.NAME) == "flipbook") {
             movie.layers.push(XflLayer.parse(lib, location, layerEls[0], true));
             if (exportName == null) {
                 lib.addError(location, ParseError.CRIT, "Flipbook movie '" + movie.id + "' not exported");
