@@ -16,7 +16,6 @@ public class XflSymbol
     public static const EXPORT_FOR_ACTIONSCRIPT :String = "linkageExportForAS";
     public static const EXPORT_IN_FIRST_FRAME :String = "linkageExportInFirstFrame";
     public static const EXPORT_CLASS_NAME :String = "linkageClassName";
-    public static const EXPORT_BASE_CLASS_NAME :String = "linkageBaseClass";
 
     public static const SYMBOL_ITEM :String = "DOMSymbolItem";
 
