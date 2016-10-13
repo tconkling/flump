@@ -12,8 +12,8 @@ public class AtlasTextureMold
     public var symbol :String;
     public var bounds :Rectangle;
     public var origin :Point;
-	
 	public var data : Object;
+	public var baseClass : String;
 
     public static function fromJSON (o :Object) :AtlasTextureMold {
         const mold :AtlasTextureMold = new AtlasTextureMold();
@@ -32,17 +32,15 @@ public class AtlasTextureMold
             rect: [bounds.x, bounds.y, bounds.width, bounds.height],
             origin: [origin.x, origin.y]
         };
-		
 		if (data != null) json.data = data;
-		
+		if (baseClass != null) json.baseClass = baseClass;
 		return json;
-		
     }
 
     public function toXML () :XML {
         //TODO: add data support. Chose a representation format for persistent Data in XML (maybe the same as in the XFL files but it's not possible in xml attributes)
-		const json :Object = toJSON(null);
-        return <texture name={symbol} rect={json.rect} origin={json.origin}/>;
+        const json :Object = toJSON(null);
+        return baseClass==null ? <texture name={symbol} rect={json.rect} origin={json.origin}/> : <texture name={symbol} rect={json.rect} origin={json.origin} baseClass={json.baseClass}/>;
     }
 
 }
