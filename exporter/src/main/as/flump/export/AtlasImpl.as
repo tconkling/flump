@@ -53,7 +53,10 @@ public class AtlasImpl implements Atlas
             texMold.symbol = tex.symbol;
             texMold.bounds = new Rectangle(node.bounds.x, node.bounds.y, tex.w, tex.h);
             texMold.origin = new Point(tex.origin.x, tex.origin.y);
-            mold.textures.push(texMold);
+            
+			texMold.data = tex.data;
+			
+			mold.textures.push(texMold);
         });
         return mold;
     }
