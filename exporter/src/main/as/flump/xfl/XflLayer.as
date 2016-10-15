@@ -19,7 +19,7 @@ public class XflLayer
 
     use namespace xflns;
 
-    public static function parse (lib :XflLibrary, baseLocation :String, xml :XML, flipbook :Boolean) :LayerMold {
+    public static function parse (lib :XflLibrary, baseLocation :String, xml :XML, flipbook :Boolean,mask:String=null) :LayerMold {
         const layer :LayerMold = new LayerMold();
         layer.name = XmlUtil.getStringAttr(xml, NAME);
         layer.flipbook = flipbook;
