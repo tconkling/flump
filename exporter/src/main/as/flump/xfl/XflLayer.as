@@ -15,19 +15,14 @@ public class XflLayer
 
     public static const TYPE_GUIDE :String = "guide";
     public static const TYPE_FOLDER :String = "folder";
-    public static const TYPE_MASK :String = "mask";
 
     use namespace xflns;
 
-    public static function parse (lib :XflLibrary, baseLocation :String, xml :XML, flipbook :Boolean,mask:String=null) :LayerMold {
+    public static function parse (lib :XflLibrary, baseLocation :String, xml :XML, flipbook :Boolean) :LayerMold {
         const layer :LayerMold = new LayerMold();
         layer.name = XmlUtil.getStringAttr(xml, NAME);
         layer.flipbook = flipbook;
-        
-		// mask
-		if (mask!=null) layer.mask = mask;
-		
-		const location :String = baseLocation + ":" + layer.name;
+        const location :String = baseLocation + ":" + layer.name;
         var frameXmlList :XMLList = xml.frames.DOMFrame;
         for each (var frameXml :XML in frameXmlList) {
             layer.keyframes.push(XflKeyframe.parse(lib, location, frameXml, flipbook));
