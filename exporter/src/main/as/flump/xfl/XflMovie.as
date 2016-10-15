@@ -44,23 +44,9 @@ public class XflMovie extends XflSymbol
         const exportName :String = XmlUtil.getStringAttr(xml, EXPORT_CLASS_NAME, null);
         movie.id = lib.createId(movie, name, exportName);
         const location :String = lib.location + ":" + movie.id;
-		
-		// persistent Data
-		if (xml.persistentData != null) {
-			var data:Object = XflCustomData.getCustomData(xml.persistentData);
-			if (data != null) movie.data = data;
-		}
-		
 
-		// base Class
-		if (XmlUtil.getStringAttr(xml, "symbolType", null) == "button") movie.baseClass = "flash.display.SimpleButton";
-		else {
-			var baseClass:String = XmlUtil.getStringAttr(xml, "linkageBaseClass", null);
-			if (baseClass != "flash.display.MovieClip") movie.baseClass = baseClass;
-		}
-		
         const layerEls :XMLList = xml.timeline.DOMTimeline[0].layers.DOMLayer;
-        if (XmlUtil.getStringAttr(xml, EXPORT_BASE_CLASS_NAME, null)=="Flipbook" || XmlUtil.getStringAttr(layerEls[0], XflLayer.NAME) == "flipbook") {
+        if (XmlUtil.getStringAttr(layerEls[0], XflLayer.NAME) == "flipbook") {
             movie.layers.push(XflLayer.parse(lib, location, layerEls[0], true));
             if (exportName == null) {
                 lib.addError(location, ParseError.CRIT, "Flipbook movie '" + movie.id + "' not exported");
@@ -69,10 +55,22 @@ public class XflMovie extends XflSymbol
                 kf.ref = movie.id + "_flipbook_" + kf.index;
             }
         } else {
+			var maskName:String;
             for each (var layerEl :XML in layerEls) {
                 var layerType :String = XmlUtil.getStringAttr(layerEl, XflLayer.TYPE, "");
+				lib.addError(location, ParseError.INFO, layerType);
                 if ((layerType != XflLayer.TYPE_GUIDE) && (layerType != XflLayer.TYPE_FOLDER)) {
-                    movie.layers.unshift(XflLayer.parse(lib, location, layerEl, false));
+                    if (XmlUtil.hasAttr(layerEl, "parentLayerIndex")) {
+						if (maskName) {
+							movie.layers.unshift(XflLayer.parse(lib, location, layerEl, false, maskName));	
+							lib.addError(location, ParseError.INFO, "Mask: "+maskName);
+						}
+						else {
+							lib.addError(location, ParseError.WARN, "Only one masked layer is authorized on '" + movie.id + "'. The other masked layers are ignored from mask.");
+							movie.layers.unshift(XflLayer.parse(lib, location, layerEl, false));
+						}
+					} else movie.layers.unshift(XflLayer.parse(lib, location, layerEl, false));
+					maskName = layerType == XflLayer.TYPE_MASK ? movie.layers[0].name : null;
                 }
             }
         }

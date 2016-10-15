@@ -15,6 +15,7 @@ public class XflLayer
 
     public static const TYPE_GUIDE :String = "guide";
     public static const TYPE_FOLDER :String = "folder";
+	public static const TYPE_MASK :String = "mask";
 
     use namespace xflns;
 
@@ -22,6 +23,8 @@ public class XflLayer
         const layer :LayerMold = new LayerMold();
         layer.name = XmlUtil.getStringAttr(xml, NAME);
         layer.flipbook = flipbook;
+		// mask
+		if (mask!=null) layer.mask = mask;
         const location :String = baseLocation + ":" + layer.name;
         var frameXmlList :XMLList = xml.frames.DOMFrame;
         for each (var frameXml :XML in frameXmlList) {
