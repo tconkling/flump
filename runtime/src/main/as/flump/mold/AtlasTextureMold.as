@@ -12,8 +12,8 @@ public class AtlasTextureMold
     public var symbol :String;
     public var bounds :Rectangle;
     public var origin :Point;
-	
-	public var baseClass : String;
+    
+    public var baseClass : String;
 
     public static function fromJSON (o :Object) :AtlasTextureMold {
         const mold :AtlasTextureMold = new AtlasTextureMold();
@@ -31,10 +31,10 @@ public class AtlasTextureMold
             rect: [bounds.x, bounds.y, bounds.width, bounds.height],
             origin: [origin.x, origin.y]
         };
-		
-		if (baseClass != null) json.baseClass = baseClass;
-		
-		return json;
+        
+        if (baseClass != null) json.baseClass = baseClass;
+        
+        return json;
     }
 
     public function toXML () :XML {

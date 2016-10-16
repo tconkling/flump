@@ -11,16 +11,16 @@ import flump.executor.load.LoadedSwf;
 public class XflTexture
 {
     public var symbol :String;
-	public var baseClass :String;
+    public var baseClass :String;
 
     public function XflTexture (lib :XflLibrary, location :String, xml :XML) {
         symbol = XmlUtil.getStringAttr(xml, "linkageClassName");
         
-		// base Class
-		var lBaseClass:String = XmlUtil.getStringAttr(xml, "linkageBaseClass", null);
-		if (lBaseClass != "flash.display.Sprite") baseClass = lBaseClass;
-		
-		lib.createId(this, XmlUtil.getStringAttr(xml, "name"), symbol);
+        // base Class
+        var lBaseClass:String = XmlUtil.getStringAttr(xml, "linkageBaseClass", null);
+        if (lBaseClass != "flash.display.Sprite") baseClass = lBaseClass;
+        
+        lib.createId(this, XmlUtil.getStringAttr(xml, "name"), symbol);
     }
 
     public function isValid (lib :XflLibrary) :Boolean {

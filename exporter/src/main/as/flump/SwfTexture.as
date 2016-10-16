@@ -53,7 +53,7 @@ public class SwfTexture
     public function SwfTexture (symbol :String, disp :DisplayObject, scale :Number, quality :String, baseClass:String=null) {
         this.symbol = symbol;
         this.quality = quality;
-		this.baseClass = baseClass;
+        this.baseClass = baseClass;
 
         // wrap object twice for convenience
         const wrapper :Sprite = new Sprite();

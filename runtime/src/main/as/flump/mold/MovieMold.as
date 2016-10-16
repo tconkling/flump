@@ -10,13 +10,13 @@ public class MovieMold
     public var id :String;
     public var layers :Vector.<LayerMold> = new <LayerMold>[];
     public var labels :Vector.<Vector.<String>>;
-	
-	public var baseClass : String;
+    
+    public var baseClass : String;
 
     public static function fromJSON (o :Object) :MovieMold {
         const mold :MovieMold = new MovieMold();
         mold.id = require(o, "id");
-		mold.baseClass = o["baseClass"];
+        mold.baseClass = o["baseClass"];
         for each (var layer :Object in require(o, "layers")) mold.layers.push(LayerMold.fromJSON(layer));
         return mold;
     }
@@ -71,9 +71,9 @@ public class MovieMold
             id: id,
             layers: layers
         };
-		
-		if (baseClass != null) json.baseClass = baseClass;
-		
+        
+        if (baseClass != null) json.baseClass = baseClass;
+        
         return json;
     }
 
