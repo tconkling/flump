@@ -121,14 +121,14 @@ public class XflKeyframe
         if (colorXml != null) {
             kf.alpha = XmlUtil.getNumberAttr(colorXml, XflInstance.ALPHA, 1);
         }
-		
-		// Read the persistentData
-		var xmlData:XMLList = instanceXml.persistentData;
-		
-		if (instanceXml.persistentData != null) {
-			var data:Object = XflCustomData.getCustomData(instanceXml.persistentData);			
-			if (data != null) kf.data = data;
-		}
+        
+        // Read the persistentData
+        var xmlData:XMLList = instanceXml.persistentData;
+        
+        if (instanceXml.persistentData != null) {
+            var data:Object = XflCustomData.getCustomData(instanceXml.persistentData);            
+            if (data != null) kf.data = data;
+        }
 
         return kf;
     }
