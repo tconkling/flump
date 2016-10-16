@@ -7,7 +7,7 @@ import aspire.util.XmlUtil;
 
 import flump.mold.KeyframeMold;
 import flump.mold.LayerMold;
-
+    
 public class XflLayer
 {
     public static const NAME :String = "name";
@@ -15,7 +15,7 @@ public class XflLayer
 
     public static const TYPE_GUIDE :String = "guide";
     public static const TYPE_FOLDER :String = "folder";
-	public static const TYPE_MASK :String = "mask";
+    public static const TYPE_MASK :String = "mask";
 
     use namespace xflns;
 
@@ -23,8 +23,8 @@ public class XflLayer
         const layer :LayerMold = new LayerMold();
         layer.name = XmlUtil.getStringAttr(xml, NAME);
         layer.flipbook = flipbook;
-		// mask
-		if (mask!=null) layer.mask = mask;
+        // mask
+        if (mask!=null) layer.mask = mask;
         const location :String = baseLocation + ":" + layer.name;
         var frameXmlList :XMLList = xml.frames.DOMFrame;
         for each (var frameXml :XML in frameXmlList) {

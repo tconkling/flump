@@ -10,7 +10,7 @@ public class XflInstance
     public static const LIBRARY_ITEM_NAME :String = "libraryItemName";
     public static const IS_VISIBLE :String = "isVisible";
     public static const ALPHA :String = "alphaMultiplier";
-	public static const TINT_MULTIPLIER :String = "tintMultiplier";
+    public static const TINT_MULTIPLIER :String = "tintMultiplier";
     public static const TINT :String = "tintColor";
 
     public static function getColorXml (instanceXml :XML) :XML {

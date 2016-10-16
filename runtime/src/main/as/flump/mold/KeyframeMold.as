@@ -31,8 +31,8 @@ public class KeyframeMold
     public var pivotX :Number = 0.0, pivotY :Number = 0.0;
 
     public var alpha :Number = 1;
-	
-	public var tint :Array;
+    
+    public var tint :Array;
 
     public var visible :Boolean = true;
 
@@ -42,8 +42,8 @@ public class KeyframeMold
     /** Tween easing. Only valid if tweened==true. */
     public var ease :Number = 0;
     
-	/** custom data registered on the keyframe */
-	public var data :Object;
+    /** custom data registered on the keyframe */
+    public var data :Object;
 
     public static function fromJSON (o :Object) :KeyframeMold {
         const mold :KeyframeMold = new KeyframeMold();
@@ -55,7 +55,7 @@ public class KeyframeMold
         extractFields(o, mold, "skew", "skewX", "skewY");
         extractFields(o, mold, "pivot", "pivotX", "pivotY");
         extractField(o, mold, "alpha");
-		extractField(o, mold, "tint");
+        extractField(o, mold, "tint");
         extractField(o, mold, "visible");
         extractField(o, mold, "ease");
         extractField(o, mold, "tweened");
@@ -87,11 +87,11 @@ public class KeyframeMold
             if (skewX != 0 || skewY != 0) json.skew = [round(skewX), round(skewY)];
             if (pivotX != 0 || pivotY != 0) json.pivot = [round(pivotX), round(pivotY)];
             if (alpha != 1) json.alpha = round(alpha);
-			if (tint != null) json.tint = tint;
+            if (tint != null) json.tint = tint;
             if (!visible) json.visible = visible;
             if (!tweened) json.tweened = tweened;
             if (ease != 0) json.ease = round(ease);
-			if (data != null) json.data = data;
+            if (data != null) json.data = data;
         }
         if (label != null) json.label = label;
         return json;
@@ -107,11 +107,11 @@ public class KeyframeMold
             if (pivotX != 0 || pivotY != 0) xml.@pivot = "" + round(pivotX) + "," + round(pivotY);
             if (alpha != 1) xml.@alpha = round(alpha);
             if (tint !=null) xml.@tint = "" + tint[0] + "," + tint[1];
-			if (!visible) xml.@visible = visible;
+            if (!visible) xml.@visible = visible;
             if (!tweened) xml.@tweened = tweened;
             if (ease != 0) xml.@ease = round(ease);
-			//TODO: add data support. Chose a representation format for persistent Data in XML (maybe the same as in the XFL files but it's not possible in xml attributes)
-			
+            //TODO: add data support. Chose a representation format for persistent Data in XML (maybe the same as in the XFL files but it's not possible in xml attributes)
+            
         }
         if (label != null) xml.@label = label;
         return xml;

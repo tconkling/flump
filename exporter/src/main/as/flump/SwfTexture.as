@@ -27,9 +27,9 @@ public class SwfTexture
     public function get w () :int { return Math.ceil(_w * _scale); }
     public function get h () :int { return Math.ceil(_h * _scale); }
     public function get a () :int { return this.w * this.h; }
-	
-	public var data: Object;
-	public var baseClass: String;
+    
+    public var data: Object;
+    public var baseClass: String;
 
     public static function fromFlipbook (lib :XflLibrary, movie :MovieMold, frame :int,
             quality :String = StageQuality.BEST, scale :Number = 1,
@@ -56,8 +56,8 @@ public class SwfTexture
     public function SwfTexture (symbol :String, disp :DisplayObject, scale :Number, quality :String,data:Object=null,baseClass:String=null) {
         this.symbol = symbol;
         this.quality = quality;
-		this.data = data;
-		this.baseClass = baseClass;
+        this.data = data;
+        this.baseClass = baseClass;
 
         // wrap object twice for convenience
         const wrapper :Sprite = new Sprite();

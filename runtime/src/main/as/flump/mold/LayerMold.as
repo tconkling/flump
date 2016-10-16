@@ -8,7 +8,7 @@ public class LayerMold
     public var name :String;
     public var keyframes :Vector.<KeyframeMold> = new <KeyframeMold>[];
     public var flipbook :Boolean;
-	public var mask :String;
+    public var mask :String;
 
     public static function fromJSON (o :Object) :LayerMold {
         const mold :LayerMold = new LayerMold();
@@ -17,7 +17,7 @@ public class LayerMold
             mold.keyframes.push(KeyframeMold.fromJSON(kf));
         }
         mold.flipbook = o.hasOwnProperty("flipbook");
-		if (o.hasOwnProperty("mask")) mold.mask = require(o, "mask");
+        if (o.hasOwnProperty("mask")) mold.mask = require(o, "mask");
         return mold;
     }
 
@@ -39,14 +39,14 @@ public class LayerMold
             keyframes: keyframes
         };
         if (flipbook) json.flipbook = flipbook;
-		if (mask!=null) json.mask = mask;
+        if (mask!=null) json.mask = mask;
         return json;
     }
 
     public function toXML () :XML {
         var xml :XML = <layer name={name}/>;
         if (flipbook) xml.@flipbook = flipbook;
-		if (mask!=null) xml.@mask = mask;
+        if (mask!=null) xml.@mask = mask;
         for each (var kf :KeyframeMold in keyframes) xml.appendChild(kf.toXML());
         return xml;
     }
