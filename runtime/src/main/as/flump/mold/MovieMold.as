@@ -10,13 +10,16 @@ public class MovieMold
     public var id :String;
     public var layers :Vector.<LayerMold> = new <LayerMold>[];
     public var labels :Vector.<Vector.<String>>;
-    public var bakeScale:Number;
+    public var baseScale:Number;
 
-    public static function fromJSON (o :Object, bakeScale :Number) :MovieMold {
+    public static function fromJSON (o :Object) :MovieMold {
         const mold :MovieMold = new MovieMold();
         mold.id = require(o, "id");
-        mold.bakeScale = bakeScale;
-        for each (var layer :Object in require(o, "layers")) mold.layers.push(LayerMold.fromJSON(layer, bakeScale));
+        mold.baseScale = o["baseScale"] != null ? o["baseScale"] : 1;
+        for each (var layer :Object in require(o, "layers")) {
+            o["baseScale"] = mold.baseScale;
+            mold.layers.push(LayerMold.fromJSON(layer));  
+        } 
         return mold;
     }
 
@@ -53,7 +56,7 @@ public class MovieMold
     }
 
     public function scale (scale :Number) :MovieMold {
-        const clone :MovieMold = fromJSON(JSON.parse(JSON.stringify(this)), bakeScale);
+        const clone :MovieMold = fromJSON(JSON.parse(JSON.stringify(this)));
         for each (var layer :LayerMold in clone.layers) {
             for each (var kf :KeyframeMold in layer.keyframes) {
                 kf.x *= scale;
@@ -68,7 +71,8 @@ public class MovieMold
     public function toJSON (_:*) :Object {
         const json :Object = {
             id: id,
-            layers: layers
+            layers: layers,
+            baseScale: baseScale
         };
         return json;
     }
