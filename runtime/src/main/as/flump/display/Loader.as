@@ -35,6 +35,7 @@ internal class Loader {
     public function Loader (toLoad :Object, libLoader :LibraryLoader) {
         _scaleFactor = (libLoader.scaleFactor > 0 ? libLoader.scaleFactor :
             Starling.contentScaleFactor);
+        _bakeScale = libLoader.bakeScale;
         _libLoader = libLoader;
         _toLoad = toLoad;
     }
@@ -61,7 +62,7 @@ internal class Loader {
         const name :String = loaded.filename;
         if (name == LibraryLoader.LIBRARY_LOCATION) {
             const jsonString :String = loaded.content.readUTFBytes(loaded.content.length);
-            _lib = LibraryMold.fromJSON(JSON.parse(jsonString));
+            _lib = LibraryMold.fromJSON(JSON.parse(jsonString), _bakeScale);
             _libLoader.libraryMoldLoaded.emit(_lib);
         } else if (name.indexOf(PNG, name.length - PNG.length) != -1) {
             _atlasBytes[name] = loaded.content;
@@ -113,7 +114,7 @@ internal class Loader {
         }
 
         ByteArray(bytes).position = 0; // reset the read head
-        var scale :Number = atlas.scaleFactor;
+        var scale :Number = atlas.scaleFactor * _bakeScale;
         if (_lib.textureFormat == "atf") {
             // we do not dipose of the ByteArray so that Starling will handle a context loss.
             baseTextureLoaded(Texture.fromAtfData(bytes, scale, _libLoader.generateMipMaps), atlas);
@@ -139,7 +140,8 @@ internal class Loader {
         _baseTextures.push(baseTexture);
 
         _libLoader.creatorFactory.consumingAtlasMold(atlas);
-        var scale :Number = atlas.scaleFactor;
+        var scale :Number = atlas.scaleFactor * _bakeScale;
+
         for each (var atlasTexture :AtlasTextureMold in atlas.textures) {
             var bounds :Rectangle = atlasTexture.bounds;
             var offset :Point = atlasTexture.origin;
@@ -182,6 +184,7 @@ internal class Loader {
 
     protected var _toLoad :Object;
     protected var _scaleFactor :Number;
+    protected var _bakeScale :Number;
     protected var _libLoader :LibraryLoader;
     protected var _future :FutureTask;
     protected var _versionChecked :Boolean;

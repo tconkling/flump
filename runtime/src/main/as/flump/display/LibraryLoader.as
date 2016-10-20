@@ -32,13 +32,16 @@ public class LibraryLoader
      * closest to this value. If scaleFactor &lt;= 0 (the default), Starling.contentScaleFactor will be
      * used.
      *
+     * @param bakeScale e.q. if atlas is scaled to 0.2 and passed bakeScale == 0.2, then display object
+     * will be the same size as in source file and their textures will be scaled.
+     *
      * @return a Future to use to track the success or failure of loading the resources out of the
      * bytes. If the loading succeeds, the Future's onSuccess will fire with an instance of
      * Library. If it fails, the Future's onFail will fire with the Error that caused the
      * loading failure.
      */
     public static function loadBytes (bytes :ByteArray, executor :Executor=null,
-        scaleFactor :Number=-1) :Future {
+        scaleFactor :Number=-1, bakeScale:Number = 1) :Future {
         return new LibraryLoader().setExecutor(executor).setScaleFactor(scaleFactor)
             .loadBytes(bytes);
     }
@@ -138,8 +141,23 @@ public class LibraryLoader
         return this;
     }
 
+	/**
+     * Sets the bake scale value to use with this loader.
+     * @param bakeScale e.q. if atlas is scaled to 0.2 and passed bakeScale == 0.2, then display object
+     * will be the same size as in source file and their textures will be scaled.
+     */
+
+    public function setBakeScale (bakeScale :Number) :LibraryLoader {
+        _bakeScale = bakeScale;
+        return this;
+    }
+
     public function get scaleFactor () :Number {
         return _scaleFactor;
+    }
+
+    public function get bakeScale () :Number {
+        return _bakeScale;
     }
 
     /**
@@ -211,6 +229,7 @@ public class LibraryLoader
 
     protected var _executor :Executor;
     protected var _scaleFactor :Number = -1;
+    protected var _bakeScale :Number = 1;
     protected var _generateMipMaps :Boolean = false;
     protected var _creatorFactory :CreatorFactory;
 }

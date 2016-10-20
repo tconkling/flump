@@ -9,11 +9,11 @@ public class LayerMold
     public var keyframes :Vector.<KeyframeMold> = new <KeyframeMold>[];
     public var flipbook :Boolean;
 
-    public static function fromJSON (o :Object) :LayerMold {
+    public static function fromJSON (o :Object, bakeScale :Number) :LayerMold {
         const mold :LayerMold = new LayerMold();
         mold.name = require(o, "name");
         for each (var kf :Object in require(o, "keyframes")) {
-            mold.keyframes.push(KeyframeMold.fromJSON(kf));
+            mold.keyframes.push(KeyframeMold.fromJSON(kf, bakeScale));
         }
         mold.flipbook = o.hasOwnProperty("flipbook");
         return mold;
