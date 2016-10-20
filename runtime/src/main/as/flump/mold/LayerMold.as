@@ -8,12 +8,15 @@ public class LayerMold
     public var name :String;
     public var keyframes :Vector.<KeyframeMold> = new <KeyframeMold>[];
     public var flipbook :Boolean;
+    public var baseScale:Number;
 
-    public static function fromJSON (o :Object, bakeScale :Number) :LayerMold {
+    public static function fromJSON (o :Object) :LayerMold {
         const mold :LayerMold = new LayerMold();
         mold.name = require(o, "name");
+        mold.baseScale = o["baseScale"] != null ? o["baseScale"] : 1;
         for each (var kf :Object in require(o, "keyframes")) {
-            mold.keyframes.push(KeyframeMold.fromJSON(kf, bakeScale));
+            kf["baseScale"] = mold.baseScale;
+            mold.keyframes.push(KeyframeMold.fromJSON(kf));
         }
         mold.flipbook = o.hasOwnProperty("flipbook");
         return mold;

@@ -6,8 +6,6 @@ package flump.mold {
 /** @private */
 public class LibraryMold
 {
-    public var bakeScale:Number;
-
     // The frame rate of movies in this library
     public var frameRate :Number;
 
@@ -23,26 +21,37 @@ public class LibraryMold
 
     // True if this library is the result of combining multiple source FLAs
     public var isNamespaced :Boolean = false;
+    
+    public var baseScale:Number;
 
-    public static function fromJSON (o :Object, bakeScale :Number) :LibraryMold {
+    public static function fromJSON (o :Object, scaleTexturesToOrigin :Boolean = false) :LibraryMold {
         const mold :LibraryMold = new LibraryMold();
-        mold.bakeScale = bakeScale;
+        mold.baseScale = o["baseScale"] != null ? o["baseScale"] : 1;   
         mold.frameRate = require(o, "frameRate");
         mold.md5 = require(o, "md5");
         mold.textureFormat = o["textureFormat"] || "png";
         mold.isNamespaced = o["isNamespaced"] === true; // default false
-        for each (var movie :Object in require(o, "movies")) mold.movies.push(MovieMold.fromJSON(movie, bakeScale));
+
+        for each (var movie :Object in require(o, "movies")) {
+            if (scaleTexturesToOrigin)
+            {
+                movie["baseScale"] = mold.baseScale;   
+            }
+            mold.movies.push(MovieMold.fromJSON(movie));
+        }
+
         for each (var tg :Object in require(o, "textureGroups")) mold.textureGroups.push(TextureGroupMold.fromJSON(tg));
         return mold;
     }
-
+    
     public function toJSON (_:*) :Object {
         return {
             frameRate: frameRate,
             md5: md5,
             movies: movies,
             textureGroups: textureGroups,
-            isNamespaced: isNamespaced
+            isNamespaced: isNamespaced,
+            baseScale: baseScale
         };
     }
 

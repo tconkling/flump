@@ -40,7 +40,7 @@ public class KeyframeMold
     /** Tween easing. Only valid if tweened==true. */
     public var ease :Number = 0;
 
-    public static function fromJSON (o :Object, bakeScale :Number) :KeyframeMold {
+    public static function fromJSON (o :Object) :KeyframeMold {
         const mold :KeyframeMold = new KeyframeMold();
         mold.index = require(o, "index");
         mold.duration = require(o, "duration");
@@ -55,12 +55,14 @@ public class KeyframeMold
         extractField(o, mold, "tweened");
         extractField(o, mold, "label");
 
-        if (bakeScale != 1)
+        var baseScale:Number = o["baseScale"] != null ? o["baseScale"] : 1;
+        
+        if (baseScale != 1)
         {
-            mold.x /= bakeScale;
-            mold.y /= bakeScale;
-            mold.pivotX /= bakeScale;
-            mold.pivotY /= bakeScale;
+            mold.x /= baseScale;
+            mold.y /= baseScale;
+            mold.pivotX /= baseScale;
+            mold.pivotY /= baseScale;
         }
 
         return mold;

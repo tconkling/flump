@@ -32,8 +32,8 @@ public class LibraryLoader
      * closest to this value. If scaleFactor &lt;= 0 (the default), Starling.contentScaleFactor will be
      * used.
      *
-     * @param bakeScale e.q. if atlas is scaled to 0.2 and passed bakeScale == 0.2, then display object
-     * will be the same size as in source file and their textures will be scaled.
+     * @param scaleTexturesToOrigin e.q. if atlas is scaled to 0.2 and passed scaleTexturesToOrigin is true,
+     * then display objects will be the same size as in source file, and their textures will be scaled.
      *
      * @return a Future to use to track the success or failure of loading the resources out of the
      * bytes. If the loading succeeds, the Future's onSuccess will fire with an instance of
@@ -41,9 +41,9 @@ public class LibraryLoader
      * loading failure.
      */
     public static function loadBytes (bytes :ByteArray, executor :Executor=null,
-        scaleFactor :Number=-1, bakeScale:Number = 1) :Future {
+        scaleFactor :Number=-1, scaleTexturesToOrigin:Boolean=true) :Future {
         return new LibraryLoader().setExecutor(executor).setScaleFactor(scaleFactor)
-            .loadBytes(bytes);
+                .setScaleTexturesToOrigin(scaleTexturesToOrigin).loadBytes(bytes);
     }
 
     /**
@@ -61,15 +61,18 @@ public class LibraryLoader
      * closest to this value. If scaleFactor &lt;= 0 (the default), Starling.contentScaleFactor will be
      * used.
      *
+     * @param scaleTexturesToOrigin e.q. if atlas is scaled to 0.2 and passed scaleTexturesToOrigin is true,
+     * then display objects will be the same size as in source file, and their textures will be scaled.
+     *
      * @return a Future to use to track the success or failure of loading the resources from the
      * url. If the loading succeeds, the Future's onSuccess will fire with an instance of
      * Library. If it fails, the Future's onFail will fire with the Error that caused the
      * loading failure.
      */
     public static function loadURL (url :String, executor :Executor=null,
-        scaleFactor :Number=-1) :Future {
+        scaleFactor :Number=-1, scaleTexturesToOrigin :Boolean=false) :Future {
         return new LibraryLoader().setExecutor(executor).setScaleFactor(scaleFactor)
-            .loadURL(url);
+                .setScaleTexturesToOrigin(scaleTexturesToOrigin).loadURL(url);
     }
 
     /**
@@ -142,13 +145,14 @@ public class LibraryLoader
     }
 
 	/**
-     * Sets the bake scale value to use with this loader.
-     * @param bakeScale e.q. if atlas is scaled to 0.2 and passed bakeScale == 0.2, then display object
-     * will be the same size as in source file and their textures will be scaled.
+     * Set to true, if you want to keep original size of display objects, not matter what scale atlas has.
+     *
+     * @param scaleTexturesToOrigin e.q. if atlas is scaled to 0.2 and passed scaleTexturesToOrigin is true,
+     * then display objects will be the same size as in source file, and their textures will be scaled.
      */
 
-    public function setBakeScale (bakeScale :Number) :LibraryLoader {
-        _bakeScale = bakeScale;
+    public function setScaleTexturesToOrigin (scaleTexturesToOrigin :Boolean) :LibraryLoader {
+        _scaleTexturesToOrigin = scaleTexturesToOrigin;
         return this;
     }
 
@@ -156,8 +160,8 @@ public class LibraryLoader
         return _scaleFactor;
     }
 
-    public function get bakeScale () :Number {
-        return _bakeScale;
+    public function get scaleTexturesToOrigin () :Boolean {
+        return _scaleTexturesToOrigin;
     }
 
     /**
@@ -229,7 +233,7 @@ public class LibraryLoader
 
     protected var _executor :Executor;
     protected var _scaleFactor :Number = -1;
-    protected var _bakeScale :Number = 1;
+    protected var _scaleTexturesToOrigin :Boolean;
     protected var _generateMipMaps :Boolean = false;
     protected var _creatorFactory :CreatorFactory;
 }
