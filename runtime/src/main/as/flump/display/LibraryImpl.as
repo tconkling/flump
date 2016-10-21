@@ -8,10 +8,11 @@ import starling.textures.Texture;
 
 internal class LibraryImpl implements Library {
     public function LibraryImpl (baseTextures :Vector.<Texture>, creators :Dictionary,
-            isNamespaced :Boolean) {
+            isNamespaced :Boolean, baseScale:Number = 1) {
         _baseTextures = baseTextures;
         _creators = creators;
         _isNamespaced = isNamespaced;
+        _baseScale = baseScale;
     }
 
     public function createMovie (symbol :String) :Movie {
@@ -57,6 +58,10 @@ internal class LibraryImpl implements Library {
         return _isNamespaced;
     }
 
+    public function get baseScale():Number {
+        return _baseScale;
+    }
+    
     public function createDisplayObject (name :String) :DisplayObject {
         checkNotDisposed();
         return requireSymbolCreator(name).create(this);
@@ -86,5 +91,6 @@ internal class LibraryImpl implements Library {
     protected var _creators :Dictionary;
     protected var _baseTextures :Vector.<Texture>;
     protected var _isNamespaced :Boolean;
+    protected var _baseScale :Number;
 }
 }

@@ -22,6 +22,9 @@ public interface Library
      * from multiple source FLAs. */
     function get isNamespaced () :Boolean;
 
+    /** @return base scale of library */
+    function get baseScale():Number
+
     /**
      * @return the SymbolCreator for the given symbol name.
      *

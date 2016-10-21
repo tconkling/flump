@@ -22,7 +22,7 @@ public class LibraryMold
     // True if this library is the result of combining multiple source FLAs
     public var isNamespaced :Boolean = false;
     
-    public var baseScale:Number;
+    public var baseScale:Number = 1;
 
     public static function fromJSON (o :Object, scaleTexturesToOrigin :Boolean = false) :LibraryMold {
         const mold :LibraryMold = new LibraryMold();
