@@ -17,7 +17,7 @@ public class MovieMold
         mold.id = require(o, "id");
         mold.baseScale = o["baseScale"] != null ? o["baseScale"] : 1;
         for each (var layer :Object in require(o, "layers")) {
-            o["baseScale"] = mold.baseScale;
+            layer["baseScale"] = mold.baseScale;
             mold.layers.push(LayerMold.fromJSON(layer));  
         } 
         return mold;
