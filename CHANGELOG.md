@@ -1,5 +1,15 @@
 Flump: Changelog
 ================
+version 1.5.2 - 2016-10-21
+--------------------------
+Exporter:
+- Added "baseScale" property to root node of exported property file
+
+Runtime:
+- Possibility to use "baseScale" property, which was defined in exporter
+- new setter added to LibraryLoader:
+setScaleTexturesToOrigin (scaleTexturesToOrigin :Boolean):LibraryLoader
+
 
 version 1.5.1 - 2016-09-30
 --------------------------
