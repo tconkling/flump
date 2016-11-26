@@ -121,6 +121,38 @@ public class XflKeyframe
         if (colorXml != null) {
             kf.alpha = XmlUtil.getNumberAttr(colorXml, XflInstance.ALPHA, 1);
         }
+		
+		// Read the persistentData
+		var xmlData:XMLList = instanceXml.persistentData;
+		
+		if (xmlData != null) {
+			var data:Object={};
+			var tempValue:*;
+			var j:int;
+			
+			for (var i:String in xmlData.PD) {
+				if (xmlData.PD[i].@t=="i") tempValue=parseInt(xmlData.PD[i].@v);
+				else if (xmlData.PD[i].@t=="I") {
+					tempValue=xmlData.PD[i].@v.split(",");
+					for (j=0;j<tempValue.length;j++) tempValue[j]=parseInt(tempValue[j]);
+				}
+				else if (xmlData.PD[i].@t=="d") tempValue=parseFloat(xmlData.PD[i].@v);
+				else if (xmlData.PD[i].@t=="D") {
+					tempValue=xmlData.PD[i].@v.split(",");
+					for (j=0;j<tempValue.length;j++) tempValue[j]=parseFloat(tempValue[j]);
+				}
+				else tempValue=xmlData.PD[i].@v.toString();
+				
+				data[xmlData.PD[i].@n]=tempValue;
+			}	
+			
+			for (var z:String in data) {
+				kf.persistentData = data;
+				break;
+			}
+
+		}
+
         return kf;
     }
 }
