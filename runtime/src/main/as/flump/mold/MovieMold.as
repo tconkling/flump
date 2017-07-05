@@ -10,10 +10,14 @@ public class MovieMold
     public var id :String;
     public var layers :Vector.<LayerMold> = new <LayerMold>[];
     public var labels :Vector.<Vector.<String>>;
+    public var data : Object;
+    public var baseClass : String;
 
     public static function fromJSON (o :Object) :MovieMold {
         const mold :MovieMold = new MovieMold();
-        mold.id = require(o, "id");
+        mold.id = require(o, "id");        
+        mold.data = o["data"];
+        mold.baseClass = o["baseClass"];
         for each (var layer :Object in require(o, "layers")) mold.layers.push(LayerMold.fromJSON(layer));
         return mold;
     }
@@ -68,11 +72,14 @@ public class MovieMold
             id: id,
             layers: layers
         };
+        if (data != null) json.data = data;
+        if (baseClass != null) json.baseClass = baseClass;
         return json;
     }
 
     public function toXML () :XML {
-        var xml :XML = <movie name={id}/>;
+        //TODO: add data support. Chose a representation format for persistent Data in XML (maybe the same as in the XFL files but it's not possible in xml attributes)
+        var xml :XML = baseClass == null ? <movie name={id}/> : <movie name={id} baseClass={baseClass}/>;
         for each (var layer :LayerMold in layers) xml.appendChild(layer.toXML());
         return xml;
     }
