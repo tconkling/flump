@@ -10,11 +10,22 @@ import flump.executor.load.LoadedSwf;
 
 public class XflTexture
 {
+    
+    use namespace xflns;
+    
     public var symbol :String;
+    public var data :Object;
 
     public function XflTexture (lib :XflLibrary, location :String, xml :XML) {
         symbol = XmlUtil.getStringAttr(xml, "linkageClassName");
-        lib.createId(this, XmlUtil.getStringAttr(xml, "name"), symbol);
+        
+        // persistent Data
+        if (xml.persistentData!=null) {
+            var lData:Object = XflCustomData.getCustomData(xml.persistentData);
+            if (lData != null) data = lData;
+        }
+        
+        lib.createId(this, XmlUtil.getStringAttr(xml, "name"), symbol);        
     }
 
     public function isValid (lib :XflLibrary) :Boolean {
