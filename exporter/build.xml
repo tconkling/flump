@@ -26,7 +26,19 @@
 
   <target name="genairkeystore" depends="prepare" description="Regenerates the signing certificate. You shouldn't have to run this.">
     <fail unless="PASSWORD" message="Define the cert password with -DPASSWORD=pass to generate a cert"/>
-    <genairkeystore keystore="${keystore}" password="${PASSWORD}" orgname="Three Rings Design"/>
+    <sequential>
+      <requireair/>
+      <echo level="info">Generating ${keystore}</echo>
+      <java jar="${airsdk.dir}/lib/adt.jar" failonerror="true" fork="true" maxmemory="1024m">
+        <jvmarg value="-Djava.awt.headless=true"/>
+        <arg value="-certificate"/>
+        <arg value="-cn"/><arg value="SelfSigned"/>
+        <arg value="-o"/><arg value="Tim Conkling"/>
+        <arg value="2048-RSA"/>
+        <arg value="${keystore}"/>
+        <arg value="${PASSWORD}"/>
+      </java>
+    </sequential>
   </target>
 
   <target name="test" depends="prepare" description="Builds the test swf">
