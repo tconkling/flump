@@ -1,6 +1,15 @@
 Flump: Changelog
 ================
 
+version 1.5.3 - 2017-08-23
+--------------------------
+Exporter:
+- Better error messages for movie parse failures
+
+Runtime:
+- Build against Starling 2.2
+
+
 version 1.5.1 - 2016-09-30
 --------------------------
 Exporter:
