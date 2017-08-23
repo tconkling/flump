@@ -54,6 +54,26 @@ public class XflLibrary
     public const movies :Vector.<MovieMold> = new <MovieMold>[];
     public const textures :Vector.<XflTexture> = new <XflTexture>[];
 
+    /** Returns "movieId:layerName:index" string, for user-facing errors related to parsing a movie */
+    public static function getLocation (topLevelLocation :String, movie :MovieMold = null, layer :LayerMold = null, kf :KeyframeMold = null) :String {
+        var location :String = topLevelLocation;
+        if (movie != null) {
+            location = appendLocation(location, movie.id);
+            if (layer != null) {
+                location = appendLocation(location, layer.name);
+                if (kf != null) {
+                    // Flash/Animate CC starts frame indexes at 1
+                    location = appendLocation(location, "" + (kf.index + 1));
+                }
+            }
+        }
+        return location;
+    }
+
+    public static function appendLocation (location :String, path :String) :String {
+        return location + ":" + path;
+    }
+
     public function XflLibrary (location :String) {
         this.location = location;
     }
@@ -100,7 +120,10 @@ public class XflLibrary
                     try {
                         swfTexture = SwfTexture.fromFlipbook(this, movie, kf.index)
                     } catch (e :Error) {
-                        addTopLevelError(ParseError.CRIT, "Error creating flipbook texture from '" + movie.id + "'");
+                        addError(
+                            getLocation(this.location, movie, layer, kf),
+                            ParseError.CRIT,
+                            "Error creating flipbook texture");
                         swfTexture = null;
                     }
 
@@ -109,8 +132,12 @@ public class XflLibrary
                     kf.ref = _libraryNameToId.get(kf.ref);
                     var item :Object = _idToItem[kf.ref];
                     if (item == null) {
-                        addTopLevelError(ParseError.CRIT,
-                            "unrecognized library item '" + kf.ref + "'");
+                        addError(
+                            getLocation(this.location, movie, layer, kf),
+                            ParseError.CRIT,
+                            kf.ref != null ?
+                                "Unrecognized library item '" + kf.ref + "'" :
+                                "Invalid layer content (Bitmaps and Graphics are not supported).");
                     } else if (item is MovieMold) {
                         prepareForPublishing(MovieMold(item));
                     } else if (item is XflTexture) {
@@ -118,7 +145,10 @@ public class XflLibrary
                         try {
                             swfTexture = SwfTexture.fromTexture(this, tex);
                         } catch (e :Error) {
-                            addTopLevelError(ParseError.CRIT, "Error creating texture '" + tex.symbol + "'");
+                            addError(
+                                getLocation(this.location, movie, layer, kf),
+                                ParseError.CRIT,
+                                "Error creating texture '" + tex.symbol + "'");
                             swfTexture = null;
                         }
                     }
@@ -234,13 +264,13 @@ public class XflLibrary
                 // from the swf.
                 // TODO: remove this restriction by loading the entire swf before reading textures?
                 if (!XmlUtil.getBooleanAttr(xml, XflSymbol.EXPORT_IN_FIRST_FRAME, true)) {
-                    addError(location + ":" + XmlUtil.getStringAttr(xml, XflSymbol.EXPORT_CLASS_NAME),
+                    addError(appendLocation(location, XmlUtil.getStringAttr(xml, XflSymbol.EXPORT_CLASS_NAME)),
                         ParseError.CRIT, "\"Export in frame 1\" must be set");
                     return;
                 }
                 var texture :XflTexture = new XflTexture(this, location, xml);
                 if (texture.isValid(this)) textures.push(texture);
-                else addError(location + ":" + texture.symbol, ParseError.CRIT, "Sprite is empty");
+                else addError(appendLocation(this.location, texture.symbol), ParseError.CRIT, "Sprite is empty");
 
             } else {
                 // It's a movie. If it's exported, we parse it now.

@@ -36,7 +36,7 @@ public class XflKeyframe
 
         const kf :KeyframeMold = new KeyframeMold();
         kf.index = XmlUtil.getIntAttr(xml, INDEX);
-        const location :String = baseLocation + ":" + (kf.index + 1);
+        const location :String = XflLibrary.appendLocation(baseLocation, "" + (kf.index + 1));
         kf.duration = XmlUtil.getIntAttr(xml, DURATION, 1);
         kf.label = XmlUtil.getStringAttr(xml, NAME, null);
         kf.ease = XmlUtil.getNumberAttr(xml, EASE, 0) / 100;
