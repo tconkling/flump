@@ -3,6 +3,9 @@
   <property name="asrc.dir" location="src/main/as"/>
   <property name="deploy.dir" location="dist"/>
   <property name="swf.version" value="30"/>
+  <property name="keystore" location="etc/${ant.project.name}.pfx"/>
+  <property name="PASSWORD" value="pass"/>
+  <property name="tsa" value="http://sha256timestamp.ws.symantec.com/sha256/timestamp"/>
 
   <property name="ooo-build.vers" value="2.10"/>
   <ant antfile="../etc/bootstrap.xml"/>
@@ -12,14 +15,53 @@
     <delete dir="${deploy.dir}"/>
   </target>
 
-  <target name="swf" depends="-init-ooo" description="Builds the swf">
+  <target name="prepare" depends="-init-ooo">
+    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.8"/>
+  </target>
+
+  <target name="genairkeystore" depends="prepare" description="Regenerates the signing certificate. You shouldn't have to run this.">
+    <fail unless="PASSWORD" message="Define the cert password with -DPASSWORD=pass to generate a cert"/>
+    <sequential>
+      <requireair/>
+      <echo level="info">Generating ${keystore}</echo>
+      <java jar="${airsdk.dir}/lib/adt.jar" failonerror="true" fork="true" maxmemory="1024m">
+        <jvmarg value="-Djava.awt.headless=true"/>
+        <arg value="-certificate"/>
+        <arg value="-cn"/><arg value="SelfSigned"/>
+        <arg value="-o"/><arg value="Tim Conkling"/>
+        <arg value="2048-RSA"/>
+        <arg value="${keystore}"/>
+        <arg value="${PASSWORD}"/>
+      </java>
+    </sequential>
+  </target>
+
+  <target name="swf" depends="prepare" description="Builds the swf">
     <mkdir dir="${deploy.dir}"/>
     <mavendep pom="pom.xml" pathProp="aslib.path"/>
     <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.8"/>
-    <mxmlc srcdir="${asrc.dir}" libpath="${aslib.path}"
+    <amxmlc srcdir="${asrc.dir}" libpath="${aslib.path}"
       dest="${deploy.dir}/${ant.project.name}.swf"
       main="flump/demo/Demo.as">
       <arg value="-swf-version=${swf.version}"/>
-    </mxmlc>
+    </amxmlc>
+  </target>
+
+  <target name="package" depends="swf" description="Builds the .air package">
+    <sequential>
+      <requireflex/>
+      <java jar="${flexsdk.dir}/lib/adt.jar" fork="true" failonerror="true">
+        <arg value="-package"/>
+        <arg value="-storetype"/><arg value="pkcs12"/>
+        <arg value="-keystore"/><arg value="${keystore}"/>
+        <arg value="-storepass"/><arg value="${PASSWORD}"/>
+        <arg value="-tsa"/><arg value="${tsa}"/>
+        <arg value="${deploy.dir}/${ant.project.name}.air"/>
+        <arg value="etc/airdesc.xml"/>
+        <arg value="-C"/>
+        <arg value="${deploy.dir}"/>
+        <arg value="${ant.project.name}.swf"/>
+      </java>
+    </sequential>
   </target>
 </project>

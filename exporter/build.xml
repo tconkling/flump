@@ -67,14 +67,10 @@
       <requireflex/>
       <java jar="${flexsdk.dir}/lib/adt.jar" fork="true" failonerror="true">
         <arg value="-package"/>
-        <arg value="-storetype"/>
-        <arg value="pkcs12"/>
-        <arg value="-keystore"/>
-        <arg value="${keystore}"/>
-        <arg value="-storepass"/>
-        <arg value="${PASSWORD}"/>
-        <arg value="-tsa"/>
-        <arg value="${tsa}"/>
+        <arg value="-storetype"/><arg value="pkcs12"/>
+        <arg value="-keystore"/><arg value="${keystore}"/>
+        <arg value="-storepass"/><arg value="${PASSWORD}"/>
+        <arg value="-tsa"/><arg value="${tsa}"/>
         <arg value="${deploy.dir}/${ant.project.name}.air"/>
         <arg value="etc/airdesc.xml"/>
         <arg value="${icons.dir}/icon_16.png"/>
