@@ -17,6 +17,8 @@ import flash.net.URLRequest;
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
 
+import flump.FlumpCodes;
+
 import flump.executor.Executor;
 import flump.executor.Future;
 import flump.executor.FutureTask;
@@ -31,8 +33,8 @@ import flump.mold.TextureGroupMold;
 import starling.core.Starling;
 import starling.textures.Texture;
 
-internal class Loader {
-    public function Loader (toLoad :Object, libLoader :LibraryLoader) {
+internal class FlumpZipLoader {
+    public function FlumpZipLoader (toLoad :Object, libLoader :LibraryLoader) {
         _scaleFactor = (libLoader.scaleFactor > 0 ? libLoader.scaleFactor :
             Starling.contentScaleFactor);
         _libLoader = libLoader;
@@ -59,32 +61,33 @@ internal class Loader {
     protected function onFileLoaded (e :FZipEvent) :void {
         const loaded :FZipFile = _zip.removeFileAt(_zip.getFileCount() - 1);
         const name :String = loaded.filename;
-        if (name == LibraryLoader.LIBRARY_LOCATION) {
+        if (name == FlumpCodes.LIBRARY_FILENAME) {
             const jsonString :String = loaded.content.readUTFBytes(loaded.content.length);
             _lib = LibraryMold.fromJSON(JSON.parse(jsonString));
             _libLoader.libraryMoldLoaded.emit(_lib);
-        } else if (name.indexOf(PNG, name.length - PNG.length) != -1) {
+        } else if (name.indexOf(FlumpCodes.PNG_EXT, name.length - FlumpCodes.PNG_EXT.length) != -1) {
             _atlasBytes[name] = loaded.content;
-        } else if (name.indexOf(ATF, name.length - ATF.length) != -1) {
+        } else if (name.indexOf(FlumpCodes.ATF_EXT, name.length - FlumpCodes.ATF_EXT.length) != -1) {
             _atlasBytes[name] = loaded.content;
             _libLoader.atfAtlasLoaded.emit({name: name, bytes: loaded.content});
-        } else if (name == LibraryLoader.VERSION_LOCATION) {
+        } else if (name == FlumpCodes.VERSION_FILENAME) {
             const zipVersion :String = loaded.content.readUTFBytes(loaded.content.length);
-            if (zipVersion != LibraryLoader.VERSION) {
+            if (zipVersion != FlumpCodes.JSON_ZIP_VERSION) {
                 throw new Error("Zip is version " + zipVersion + " but the code needs " +
-                    LibraryLoader.VERSION);
+                    FlumpCodes.JSON_ZIP_VERSION);
             }
             _versionChecked = true;
-        } else if (name == LibraryLoader.MD5_LOCATION ) { // Nothing to verify
+        } else if (name == FlumpCodes.MD5_FILENAME) {
+            // Nothing to verify
         } else {
-            _libLoader.fileLoaded.emit({name: name, bytes: loaded.content});
+            _libLoader.unrecognizedFileFound.emit({name: name, bytes: loaded.content});
         }
     }
 
     protected function onZipLoadingComplete (..._) :void {
         _zip = null;
-        if (_lib == null) throw new Error(LibraryLoader.LIBRARY_LOCATION + " missing from zip");
-        if (!_versionChecked) throw new Error(LibraryLoader.VERSION_LOCATION + " missing from zip");
+        if (_lib == null) throw new Error(FlumpCodes.LIBRARY_FILENAME + " missing from zip");
+        if (!_versionChecked) throw new Error(FlumpCodes.VERSION_FILENAME + " missing from zip");
         const loader :ImageLoader = _lib.textureFormat == "atf" ? null : new ImageLoader();
         _pngLoaders.terminated.connect(_future.monitoredCallback(onPngLoadingComplete));
 
@@ -116,13 +119,13 @@ internal class Loader {
         var scale :Number = atlas.scaleFactor;
         if (_lib.textureFormat == "atf") {
             // we do not dipose of the ByteArray so that Starling will handle a context loss.
-            baseTextureLoaded(Texture.fromAtfData(bytes, scale, _libLoader.generateMipMaps), atlas);
+            addBaseTexture(Texture.fromAtfData(bytes, scale, _libLoader.generateMipMaps), atlas);
         } else {
             const atlasFuture :Future = loader.loadFromBytes(bytes, _pngLoaders);
             atlasFuture.failed.connect(onPngLoadingFailed);
             atlasFuture.succeeded.connect(function (img :LoadedImage) :void {
                 _libLoader.pngAtlasLoaded.emit({atlas: atlas, image: img});
-                baseTextureLoaded(Texture.fromBitmapData(
+                addBaseTexture(Texture.fromBitmapData(
                     img.bitmapData,
                     _libLoader.generateMipMaps,
                     false,  // optimizeForRenderToTexture
@@ -135,7 +138,7 @@ internal class Loader {
         }
     }
 
-    protected function baseTextureLoaded (baseTexture :Texture, atlas :AtlasMold) :void {
+    protected function addBaseTexture (baseTexture :Texture, atlas :AtlasMold) :void {
         _baseTextures.push(baseTexture);
 
         _libLoader.creatorFactory.consumingAtlasMold(atlas);
@@ -193,8 +196,5 @@ internal class Loader {
     protected const _creators :Dictionary = new Dictionary();//<name, ImageCreator/MovieCreator>
     protected const _atlasBytes :Dictionary = new Dictionary();//<String name, ByteArray>
     protected const _pngLoaders :Executor = new Executor(1);
-
-    protected static const PNG :String = ".png";
-    protected static const ATF :String = ".atf";
 }
 }

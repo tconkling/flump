@@ -4,6 +4,7 @@
 package flump.display {
 
 import flash.events.ProgressEvent;
+import flash.filesystem.File;
 import flash.utils.ByteArray;
 
 import flump.executor.Executor;
@@ -70,7 +71,11 @@ public class LibraryLoader
     }
 
     /**
-     * Dispatched when a ProgressEvent is received on a URL load of a Zip archive.
+     * Dispatched when progress is made on a load operation.
+     *
+     * Zipfile-load operations emit ProgressEvents received from the zip file itself.
+     * Directory-load operations, however, create their own ProgressEvent objects that
+     * reflect the total number of bytes loaded across all files in the directory.
      *
      * Signal parameters:
      *  * event :flash.events.ProgressEvent
@@ -78,13 +83,17 @@ public class LibraryLoader
     public const urlLoadProgressed :Signal = new Signal(ProgressEvent);
 
     /**
-     * Dispatched when a file is found in the Zip archive that is not recognized by Flump.
+     * Dispatched when a file is found that is not recognized by Flump.
      *
-     * Dispatched Object has the following named properties:
+     * If Flump was loading a zip file, the dispatched Object will have
+     * the following named properties:
      *  * name :String - the filename in the archive
      *  * bytes :ByteArray - the content of the file
+     *
+     * If Flump was loading a directory, the dispatched Object will be the unrecognized File
+     * itself.
      */
-    public const fileLoaded :Signal = new Signal(Object);
+    public const unrecognizedFileFound :Signal = new Signal(Object);
 
     /**
      * Dispatched when the library mold has been read from the archive.
@@ -181,7 +190,7 @@ public class LibraryLoader
      */
     public function loadBytes (bytes :ByteArray) :Future {
         return (_executor || new Executor(1)).submit(
-            new Loader(bytes, this).load);
+            new FlumpZipLoader(bytes, this).load);
     }
 
     /**
@@ -192,22 +201,17 @@ public class LibraryLoader
      */
     public function loadURL (url :String) :Future {
         return (_executor || new Executor(1)).submit(
-            new Loader(url, this).load);
+            new FlumpZipLoader(url, this).load);
     }
 
-    /** @private */
-    public static const LIBRARY_LOCATION :String = "library.json";
-    /** @private */
-    public static const MD5_LOCATION :String = "md5";
-    /** @private */
-    public static const VERSION_LOCATION :String = "version";
-
     /**
-     * @private
-     * The version produced and parsable by this version of the code. The version in a resources
-     * zip must equal the version compiled into the parsing code for parsing to succeed.
+     * Loads a non-compressed Library from the given directory.
+     *
+     * @param dir The directory containing the flump resources
      */
-    public static const VERSION :String = "2";
+    public function loadDirectory (dir :File) :Future {
+        return (_executor || new Executor(1)).submit(new FlumpDirectoryLoader(dir, this).load);
+    }
 
     protected var _executor :Executor;
     protected var _scaleFactor :Number = -1;

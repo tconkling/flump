@@ -9,6 +9,8 @@ import flash.filesystem.File;
 import flash.utils.ByteArray;
 import flash.utils.IDataOutput;
 
+import flump.FlumpCodes;
+
 import flump.xfl.XflLibrary;
 
 public class JSONFormat extends PublishFormat
@@ -24,7 +26,7 @@ public class JSONFormat extends PublishFormat
             projectName :String) {
         super(destDir, libs, conf, projectName);
         _prefix = conf.name + "/" + location;
-        _metaFile =  _destDir.resolvePath(_prefix + "/library.json");
+        _metaFile =  _destDir.resolvePath(_prefix + "/" + flump.FlumpCodes.LIBRARY_FILENAME);
     }
 
     override public function get modified () :Boolean {

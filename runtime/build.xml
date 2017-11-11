@@ -18,10 +18,21 @@
   </target>
 
   <target name="swc" depends="prepare" description="Builds the library (.swc file)">
-    <compc srcdir="${asrc.dir}" libpath="${aslib.path}"
-      dest="${deploy.dir}/${ant.project.name}.swc">
-      <arg value="-swf-version=13"/>
-    </compc>
+    <sequential>
+      <requireair/>
+      <java jar="${airsdk.dir}/lib/compc-cli.jar" failonerror="true" fork="true" maxmemory="1024m">
+        <jvmarg value="-Djava.awt.headless=true"/>
+        <arg value="-load-config=${airsdk.dir}/frameworks/air-config.xml"/>
+        <arg value="-compiler.external-library-path+=${aslib.path}"/>
+        <arg value="-compiler.source-path=${asrc.dir}"/>
+        <arg value="-compiler.debug=false"/>
+        <arg value="-compiler.optimize=true"/>
+        <arg value="-compiler.omit-trace-statements=false"/>
+        <arg value="-include-sources=${asrc.dir}"/>
+        <arg value="-output=${deploy.dir}/${ant.project.name}.swc"/>
+        <arg value="-swf-version=13"/>
+      </java>
+    </sequential>
   </target>
 
   <target name="asdoc" depends="prepare" description="Builds the documentation">

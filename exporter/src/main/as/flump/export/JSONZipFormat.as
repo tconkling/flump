@@ -3,14 +3,14 @@
 
 package flump.export {
 
+import deng.fzip.FZip;
+import deng.fzip.FZipFile;
+
 import flash.filesystem.File;
 import flash.utils.ByteArray;
 import flash.utils.IDataOutput;
 
-import deng.fzip.FZip;
-import deng.fzip.FZipFile;
-
-import flump.display.LibraryLoader;
+import flump.FlumpCodes;
 import flump.xfl.XflLibrary;
 
 public class JSONZipFormat extends PublishFormat
@@ -52,13 +52,13 @@ public class JSONZipFormat extends PublishFormat
         for each (var atlas :Atlas in atlases) {
             addToZip(atlas.filename, function (b :ByteArray) :void { AtlasUtil.writePNG(atlas, b); });
         }
-        addToZip(LibraryLoader.LIBRARY_LOCATION, function (b :ByteArray) :void {
+        addToZip(FlumpCodes.LIBRARY_FILENAME, function (b :ByteArray) :void {
             b.writeUTFBytes(toJSONString(createMold(atlases)));
         });
-        addToZip(LibraryLoader.MD5_LOCATION,
+        addToZip(FlumpCodes.MD5_FILENAME,
             function (b :ByteArray) :void { b.writeUTFBytes(md5); });
-        addToZip(LibraryLoader.VERSION_LOCATION,
-            function (b :ByteArray) :void { b.writeUTFBytes(LibraryLoader.VERSION); });
+        addToZip(FlumpCodes.VERSION_FILENAME,
+            function (b :ByteArray) :void { b.writeUTFBytes(FlumpCodes.JSON_ZIP_VERSION); });
 
         Files.write(outputFile, function (out :IDataOutput) :void {
             zip.serialize(out, /*includeAdler32=*/true);
