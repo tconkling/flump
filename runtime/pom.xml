@@ -15,7 +15,7 @@
     <dependency>
       <groupId>com.timconkling</groupId>
       <artifactId>react-as3</artifactId>
-      <version>1.2.1</version>
+      <version>1.2.2</version>
       <type>swc</type>
     </dependency>
     <dependency>
