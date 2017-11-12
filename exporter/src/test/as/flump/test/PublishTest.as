@@ -3,6 +3,8 @@
 
 package flump.test {
 
+import aspire.util.F;
+
 import flash.filesystem.File;
 
 import flump.export.ExportConf;
@@ -18,9 +20,13 @@ public class PublishTest
     public function PublishTest (runner :TestRunner, lib :XflLibrary) {
         _lib = new <XflLibrary>[lib];
         runner.run("Publish XML", makePublishTest("xml", XMLFormat));
-        runner.run("Publish JSON", makePublishTest("json", JSONFormat));
-        runner.run("Publish JSONZip", makePublishTest("jsonzip", JSONZipFormat,
-            function (output :File) :void {  new StarlingResourcesTest(runner, output); }));
+        runner.run("Publish JSONDir", makePublishTest("json", JSONFormat, function (output :File) :void {
+            StarlingResourcesTest.testLoadJSONDir(runner, output);
+        }));
+        runner.run("Publish JSONZip", makePublishTest("jsonzip", JSONZipFormat, function (output :File) :void {
+            StarlingResourcesTest.testLoadJSONZip(runner, output);
+        }));
+        runner.run("Test bad resources", F.bind(StarlingResourcesTest.testBadResources, runner));
     }
 
     protected function makePublishTest (name :String, formatClass :Class,
@@ -39,8 +45,7 @@ public class PublishTest
             pub.publishSingle(_lib[0]);
             assert(!pub.modified(_lib, 0), "Shouldn't be modified after publishing");
             if (postPublish != null) {
-                postPublish(
-                    conf.createPublishFormat(exportDir, _lib, "Text Project")["outputFile"]);
+                postPublish(conf.createPublishFormat(exportDir, _lib, "Text Project").outputFile);
             }
         }
     }

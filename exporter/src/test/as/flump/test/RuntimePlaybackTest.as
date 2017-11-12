@@ -14,13 +14,14 @@ import flump.executor.FutureTask;
 
 public class RuntimePlaybackTest
 {
-    public static function addTests (runner :TestRunner, res :Library) :void {
-        runner.run("Goto frame and label", new RuntimePlaybackTest(runner, res).goToFrameAndLabel);
-        runner.runAsync("Play, stop, loop", new RuntimePlaybackTest(runner, res).playStopLoop);
-        runner.runAsync("Stop, play", new RuntimePlaybackTest(runner, res).stopPlay);
-        runner.runAsync("Play when added", new RuntimePlaybackTest(runner, res).playWhenAdded);
-        runner.runAsync("Play once", new RuntimePlaybackTest(runner, res).playOnce);
-        runner.runAsync("Pause while removed", new RuntimePlaybackTest(runner, res).pauseWhileRemoved);
+    public static function addTests (runner :TestRunner, res :Library, formatName :String) :void {
+        var suffix :String = " (" + formatName + ")";
+        runner.run("Goto frame and label" + suffix, new RuntimePlaybackTest(runner, res).goToFrameAndLabel);
+        runner.runAsync("Play, stop, loop" + suffix, new RuntimePlaybackTest(runner, res).playStopLoop);
+        runner.runAsync("Stop, play" + suffix, new RuntimePlaybackTest(runner, res).stopPlay);
+        runner.runAsync("Play when added" + suffix, new RuntimePlaybackTest(runner, res).playWhenAdded);
+        runner.runAsync("Play once" + suffix, new RuntimePlaybackTest(runner, res).playOnce);
+        runner.runAsync("Pause while removed" + suffix, new RuntimePlaybackTest(runner, res).pauseWhileRemoved);
     }
 
     public function RuntimePlaybackTest (runner :TestRunner, res :Library) {

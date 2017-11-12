@@ -10,7 +10,6 @@ import flash.utils.ByteArray;
 import flash.utils.IDataOutput;
 
 import flump.FlumpCodes;
-
 import flump.xfl.XflLibrary;
 
 public class JSONFormat extends PublishFormat
@@ -26,7 +25,8 @@ public class JSONFormat extends PublishFormat
             projectName :String) {
         super(destDir, libs, conf, projectName);
         _prefix = conf.name + "/" + location;
-        _metaFile =  _destDir.resolvePath(_prefix + "/" + flump.FlumpCodes.LIBRARY_FILENAME);
+        _outputDir = _destDir.resolvePath(_prefix);
+        _metaFile =  _outputDir.resolvePath(FlumpCodes.LIBRARY_FILENAME);
     }
 
     override public function get modified () :Boolean {
@@ -34,16 +34,19 @@ public class JSONFormat extends PublishFormat
         return readJSON(_metaFile).md5 != md5;
     }
 
+    override public function get outputFile () :File {
+        return _outputDir;
+    }
+
     override public function publish () :void {
-        const libExportDir :File = _destDir.resolvePath(_prefix);
         // Ensure any previously generated atlases don't linger
-        if (libExportDir.exists) libExportDir.deleteDirectory(/*deleteDirectoryContents=*/true);
-        libExportDir.createDirectory();
+        if (_outputDir.exists) _outputDir.deleteDirectory(/*deleteDirectoryContents=*/true);
+        _outputDir.createDirectory();
 
         const atlases :Vector.<Atlas> = createAtlases();
         for each (var atlas :Atlas in atlases) {
             Files.write(
-                libExportDir.resolvePath(atlas.filename),
+                _outputDir.resolvePath(atlas.filename),
                 F.bind(AtlasUtil.writePNG, atlas, F._1));
         }
 
@@ -51,6 +54,7 @@ public class JSONFormat extends PublishFormat
         Files.write(_metaFile, function (out :IDataOutput) :void {  out.writeUTFBytes(json); });
     }
 
+    protected var _outputDir :File;
     protected var _prefix :String;
     protected var _metaFile :File;
 }

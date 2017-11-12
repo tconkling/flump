@@ -29,6 +29,9 @@ public class PublishFormat
 
     public function get modified () :Boolean { throw new Error("Must be implemented by a subclass"); }
 
+    /** Directory or zip file that is being published to */
+    public function get outputFile () :File { throw new Error("Must be implemented by a subclass"); }
+
     public function publish () :void { throw new Error("Must be implemented by a subclass"); }
 
     protected function get md5 () :String {

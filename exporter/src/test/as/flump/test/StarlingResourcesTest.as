@@ -15,36 +15,62 @@ import flump.executor.FutureTask;
 
 public class StarlingResourcesTest
 {
-    public function StarlingResourcesTest (runner :TestRunner, zipFile :File) {
-        runner.runAsync("Load Starling Resources", function (finisher :FutureTask) :void {
-            const loader :Future = LibraryLoader.loadURL(zipFile.url);
+    public static function testLoadJSONZip (runner :TestRunner, zipFile :File) :void {
+        runner.runAsync("Load JSONZip", function (finisher :FutureTask) :void {
+            const loader :Future = new LibraryLoader().loadURL(zipFile.url);
             loader.succeeded.connect(function (res :Library) :void {
-                finisher.succeedAfter(F.bind(checkResources, res));
+                finisher.succeedAfter(F.bind(checkLoadedResources, runner, res, "JSONZip"));
             });
             loader.failed.connect(finisher.fail);
         });
-        function checkResources (res :Library) :void {
-            assert(res.movieSymbols.length == 2, "There should be 2 items in movieNames");
-            assert(res.movieSymbols.indexOf("nesteddance") != -1, "nesteddance should be in movies");
-            assert(res.movieSymbols.indexOf("squaredance") != -1, "squaredance should be in movies");
-            const movie :Movie = res.createMovie("nesteddance");
-            assert(res.createImage("redsquare") != null);
-            assert(movie.name == "nesteddance", "Movies should be named after their mold name");
-            assertThrows(F.bind(res.createImage, "nesteddance"), "Loaded movie as texture");
-            assertThrows(F.bind(res.createMovie, "redsquare"), "Loaded texture as movie");
-            assertThrows(F.bind(res.createMovie, "no movie with this id "));
-            RuntimePlaybackTest.addTests(runner, res);
-        }
-        checkBadResourcesFail(runner, NO_VERSION, "no version");
-        checkBadResourcesFail(runner, WRONG_VERSION, "wrong version");
-        checkBadResourcesFail(runner, MALFORMED_JSON, "malformed json");
-        checkBadResourcesFail(runner, MISSING_ATLAS, "missing atlas");
     }
 
-    protected function checkBadResourcesFail (runner :TestRunner, badResources :Class, reason :String) :void {
-        runner.runAsync("Fail loading resources with " + reason,
+    public static function testLoadJSONDir (runner :TestRunner, dir :File) :void {
+        runner.runAsync("Load JSONDir", function (finisher :FutureTask) :void {
+            const loader :Future = new LibraryLoader().loadDirectory(dir);
+            loader.succeeded.connect(function (res :Library) :void {
+                finisher.succeedAfter(F.bind(checkLoadedResources, runner, res, "JSONDir"));
+            });
+            loader.failed.connect(finisher.fail);
+        });
+    }
+
+    private static function checkLoadedResources (runner :TestRunner, res :Library, formatName :String) :void {
+        var suffix :String = " (" + formatName + ")";
+        assert(res.movieSymbols.length == 2, "There should be 2 items in movieNames" + suffix);
+        assert(res.movieSymbols.indexOf("nesteddance") != -1, "nesteddance should be in movies" + suffix);
+        assert(res.movieSymbols.indexOf("squaredance") != -1, "squaredance should be in movies" + suffix);
+        const movie :Movie = res.createMovie("nesteddance");
+        assert(res.createImage("redsquare") != null);
+        assert(movie.name == "nesteddance", "Movies should be named after their mold name" + suffix);
+        assertThrows(F.bind(res.createImage, "nesteddance"), "Loaded movie as texture" + suffix);
+        assertThrows(F.bind(res.createMovie, "redsquare"), "Loaded texture as movie" + suffix);
+        assertThrows(F.bind(res.createMovie, "no movie with this id"), "Non-existent movie throws" + suffix);
+        RuntimePlaybackTest.addTests(runner, res, formatName);
+    }
+
+    public static function testBadResources (runner :TestRunner) :void {
+        checkBadZipResourcesFail(runner, NO_VERSION, "no version");
+        checkBadZipResourcesFail(runner, WRONG_VERSION, "wrong version");
+        checkBadZipResourcesFail(runner, MALFORMED_JSON, "malformed json");
+        checkBadZipResourcesFail(runner, MISSING_ATLAS, "missing atlas");
+        checkBadDirResourcesFail(runner, TestRunner.dist.resolvePath("does_not_exist"),
+            "Non-existent directory");
+    }
+
+    private static function checkBadDirResourcesFail (runner :TestRunner, dir :File, reason :String) :void {
+        runner.runAsync("Dir load fails with " + reason,
             function (future :FutureTask) :void {
-                const loader :Future = LibraryLoader.loadBytes(new badResources());
+                var loader :Future = new LibraryLoader().loadDirectory(dir);
+                loader.succeeded.connect(F.bind(future.fail, "Shouldn't load resources with " + reason));
+                loader.failed.connect(future.succeed);
+            });
+    }
+
+    private static function checkBadZipResourcesFail (runner :TestRunner, badResources :Class, reason :String) :void {
+        runner.runAsync("Zip load fails with " + reason,
+            function (future :FutureTask) :void {
+                const loader :Future = new LibraryLoader().loadBytes(new badResources());
                 loader.succeeded.connect(F.bind(future.fail, "Shouldn't load resources with " + reason));
                 loader.failed.connect(future.succeed);
         });

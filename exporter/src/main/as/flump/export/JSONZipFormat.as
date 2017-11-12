@@ -17,23 +17,25 @@ public class JSONZipFormat extends PublishFormat
 {
     public static const NAME :String = "JSONZip";
 
-    public var outputFile :File;
-
     public function JSONZipFormat (destDir :File, libs :Vector.<XflLibrary>, conf :ExportConf,
             projectName :String) {
         super(destDir, libs, conf, projectName);
         if (conf.name != null) {
-            outputFile = _destDir.resolvePath(conf.name + "/" + location + ".zip");
+            _outputFile = _destDir.resolvePath(conf.name + "/" + location + ".zip");
         } else {
-            outputFile = _destDir.resolvePath(location + ".zip");
+            _outputFile = _destDir.resolvePath(location + ".zip");
         }
     }
 
+    override public function get outputFile () :File {
+        return _outputFile;
+    }
+
     override public function get modified () :Boolean {
-        if (!outputFile.exists) return true;
+        if (!_outputFile.exists) return true;
 
         const zip :FZip = new FZip();
-        zip.loadBytes(Files.read(outputFile));
+        zip.loadBytes(Files.read(_outputFile));
         const md5File :FZipFile = zip.getFileByName("md5");
         const md5 :String = md5File.content.readUTFBytes(md5File.content.length);
         return md5 != this.md5;
@@ -60,10 +62,12 @@ public class JSONZipFormat extends PublishFormat
         addToZip(FlumpCodes.VERSION_FILENAME,
             function (b :ByteArray) :void { b.writeUTFBytes(FlumpCodes.JSON_ZIP_VERSION); });
 
-        Files.write(outputFile, function (out :IDataOutput) :void {
+        Files.write(_outputFile, function (out :IDataOutput) :void {
             zip.serialize(out, /*includeAdler32=*/true);
         });
     }
+
+    protected var _outputFile :File;
 
 }
 }
