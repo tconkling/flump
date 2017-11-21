@@ -184,7 +184,7 @@ internal class Layer
         }
 
         // otherwise expand bounds by current display's bounds, if it has any
-        var layerRect :Rectangle = _currentDisplay.getBounds(targetSpace);
+        var layerRect :Rectangle = _currentDisplay.getBounds(targetSpace, R);
         if (layerRect.left < resultRect.left) resultRect.left = layerRect.left;
         if (layerRect.right > resultRect.right) resultRect.right = layerRect.right;
         if (layerRect.top < resultRect.top) resultRect.top = layerRect.top;
@@ -208,5 +208,7 @@ internal class Layer
     internal var _disabled :Boolean;
     // The number of DisplayObjects we're managing
     protected var _numDisplays :int;
+
+    private static const R :Rectangle = new Rectangle();
 }
 }
