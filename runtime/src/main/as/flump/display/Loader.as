@@ -122,16 +122,13 @@ internal class Loader {
             atlasFuture.failed.connect(onPngLoadingFailed);
             atlasFuture.succeeded.connect(function (img :LoadedImage) :void {
                 _libLoader.pngAtlasLoaded.emit({atlas: atlas, image: img});
-                baseTextureLoaded(Texture.fromBitmapData(
-                    img.bitmapData,
-                    _libLoader.generateMipMaps,
-                    false,  // optimizeForRenderToTexture
-                    scale), atlas);
+                var tex :Texture = _libLoader.creatorFactory.createTextureFromBitmap(
+                    atlas, img.bitmapData, scale, _libLoader.generateMipMaps);
+                baseTextureLoaded(tex, atlas);
                 // We dispose of the ByteArray, but not the BitmapData,
                 // so that Starling will handle a context loss.
                 ByteArray(bytes).clear();
             });
-
         }
     }
 

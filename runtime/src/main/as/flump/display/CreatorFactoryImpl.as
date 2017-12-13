@@ -1,5 +1,6 @@
 package flump.display {
 
+import flash.display.BitmapData;
 import flash.geom.Point;
 
 import flump.mold.AtlasMold;
@@ -14,6 +15,12 @@ import starling.textures.Texture;
  * implementation.
  */
 internal class CreatorFactoryImpl implements CreatorFactory {
+    public function createTextureFromBitmap (atlas :AtlasMold, bitmapData :BitmapData,
+        scale :Number, generateMipMaps :Boolean) :Texture {
+
+        return Texture.fromBitmapData(bitmapData, generateMipMaps, false, scale);
+    }
+
     public function createImageCreator (mold :AtlasTextureMold, texture :Texture, origin :Point,
         symbol :String) :ImageCreator {
         return new ImageCreator(texture, origin, symbol);
