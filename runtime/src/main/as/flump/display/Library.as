@@ -22,6 +22,9 @@ public interface Library
      * from multiple source FLAs. */
     function get isNamespaced () :Boolean;
 
+    /** @return the texture atlases in the library */
+    function get baseTextures () :Vector.<Texture>;
+
     /**
      * @return the SymbolCreator for the given symbol name.
      *
