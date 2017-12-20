@@ -2,7 +2,10 @@ package flump.display {
 
 import flash.display.BitmapData;
 import flash.geom.Point;
+import flash.utils.ByteArray;
 
+import flump.executor.Future;
+import flump.executor.load.BitmapLoader;
 import flump.mold.AtlasMold;
 import flump.mold.AtlasTextureMold;
 import flump.mold.MovieMold;
@@ -15,6 +18,15 @@ import starling.textures.Texture;
  * implementation.
  */
 internal class CreatorFactoryImpl implements CreatorFactory {
+    public function loadAtlasBitmap (atlas :AtlasMold, atlasIndex :int, bytes :ByteArray, onSuccess :Function, onError :Function) :void {
+        if (_bitmapLoader == null) {
+            _bitmapLoader = new BitmapLoader();
+        }
+        var f :Future = _bitmapLoader.loadFromBytes(bytes);
+        f.succeeded.connect(onSuccess);
+        f.failed.connect(onError);
+    }
+
     public function createTextureFromBitmap (atlas :AtlasMold, bitmapData :BitmapData,
         scale :Number, generateMipMaps :Boolean) :Texture {
 
@@ -31,5 +43,7 @@ internal class CreatorFactoryImpl implements CreatorFactory {
     }
 
     public function consumingAtlasMold (mold :AtlasMold) :void { /* nada */ }
+
+    private var _bitmapLoader :BitmapLoader;
 }
 }
