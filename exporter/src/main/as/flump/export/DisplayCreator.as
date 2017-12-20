@@ -75,6 +75,10 @@ public class DisplayCreator
         return false;
     }
 
+    public function get baseTextures () :Vector.<Texture> {
+        return _baseTextures;
+    }
+
     public function createDisplayObject (id :String) :DisplayObject {
         var creator :SymbolCreator = _creators[id];
         return creator.create(this);
