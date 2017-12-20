@@ -8,6 +8,8 @@ import deng.fzip.FZipErrorEvent;
 import deng.fzip.FZipEvent;
 import deng.fzip.FZipFile;
 
+import flash.display.BitmapData;
+
 import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.events.ProgressEvent;
@@ -21,7 +23,6 @@ import flump.executor.Executor;
 import flump.executor.Future;
 import flump.executor.FutureTask;
 import flump.executor.load.BitmapLoader;
-import flump.executor.load.LoadedBitmap;
 import flump.mold.AtlasMold;
 import flump.mold.AtlasTextureMold;
 import flump.mold.LibraryMold;
@@ -85,14 +86,15 @@ internal class Loader {
         _zip = null;
         if (_lib == null) throw new Error(LibraryLoader.LIBRARY_LOCATION + " missing from zip");
         if (!_versionChecked) throw new Error(LibraryLoader.VERSION_LOCATION + " missing from zip");
-        const loader :BitmapLoader = _lib.textureFormat == "atf" ? null : new BitmapLoader();
         _pngLoaders.terminated.connect(_future.monitoredCallback(onPngLoadingComplete));
+
+        const bitmapLoader :BitmapLoader = _lib.textureFormat == "atf" ? null : new BitmapLoader();
 
         // Determine the scale factor we want to use
         var textureGroup :TextureGroupMold = _lib.bestTextureGroupForScaleFactor(_scaleFactor);
         if (textureGroup != null) {
             for each (var atlas :AtlasMold in textureGroup.atlases) {
-                loadAtlas(loader, atlas);
+                loadAtlas(bitmapLoader, atlas);
             }
         }
         // free up extra atlas bytes immediately
@@ -120,10 +122,10 @@ internal class Loader {
         } else {
             const atlasFuture :Future = loader.loadFromBytes(bytes, _pngLoaders);
             atlasFuture.failed.connect(onPngLoadingFailed);
-            atlasFuture.succeeded.connect(function (img :LoadedBitmap) :void {
-                _libLoader.pngAtlasLoaded.emit({atlas: atlas, image: img});
+            atlasFuture.succeeded.connect(function (bitmapData :BitmapData) :void {
+                _libLoader.pngAtlasLoaded.emit({atlas: atlas, image: bitmapData});
                 var tex :Texture = _libLoader.creatorFactory.createTextureFromBitmap(
-                    atlas, img.bitmapData, scale, _libLoader.generateMipMaps);
+                    atlas, bitmapData, scale, _libLoader.generateMipMaps);
                 baseTextureLoaded(tex, atlas);
                 // We dispose of the ByteArray, but not the BitmapData,
                 // so that Starling will handle a context loss.
