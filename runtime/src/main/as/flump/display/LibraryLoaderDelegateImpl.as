@@ -13,11 +13,11 @@ import flump.mold.MovieMold;
 import starling.textures.Texture;
 
 /**
- * A default implementation of CreatorFactory, it does nothing but return vanilla ImageCreators and
- * MovieCreators. It may be used as an adapter super class for a custom CreatorFactory
+ * A default implementation of LibraryLoaderDelegate, it does nothing but return vanilla ImageCreators and
+ * MovieCreators. It may be used as an adapter super class for a custom LibraryLoaderDelegate
  * implementation.
  */
-internal class CreatorFactoryImpl implements CreatorFactory {
+internal class LibraryLoaderDelegateImpl implements LibraryLoaderDelegate {
     public function loadAtlasBitmap (atlas :AtlasMold, atlasIndex :int, bytes :ByteArray, onSuccess :Function, onError :Function) :void {
         if (_bitmapLoader == null) {
             _bitmapLoader = new BitmapLoader();

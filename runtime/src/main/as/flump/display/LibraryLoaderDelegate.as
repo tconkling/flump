@@ -11,9 +11,9 @@ import flump.mold.MovieMold;
 import starling.textures.Texture;
 
 /**
- * A Factory for creating SymbolCreators that is given some context as a Library is assembled.
+ * Allows customization of the Flump library load process
  */
-public interface CreatorFactory {
+public interface LibraryLoaderDelegate {
     /**
      * Load a BitmapData from a ByteArray
      * @param atlas the AtlasMold for this texture atlas

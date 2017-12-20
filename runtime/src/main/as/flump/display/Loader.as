@@ -125,12 +125,12 @@ internal class Loader {
                     // kinda crappy!
                     var unaryOnSuccess :Function = function (result :*) :void { onSuccess(result); };
                     var unaryOnFailure :Function = function (err :*) :void { onFailure(err); };
-                    _libLoader.creatorFactory.loadAtlasBitmap(atlas, atlasIndex, bytes, unaryOnSuccess, unaryOnFailure);
+                    _libLoader.delegate.loadAtlasBitmap(atlas, atlasIndex, bytes, unaryOnSuccess, unaryOnFailure);
                 });
             atlasFuture.failed.connect(onBitmapLoadingFailed);
             atlasFuture.succeeded.connect(function (bitmapData :BitmapData) :void {
                 _libLoader.pngAtlasLoaded.emit({atlas: atlas, image: bitmapData});
-                var tex :Texture = _libLoader.creatorFactory.createTextureFromBitmap(
+                var tex :Texture = _libLoader.delegate.createTextureFromBitmap(
                     atlas, bitmapData, scale, _libLoader.generateMipMaps);
                 baseTextureLoaded(tex, atlas);
                 // We dispose of the ByteArray, but not the BitmapData,
@@ -143,7 +143,7 @@ internal class Loader {
     protected function baseTextureLoaded (baseTexture :Texture, atlas :AtlasMold) :void {
         _baseTextures.push(baseTexture);
 
-        _libLoader.creatorFactory.consumingAtlasMold(atlas);
+        _libLoader.delegate.consumingAtlasMold(atlas);
         var scale :Number = atlas.scaleFactor;
         for each (var atlasTexture :AtlasTextureMold in atlas.textures) {
             var bounds :Rectangle = atlasTexture.bounds;
@@ -162,7 +162,7 @@ internal class Loader {
                 offset.y /= scale;
             }
 
-            _creators[atlasTexture.symbol] = _libLoader.creatorFactory.createImageCreator(
+            _creators[atlasTexture.symbol] = _libLoader.delegate.createImageCreator(
                 atlasTexture,
                 Texture.fromTexture(baseTexture, bounds),
                 offset,
@@ -173,7 +173,7 @@ internal class Loader {
     protected function onBitmapLoadingComplete (..._) :void {
         for each (var movie :MovieMold in _lib.movies) {
             movie.fillLabels();
-            _creators[movie.id] = _libLoader.creatorFactory.createMovieCreator(
+            _creators[movie.id] = _libLoader.delegate.createMovieCreator(
                 movie, _lib.frameRate);
         }
         _future.succeed(new LibraryImpl(_baseTextures, _creators, _lib.isNamespaced));

@@ -159,18 +159,18 @@ public class LibraryLoader
     }
 
     /**
-     * Sets the CreatorFactory instance used for this loader.
+     * Sets the LibraryLoaderDelegate instance used for this loader.
      */
-    public function setCreatorFactory (factory :CreatorFactory) :LibraryLoader {
-        _creatorFactory = factory;
+    public function setDelegate (factory :LibraryLoaderDelegate) :LibraryLoader {
+        _delegate = factory;
         return this;
     }
 
-    public function get creatorFactory () :CreatorFactory {
-        if (_creatorFactory == null) {
-            _creatorFactory = new CreatorFactoryImpl();
+    public function get delegate () :LibraryLoaderDelegate {
+        if (_delegate == null) {
+            _delegate = new LibraryLoaderDelegateImpl();
         }
-        return _creatorFactory;
+        return _delegate;
     }
 
     /**
@@ -212,6 +212,6 @@ public class LibraryLoader
     protected var _executor :Executor;
     protected var _scaleFactor :Number = -1;
     protected var _generateMipMaps :Boolean = false;
-    protected var _creatorFactory :CreatorFactory;
+    protected var _delegate :LibraryLoaderDelegate;
 }
 }
