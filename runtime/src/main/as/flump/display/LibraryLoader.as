@@ -110,7 +110,7 @@ public class LibraryLoader
      *
      * Dispatched Object has the following named properties:
      *  * atlas :AtlasMold - The loaded atlas.
-     *  * image :LoadedImage - the decoded image.
+     *  * image :LoadedBitmap - the decoded image.
      */
     public const pngAtlasLoaded :Signal = new Signal(Object);
 

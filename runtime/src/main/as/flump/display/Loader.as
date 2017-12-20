@@ -20,8 +20,8 @@ import flash.utils.Dictionary;
 import flump.executor.Executor;
 import flump.executor.Future;
 import flump.executor.FutureTask;
-import flump.executor.load.ImageLoader;
-import flump.executor.load.LoadedImage;
+import flump.executor.load.BitmapLoader;
+import flump.executor.load.LoadedBitmap;
 import flump.mold.AtlasMold;
 import flump.mold.AtlasTextureMold;
 import flump.mold.LibraryMold;
@@ -85,7 +85,7 @@ internal class Loader {
         _zip = null;
         if (_lib == null) throw new Error(LibraryLoader.LIBRARY_LOCATION + " missing from zip");
         if (!_versionChecked) throw new Error(LibraryLoader.VERSION_LOCATION + " missing from zip");
-        const loader :ImageLoader = _lib.textureFormat == "atf" ? null : new ImageLoader();
+        const loader :BitmapLoader = _lib.textureFormat == "atf" ? null : new BitmapLoader();
         _pngLoaders.terminated.connect(_future.monitoredCallback(onPngLoadingComplete));
 
         // Determine the scale factor we want to use
@@ -105,7 +105,7 @@ internal class Loader {
         _pngLoaders.shutdown();
     }
 
-    protected function loadAtlas (loader :ImageLoader, atlas :AtlasMold) :void {
+    protected function loadAtlas (loader :BitmapLoader, atlas :AtlasMold) :void {
         const bytes :* = _atlasBytes[atlas.file];
         delete _atlasBytes[atlas.file];
         if (bytes === undefined) {
@@ -120,7 +120,7 @@ internal class Loader {
         } else {
             const atlasFuture :Future = loader.loadFromBytes(bytes, _pngLoaders);
             atlasFuture.failed.connect(onPngLoadingFailed);
-            atlasFuture.succeeded.connect(function (img :LoadedImage) :void {
+            atlasFuture.succeeded.connect(function (img :LoadedBitmap) :void {
                 _libLoader.pngAtlasLoaded.emit({atlas: atlas, image: img});
                 var tex :Texture = _libLoader.creatorFactory.createTextureFromBitmap(
                     atlas, img.bitmapData, scale, _libLoader.generateMipMaps);

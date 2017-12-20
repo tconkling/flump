@@ -5,10 +5,10 @@ package flump.executor.load {
 
 import flash.display.Loader;
 
-public class ImageLoader extends BaseLoader
+public class BitmapLoader extends BaseLoader
 {
     override protected function handleSuccess (onSuccess :Function, loader :Loader) :void {
-        onSuccess(new LoadedImage(loader));
+        onSuccess(new LoadedBitmap(loader));
     }
 }
 }
