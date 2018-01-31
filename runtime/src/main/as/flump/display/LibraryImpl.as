@@ -15,16 +15,16 @@ internal class LibraryImpl implements Library {
         _baseScale = baseScale;
     }
 
-    public function createMovie (symbol :String, cloneOf :Movie = null) :Movie {
-        return Movie(createDisplayObject(symbol, cloneOf));
+    public function createMovie (symbol :String) :Movie {
+        return Movie(createDisplayObject(symbol));
     }
 
     public function getSymbolCreator (symbol :String) :SymbolCreator {
         return requireSymbolCreator(symbol);
     }
 
-    public function createImage (symbol :String, cloneOf :Image = null) :Image {
-        const disp :DisplayObject = createDisplayObject(symbol, cloneOf);
+    public function createImage (symbol :String) :Image {
+        const disp :DisplayObject = createDisplayObject(symbol);
         if (disp is Movie) throw new Error(symbol + " is not an Image");
         return Image(disp);
     }
@@ -66,9 +66,9 @@ internal class LibraryImpl implements Library {
         return _baseScale;
     }
 
-    public function createDisplayObject (name :String, cloneOf :DisplayObject = null) :DisplayObject {
+    public function createDisplayObject (name :String) :DisplayObject {
         checkNotDisposed();
-        return requireSymbolCreator(cloneOf == null ? name : cloneOf.name).create(this, cloneOf);
+        return requireSymbolCreator(name).create(this);
     }
 
     public function dispose () :void {

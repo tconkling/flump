@@ -15,18 +15,8 @@ public class MovieCreator
         this.frameRate = frameRate;
     }
 
-    public function create (library :Library, cloneOf: DisplayObject = null) :DisplayObject {
-        var co:Movie;
-        if (cloneOf != null)
-        {
-            if (!(cloneOf is Movie))
-            {
-                throw new Error("Movie should be cloned from Movie!");
-            }
-            co = cloneOf as Movie;
-        }
-
-        return new Movie(mold, frameRate, library, co);
+    public function create (library :Library) :DisplayObject {
+        return new Movie(mold, frameRate, library);
     }
 }
 }

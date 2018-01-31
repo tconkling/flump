@@ -46,43 +46,22 @@ public class Movie extends Sprite
     public const labelPassed :Signal = new Signal(String);
 
     /** @private */
-    public function Movie (src :MovieMold, frameRate :Number, library :Library, cloneOf :Movie = null) {
-        if (cloneOf == null)
-        {
-            this.name = src.id;
-            _labels = src.labels;
-            _frameRate = frameRate;
-            if (src.flipbook) {
-                _flipbook = true;
-                _layers = new Vector.<Layer>(1);
-                _layers[0] = createLayer(this, src.layers[0], library, /*flipbook=*/true);
-                _numFrames = src.layers[0].frames;
-            } else {
-                _layers = new Vector.<Layer>(src.layers.length);
-                for (var ii :int = 0; ii < _layers.length; ii++) {
-                    _layers[ii] = createLayer(this, src.layers[ii], library, /*flipbook=*/false);
-                    _numFrames = Math.max(src.layers[ii].frames, _numFrames);
-                }
-            }
-        } else
-        {
-            this.name = cloneOf.name;
-            _labels = cloneOf._labels;
-            _frameRate = cloneOf._frameRate;
-            _numFrames = cloneOf._numFrames;
-
-            if (cloneOf._layers != null)
-            {
-                _layers = new <Layer>[];
-
-                for each (var layer:Layer in cloneOf._layers)
-                {
-                    _layers.push(createLayer(this, null, library, cloneOf._flipbook, layer));
-                }
+    public function Movie (src :MovieMold, frameRate :Number, library :Library) {
+        this.name = src.id;
+        _labels = src.labels;
+        _frameRate = frameRate;
+        if (src.flipbook) {
+            _flipbook = true;
+            _layers = new Vector.<Layer>(1);
+            _layers[0] = createLayer(this, src.layers[0], library, /*flipbook=*/true);
+            _numFrames = src.layers[0].frames;
+        } else {
+            _layers = new Vector.<Layer>(src.layers.length);
+            for (var ii :int = 0; ii < _layers.length; ii++) {
+                _layers[ii] = createLayer(this, src.layers[ii], library, /*flipbook=*/false);
+                _numFrames = Math.max(src.layers[ii].frames, _numFrames);
             }
         }
-
-
         _duration = _numFrames / _frameRate;
 
         updateFrame(0, 0);
@@ -574,8 +553,8 @@ public class Movie extends Sprite
         }
     }
 
-    protected function createLayer (movie :Movie, src :LayerMold, library :Library, flipbook :Boolean, cloneOf :Layer = null) :Layer {
-        return new Layer(movie, src, library, flipbook, cloneOf);
+    protected function createLayer (movie :Movie, src :LayerMold, library :Library, flipbook :Boolean) :Layer {
+        return new Layer(movie, src, library, flipbook);
     }
 
     protected var _flipbook:Boolean;

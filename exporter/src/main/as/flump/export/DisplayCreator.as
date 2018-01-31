@@ -87,12 +87,12 @@ public class DisplayCreator
 		return _baseScale;
 	}
 
-    public function createDisplayObject (id :String, cloneOf :DisplayObject = null) :DisplayObject {
-        var creator :SymbolCreator = _creators[cloneOf == null ? id : cloneOf.name];
-        return creator.create(this, cloneOf);
+    public function createDisplayObject (id :String) :DisplayObject {
+        var creator :SymbolCreator = _creators[id];
+        return creator.create(this);
     }
 
-    public function createImage (id :String, cloneOf :Image = null) :Image {
+    public function createImage (id :String) :Image {
         return Image(createDisplayObject(id));
     }
 
@@ -100,9 +100,8 @@ public class DisplayCreator
         return ImageCreator(_creators[id]).texture;
     }
 
-    public function createMovie (name :String, cloneOf :Movie = null) :Movie {
-        return !cloneOf ? new Movie(_lib.getItem(name, MovieMold), _lib.frameRate, this)
-                    : new Movie(null, NaN, this, cloneOf);
+    public function createMovie (name :String) :Movie {
+        return new Movie(_lib.getItem(name, MovieMold), _lib.frameRate, this)
     }
 
     public function getMemoryUsage (id :String, subtex :Dictionary = null) :int {

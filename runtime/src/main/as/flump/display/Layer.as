@@ -18,95 +18,62 @@ import starling.display.Sprite;
  */
 internal class Layer
 {
-    public function Layer (movie :Movie, src :LayerMold, library :Library, flipbook :Boolean, cloneOf: Layer = null) {
+    public function Layer (movie :Movie, src :LayerMold, library :Library, flipbook :Boolean) {
         _movie = movie;
+
+		_keyframes = src.keyframes;
 
         var childMovie :Movie;
         var display :DisplayObject;
 
-        if (cloneOf == null)
-        {
-            _keyframes = src.keyframes;
-            _name = src.name;
+        var lastItem :String = null;
+        for (var ii :int = 0; ii < _keyframes.length && lastItem == null; ii++) {
+            lastItem = _keyframes[ii].ref;
+        }
 
-            const lastKf :KeyframeMold = _keyframes[_keyframes.length - 1];
-            _numFrames = lastKf.index + lastKf.duration;
+		_name = src.name;
 
-            var lastItem :String = null;
-            for (var ii :int = 0; ii < _keyframes.length && lastItem == null; ii++) {
-                lastItem = _keyframes[ii].ref;
-            }
+		const lastKf :KeyframeMold = _keyframes[_keyframes.length - 1];
+		_numFrames = lastKf.index + lastKf.duration;
 
-            if (!flipbook && lastItem == null) {
-                // The layer is empty.
-                _currentDisplay = new Sprite();
-                movie.addChild(_currentDisplay);
-                _numDisplays = 1;
+		if (!flipbook && lastItem == null) {
+			// The layer is empty.
+			_currentDisplay = new Sprite();
+			movie.addChild(_currentDisplay);
+			_numDisplays = 1;
 
-            } else {
-                // Create the display objects for each keyframe.
-                // If multiple consecutive keyframes refer to the same library item,
-                // we reuse that item across those frames.
-                _displays = new Vector.<DisplayObject>(_keyframes.length, true);
-                for (ii = 0; ii < _keyframes.length; ++ii) {
-                    var kf :KeyframeMold = _keyframes[ii];
-                    display = null;
-                    if (ii > 0 && _keyframes[ii - 1].ref == kf.ref) {
-                        // Reuse previous frame's DisplayObject
-                        display = _displays[ii - 1];
-                    } else {
-                        // Create a new DisplayObject
-                        _numDisplays++;
-                        if (kf.ref == null) {
-                            display = new Sprite();
-                        } else {
-                            display = library.createDisplayObject(kf.ref);
-                            childMovie = (display as Movie);
-                            if (childMovie != null) {
-                                childMovie.setParentMovie(movie);
-                            }
-                        }
-                    }
+		} else {
+			// Create the display objects for each keyframe.
+			// If multiple consecutive keyframes refer to the same library item,
+			// we reuse that item across those frames.
+			_displays = new Vector.<DisplayObject>(_keyframes.length, true);
+			for (ii = 0; ii < _keyframes.length; ++ii) {
+				var kf :KeyframeMold = _keyframes[ii];
+				display = null;
+				if (ii > 0 && _keyframes[ii - 1].ref == kf.ref) {
+					// Reuse previous frame's DisplayObject
+					display = _displays[ii - 1];
+				} else {
+					// Create a new DisplayObject
+					_numDisplays++;
+					if (kf.ref == null) {
+						display = new Sprite();
+					} else {
+						display = library.createDisplayObject(kf.ref);
+						childMovie = (display as Movie);
+						if (childMovie != null) {
+							childMovie.setParentMovie(movie);
+						}
+					}
+				}
 
-                    _displays[ii] = display;
-                    display.visible = false;
-                    movie.addChild(display);
-                }
+				_displays[ii] = display;
+				display.visible = false;
+				movie.addChild(display);
+			}
 
-                _currentDisplay = _displays[0];
-                _currentDisplay.visible = true;
-            }
-        } else
-        {
-            _keyframes = cloneOf._keyframes;
-            _name = cloneOf._name;
-            _numFrames = cloneOf._numFrames;
-            _numDisplays = cloneOf._numDisplays;
-
-            if (_numDisplays == 1)
-            {
-                _currentDisplay = new Sprite();
-                movie.addChild(_currentDisplay);
-            } else
-            {
-                _displays = new Vector.<DisplayObject>(cloneOf._displays.length, true);
-
-                for each (display in cloneOf._displays)
-                {
-                    var clonedDisplay:DisplayObject = library.createDisplayObject(null, display);
-                    childMovie = (clonedDisplay as Movie);
-                    if (childMovie != null) {
-                        childMovie.setParentMovie(movie);
-                    }
-
-                    _displays.push(clonedDisplay);
-                    clonedDisplay.visible = false;
-                    movie.addChild(clonedDisplay);
-                }
-
-                _currentDisplay = _displays[0];
-                _currentDisplay.visible = true;
-            }
+			_currentDisplay = _displays[0];
+			_currentDisplay.visible = true;
         }
 
         _currentDisplay.name = _name;
