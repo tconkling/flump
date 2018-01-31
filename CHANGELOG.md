@@ -6,6 +6,7 @@ Exporter:
 - Added "baseScale" property to root node of exported property file
 
 Runtime:
+- Possibility to clone existing Movie, instead of creating new one. Works much faster for complex Movie's
 - Possibility to use "baseScale" property, which was defined in exporter
 - new setter added to LibraryLoader:
 setScaleTexturesToOrigin (scaleTexturesToOrigin :Boolean):LibraryLoader
