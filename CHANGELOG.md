@@ -1,6 +1,6 @@
 Flump: Changelog
 ================
-version 1.5.2 - 2016-10-21
+version 1.5.6 - 2018-01-31
 --------------------------
 Exporter:
 - Added "baseScale" property to root node of exported property file

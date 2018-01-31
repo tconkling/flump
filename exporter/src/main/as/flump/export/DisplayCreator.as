@@ -30,8 +30,11 @@ import starling.textures.Texture;
 public class DisplayCreator
     implements Library
 {
-    public function DisplayCreator (lib :XflLibrary) {
+	private var _baseScale:Number;
+
+	public function DisplayCreator (lib :XflLibrary, baseScale:Number) {
         _lib = lib;
+		_baseScale = baseScale;
 
         const atlases :Vector.<Atlas> = TexturePacker.withLib(lib).createAtlases();
         for each (var atlas :Atlas in atlases) {
@@ -78,6 +81,11 @@ public class DisplayCreator
     public function get baseTextures () :Vector.<Texture> {
         return _baseTextures;
     }
+
+	public function get baseScale():Number
+	{
+		return _baseScale;
+	}
 
     public function createDisplayObject (id :String) :DisplayObject {
         var creator :SymbolCreator = _creators[id];
