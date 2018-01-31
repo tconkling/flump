@@ -16,7 +16,7 @@ import starling.events.Event;
 public class DemoScreen extends Sprite
 {
     public function DemoScreen () {
-        const loader :Future = LibraryLoader.loadBytes(ByteArray(new MASCOT_ZIP()));
+        const loader :Future = new LibraryLoader().loadBytes(ByteArray(new MASCOT_ZIP()));
         loader.succeeded.connect(onLibraryLoaded);
         loader.failed.connect(function (e :Error) :void { throw e; });
     }

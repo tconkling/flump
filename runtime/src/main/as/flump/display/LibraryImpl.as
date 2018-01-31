@@ -58,10 +58,14 @@ internal class LibraryImpl implements Library {
         return _isNamespaced;
     }
 
+    public function get baseTextures () :Vector.<Texture> {
+        return _baseTextures;
+    }
+
     public function get baseScale():Number {
         return _baseScale;
     }
-    
+
     public function createDisplayObject (name :String) :DisplayObject {
         checkNotDisposed();
         return requireSymbolCreator(name).create(this);

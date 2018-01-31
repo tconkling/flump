@@ -5,7 +5,7 @@
   <property name="icons.dir" location="icons"/>
   <property name="keystore" location="etc/${ant.project.name}.pfx"/>
   <property name="PASSWORD" value="pass"/>
-  <property name="tsa" value="https://timestamp.geotrust.com/tsa"/>
+  <property name="tsa" value="http://sha256timestamp.ws.symantec.com/sha256/timestamp"/>
   <property name="swf.version" value="30"/>
 
   <property name="ooo-build.vers" value="2.10"/>
@@ -26,18 +26,58 @@
 
   <target name="genairkeystore" depends="prepare" description="Regenerates the signing certificate. You shouldn't have to run this.">
     <fail unless="PASSWORD" message="Define the cert password with -DPASSWORD=pass to generate a cert"/>
-    <genairkeystore keystore="${keystore}" password="${PASSWORD}" orgname="Three Rings Design"/>
+    <sequential>
+      <requireair/>
+      <echo level="info">Generating ${keystore}</echo>
+      <java jar="${airsdk.dir}/lib/adt.jar" failonerror="true" fork="true" maxmemory="1024m">
+        <jvmarg value="-Djava.awt.headless=true"/>
+        <arg value="-certificate"/>
+        <arg value="-cn"/><arg value="SelfSigned"/>
+        <arg value="-o"/><arg value="Tim Conkling"/>
+        <arg value="2048-RSA"/>
+        <arg value="${keystore}"/>
+        <arg value="${PASSWORD}"/>
+      </java>
+    </sequential>
   </target>
 
-  <target name="test" depends="prepare" description="Builds the test swf">
+  <target name="test-swf" depends="prepare" description="Builds the test swf">
     <mkdir dir="${deploy.dir}"/>
     <mavendep pom="pom.xml" pathProp="aslib.path"/>
     <amxmlc srcdir="src/test/as" libpath="${aslib.path}" id="flump-test"
       dest="${deploy.dir}/flump-test.swf"
-      main="flump/test/Bootstrap.as">
+      main="flump/test/TestMain.as">
       <arg value="-source-path+=${asrc.dir}"/>
       <arg value="-swf-version=${swf.version}"/>
     </amxmlc>
+  </target>
+
+  <target name="package-test" depends="test-swf">
+    <sequential>
+      <requireflex/>
+      <java jar="${flexsdk.dir}/lib/adt.jar" fork="true" failonerror="true">
+        <arg value="-package"/>
+        <arg value="-storetype"/><arg value="pkcs12"/>
+        <arg value="-keystore"/><arg value="${keystore}"/>
+        <arg value="-storepass"/><arg value="${PASSWORD}"/>
+        <arg value="-tsa"/><arg value="${tsa}"/>
+        <arg value="${deploy.dir}/${ant.project.name}.air"/>
+        <arg value="etc/testairdesc.xml"/>
+        <arg value="-C"/>
+        <arg value="${deploy.dir}"/>
+        <arg value="flump-test.swf"/>
+      </java>
+    </sequential>
+  </target>
+
+  <target name="test" depends="test-swf" description="Runs the test app">
+    <sequential>
+      <requireair/>
+      <exec executable="${airsdk.dir}/bin/adl">
+        <arg value="etc/testairdesc.xml"/>
+        <arg value="dist"/>
+      </exec>
+    </sequential>
   </target>
 
   <target name="swf" depends="prepare" description="Builds the swf">
@@ -55,14 +95,10 @@
       <requireflex/>
       <java jar="${flexsdk.dir}/lib/adt.jar" fork="true" failonerror="true">
         <arg value="-package"/>
-        <arg value="-storetype"/>
-        <arg value="pkcs12"/>
-        <arg value="-keystore"/>
-        <arg value="${keystore}"/>
-        <arg value="-storepass"/>
-        <arg value="${PASSWORD}"/>
-        <arg value="-tsa"/>
-        <arg value="${tsa}"/>
+        <arg value="-storetype"/><arg value="pkcs12"/>
+        <arg value="-keystore"/><arg value="${keystore}"/>
+        <arg value="-storepass"/><arg value="${PASSWORD}"/>
+        <arg value="-tsa"/><arg value="${tsa}"/>
         <arg value="${deploy.dir}/${ant.project.name}.air"/>
         <arg value="etc/airdesc.xml"/>
         <arg value="${icons.dir}/icon_16.png"/>

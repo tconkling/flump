@@ -8,6 +8,7 @@ import deng.fzip.FZipErrorEvent;
 import deng.fzip.FZipEvent;
 import deng.fzip.FZipFile;
 
+import flash.display.BitmapData;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.events.ProgressEvent;
@@ -20,8 +21,6 @@ import flash.utils.Dictionary;
 import flump.executor.Executor;
 import flump.executor.Future;
 import flump.executor.FutureTask;
-import flump.executor.load.ImageLoader;
-import flump.executor.load.LoadedImage;
 import flump.mold.AtlasMold;
 import flump.mold.AtlasTextureMold;
 import flump.mold.LibraryMold;
@@ -85,14 +84,13 @@ internal class Loader {
         _zip = null;
         if (_lib == null) throw new Error(LibraryLoader.LIBRARY_LOCATION + " missing from zip");
         if (!_versionChecked) throw new Error(LibraryLoader.VERSION_LOCATION + " missing from zip");
-        const loader :ImageLoader = _lib.textureFormat == "atf" ? null : new ImageLoader();
-        _pngLoaders.terminated.connect(_future.monitoredCallback(onPngLoadingComplete));
+        _bitmapLoaders.terminated.connect(_future.monitoredCallback(onBitmapLoadingComplete));
 
         // Determine the scale factor we want to use
         var textureGroup :TextureGroupMold = _lib.bestTextureGroupForScaleFactor(_scaleFactor);
         if (textureGroup != null) {
-            for each (var atlas :AtlasMold in textureGroup.atlases) {
-                loadAtlas(loader, atlas);
+            for (var ii :int = 0; ii < textureGroup.atlases.length; ++ii) {
+                loadAtlas(textureGroup, ii)
             }
         }
         // free up extra atlas bytes immediately
@@ -102,45 +100,51 @@ internal class Loader {
                 delete (_atlasBytes[leftover]);
             }
         }
-        _pngLoaders.shutdown();
+        _bitmapLoaders.shutdown();
     }
 
-    protected function loadAtlas (loader :ImageLoader, atlas :AtlasMold) :void {
-        const bytes :* = _atlasBytes[atlas.file];
+    protected function loadAtlas (textureGroup :TextureGroupMold, atlasIndex :int) :void {
+        var atlas :AtlasMold = textureGroup.atlases[atlasIndex];
+        const bytes :ByteArray = _atlasBytes[atlas.file];
         delete _atlasBytes[atlas.file];
-        if (bytes === undefined) {
+        if (bytes == null) {
             throw new Error("Expected an atlas '" + atlas.file + "', but it wasn't in the zip");
         }
 
-        ByteArray(bytes).position = 0; // reset the read head
+        bytes.position = 0; // reset the read head
         var scale :Number = atlas.scaleFactor * (_libLoader.scaleTexturesToOrigin ? _lib.baseScale : 1);
         if (_lib.textureFormat == "atf") {
             // we do not dipose of the ByteArray so that Starling will handle a context loss.
             baseTextureLoaded(Texture.fromAtfData(bytes, scale, _libLoader.generateMipMaps), atlas);
         } else {
-            const atlasFuture :Future = loader.loadFromBytes(bytes, _pngLoaders);
-            atlasFuture.failed.connect(onPngLoadingFailed);
-            atlasFuture.succeeded.connect(function (img :LoadedImage) :void {
-                _libLoader.pngAtlasLoaded.emit({atlas: atlas, image: img});
-                baseTextureLoaded(Texture.fromBitmapData(
-                    img.bitmapData,
-                    _libLoader.generateMipMaps,
-                    false,  // optimizeForRenderToTexture
-                    scale), atlas);
+            var atlasFuture :Future = _bitmapLoaders.submit(
+                function (onSuccess :Function, onFailure :Function) :void {
+                    // Executor's onSuccess and onFailure are varargs functions, which our
+                    // function may not handle correctly if it changes its behavior based on the
+                    // number of receiving arguments. So we un-vararg-ify them here, which is
+                    // kinda crappy!
+                    var unaryOnSuccess :Function = function (result :*) :void { onSuccess(result); };
+                    var unaryOnFailure :Function = function (err :*) :void { onFailure(err); };
+                    _libLoader.delegate.loadAtlasBitmap(atlas, atlasIndex, bytes, unaryOnSuccess, unaryOnFailure);
+                });
+            atlasFuture.failed.connect(onBitmapLoadingFailed);
+            atlasFuture.succeeded.connect(function (bitmapData :BitmapData) :void {
+                _libLoader.pngAtlasLoaded.emit({atlas: atlas, image: bitmapData});
+                var tex :Texture = _libLoader.delegate.createTextureFromBitmap(
+                    atlas, bitmapData, scale, _libLoader.generateMipMaps);
+                baseTextureLoaded(tex, atlas);
                 // We dispose of the ByteArray, but not the BitmapData,
                 // so that Starling will handle a context loss.
-                ByteArray(bytes).clear();
+                bytes.clear();
             });
-
         }
     }
 
     protected function baseTextureLoaded (baseTexture :Texture, atlas :AtlasMold) :void {
         _baseTextures.push(baseTexture);
 
-        _libLoader.creatorFactory.consumingAtlasMold(atlas);
+        _libLoader.delegate.consumingAtlasMold(atlas);
         var scale :Number = atlas.scaleFactor * (_libLoader.scaleTexturesToOrigin ? _lib.baseScale : 1);
-
         for each (var atlasTexture :AtlasTextureMold in atlas.textures) {
             var bounds :Rectangle = atlasTexture.bounds;
             var offset :Point = atlasTexture.origin;
@@ -158,7 +162,7 @@ internal class Loader {
                 offset.y /= scale;
             }
 
-            _creators[atlasTexture.symbol] = _libLoader.creatorFactory.createImageCreator(
+            _creators[atlasTexture.symbol] = _libLoader.delegate.createImageCreator(
                 atlasTexture,
                 Texture.fromTexture(baseTexture, bounds),
                 offset,
@@ -166,19 +170,19 @@ internal class Loader {
         }
     }
 
-    protected function onPngLoadingComplete (..._) :void {
+    protected function onBitmapLoadingComplete (..._) :void {
         for each (var movie :MovieMold in _lib.movies) {
             movie.fillLabels();
-            _creators[movie.id] = _libLoader.creatorFactory.createMovieCreator(
+            _creators[movie.id] = _libLoader.delegate.createMovieCreator(
                 movie, _lib.frameRate);
         }
         _future.succeed(new LibraryImpl(_baseTextures, _creators, _lib.isNamespaced, _lib.baseScale));
     }
 
-    protected function onPngLoadingFailed (e :*) :void {
+    protected function onBitmapLoadingFailed (e :*) :void {
         if (_future.isComplete) return;
         _future.fail(e);
-        _pngLoaders.shutdownNow();
+        _bitmapLoaders.shutdownNow();
     }
 
     protected var _toLoad :Object;
@@ -193,7 +197,7 @@ internal class Loader {
     protected const _baseTextures :Vector.<Texture> = new <Texture>[];
     protected const _creators :Dictionary = new Dictionary();//<name, ImageCreator/MovieCreator>
     protected const _atlasBytes :Dictionary = new Dictionary();//<String name, ByteArray>
-    protected const _pngLoaders :Executor = new Executor(1);
+    protected const _bitmapLoaders :Executor = new Executor(1);
 
     protected static const PNG :String = ".png";
     protected static const ATF :String = ".atf";

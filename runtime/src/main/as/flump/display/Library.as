@@ -25,6 +25,9 @@ public interface Library
     /** @return base scale of library */
     function get baseScale():Number
 
+    /** @return the texture atlases in the library */
+    function get baseTextures () :Vector.<Texture>;
+
     /**
      * @return the SymbolCreator for the given symbol name.
      *

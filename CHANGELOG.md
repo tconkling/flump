@@ -11,6 +11,18 @@ Runtime:
 setScaleTexturesToOrigin (scaleTexturesToOrigin :Boolean):LibraryLoader
 
 
+version 1.5.3 - 2017-08-23
+--------------------------
+Exporter:
+- Better error messages for movie parse failures
+- Regenerate signing certificate
+
+Runtime:
+- Build against Starling 2.2
+
+If you're upgrading from a previous version of the Flump Export tool, you'll likely need to completely uninstall your previous version first, because the signing certificate has been changed.
+
+
 version 1.5.1 - 2016-09-30
 --------------------------
 Exporter:

@@ -20,9 +20,15 @@ public class XflLayer
 
     public static function parse (lib :XflLibrary, baseLocation :String, xml :XML, flipbook :Boolean) :LayerMold {
         const layer :LayerMold = new LayerMold();
-        layer.name = XmlUtil.getStringAttr(xml, NAME);
+
+        layer.name = XmlUtil.getStringAttr(xml, NAME, null);
+        if (layer.name == null) {
+            lib.addError(baseLocation, ParseError.CRIT, "Layers must be named");
+            return layer;
+        }
+
         layer.flipbook = flipbook;
-        const location :String = baseLocation + ":" + layer.name;
+        const location :String = XflLibrary.appendLocation(baseLocation, layer.name);
         var frameXmlList :XMLList = xml.frames.DOMFrame;
         for each (var frameXml :XML in frameXmlList) {
             layer.keyframes.push(XflKeyframe.parse(lib, location, frameXml, flipbook));
