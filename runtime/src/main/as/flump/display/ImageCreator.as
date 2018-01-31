@@ -19,7 +19,7 @@ public class ImageCreator
         this.symbol = symbol;
     }
 
-    public function create (library :Library) :DisplayObject {
+    public function create (library :Library, cloneOf: DisplayObject = null) :DisplayObject {
         const image :Image = new Image(texture);
         image.pivotX = origin.x;
         image.pivotY = origin.y;

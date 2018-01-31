@@ -39,23 +39,25 @@ public interface Library
      * Creates a Movie for the given symbol.
      *
      * @param symbolName the symbol name of the movie to be created
+     * @param cloneOf a prototype instance for clone
      *
      * @return a Movie instance for the symbol
      *
      * @throws Error if there is no such symbol in these resources, or if the symbol isn't a Movie.
      */
-    function createMovie (symbolName :String) :Movie;
+    function createMovie (symbolName :String, cloneOf :Movie = null) :Movie;
 
     /**
      * Creates an image for the given symbol.
      *
      * @param symbolName the symbol name of the image to be created
+     * @param cloneOf a prototype instance for clone
      *
      * @return an Image instance for the symbol
      *
      * @throws Error if there is no such symbol in these resources, or if the symbol isn't an Image.
      */
-    function createImage (symbolName :String) :Image;
+    function createImage (symbolName :String, cloneOf :Image = null) :Image;
 
     /**
      * @return the Texture associated with the given Image symbol
@@ -65,7 +67,7 @@ public interface Library
     function getImageTexture (symbolName :String) :Texture;
 
     /** Creates an instance of the given Movie or Image symbol */
-    function createDisplayObject (symbolName :String) :DisplayObject;
+    function createDisplayObject (symbolName :String, cloneOf :DisplayObject = null) :DisplayObject;
 
     /**
      * Disposes of all GPU resources associated with this Library. It's an error to use a Library
