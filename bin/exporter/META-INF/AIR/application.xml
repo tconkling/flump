@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="http://ns.adobe.com/air/application/21.0">
+  <id>flump</id>
+  <versionNumber>1.5.6</versionNumber>
+  <filename>Flump</filename>
+  <initialWindow>
+    <renderMode>direct</renderMode>
+    <content>flump-exporter.swf</content>
+  </initialWindow>
+  <icon>
+    <image16x16>icons/icon_16.png</image16x16>
+    <image32x32>icons/icon_32.png</image32x32>
+    <image48x48>icons/icon_48.png</image48x48>
+    <image128x128>icons/icon_128.png</image128x128>
+  </icon>
+  <fileTypes>
+    <fileType>
+      <name>Flump.Project</name>
+      <extension>flump</extension>
+      <description>Flump project</description>
+      <contentType>application/json</contentType>
+      <icon>
+        <image16x16>icons/icon_16.png</image16x16>
+        <image32x32>icons/icon_32.png</image32x32>
+        <image48x48>icons/icon_48.png</image48x48>
+        <image128x128>icons/icon_128.png</image128x128>
+      </icon>
+    </fileType>
+  </fileTypes>
+</application>
