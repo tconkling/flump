@@ -1,0 +1,17 @@
+{
+  "name": "Flump",
+  "url": "https://github.com/CrazyFlasher/flump",
+  "license": "MIT",
+  "tags": [
+  ],
+  "description": "Flump",
+  "version": "1.0.0",
+  "releasenote": "Initial",
+  "contributors": [
+    "CrazyFlasher", 
+    "tconkling"
+  ],
+  "classPath": "",
+  "dependencies": {
+  }
+}
