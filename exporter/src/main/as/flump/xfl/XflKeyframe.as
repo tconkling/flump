@@ -120,6 +120,7 @@ public class XflKeyframe
         const colorXml :XML = XflInstance.getColorXml(instanceXml);
         if (colorXml != null) {
             kf.alpha = XmlUtil.getNumberAttr(colorXml, XflInstance.ALPHA, 1);
+            if (XmlUtil.hasAttr(colorXml,XflInstance.TINT_MULTIPLIER)) kf.tint = [XmlUtil.getNumberAttr(colorXml, XflInstance.TINT_MULTIPLIER, 1), XmlUtil.hasAttr(colorXml,XflInstance.TINT) ? XmlUtil.getStringAttr(colorXml, XflInstance.TINT): "#000000"];
         }
         return kf;
     }
