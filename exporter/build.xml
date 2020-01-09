@@ -99,6 +99,7 @@
         <arg value="-keystore"/><arg value="${keystore}"/>
         <arg value="-storepass"/><arg value="${PASSWORD}"/>
         <arg value="-tsa"/><arg value="${tsa}"/>
+        <arg value="-target"/><arg value="bundle"/>
         <arg value="${deploy.dir}/${ant.project.name}.air"/>
         <arg value="etc/airdesc.xml"/>
         <arg value="${icons.dir}/icon_16.png"/>
@@ -110,5 +111,11 @@
         <arg value="${ant.project.name}.swf"/>
       </java>
     </sequential>
+  </target>
+  <target name="run-desktop">
+    <exec executable="${flexsdk.dir}/bin/adl.exe" failonerror="true">
+      <arg value="etc/airdesc.xml"/>
+      <arg value="${deploy.dir}"/>
+    </exec>
   </target>
 </project>
