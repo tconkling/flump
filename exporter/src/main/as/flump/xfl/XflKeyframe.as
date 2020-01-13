@@ -28,6 +28,7 @@ public class XflKeyframe
     public static const TWEEN_TYPE_MOTION :String = "motion";
 
     public static const SYMBOL_INSTANCE :String = "DOMSymbolInstance";
+    public static const BITMAP_INSTANCE :String = "DOMBitmapInstance";
 
     use namespace xflns;
 
@@ -56,11 +57,13 @@ public class XflKeyframe
 
         var instanceXml :XML = null;
         for each (var frameChildXml :XML in xml.elements.elements()) {
-            if (frameChildXml.name().localName == SYMBOL_INSTANCE) {
+            if (frameChildXml.name().localName == SYMBOL_INSTANCE || frameChildXml.name().localName == BITMAP_INSTANCE) {
                 if (instanceXml != null)  {
                     lib.addError(location, ParseError.CRIT, "There can be only one symbol instance at " +
                         "a time in a keyframe.");
-                } else instanceXml = frameChildXml;
+                } else {
+                    instanceXml = frameChildXml;
+                }
             } else {
                 lib.addError(location, ParseError.CRIT, "Non-symbols may not be in movie layers");
             }

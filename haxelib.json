@@ -5,8 +5,8 @@
   "tags": [
   ],
   "description": "Flump",
-  "version": "1.0.0",
-  "releasenote": "Initial",
+  "version": "1.0.1",
+  "releasenote": "Added possibility to place images to layers",
   "contributors": [
     "CrazyFlasher", 
     "tconkling"

@@ -171,6 +171,12 @@ public class PreviewController
         // we dispose this at the end of the function
         var oldCreator :DisplayCreator = _creator;
 
+        if (_atlasPreviewWindow == null || _atlasPreviewWindow.closed) {
+            createAtlasWindow();
+        } else {
+            _atlasPreviewWindow.activate();
+        }
+
         const scale :Number = MathUtil.clamp(Number(_atlasPreviewWindow.scale.text), 0.001, 1);
         _creator = new DisplayCreator(_lib, scale);
 
