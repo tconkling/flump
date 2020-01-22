@@ -5,8 +5,8 @@
   "tags": [
   ],
   "description": "Flump",
-  "version": "1.0.1",
-  "releasenote": "Added possibility to place images to layers",
+  "version": "1.0.2",
+  "releasenote": "Layers, that contain \"$\" in name won't be exported",
   "contributors": [
     "CrazyFlasher", 
     "tconkling"

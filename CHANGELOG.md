@@ -1,5 +1,11 @@
 Flump: Changelog
 ================
+
+version 1.5.6-SNAPSHOT - 2020-01-22
+--------------------------
+Exporter:
+- Layers, that contain "$" in name won't be exported
+
 version 1.5.6 - 2018-01-31
 --------------------------
 Exporter:
