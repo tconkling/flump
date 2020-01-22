@@ -58,7 +58,14 @@ public class XflMovie extends XflSymbol
             for each (var layerEl :XML in layerEls) {
                 var layerType :String = XmlUtil.getStringAttr(layerEl, XflLayer.TYPE, "");
                 if ((layerType != XflLayer.TYPE_GUIDE) && (layerType != XflLayer.TYPE_FOLDER)) {
-                    movie.layers.unshift(XflLayer.parse(lib, location, layerEl, false));
+                    var layerName:String = XmlUtil.getStringAttr(layerEl, XflLayer.NAME, "");
+                    if (layerName.indexOf("$") == -1)
+                    {
+                        movie.layers.unshift(XflLayer.parse(lib, location, layerEl, false));
+                    } else
+                    {
+                        lib.addError(location, ParseError.INFO, layerName + " will be ignored");
+                    }
                 }
             }
         }
