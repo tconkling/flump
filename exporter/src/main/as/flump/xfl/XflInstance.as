@@ -9,7 +9,16 @@ public class XflInstance
 
     public static const LIBRARY_ITEM_NAME :String = "libraryItemName";
     public static const IS_VISIBLE :String = "isVisible";
+
     public static const ALPHA :String = "alphaMultiplier";
+    public static const RED_MULT :String = "redMultiplier";
+    public static const GREEN_MULT :String = "greenMultiplier";
+    public static const BLUE_MULT :String = "blueMultiplier";
+
+    public static const ALPHA_OFFSET :String = "alphaOffset";
+    public static const RED_OFFSET :String = "redOffset";
+    public static const GREEN_OFFSET :String = "greenOffset";
+    public static const BLUE_OFFSET :String = "blueOffset";
 
     public static function getColorXml (instanceXml :XML) :XML {
         return (instanceXml.color != null ? instanceXml.color.Color[0] : null);

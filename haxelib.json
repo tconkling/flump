@@ -5,8 +5,8 @@
   "tags": [
   ],
   "description": "Flump",
-  "version": "1.0.2",
-  "releasenote": "Layers, that contain \"$\" in name won't be exported",
+  "version": "1.0.3",
+  "releasenote": "Color transform support added",
   "contributors": [
     "CrazyFlasher", 
     "tconkling"

@@ -123,6 +123,13 @@ public class XflKeyframe
         const colorXml :XML = XflInstance.getColorXml(instanceXml);
         if (colorXml != null) {
             kf.alpha = XmlUtil.getNumberAttr(colorXml, XflInstance.ALPHA, 1);
+            kf.alphaOffset = XmlUtil.getNumberAttr(colorXml, XflInstance.ALPHA_OFFSET, 0);
+            kf.redOffset = XmlUtil.getNumberAttr(colorXml, XflInstance.RED_OFFSET, 0);
+            kf.greenOffset = XmlUtil.getNumberAttr(colorXml, XflInstance.GREEN_OFFSET, 0);
+            kf.blueOffset = XmlUtil.getNumberAttr(colorXml, XflInstance.BLUE_OFFSET, 0);
+            kf.redMultiplier = XmlUtil.getNumberAttr(colorXml, XflInstance.RED_MULT, 1);
+            kf.greenMultiplier = XmlUtil.getNumberAttr(colorXml, XflInstance.GREEN_MULT, 1);
+            kf.blueMultiplier = XmlUtil.getNumberAttr(colorXml, XflInstance.BLUE_MULT, 1);
         }
         return kf;
     }

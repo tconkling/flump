@@ -30,7 +30,15 @@ public class KeyframeMold
     /** Transformation point */
     public var pivotX :Number = 0.0, pivotY :Number = 0.0;
 
+    /**alpha multiplier**/
     public var alpha :Number = 1;
+    public var redMultiplier :Number = 1;
+    public var blueMultiplier :Number = 1;
+    public var greenMultiplier :Number = 1;
+    public var alphaOffset :Number = 0;
+    public var redOffset :Number = 0;
+    public var blueOffset :Number = 0;
+    public var greenOffset :Number = 0;
 
     public var visible :Boolean = true;
 
@@ -49,7 +57,16 @@ public class KeyframeMold
         extractFields(o, mold, "scale", "scaleX", "scaleY");
         extractFields(o, mold, "skew", "skewX", "skewY");
         extractFields(o, mold, "pivot", "pivotX", "pivotY");
+
         extractField(o, mold, "alpha");
+        extractField(o, mold, "alphaOffset");
+        extractField(o, mold, "redOffset");
+        extractField(o, mold, "greenOffset");
+        extractField(o, mold, "blueOffset");
+        extractField(o, mold, "redMultiplier");
+        extractField(o, mold, "greenMultiplier");
+        extractField(o, mold, "blueMultiplier");
+
         extractField(o, mold, "visible");
         extractField(o, mold, "ease");
         extractField(o, mold, "tweened");
@@ -90,7 +107,16 @@ public class KeyframeMold
             if (scaleX != 1 || scaleY != 1) json.scale = [round(scaleX), round(scaleY)];
             if (skewX != 0 || skewY != 0) json.skew = [round(skewX), round(skewY)];
             if (pivotX != 0 || pivotY != 0) json.pivot = [round(pivotX), round(pivotY)];
+
             if (alpha != 1) json.alpha = round(alpha);
+            if (!isNaN(alphaOffset)) json.alphaOffset = alphaOffset;
+            if (!isNaN(redOffset)) json.redOffset = redOffset;
+            if (!isNaN(greenOffset)) json.greenOffset = greenOffset;
+            if (!isNaN(blueOffset)) json.blueOffset = blueOffset;
+            if (!isNaN(redMultiplier)) json.redMultiplier = redMultiplier;
+            if (!isNaN(greenMultiplier)) json.greenMultiplier = greenMultiplier;
+            if (!isNaN(blueMultiplier)) json.blueMultiplier = blueMultiplier;
+
             if (!visible) json.visible = visible;
             if (!tweened) json.tweened = tweened;
             if (ease != 0) json.ease = round(ease);
@@ -108,6 +134,13 @@ public class KeyframeMold
             if (skewX != 0 || skewY != 0) xml.@skew = "" + round(skewX) + "," + round(skewY);
             if (pivotX != 0 || pivotY != 0) xml.@pivot = "" + round(pivotX) + "," + round(pivotY);
             if (alpha != 1) xml.@alpha = round(alpha);
+            if (!isNaN(alphaOffset)) xml.@alphaOffset = alphaOffset;
+            if (!isNaN(redOffset)) xml.@redOffset = redOffset;
+            if (!isNaN(greenOffset)) xml.@greenOffset = greenOffset;
+            if (!isNaN(blueOffset)) xml.@blueOffset = blueOffset;
+            if (!isNaN(redMultiplier)) xml.@redMultiplier = redMultiplier;
+            if (!isNaN(greenMultiplier)) xml.@greenMultiplier = greenMultiplier;
+            if (!isNaN(blueMultiplier)) xml.@alpha = blueMultiplier;
             if (!visible) xml.@visible = visible;
             if (!tweened) xml.@tweened = tweened;
             if (ease != 0) xml.@ease = round(ease);
