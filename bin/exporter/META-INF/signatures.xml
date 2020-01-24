@@ -8,14 +8,14 @@
           <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
         </Transforms>
         <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-        <DigestValue>aIcERmxR6ee6BpY50lrZDmeLhBPx1KqN3vX7vJ+FpCg=</DigestValue>
+        <DigestValue>JumrhC039Q4juo55f/N/98In8KMukyw5WzSJiS2AYkY=</DigestValue>
       </Reference>
     </SignedInfo>
-    <SignatureValue Id="PackageSignatureValue">d5XEsIL/Cb81xUMT772H0V8nwKHI1kiUIbxB7zHdCauu/jQxYljatjO4fPZ+yGGvIKInEcVhbTgX
-Zz9twnJrQXgPVVntyb5J03opllbNGWPZXE0Mmwa5vVF8x5/sYB6a/GgTzNyKd7MRNfjZPPmlOz+a
-AzK3kgzwZt2pI1eQJjZElqe3cCsztWiAVceK0ZVC+QU81WW1X9cbIdk4qv/lJWdU2pLcEZIv6w6u
-8tRAR0ylOxEjWvWgb5LtncLoSp2gYGkrPE2yLdBgxtCT4wj3c9dBIvyM9sjyfEHNyufkWl8Yr7sc
-ga+6zo5UgO4vBZxTyiZxR2LgqHWu3ZtYv7P65Q==</SignatureValue>
+    <SignatureValue Id="PackageSignatureValue">hXQe/d/PW6Jg8XoQNCSDC2Y7kmtlABcrCO/YczAUs5xIK2waEYpQAFvhs5AaImoCesCAiJmdTzxr
+xComNU86uENz+kfPcpJyjkWbCc4RRCRBsfcGuQqx21uDGQ3QZ8zo1FLiw9YP9ZznmKaGiuwU3W0F
+INTagrQ8Wgds0bcHabdEceWKJGncR5DX+H7wJE3R3Go1HmQ+yHtjxq7T66928Jv+zrUjXq96iKde
+vZ+v/337oQ+exgZGShqpbMhL5oV28Dlt4REskGUiKheMdO6AmMb/E922PY52pYVU+AfqJ6QrPQdU
+J0Z3Kmg6C8Oev9x/skjXjhHzUyrzayIFlAqf7w==</SignatureValue>
     <KeyInfo>
       <X509Data>
         <X509Certificate>MIIDBDCCAeygAwIBAgIbLTY4OTgxNWUyOjE2MTRjYTUwOThiOi04MDAwMA0GCSqGSIb3DQEBBQUA
@@ -36,7 +36,7 @@ Z/JcNgXxTYUSxaWCztjiXTdMmXYPs0M6w88jocsY6eA8rJI=</X509Certificate>
     </KeyInfo>
     <Object>
       <Manifest Id="PackageContents">
-        <Reference URI="mimetype"><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod><DigestValue>0/oCb84THKMagtI0Dy0KogEu92TegdesqRr/clXct1c=</DigestValue></Reference><Reference URI="META-INF/AIR/application.xml"><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod><DigestValue>JUY7VaF6/710+DuwesbqX+BUxv5n8tQ9gO8lmh8oBI4=</DigestValue></Reference><Reference URI="flump-exporter.swf"><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod><DigestValue>1gyxGufGZVnzw/KQTiAyZABY3LLAvHNfLK65kX6Uxx4=</DigestValue></Reference><Reference URI="icons/icon_128.png"><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod><DigestValue>YZHHPJZTG65mU6hb9S4736zXEdfMBiFwAwja8j6Rbo4=</DigestValue></Reference><Reference URI="icons/icon_16.png"><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod><DigestValue>eQig8S6obnixVAoh//61364OXEiap0cmE1yTnmrqu3w=</DigestValue></Reference><Reference URI="icons/icon_32.png"><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod><DigestValue>HACoZNxq6Bwq4o9IFpSIjDFQtsKQ6SA+rEDD/nhcCJs=</DigestValue></Reference><Reference URI="icons/icon_48.png"><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod><DigestValue>AOYIvGEDJOY3kQbiZUUA3dsicQ21iGBprPy2aKP0cXQ=</DigestValue></Reference>
+        <Reference URI="mimetype"><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod><DigestValue>0/oCb84THKMagtI0Dy0KogEu92TegdesqRr/clXct1c=</DigestValue></Reference><Reference URI="META-INF/AIR/application.xml"><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod><DigestValue>JUY7VaF6/710+DuwesbqX+BUxv5n8tQ9gO8lmh8oBI4=</DigestValue></Reference><Reference URI="flump-exporter.swf"><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod><DigestValue>9Pi9xDLBKNOfZRcYpKWmO4A0/doV9hZz9ZCm4Ng81C8=</DigestValue></Reference><Reference URI="icons/icon_128.png"><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod><DigestValue>YZHHPJZTG65mU6hb9S4736zXEdfMBiFwAwja8j6Rbo4=</DigestValue></Reference><Reference URI="icons/icon_16.png"><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod><DigestValue>eQig8S6obnixVAoh//61364OXEiap0cmE1yTnmrqu3w=</DigestValue></Reference><Reference URI="icons/icon_32.png"><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod><DigestValue>HACoZNxq6Bwq4o9IFpSIjDFQtsKQ6SA+rEDD/nhcCJs=</DigestValue></Reference><Reference URI="icons/icon_48.png"><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod><DigestValue>AOYIvGEDJOY3kQbiZUUA3dsicQ21iGBprPy2aKP0cXQ=</DigestValue></Reference>
       </Manifest>
     </Object>
     <Object xmlns:xades="http://uri.etsi.org/01903/v1.1.1#" > 
@@ -50,8 +50,8 @@ Z/JcNgXxTYUSxaWCztjiXTdMmXYPs0M6w88jocsY6eA8rJI=</X509Certificate>
             </Transforms>
             <xades:EncapsulatedTimeStamp>
               MIIOFAYJKoZIhvcNAQcCoIIOBTCCDgECAQMxDTALBglghkgBZQMEAgEwgf8GCyqGSIb3DQEJEAEE
-oIHvBIHsMIHpAgEBBgtghkgBhvhFAQcXAzAhMAkGBSsOAwIaBQAEFDAZBuPZMgbUxkjv40HS/nxO
-UIpZAhUAnbMSU1rIlb4tFcvnWIvH6p/zrroYDzIwMjAwMTI0MDc1MDI0WjADAgEeoIGGpIGDMIGA
+oIHvBIHsMIHpAgEBBgtghkgBhvhFAQcXAzAhMAkGBSsOAwIaBQAEFOgtB6BekO5hO8yBAb5Mwmfj
+we4mAhUAgk4dFvJBIa50yP9kSAMQp1M9roUYDzIwMjAwMTI0MDgwNDQ4WjADAgEeoIGGpIGDMIGA
 MQswCQYDVQQGEwJVUzEdMBsGA1UEChMUU3ltYW50ZWMgQ29ycG9yYXRpb24xHzAdBgNVBAsTFlN5
 bWFudGVjIFRydXN0IE5ldHdvcmsxMTAvBgNVBAMTKFN5bWFudGVjIFNIQTI1NiBUaW1lU3RhbXBp
 bmcgU2lnbmVyIC0gRzOgggqLMIIFODCCBCCgAwIBAgIQewWx1EloUUT3yYnSnBmdEjANBgkqhkiG
@@ -105,14 +105,14 @@ ESwfAD/DSxTGZxzMHgajkF9cVIs+4zNbgg/Ft4YCTnGf6WZFP3YxggJaMIICVgIBATCBizB3MQsw
 CQYDVQQGEwJVUzEdMBsGA1UEChMUU3ltYW50ZWMgQ29ycG9yYXRpb24xHzAdBgNVBAsTFlN5bWFu
 dGVjIFRydXN0IE5ldHdvcmsxKDAmBgNVBAMTH1N5bWFudGVjIFNIQTI1NiBUaW1lU3RhbXBpbmcg
 Q0ECEHvU5a+6zAc/oQEjBCJBTRIwCwYJYIZIAWUDBAIBoIGkMBoGCSqGSIb3DQEJAzENBgsqhkiG
-9w0BCRABBDAcBgkqhkiG9w0BCQUxDxcNMjAwMTI0MDc1MDI0WjAvBgkqhkiG9w0BCQQxIgQgy3Sk
-9DxBxAYSYChW3z/qhqHSw7/s0mWMTMOzHL1FoNowNwYLKoZIhvcNAQkQAi8xKDAmMCQwIgQgxHTO
-dgB9AjlODaXk3nwUxoD54oIBPP72U+9dtx/fYfgwCwYJKoZIhvcNAQEBBIIBAFmGeP9TMuCVkgC1
-S8gQUAkxVhDpkYN0yBjTdD4LcutxnjzsPkmzRYm5RuakI32VZapAzhQ0swM0Si03JVl+fUhRfmjR
-u7bkhUXNyA73iwHFjzSFF3rzT5xe618o62/O7zA4ozDH8ySuXaajGprNmbOKGNiTGNoC/KYL3iPX
-Eldw6abW3mdISgnPumNuyF85olq3qfRK0z0Lsn35Vr24R+hNcurW1kj0oXdZ+pebjujlZJeNw65Z
-vz8TMLbR2FWESExrwO57/O/SbPNmxj8XvFu8XPYfMZjWM24udFsG3niMjYAeQJyZn45HnLjFxklL
-ryj9o0M3NbWXcgSVf7F4rDw=
+9w0BCRABBDAcBgkqhkiG9w0BCQUxDxcNMjAwMTI0MDgwNDQ4WjAvBgkqhkiG9w0BCQQxIgQggURV
+cQ6GxGibn8OysSYWBs/J4nBzzWorP1tejkIlv0EwNwYLKoZIhvcNAQkQAi8xKDAmMCQwIgQgxHTO
+dgB9AjlODaXk3nwUxoD54oIBPP72U+9dtx/fYfgwCwYJKoZIhvcNAQEBBIIBABFWY0oYvPSLMG9v
+75b7y+wup/q9bEzJNAXyRI4fUpp7BV8Oi5IcNeBE3B6jxEtXj7vuolX4PaJz3qFQHw7SzljVrGbw
+2cSyT9CPMLIA+EehUkarj2xjnNyrraKFsje2r+ijVK5YiY8nNaOWekcNaUCek2ut6o6OgX7D65+g
+gJu+iFs/mKTbJV+OuNBTAzsPqoh4Dzl0ZChYuZvmM1jDsdomZ95EkN4oV/SU6gX7AbDwsfnU4Y87
+N3H4CqcM94biti1h7cCx3tQR2uDtpnJI1vQpNSo8NyyrURS4sFn+y0YY3W6m4Q1x13dFYtib9nhb
+VtuNEIzz+4vI3FxUsgLH9bQ=
             </xades:EncapsulatedTimeStamp>     	
      	  </xades:HashDataInfo>     	
         </xades:SignatureTimeStamp>
