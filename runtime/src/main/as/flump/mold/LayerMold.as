@@ -21,6 +21,8 @@ public class LayerMold
             mold.keyframes.push(KeyframeMold.fromJSON(kf));
         }
         mold.flipbook = o.hasOwnProperty("flipbook");
+        mold.isMask = o.hasOwnProperty("isMask");
+        mold.mask = o["mask"] != null ? o["mask"] : null;
         return mold;
     }
 
