@@ -1,9 +1,11 @@
 Flump: Changelog
 ================
 
-version 1.5.6-SNAPSHOT - 2020-01-22
+version 1.5.6-SNAPSHOT - 2020-01-24
 --------------------------
 Exporter:
+- Rectangle masks support
+- Color transform support added
 - Layers, that contain "$" in name won't be exported
 
 version 1.5.6 - 2018-01-31

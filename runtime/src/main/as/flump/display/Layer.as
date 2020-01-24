@@ -18,10 +18,13 @@ import starling.filters.ColorMatrixFilter;
  * this layer on each frame.
  */
 internal class Layer {
+    private var _maskId:String;
+
     public function Layer(movie:Movie, src:LayerMold, library:Library, flipbook:Boolean) {
         _movie = movie;
 
         _keyframes = src.keyframes;
+        _maskId = src.mask;
 
         var childMovie:Movie;
         var display:DisplayObject;
@@ -77,6 +80,19 @@ internal class Layer {
         }
 
         _currentDisplay.name = _name;
+    }
+
+    internal function applyMask(mask:DisplayObject):void
+    {
+        for each (var display:DisplayObject in _displays)
+        {
+            display.mask = mask;
+        }
+    }
+
+    public function get maskId():String
+    {
+        return _maskId;
     }
 
     public function get numDisplays():int {

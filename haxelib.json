@@ -5,8 +5,8 @@
   "tags": [
   ],
   "description": "Flump",
-  "version": "1.0.3",
-  "releasenote": "Color transform support added",
+  "version": "1.0.4",
+  "releasenote": "Rectangle masks support",
   "contributors": [
     "CrazyFlasher", 
     "tconkling"

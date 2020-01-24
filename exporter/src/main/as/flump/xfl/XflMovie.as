@@ -61,13 +61,26 @@ public class XflMovie extends XflSymbol
                     var layerName:String = XmlUtil.getStringAttr(layerEl, XflLayer.NAME, "");
                     if (layerName.indexOf("$") == -1)
                     {
-                        movie.layers.unshift(XflLayer.parse(lib, location, layerEl, false));
+                        var layerMold:LayerMold = XflLayer.parse(lib, location, layerEl, false);
+//                        movie.layers.unshift(layerMold);
+                        movie.layers.push(layerMold);
+
+                        var parentLayerIndex:int = XmlUtil.getIntAttr(layerEl, XflLayer.PARENT_INDEX, -1);
+                        if (parentLayerIndex != -1)
+                        {
+                            var parentLayer:LayerMold = movie.layers[parentLayerIndex];
+                            if (parentLayer.isMask)
+                            {
+                                layerMold.mask = parentLayer.name;
+                            }
+                        }
                     } else
                     {
                         lib.addError(location, ParseError.INFO, layerName + " will be ignored");
                     }
                 }
             }
+            movie.layers.reverse();
         }
         movie.fillLabels();
 

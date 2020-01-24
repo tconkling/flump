@@ -10,16 +10,24 @@ import flump.mold.LayerMold;
 
 public class XflLayer
 {
+    public static const PARENT_INDEX :String = "parentLayerIndex";
     public static const NAME :String = "name";
     public static const TYPE :String = "layerType";
 
     public static const TYPE_GUIDE :String = "guide";
     public static const TYPE_FOLDER :String = "folder";
+    public static const TYPE_MASK :String = "mask";
 
     use namespace xflns;
 
     public static function parse (lib :XflLibrary, baseLocation :String, xml :XML, flipbook :Boolean) :LayerMold {
         const layer :LayerMold = new LayerMold();
+        var type:String = XmlUtil.getStringAttr(xml, TYPE, null);
+
+        if (type != null && type == TYPE_MASK)
+        {
+            layer.isMask = true;
+        }
 
         layer.name = XmlUtil.getStringAttr(xml, NAME, null);
         if (layer.name == null) {

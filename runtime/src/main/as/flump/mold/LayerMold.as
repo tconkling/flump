@@ -6,6 +6,8 @@ package flump.mold {
 public class LayerMold
 {
     public var name :String;
+    public var mask :String;
+    public var isMask :Boolean;
     public var keyframes :Vector.<KeyframeMold> = new <KeyframeMold>[];
     public var flipbook :Boolean;
     public var baseScale:Number;
@@ -40,12 +42,16 @@ public class LayerMold
             keyframes: keyframes
         };
         if (flipbook) json.flipbook = flipbook;
+        if (mask) json.mask = mask;
+        if (isMask) json.isMask = isMask;
         return json;
     }
 
     public function toXML () :XML {
         var xml :XML = <layer name={name}/>;
         if (flipbook) xml.@flipbook = flipbook;
+        if (mask) xml.@mask = mask;
+        if (isMask) xml.@isMask = isMask;
         for each (var kf :KeyframeMold in keyframes) xml.appendChild(kf.toXML());
         return xml;
     }

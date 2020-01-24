@@ -6,6 +6,7 @@
   <architecture>64</architecture>
   <initialWindow>
     <renderMode>direct</renderMode>
+    <depthAndStencil>true</depthAndStencil>
     <content>flump-exporter.swf</content>
   </initialWindow>
   <icon>

@@ -62,11 +62,25 @@ public class Movie extends Sprite
                 _numFrames = Math.max(src.layers[ii].frames, _numFrames);
             }
         }
+
+        createMasks();
+
         _duration = _numFrames / _frameRate;
 
         updateFrame(0, 0);
 
         addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
+    }
+
+    private function createMasks():void
+    {
+        for each (var layer:Layer in _layers)
+        {
+            if (layer.maskId != null)
+            {
+                layer.applyMask(getChildByName(layer.maskId));
+            }
+        }
     }
 
     /** Called when our REMOVED_FROM_STAGE event is fired. */
