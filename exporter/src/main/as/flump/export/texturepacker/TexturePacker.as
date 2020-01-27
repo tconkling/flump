@@ -42,19 +42,21 @@ public class TexturePacker
     public function quality (val :String) :TexturePacker { _quality = val; return this; }
     public function filenamePrefix (val :String) :TexturePacker { _filenamePrefix = val; return this; }
 
-    public function createAtlases () :Vector.<Atlas> {
+    public function createAtlases (png:Boolean = true) :Vector.<Atlas> {
         const unpackedTextures :Vector.<SwfTexture> = new <SwfTexture>[];
         var scale :Number = _baseScale * _scaleFactor;
         var useNamespaces :Boolean = _libs.length > 1;
+        var swfTex:SwfTexture;
         for each (var lib :XflLibrary in _libs) {
             for each (var tex :XflTexture in lib.textures) {
-                unpackedTextures.push(SwfTexture.fromTexture(lib, tex, _quality, scale, useNamespaces));
+                swfTex = SwfTexture.fromTexture(lib, tex, _quality, scale, useNamespaces);
+                unpackedTextures.push(swfTex);
             }
             for each (var movie :MovieMold in lib.movies) {
                 if (!movie.flipbook) continue;
                 for each (var kf :KeyframeMold in movie.layers[0].keyframes) {
-                    unpackedTextures.push(SwfTexture.fromFlipbook(lib, movie, kf.index, _quality, scale,
-                            useNamespaces));
+                    swfTex = SwfTexture.fromFlipbook(lib, movie, kf.index, _quality, scale, useNamespaces);
+                    unpackedTextures.push(swfTex);
                 }
             }
         }
@@ -92,7 +94,7 @@ public class TexturePacker
             }
         }
 
-        unpackedTextures.sort(Comparators.createReverse(Comparators.createFields(["a", "w", "h"])));
+        unpackedTextures.sort(Comparators.createReverse(Comparators.createFields(["isJpg", "a", "w", "h"])));
 
         var packer :MultiPackerBase = (_optimizeForSpeed ?
             new MaxRectMultiPacker() :

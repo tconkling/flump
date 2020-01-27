@@ -15,6 +15,7 @@ import flump.mold.AtlasTextureMold;
 public class AtlasImpl implements Atlas
 {
     public var name :String;
+    public var isJpg:Boolean;
 
     public function AtlasImpl (name :String, w :int, h :int, xBorderSize :int, yBorderSize :int, scaleFactor :int, quality :String) {
         this.name = name;
@@ -34,7 +35,9 @@ public class AtlasImpl implements Atlas
 
     public function get quailty () :String { return _quality; }
 
-    public function get filename () :String { return name + AtlasMold.scaleFactorSuffix(_scaleFactor) + ".png"; }
+    public function get filename () :String { return name + AtlasMold.scaleFactorSuffix(_scaleFactor) + (isJpg ? ".jpg" : ".png"); }
+
+    public function get jpg():Boolean { return isJpg; }
 
     public function get used () :int {
         var used :int = 0;

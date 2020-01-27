@@ -17,5 +17,6 @@ public interface Atlas
 
     function toBitmap () :BitmapData;
     function toMold () :AtlasMold;
+    function get jpg():Boolean;
 }
 }

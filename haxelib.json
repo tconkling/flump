@@ -5,8 +5,8 @@
   "tags": [
   ],
   "description": "Flump",
-  "version": "1.0.4",
-  "releasenote": "Rectangle masks support",
+  "version": "1.0.5",
+  "releasenote": "Added possibility to export JPG atlases by adding $jpg to library linkage",
   "contributors": [
     "CrazyFlasher", 
     "tconkling"

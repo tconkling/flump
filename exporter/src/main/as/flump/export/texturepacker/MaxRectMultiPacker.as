@@ -45,8 +45,17 @@ public class MaxRectMultiPacker extends MultiPackerBase
         var packer :MaxRectPackerImpl = new MaxRectPackerImpl(atlasSize.x, atlasSize.y);
         var placed :Vector.<SwfTexture> = new Vector.<SwfTexture>();
         var swfTexture :SwfTexture;
+        var prevTex:SwfTexture;
         for (var i :int = 0; i < _unpacked.length; i++) {
+            var wasJpg:Boolean = prevTex != null && prevTex.isJpg;
+
             swfTexture = _unpacked[i];
+            if (!swfTexture.isJpg && wasJpg)
+            {
+                prevTex = null;
+                break;
+            }
+
             var w :int = swfTexture.w + (_borderSize * 2);
             var h :int = swfTexture.h + (_borderSize * 2);
             var rect :Rectangle = packer.quickInsert(w,h);
@@ -62,10 +71,17 @@ public class MaxRectMultiPacker extends MultiPackerBase
                     return packIntoAtlas(atlasSize);
                 }
             } else {
+                if (swfTexture.isJpg && !atlas.isJpg)
+                {
+                    trace(atlas.name + " will be JPG");
+                    atlas.isJpg = true;
+                }
                 // it fits, put into the atlas
                 atlas.place(swfTexture, rect.x, rect.y);
                 placed.push(swfTexture);
             }
+
+            prevTex = swfTexture;
         }
 
         // Remove the placed textures from our 'unpacked' list

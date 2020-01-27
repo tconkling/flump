@@ -10,12 +10,14 @@ import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.utils.IDataOutput;
 
+import mx.graphics.codec.JPEGEncoder;
+
 import starling.textures.Texture;
 
 public class AtlasUtil
 {
     public static function writePNG (atlas :Atlas, bytes :IDataOutput) :void {
-        bytes.writeBytes(PNGEncoder.encode(atlas.toBitmap()));
+        bytes.writeBytes(atlas.jpg ? new JPEGEncoder(80).encode(atlas.toBitmap()) : PNGEncoder.encode(atlas.toBitmap()));
     }
 
     public static function toTexture (atlas :Atlas) :Texture {

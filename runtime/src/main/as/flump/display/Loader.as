@@ -64,6 +64,8 @@ internal class Loader {
             _libLoader.libraryMoldLoaded.emit(_lib);
         } else if (name.indexOf(PNG, name.length - PNG.length) != -1) {
             _atlasBytes[name] = loaded.content;
+        } else if (name.indexOf(JPG, name.length - JPG.length) != -1) {
+            _atlasBytes[name] = loaded.content;
         } else if (name.indexOf(ATF, name.length - ATF.length) != -1) {
             _atlasBytes[name] = loaded.content;
             _libLoader.atfAtlasLoaded.emit({name: name, bytes: loaded.content});
@@ -199,6 +201,7 @@ internal class Loader {
     protected const _atlasBytes :Dictionary = new Dictionary();//<String name, ByteArray>
     protected const _bitmapLoaders :Executor = new Executor(1);
 
+    protected static const JPG :String = ".jpg";
     protected static const PNG :String = ".png";
     protected static const ATF :String = ".atf";
 }

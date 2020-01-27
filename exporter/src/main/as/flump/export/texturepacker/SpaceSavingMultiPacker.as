@@ -19,6 +19,7 @@ public class SpaceSavingMultiPacker extends MultiPackerBase
                                   filenamePrefix :String) : Vector.<Atlas> {
 
         var atlases :Vector.<Atlas> = new Vector.<Atlas>();
+
         while (textures.length > 0) {
             // find the optimal atlas size
             var atlasSize :Point = calculateMinimumSize(textures, borderSize, maxAtlasSize);
@@ -45,16 +46,31 @@ public class SpaceSavingMultiPacker extends MultiPackerBase
 
             // try to put every texture into it
             var packer :MaxRectPackerImpl = new MaxRectPackerImpl(atlasSize.x, atlasSize.y);
+            var prevTex:SwfTexture;
             for (var i:int = 0; i < textures.length; i++) {
+                var wasJpg:Boolean = prevTex != null && prevTex.isJpg;
+
                 var swfTexture:SwfTexture = textures[i];
+                if (!swfTexture.isJpg && wasJpg)
+                {
+                    prevTex = null;
+                    break;
+                }
                 var w : int = swfTexture.w + (borderSize * 2);
                 var h : int = swfTexture.h + (borderSize * 2);
                 var rect : Rectangle = packer.quickInsert(w,h);
                 if (rect != null) {
+                    if (swfTexture.isJpg && !atlas.isJpg)
+                    {
+                        trace(atlas.name + " will be JPG");
+                        atlas.isJpg = true;
+                    }
                     atlas.place(swfTexture, rect.x, rect.y);
                     textures.splice(i,1);
                     i--;
                 }
+
+                prevTex = swfTexture;
             }
         }
         return atlases;
