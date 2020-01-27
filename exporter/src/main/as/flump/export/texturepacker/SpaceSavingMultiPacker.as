@@ -48,6 +48,12 @@ public class SpaceSavingMultiPacker extends MultiPackerBase
             var packer :MaxRectPackerImpl = new MaxRectPackerImpl(atlasSize.x, atlasSize.y);
             var prevTex:SwfTexture;
             for (var i:int = 0; i < textures.length; i++) {
+                var wasSingle:Boolean = prevTex != null && prevTex.isSingle;
+                if (wasSingle)
+                {
+                    break;
+                }
+
                 var wasJpg:Boolean = prevTex != null && prevTex.isJpg;
 
                 var swfTexture:SwfTexture = textures[i];
@@ -56,8 +62,8 @@ public class SpaceSavingMultiPacker extends MultiPackerBase
                     prevTex = null;
                     break;
                 }
-                var w : int = swfTexture.w + (borderSize * 2);
-                var h : int = swfTexture.h + (borderSize * 2);
+                var w : int = swfTexture.w + (!swfTexture.isSingle ? (borderSize * 2) : 0);
+                var h : int = swfTexture.h + (!swfTexture.isSingle ? (borderSize * 2) : 0);
                 var rect : Rectangle = packer.quickInsert(w,h);
                 if (rect != null) {
                     if (swfTexture.isJpg && !atlas.isJpg)

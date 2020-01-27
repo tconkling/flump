@@ -47,6 +47,12 @@ public class MaxRectMultiPacker extends MultiPackerBase
         var swfTexture :SwfTexture;
         var prevTex:SwfTexture;
         for (var i :int = 0; i < _unpacked.length; i++) {
+            var wasSingle:Boolean = prevTex != null && prevTex.isSingle;
+            if (wasSingle)
+            {
+                break;
+            }
+
             var wasJpg:Boolean = prevTex != null && prevTex.isJpg;
 
             swfTexture = _unpacked[i];
@@ -56,8 +62,8 @@ public class MaxRectMultiPacker extends MultiPackerBase
                 break;
             }
 
-            var w :int = swfTexture.w + (_borderSize * 2);
-            var h :int = swfTexture.h + (_borderSize * 2);
+            var w :int = swfTexture.w + (!swfTexture.isSingle ? (_borderSize * 2) : 0);
+            var h :int = swfTexture.h + (!swfTexture.isSingle ? (_borderSize * 2) : 0);
             var rect :Rectangle = packer.quickInsert(w,h);
             if (rect == null) {
                 if (Util.nextPowerOfTwo(atlasSize.x + 1) <= _maxAtlasSize ||

@@ -86,15 +86,15 @@ public class TexturePacker
         }
 
         for each (var unpacked : SwfTexture in unpackedTextures) {
-            w = unpacked.w + (_borderSize * 2);
-            h = unpacked.h + (_borderSize * 2);
+            w = unpacked.w + (!unpacked.isSingle ? (_borderSize * 2) : 0);
+            h = unpacked.h + (!unpacked.isSingle ? (_borderSize * 2) : 0);
             if (w > _maxAtlasSize || h > _maxAtlasSize) {
                 throw new Error("Too large to fit in an atlas: '" + unpacked.symbol + "' (" +
                                  w + "x" + h + ")");
             }
         }
 
-        unpackedTextures.sort(Comparators.createReverse(Comparators.createFields(["isJpg", "a", "w", "h"])));
+        unpackedTextures.sort(Comparators.createReverse(Comparators.createFields(["isSingle","isJpg", "a", "w", "h"])));
 
         var packer :MultiPackerBase = (_optimizeForSpeed ?
             new MaxRectMultiPacker() :

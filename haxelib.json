@@ -5,7 +5,7 @@
   "tags": [
   ],
   "description": "Flump",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "releasenote": "Added possibility to export JPG atlases by adding $jpg to library linkage",
   "contributors": [
     "CrazyFlasher", 

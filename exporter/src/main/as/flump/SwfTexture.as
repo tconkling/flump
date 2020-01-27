@@ -24,6 +24,7 @@ public class SwfTexture
     public var symbol :String;
     public var quality :String;
     public var isJpg :Boolean;
+    public var isSingle :Boolean;
     public function get origin () :Point { return new Point(_origin.x * _scale, _origin.y * _scale); }
     public function get w () :int { return Math.ceil(_w * _scale); }
     public function get h () :int { return Math.ceil(_h * _scale); }
@@ -36,11 +37,10 @@ public class SwfTexture
         const clip :MovieClip = MovieClip(new klass());
         clip.gotoAndStop(frame + 1);
         const ns :String = useNamespace ? lib.location + "/" : "";
-        var splitted:Array = movie.id.split("$jpg");
-        const isJpg:Boolean =  splitted.length > 1;
-//        movie.id = splitted[0];
+        const isJpg:Boolean =  movie.id.indexOf("$jpg") != -1;
+        const isSingle:Boolean =  movie.id.indexOf("$single") != -1;
         const name :String = ns + movie.id + "_flipbook_" + frame;
-        return new SwfTexture(name, clip, scale, quality, isJpg);
+        return new SwfTexture(name, clip, scale, quality, isJpg, isSingle);
     }
 
     public static function fromTexture (lib :XflLibrary, tex :XflTexture,
@@ -49,19 +49,18 @@ public class SwfTexture
         const klass :Class = Class(lib.swf.getSymbol(tex.symbol));
         const instance :Object = new klass();
         const ns :String = useNamespace ? lib.location + "/" : "";
-        var splitted:Array = tex.symbol.split("$jpg");
-        const isJpg:Boolean =  splitted.length > 1;
-//        tex.symbol = splitted[0];
-
+        const isJpg:Boolean =  tex.symbol.indexOf("$jpg") != -1;
+        const isSingle:Boolean =  tex.symbol.indexOf("$single") != -1;
         const disp :DisplayObject = (instance is BitmapData) ?
             new Bitmap(BitmapData(instance)) : DisplayObject(instance);
-        return new SwfTexture(ns + tex.symbol, disp, scale, quality, isJpg);
+        return new SwfTexture(ns + tex.symbol, disp, scale, quality, isJpg, isSingle);
     }
 
-    public function SwfTexture (symbol :String, disp :DisplayObject, scale :Number, quality :String, isJpg:Boolean) {
+    public function SwfTexture (symbol :String, disp :DisplayObject, scale :Number, quality :String, isJpg:Boolean, isSingle:Boolean) {
         this.symbol = symbol;
         this.quality = quality;
         this.isJpg = isJpg;
+        this.isSingle = isSingle;
 
         // wrap object twice for convenience
         const wrapper :Sprite = new Sprite();

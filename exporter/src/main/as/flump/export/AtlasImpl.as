@@ -82,8 +82,8 @@ public class AtlasImpl implements Atlas
 
     // Try to place a texture in this atlas
     public function place (tex :SwfTexture, xx :uint, yy :uint) :void {
-        var w :int = tex.w + (_xBorderSize * 2);
-        var h :int = tex.h + (_yBorderSize * 2);
+        var w :int = tex.w + (!tex.isSingle ? (_xBorderSize * 2) : 0);
+        var h :int = tex.h + (!tex.isSingle ? (_yBorderSize * 2) : 0);
         if (w > _width || h > _height) {
             throw new Error("Tried to place a texture outside of the atlas. This is a bug.");
         }

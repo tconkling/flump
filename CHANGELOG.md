@@ -5,6 +5,7 @@ version 1.5.6-SNAPSHOT - 2020-01-27
 --------------------------
 Exporter & runtime:
 - Added possibility to export JPG atlases by adding $jpg to library linkage
+- Added possibility to export single images by adding $single to library linkage
 
 --------------------------
 
