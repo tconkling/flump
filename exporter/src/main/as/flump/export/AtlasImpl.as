@@ -66,7 +66,7 @@ public class AtlasImpl implements Atlas
             var constructed :Sprite = new Sprite();
             var collapsedBounds :Rectangle = new Rectangle();
             _nodes.forEach(function (node :Node, ..._) :void {
-                const bm :Bitmap = new Bitmap(node.texture.toBitmapData(_xBorderSize, _yBorderSize), "auto", true);
+                const bm :Bitmap = new Bitmap(node.texture.toBitmapData(!hasSingleTexture ? _xBorderSize : 0, !hasSingleTexture ? _yBorderSize : 0), "auto", true);
                 constructed.addChild(bm);
                 bm.x = node.paddedBounds.x;
                 bm.y = node.paddedBounds.y;
@@ -80,17 +80,24 @@ public class AtlasImpl implements Atlas
         return _bitmapData;
     }
 
+
+    private  var hasSingleTexture:Boolean;
     // Try to place a texture in this atlas
     public function place (tex :SwfTexture, xx :uint, yy :uint) :void {
-        var w :int = tex.w + (!tex.isSingle ? (_xBorderSize * 2) : 0);
-        var h :int = tex.h + (!tex.isSingle ? (_yBorderSize * 2) : 0);
+        hasSingleTexture = tex.isSingle;
+
+        var padX:int = !tex.isSingle ? _xBorderSize : 0;
+        var padY:int = !tex.isSingle ? _yBorderSize : 0;
+
+        var w :int = tex.w + (padX * 2);
+        var h :int = tex.h + (padY * 2);
         if (w > _width || h > _height) {
             throw new Error("Tried to place a texture outside of the atlas. This is a bug.");
         }
         if (isMasked(xx, yy, w, h)) {
             throw new Error("Tried to place a texture over another texture. This is a bug.");
         }
-        var node :Node = new Node(xx, yy, _xBorderSize, _yBorderSize, tex);
+        var node :Node = new Node(xx, yy, padX, padY, tex);
         _nodes.push(node);
         setMasked(node.paddedBounds.x, node.paddedBounds.y, node.paddedBounds.width, node.paddedBounds.height);
     }

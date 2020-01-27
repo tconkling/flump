@@ -52,6 +52,15 @@ public class FlumpApp
             if (hasValueArgument(event.arguments, "--export")) {
                 var projectName :String = popValueArgument(event.arguments, "--export");
                 var exportUnmodified :Boolean = popFlagArgument(event.arguments, "--unmodified");
+
+                var jpgQualityIndex:int = event.arguments.indexOf("--jpgQuality");
+                if (jpgQualityIndex != -1)
+                {
+                    AtlasUtil.jpgQuality = parseInt(event.arguments[jpgQualityIndex + 1]);
+                    event.arguments.removeAt(jpgQualityIndex);
+                    event.arguments.removeAt(jpgQualityIndex);
+                }
+
                 var headless :AutomaticExporter = new AutomaticExporter(new File(projectName), exportUnmodified);
                 headless.complete.connectNotify(function (complete :Boolean) :void {
                     if (!complete) return;

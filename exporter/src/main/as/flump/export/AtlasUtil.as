@@ -16,8 +16,10 @@ import starling.textures.Texture;
 
 public class AtlasUtil
 {
+    public static var jpgQuality:int = 70;
+
     public static function writePNG (atlas :Atlas, bytes :IDataOutput) :void {
-        bytes.writeBytes(atlas.jpg ? new JPEGEncoder(80).encode(atlas.toBitmap()) : PNGEncoder.encode(atlas.toBitmap()));
+        bytes.writeBytes(atlas.jpg ? new JPEGEncoder(jpgQuality).encode(atlas.toBitmap()) : PNGEncoder.encode(atlas.toBitmap()));
     }
 
     public static function toTexture (atlas :Atlas) :Texture {
